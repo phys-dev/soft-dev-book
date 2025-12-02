@@ -47,6 +47,7 @@
 - [Оптимизация по времени и памяти](./dev/python/optimization.md)
 - [Обработка данных](./dev/python/numpy-and-pandas.md)
 - [Визуализация данных](./dev/python/visualization/practice.md)
+- [Основы WEB](./dev/web.md)
 
 # Учимся у других
 
