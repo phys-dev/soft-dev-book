@@ -245,13 +245,19 @@ $$
  \displaystyle\frac{db}{dz} =  y
 \end{matrix}.
 $$
-Пусть \\(\vec X =
+Пусть
+
+$$
+\vec X =
 \begin{bmatrix}
 x \\\\
 a \\\\
 y \\\\
 b
-\end{bmatrix} \\), теперь составим дифференциальное уравнение \\(X' = F(X).\\)
+\end{bmatrix},
+$$
+
+теперь составим дифференциальное уравнение \\(X' = F(X)\\).
 
 
 
@@ -798,11 +804,17 @@ $$
  \displaystyle\frac{dr_{rms}}{dz} =  y
 \end{matrix}.
 $$
-Пусть \\(\vec X =
+Пусть
+
+$$
+\vec X =
 \begin{bmatrix}
 y \\
 r_{rms} \\
-\end{bmatrix} \\), теперь составим дифференциальное уравнение \\(X' = F(X).\\)
+\end{bmatrix},
+$$
+
+теперь составим дифференциальное уравнение \\(X' = F(X)\\).
 
 \\(k\\) - жесткость соленоида:$$
 k = \left ( \frac{eB_z}{2m_ec\beta\gamma} \right )^2 = \left ( \frac{e B_z}{2\beta\gamma\cdot 0.511\cdot 10^6 e \cdot \mathrm{volt}/c} \right )^2 =

@@ -54,6 +54,12 @@
 \usepackage{enumitem}
 \usepackage{hyperref}
 
+%% --- предметный указатель ---------------------------------------
+%% Сортировку кириллицы делает xindy (makeindex её не умеет),
+%% вызов — в build.sh между проходами xelatex.
+\usepackage[noautomatic]{imakeidx}
+\makeindex[title={Предметный указатель}, columns=2, intoc]
+
 %% --- набор -------------------------------------------------------
 \linespread{1.0}
 \setlength{\parindent}{5mm}
@@ -239,6 +245,9 @@ ISBN 978-5-4437-XXXX-X$if(volume)$ (ч.~$volume$)$endif$ & \phantom{\copyright{}
 
 %% ================= ТЕКСТ =================
 $body$
+
+\clearpage
+\printindex
 
 \clearpage
 \thispagestyle{empty}

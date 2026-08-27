@@ -14,6 +14,9 @@ import shutil
 import subprocess
 import sys
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from index_terms import TERMS as INDEX_TERMS
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, "src")
 BUILD = os.path.join(ROOT, "print", "build")
@@ -118,21 +121,42 @@ def parse_summary():
     return items
 
 
-def strip_html(text):
-    """Убирает интерактивный HTML: скрипты Plotly, стили, pandas-таблицы."""
-    # <div> с pandas-таблицами и стилями превращаем в отметку
+def _strip_html_chunk(text):
+    """Убирает интерактивный HTML из куска текста вне листингов."""
     text = re.sub(r"<style[^>]*>.*?</style>", "", text, flags=re.S)
     text = re.sub(r"<script[^>]*>.*?</script>", "", text, flags=re.S)
-    # HTML-таблицы pandas -> markdown-таблица (упрощённо: только шапка и данные)
     text = re.sub(r"<div>\s*(<table.*?</table>)\s*</div>", _table_to_md,
                   text, flags=re.S)
     text = re.sub(r"<table.*?</table>", _table_to_md_raw, text, flags=re.S)
-    # висячие div и прочие теги
     text = re.sub(r"</?div[^>]*>", "", text)
     text = re.sub(r"^\s*window\..*$", "", text, flags=re.M)
     text = re.sub(r"^\s*require\(\[.*$", "", text, flags=re.M)
     text = re.sub(r"^\s*if \(window\.MathJax.*$", "", text, flags=re.M)
     return text
+
+
+def strip_html(text):
+    """Убирает интерактивный HTML: скрипты Plotly, стили, pandas-таблицы.
+
+    Обрабатываем только куски вне листингов. Иначе «ленивая» регулярка,
+    наткнувшись на непарный HTML-тег, перепрыгивает через код-блок
+    и уносит его вместе с ограждениями — а дальше рушится вся разметка.
+    """
+    parts, chunk, in_fence = [], [], False
+    for line in text.split("\n"):
+        if line.startswith("```"):
+            if not in_fence:
+                parts.append(_strip_html_chunk("\n".join(chunk)))
+                chunk = []
+            else:
+                parts.append("\n".join(chunk))
+                chunk = []
+            parts.append(line)
+            in_fence = not in_fence
+            continue
+        chunk.append(line)
+    parts.append("\n".join(chunk) if in_fence else _strip_html_chunk("\n".join(chunk)))
+    return "\n".join(parts)
 
 
 MAX_CELL = 16
@@ -294,7 +318,9 @@ def fix_unicode(text):
     # эмодзи и декоративные пиктограммы
     emoji = ("[\U0001F000-\U0001FAFF\U00002600-\U000027BF"
              "\U0001F1E6-\U0001F1FF\U0000FE0F\U00002B00-\U00002BFF]")
-    text = re.sub(emoji + r"\s*", "", text)
+    # только пробелы и табуляции: \s съел бы перевод строки, и следующая
+    # строка приклеилась бы к предыдущей — так ломались ограждения кода
+    text = re.sub(emoji + r"[ \t]*", "", text)
 
     # одиночные математические знаки в прозе -> формулы
     def to_math(match):
@@ -310,21 +336,51 @@ def fix_unicode(text):
         out.append(line)
     text = "\n".join(out)
 
-    # голая кириллица внутри формул -> \text{...}
-    def wrap_cyrillic(match):
-        body = match.group(2)
-        if "\\text{" in body:
-            # уже частично обёрнуто — трогаем только то, что вне \text{}
-            pieces = re.split(r"(\\text\{[^{}]*\})", body)
-            body = "".join(p if p.startswith("\\text{")
-                           else re.sub(r"[А-Яа-яЁё]+", r"\\text{\g<0>}", p)
-                           for p in pieces)
-        else:
-            body = re.sub(r"[А-Яа-яЁё]+", r"\\text{\g<0>}", body)
-        return match.group(1) + body + match.group(1)
+    # Голая кириллица внутри формул -> \text{...}.
+    # Ищем формулы строго построчно и только вне листингов: иначе
+    # доллары из shell-переменных ($PWD, $PATH) в разных код-блоках
+    # спариваются между собой, и целые абзацы прозы уезжают в \text{}.
+    def _wrap_body(body):
+        pieces = re.split(r"(\\text\{[^{}]*\})", body)
+        return "".join(q if q.startswith("\\text{")
+                       else re.sub(r"[А-Яа-яЁё]+", r"\\text{\g<0>}", q)
+                       for q in pieces)
 
-    text = re.sub(r"(\$\$?)((?:[^$]|\$(?=\$))+?)\1", wrap_cyrillic, text, flags=re.S)
-    return text
+    def wrap_cyrillic_dd(match):
+        return "$$" + _wrap_body(match.group(1)) + "$$"
+
+    def wrap_cyrillic_d(match):
+        return "$" + _wrap_body(match.group(1)) + "$"
+
+    # Куски вне листингов обрабатываем поабзацно. Это ключевая
+    # предосторожность: если искать формулы по всему тексту, доллары
+    # из shell-переменных ($PWD, $PATH) в разных код-блоках спариваются
+    # между собой, и целые абзацы прозы уезжают внутрь \\text{}.
+    def wrap_para(para):
+        para = re.sub(r"\$\$(.+?)\$\$", wrap_cyrillic_dd, para, flags=re.S)
+        return re.sub(r"(?<!\$)\$([^$\n]+?)\$(?!\$)", wrap_cyrillic_d, para)
+
+    out, chunk, in_fence = [], [], False
+    for line in text.split("\n"):
+        if line.startswith("```"):
+            if not in_fence:
+                out.append(_apply_paragraphs("\n".join(chunk), wrap_para))
+            else:
+                out.append("\n".join(chunk))
+            chunk = []
+            out.append(line)
+            in_fence = not in_fence
+            continue
+        chunk.append(line)
+    tail = "\n".join(chunk)
+    out.append(tail if in_fence else _apply_paragraphs(tail, wrap_para))
+    return "\n".join(out)
+
+
+def _apply_paragraphs(text, fn):
+    """Применяет fn к каждому абзацу отдельно, сохраняя пустые строки."""
+    parts = re.split(r"(\n[ \t]*\n)", text)
+    return "".join(p if i % 2 else fn(p) for i, p in enumerate(parts))
 
 
 # ссылки, текст которых без адреса ничего не значит на бумаге
@@ -566,6 +622,61 @@ def brief_practicum(text, max_items=8):
     return "\n".join(out)
 
 
+def _index_key(entry):
+    """Готовит статью указателя к вставке в LaTeX.
+
+    Подчёркивание, амперсанд и решётка в тексте LaTeX — служебные знаки.
+    Если они есть, печатаем экранированный вариант, а сортируем по
+    очищенному: «slots@\\texttt{\\_\\_slots\\_\\_}».
+    """
+    if not re.search(r"[_&#%{}]", entry):
+        return entry
+    parts = entry.split("!")
+    out = []
+    for part in parts:
+        sort = re.sub(r"[_&#%{}]", "", part)
+        shown = part
+        for ch in "_&#%":
+            shown = shown.replace(ch, "\\" + ch)
+        out.append(f"{sort}@\\texttt{{{shown}}}")
+    return "!".join(out)
+
+
+def add_index_entries(text, seen):
+    """Расставляет метки предметного указателя.
+
+    Термин отмечается там, где книга его вводит: в заголовке или
+    в полужирном выделении. Каждый термин помечается не более двух раз,
+    иначе указатель превращается в перечень всех страниц подряд.
+    """
+    lines, out, in_fence = text.split("\n"), [], False
+    for line in lines:
+        if line.startswith("```"):
+            in_fence = not in_fence
+            out.append(line)
+            continue
+        if in_fence or line.startswith("    "):
+            out.append(line)
+            continue
+        for entry, variants in INDEX_TERMS.items():
+            if seen.get(entry, 0) >= 2:
+                continue
+            for v in variants:
+                pos = line.find(v)
+                if pos < 0:
+                    continue
+                # не лезем внутрь инлайн-кода и ссылок
+                if line.count("`", 0, pos) % 2:
+                    continue
+                seen[entry] = seen.get(entry, 0) + 1
+                # метку ставим в конец строки: в заголовке она иначе
+                # попадёт в оглавление, а в абзаце разорвёт фразу
+                line = line + "\\index{" + _index_key(entry) + "}"
+                break
+        out.append(line)
+    return "\n".join(out)
+
+
 def clean_output_blocks(text, limit=8):
     """Ограничивает длину распечаток — в книге они съедают страницы."""
     lines, out, buf = text.split("\n"), [], []
@@ -599,6 +710,7 @@ def clean_output_blocks(text, limit=8):
 def main(volume=None):
     """Готовит markdown одного тома (или всей книги, если volume=None)."""
     os.makedirs(IMG, exist_ok=True)
+    index_seen = {}          # сколько раз термин уже отмечен в этом томе
     wanted = VOLUMES[volume]["parts"] if volume else None
     parts = []
     stats = []
@@ -645,6 +757,10 @@ def main(volume=None):
         text = clean_output_blocks(
             text, OUTPUT_LIMIT_NB if is_nb else OUTPUT_LIMIT)
         text = strip_manual_numbering(text)
+        if kind == "chapter":
+            # во вводных и заключительных страницах термины только
+            # перечислены — отмечать их в указателе незачем
+            text = add_index_entries(text, index_seen)
         # уровень: front-matter и главы верхнего уровня -> ##, вложенные -> ###
         text = shift_headings(text, 2 + level)
         if kind in ("front", "back"):
@@ -708,6 +824,8 @@ Seaborn) на месте.
     out = os.path.join(BUILD, name)
     io.open(out, "w", encoding="utf-8").write(book)
     print(f"собрано глав: {len(stats)}")
+    print(f"терминов в указателе: {len(index_seen)} из {len(INDEX_TERMS)}, "
+          f"отметок: {sum(index_seen.values())}")
     print(f"размер: {len(book) / 1024:.0f} КБ -> {out}")
     print(f"картинок: {len(os.listdir(IMG))}")
     biggest = sorted(stats, key=lambda s: -s[2])[:5]
