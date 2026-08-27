@@ -1,4 +1,4 @@
-\documentclass[11pt,oneside]{book}
+\documentclass[10pt,oneside]{book}
 
 %% ---------------------------------------------------------------
 %% Оригинал-макет по техническим требованиям ИПЦ НГУ:
@@ -79,14 +79,14 @@
 \titleformat{\chapter}[display]
   {\normalfont\Large\bfseries\raggedright}
   {\normalsize\MakeUppercase{\chaptertitlename}\ \thechapter}{6pt}{\Large}
-\titlespacing*{\chapter}{0pt}{0pt}{14pt}
+\titlespacing*{\chapter}{0pt}{0pt}{10pt}
 
 \titleformat{\section}{\normalfont\large\bfseries\raggedright}{\thesection}{0.6em}{}
-\titlespacing*{\section}{0pt}{12pt plus 3pt}{6pt}
+\titlespacing*{\section}{0pt}{9pt plus 2pt}{4pt}
 \titleformat{\subsection}{\normalfont\normalsize\bfseries\raggedright}{\thesubsection}{0.6em}{}
-\titlespacing*{\subsection}{0pt}{10pt plus 2pt}{4pt}
+\titlespacing*{\subsection}{0pt}{7pt plus 2pt}{3pt}
 \titleformat{\subsubsection}{\normalfont\normalsize\itshape\raggedright}{}{0em}{}
-\titlespacing*{\subsubsection}{0pt}{8pt plus 2pt}{3pt}
+\titlespacing*{\subsubsection}{0pt}{6pt plus 1pt}{2pt}
 
 \setcounter{secnumdepth}{3}
 \setcounter{tocdepth}{2}
@@ -104,22 +104,22 @@ $highlighting-macros$
   {fontsize=\footnotesize,xleftmargin=3mm,breaklines,breakanywhere,
    breaksymbolleft={}}
 \renewenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
-\setlength{\FrameSep}{2pt}
-\setlength{\OuterFrameSep}{3pt}
+\setlength{\FrameSep}{1.5pt}
+\setlength{\OuterFrameSep}{1.5pt}
 
 %% --- прочее ------------------------------------------------------
-\setlist{nosep,leftmargin=6mm,topsep=3pt}
+\setlist{nosep,leftmargin=5mm,topsep=2pt,partopsep=0pt}
 \captionsetup{font=small,skip=4pt}
 %% Картинки вписываем в полосу набора: не шире 92% строки
 %% и не выше 42% полосы, чтобы иллюстрация не занимала страницу целиком.
-\setkeys{Gin}{width=0.92\linewidth,height=0.42\textheight,keepaspectratio}
+\setkeys{Gin}{width=0.92\linewidth,height=0.30\textheight,keepaspectratio}
 
 %% \pandocbounded — макрос pandoc 3.x, масштабирует картинку под полосу
 \makeatletter
 \newsavebox\pandoc@box
 \newcommand*\pandocbounded[1]{%
   \sbox\pandoc@box{#1}%
-  \Gscale@div\@tempa{0.42\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempa{0.30\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
   \Gscale@div\@tempb{0.92\linewidth}{\wd\pandoc@box}%
   \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi%
   \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
@@ -161,7 +161,11 @@ $highlighting-macros$
   {\large В.\,В.~Федоров}\\[16mm]
   {\LARGE\bfseries РАЗРАБОТКА И ПРИМЕНЕНИЕ}\\[4pt]
   {\LARGE\bfseries ПРОГРАММНОГО ОБЕСПЕЧЕНИЯ}\\[4pt]
-  {\LARGE\bfseries В ФИЗИЧЕСКИХ ИССЛЕДОВАНИЯХ}\\[10mm]
+  {\LARGE\bfseries В ФИЗИЧЕСКИХ ИССЛЕДОВАНИЯХ}\\[8mm]
+$if(volume)$
+  {\Large\bfseries Часть $volume$}\\[3pt]
+  {\large\itshape $volumetitle$}\\[8mm]
+$endif$
   {\large Учебное пособие}
   \vfill
   {\small Новосибирск}\\
@@ -189,21 +193,18 @@ $highlighting-macros$
 
 \textbf{Федоров, В.\,В.}\\
 Ф333\quad Разработка и применение программного обеспечения в физических
-исследованиях : учеб. пособие / В.\,В.~Федоров ; Новосиб. гос. ун-т.
---- Новосибирск : ИПЦ НГУ, 2026. --- \pageref{LastPage}~с.
+исследованиях : учеб. пособие$if(volume)$ : в 2 ч. / В.\,В.~Федоров ;
+Новосиб. гос. ун-т. --- Новосибирск : ИПЦ НГУ, 2026. ---
+Ч.~$volume$: $volumetitle$. --- \pageref{LastPage}~с.$else$ /
+В.\,В.~Федоров ; Новосиб. гос. ун-т. --- Новосибирск : ИПЦ НГУ, 2026.
+--- \pageref{LastPage}~с.$endif$
 \vspace{3mm}
 
-ISBN 978-5-4437-XXXX-X
+ISBN 978-5-4437-XXXX-X$if(volume)$ (ч.~$volume$)\\
+ISBN 978-5-4437-YYYY-Y$endif$
 \vspace{4mm}
 
-Пособие знакомит студентов физических специальностей с инженерной
-стороной научной работы: операционной системой GNU/Linux, языком Python
-и его научными библиотеками, алгоритмами и структурами данных, основами
-вычислительной физики, практиками разработки и сопровождения программ,
-обработкой и анализом данных, машинным обучением, а также способами
-профилирования и ускорения программ вплоть до вычислений на графических
-ускорителях. Материал построен на разборе реальных кодов, применяемых
-в институтах СО РАН, и сопровождается задачами для самостоятельной работы.
+$abstract$
 
 Предназначено для студентов третьего курса физического факультета НГУ,
 изучающих дисциплину <<Применение Python в физических исследованиях>>,
@@ -221,9 +222,9 @@ ISBN 978-5-4437-XXXX-X
 \vfill
 
 \noindent
-\begin{tabular}{@{}p{34mm}@{}p{55mm}@{}}
+\begin{tabular}{@{}l@{\hspace{6mm}}l@{}}
                        & \copyright{} Новосибирский государственный\\
-ISBN 978-5-4437-XXXX-X & \phantom{\copyright{}} университет, 2026\\
+ISBN 978-5-4437-XXXX-X$if(volume)$ (ч.~$volume$)$endif$ & \phantom{\copyright{}} университет, 2026\\
                        & \copyright{} В.\,В.~Федоров, 2026\\
 \end{tabular}
 }
@@ -253,6 +254,10 @@ $body$
 
 РАЗРАБОТКА И ПРИМЕНЕНИЕ ПРОГРАММНОГО ОБЕСПЕЧЕНИЯ\\
 В ФИЗИЧЕСКИХ ИССЛЕДОВАНИЯХ
+$if(volume)$
+
+Часть $volume$. $volumetitle$
+$endif$
 \vspace{4mm}
 
 Учебное пособие

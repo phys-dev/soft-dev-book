@@ -19,8 +19,81 @@ SRC = os.path.join(ROOT, "src")
 BUILD = os.path.join(ROOT, "print", "build")
 IMG = os.path.join(BUILD, "img")
 
-# Главы, которые не входят в печатное издание
-SKIP = set()
+# --- Что именно уходит из печатного издания -------------------------
+# Электронная версия остаётся полной; здесь описано только то, чем
+# книжное издание отличается от неё.
+
+WEB = "https://phys-dev.github.io/soft-dev-book/"
+
+# --- Разбиение на тома ----------------------------------------------
+# Книга выходит в двух частях: одна на 420 страниц формата А5 неудобна
+# в работе. Границу проводим по темам рабочей программы: часть 1 —
+# темы 1-3 (среда, общие знания, разработка), часть 2 — темы 4-6
+# (данные, ускорение, разбор реальных кодов).
+VOLUMES = {
+    1: {
+        "title": "Инструменты и основы",
+        "parts": ["Ищем помощников", "Загружаем Linux",
+                  "Разбираемся в алгоритмах", "Считаем численно",
+                  "Погружаемся в Python", "Изучаем хорошие практики"],
+        "abstract": (
+            "Первая часть пособия вводит в рабочую среду и базовые знания, "
+            "без которых научная разработка превращается в кустарщину: "
+            "операционная система GNU/Linux, алгоритмы и структуры данных, "
+            "понятия сходимости и устойчивости численных схем, устройство "
+            "языка Python и инженерные практики разработки — от жизненного "
+            "цикла программы до баз данных."),
+    },
+    2: {
+        "title": "Данные, ускорение и практика",
+        "parts": ["Обрабатываем данные", "Ускоряем код", "Учимся у других",
+                  "Работаем самостоятельно"],
+        "abstract": (
+            "Вторая часть пособия посвящена работе с данными физического "
+            "эксперимента и производительности программ: обработка и "
+            "визуализация массивов, машинное обучение и нейронные сети, "
+            "профилирование, многопоточность, асинхронность и вычисления "
+            "на графических ускорителях. Завершают книгу разбор реальных "
+            "кодов, применяемых в институтах СО РАН, и задания для "
+            "самостоятельной работы."),
+    },
+}
+
+# Главы, дословно дублирующие материал других разделов.
+# Экспресс-курс по Python пересказывает темы разделов «Погружаемся
+# в Python» и «Обрабатываем данные», поэтому в книге его нет.
+SKIP = {
+    "./dev/python/basics.md",
+    "./dev/python/numpy.md",
+    "./dev/python/matplotlib.md",
+}
+
+# Выгрузки из Jupyter: печатаем текст, формулы и короткие фрагменты,
+# длинные листинги заменяем началом кода и ссылкой на сайт.
+NOTEBOOKS = {
+    "./examples/kenv.md",
+    "./examples/redpic.md",
+    "./examples/envelope-optimize.md",
+    "./examples/cadquery/layout.md",
+    "./dev/python/visualization/practice.md",
+    "./dev/python/numpy-and-pandas.md",
+}
+
+# Разделы, вырезаемые целиком: интерактивные графики на бумаге
+# показать нельзя, остаётся один код без результата.
+DROP_SECTIONS = {
+    "./dev/python/visualization/practice.md": ["Часть 3. Plotly"],
+}
+
+# Сколько разобранных задач оставить в главе (остальные — списком).
+KEEP_TASKS = {"./cs/trees.md": 2, "./cs/graphs.md": 2}
+
+# Практикум печатаем кратко: постановка задачи и ссылка на сайт.
+BRIEF = {"./practicum/"}
+
+# Пределы для листингов и распечаток
+CODE_LIMIT, CODE_LIMIT_NB = 14, 8
+OUTPUT_LIMIT, OUTPUT_LIMIT_NB = 6, 3
 
 
 def parse_summary():
@@ -275,19 +348,39 @@ def fix_links(text):
     return re.sub(r"(?<!!)\[([^\]]+)\]\(([^)\s]+)\)", repl, text)
 
 
+def _split_fences(text):
+    """Разбивает текст на пары (внутри_листинга, строка)."""
+    in_fence = False
+    for line in text.split("\n"):
+        if line.startswith("```"):
+            in_fence = not in_fence
+            yield True, line
+            continue
+        yield in_fence, line
+
+
 def shift_headings(text, base):
-    """Сдвигает заголовки главы так, чтобы верхний стал уровня base."""
-    levels = [len(m.group(1)) for m in re.finditer(r"^(#{1,6}) ", text, flags=re.M)]
+    """Сдвигает заголовки главы так, чтобы верхний стал уровня base.
+
+    Строки внутри листингов не трогаем: там решётка — комментарий.
+    """
+    levels = [len(m.group(1))
+              for inf, l in _split_fences(text) if not inf
+              for m in [re.match(r"^(#{1,6}) ", l)] if m]
     if not levels:
         return text
     shift = base - min(levels)
     if shift == 0:
         return text
-
-    def repl(match):
-        level = min(len(match.group(1)) + shift, 6)
-        return "#" * max(level, 1) + " "
-    return re.sub(r"^(#{1,6}) ", repl, text, flags=re.M)
+    out = []
+    for inf, line in _split_fences(text):
+        if not inf:
+            m = re.match(r"^(#{1,6}) ", line)
+            if m:
+                lvl = min(len(m.group(1)) + shift, 6)
+                line = "#" * max(lvl, 1) + " " + line[m.end():]
+        out.append(line)
+    return "\n".join(out)
 
 
 def strip_manual_numbering(text):
@@ -298,19 +391,148 @@ def strip_manual_numbering(text):
     нумерует LaTeX, и такой заголовок превращается в «2.3.2 1. Процессы» —
     номер задваивается.
     """
-    return re.sub(r"^(#{2,6}) +\d+(?:\.\d+)*\.? +(?=\S)", r"\1 ",
-                  text, flags=re.M)
+    out = []
+    for inf, line in _split_fences(text):
+        if not inf:
+            line = re.sub(r"^(#{2,6}) +\d+(?:\.\d+)*\.? +(?=\S)", r"\1 ", line)
+        out.append(line)
+    return "\n".join(out)
 
 
-def clean_output_blocks(text):
-    """Ограничивает длину блоков вывода — в печати они занимают страницы."""
+def trim_listings(text, limit):
+    """Сокращает длинные листинги: печатать полсотни строк кода бессмысленно.
+
+    Оставляем начало — достаточно, чтобы понять приём, — и отсылаем
+    за полным текстом к электронной версии.
+    """
+    out, buf, in_fence, fence = [], [], False, ""
+    for line in text.split("\n"):
+        if line.startswith("```"):
+            if in_fence:
+                if len(buf) > limit:
+                    out.extend(buf[:limit])
+                    out.append("# ... полный листинг — в электронной версии")
+                else:
+                    out.extend(buf)
+                buf, in_fence = [], False
+            else:
+                in_fence, fence = True, line
+            out.append(line)
+            continue
+        (buf if in_fence else out).append(line)
+    out.extend(buf)
+    return "\n".join(out)
+
+
+def drop_sections(text, titles):
+    """Вырезает разделы вместе с их содержимым — до заголовка того же уровня."""
+    for title in titles:
+        lines, out, killing, level = text.split("\n"), [], False, 0
+        in_fence = False
+        for line in lines:
+            if line.startswith("```"):
+                in_fence = not in_fence
+            # решётка внутри листинга — это комментарий, а не заголовок
+            m = None if in_fence else re.match(r"^(#{1,6}) +(.*)$", line)
+            if m:
+                if killing and len(m.group(1)) <= level:
+                    killing = False
+                if not killing and title.lower() in m.group(2).lower():
+                    killing, level = True, len(m.group(1))
+                    out.append(f"{m.group(1)} {m.group(2)}")
+                    out.append("")
+                    out.append("Интерактивные графики на бумаге показать нельзя — "
+                               f"этот раздел целиком есть в электронной версии: {WEB}")
+                    out.append("")
+                    continue
+            if not killing:
+                out.append(line)
+        text = "\n".join(out)
+    return text
+
+
+def keep_first_tasks(text, keep):
+    """Оставляет разбор первых задач, остальные перечисляет условиями."""
+    parts = re.split(r"^(### Задача \d+\..*)$", text, flags=re.M)
+    if len(parts) < 3:
+        return text
+    head, rest = parts[0], parts[1:]
+    pairs = [(rest[i], rest[i + 1]) for i in range(0, len(rest) - 1, 2)]
+    out = [head]
+    dropped = []
+    for i, (title, body) in enumerate(pairs):
+        if i < keep:
+            out.append(title)
+            out.append(body)
+            continue
+        # у остальных задач сохраняем только условие
+        m = re.search(r"\*\*Условие\.\*\*(.+?)(?:\n\n|\Z)", body, re.S)
+        cond = " ".join(m.group(1).split()) if m else ""
+        dropped.append((title.replace("### ", "").strip(), cond))
+    if dropped:
+        # хвост главы (резюме и т.п.) не теряем
+        tail = ""
+        m = re.search(r"^## .*$", pairs[-1][1], flags=re.M)
+        if m:
+            tail = pairs[-1][1][m.start():]
+        out.append("### Задачи для самостоятельного решения\n")
+        out.append("Разбор этих задач с кодом и оценкой сложности есть "
+                   f"в электронной версии: {WEB}\n")
+        for title, cond in dropped:
+            out.append(f"**{title}.** {cond}\n")
+        if tail:
+            out.append(tail)
+    return "\n".join(out)
+
+
+def brief_practicum(text, max_items=8):
+    """Оставляет от задания суть: заголовок, постановку и ссылку.
+
+    Развёрнутые требования, критерии приёмки и форматы отчёта живут
+    на сайте — в книге от задания нужна формулировка, чтобы студент
+    понял, о чём речь, и пошёл за подробностями по ссылке.
+    """
+    lines = text.split("\n")
+    head = lines[0] if lines and lines[0].startswith("# ") else ""
+    body, items, in_fence = [], 0, False
+    for line in lines[1:]:
+        if line.startswith("```"):
+            in_fence = not in_fence
+            continue
+        if in_fence:
+            continue
+        if re.match(r"^#{2,6} ", line):
+            continue                       # рубрики задания не печатаем
+        stripped = line.strip()
+        if not stripped:
+            continue
+        if stripped.startswith(("- ", "* ", "+ ")) or re.match(r"^\d+\.", stripped):
+            items += 1
+            if items > max_items:
+                continue
+            body.append("* " + re.sub(r"^([-*+]|\d+\.)\s*", "", stripped))
+        elif stripped.startswith("["):
+            continue                       # ссылки соберём в конце
+        elif items == 0:
+            body.append(stripped)
+    out = [head, ""] if head else []
+    out.extend(body)
+    out.append("")
+    out.append("Развёрнутые требования, критерии приёмки и материалы "
+               f"к заданию — в электронной версии: {WEB}")
+    out.append("")
+    return "\n".join(out)
+
+
+def clean_output_blocks(text, limit=8):
+    """Ограничивает длину распечаток — в книге они съедают страницы."""
     lines, out, buf = text.split("\n"), [], []
 
     def flush():
         if not buf:
             return
-        if len(buf) > 14:
-            out.extend(buf[:12])
+        if len(buf) > limit + 2:
+            out.extend(buf[:limit])
             out.append("    ... (вывод сокращён)")
         else:
             out.extend(buf)
@@ -332,14 +554,23 @@ def clean_output_blocks(text):
     return "\n".join(out)
 
 
-def main():
+def main(volume=None):
+    """Готовит markdown одного тома (или всей книги, если volume=None)."""
     os.makedirs(IMG, exist_ok=True)
+    wanted = VOLUMES[volume]["parts"] if volume else None
     parts = []
     stats = []
+    keep = wanted is None
     for kind, title, path, level in parse_summary():
         if kind == "part":
-            parts.append(f"\n\n# {title}\n\n")
+            keep = wanted is None or title in wanted
+            if keep:
+                parts.append(f"\n\n# {title}\n\n")
             continue
+        if not keep and kind != "front":
+            continue
+        if kind == "front" and volume == 2:
+            continue          # «О книге» и «О себе» — только в первой части
         if path is None or path in SKIP:
             continue
         full = os.path.normpath(os.path.join(SRC, path[2:]))
@@ -354,7 +585,17 @@ def main():
         text = fix_math(text)
         text = fix_unicode(text)
         text = fix_links(text)
-        text = clean_output_blocks(text)
+        # --- сокращения книжного издания ---
+        is_nb = path in NOTEBOOKS
+        if path in DROP_SECTIONS:
+            text = drop_sections(text, DROP_SECTIONS[path])
+        if path in KEEP_TASKS:
+            text = keep_first_tasks(text, KEEP_TASKS[path])
+        if any(path.startswith(b) for b in BRIEF):
+            text = brief_practicum(text)
+        text = trim_listings(text, CODE_LIMIT_NB if is_nb else CODE_LIMIT)
+        text = clean_output_blocks(
+            text, OUTPUT_LIMIT_NB if is_nb else OUTPUT_LIMIT)
         text = strip_manual_numbering(text)
         # уровень: front-matter и главы верхнего уровня -> ##, вложенные -> ###
         text = shift_headings(text, 2 + level)
@@ -392,14 +633,18 @@ Seaborn) на месте.
 **https://t.me/physdev**.
 
 """
-    # примечание ставим сразу после «О книге» и «О себе», до первой части
-    first_part = next((i for i, p in enumerate(parts) if p.startswith("\n\n# ")), 0)
-    parts.insert(first_part, note)
+    if volume in (None, 1):
+        # примечание ставим сразу после «О книге» и «О себе», до первой части
+        first = next((i for i, p in enumerate(parts) if p.startswith("\n\n# ")), 0)
+        parts.insert(first, note)
+    else:
+        parts.insert(0, VOLUME2_NOTE)
 
     book = "".join(parts)
     # схлопываем лишние пустые строки
     book = re.sub(r"\n{4,}", "\n\n\n", book)
-    out = os.path.join(BUILD, "book.md")
+    name = f"book{volume}.md" if volume else "book.md"
+    out = os.path.join(BUILD, name)
     io.open(out, "w", encoding="utf-8").write(book)
     print(f"собрано глав: {len(stats)}")
     print(f"размер: {len(book) / 1024:.0f} КБ -> {out}")
@@ -410,5 +655,25 @@ Seaborn) на месте.
         print(f"  {a / 1024:7.0f} КБ (было {b / 1024:.0f}) {path}")
 
 
+VOLUME2_NOTE = """## О второй части {.unnumbered}
+
+Это вторая часть пособия. В первой части разбирались рабочая среда
+(GNU/Linux), алгоритмы и структуры данных, основы вычислительной физики,
+устройство языка Python и инженерные практики разработки.
+
+Здесь мы займёмся тем, ради чего всё это затевалось: обработкой данных
+физического эксперимента, машинным обучением, ускорением программ и
+разбором реальных кодов, применяемых в институтах СО РАН.
+
+Обе части и постоянно обновляемая электронная версия доступны по адресу
+**https://phys-dev.github.io/soft-dev-book/**. Печатное издание отличается
+от неё только тем, что длинные распечатки и листинги здесь сокращены —
+такие места помечены строками `... (вывод сокращён)` и
+`# ... полный листинг — в электронной версии`.
+
+"""
+
+
 if __name__ == "__main__":
-    main()
+    vol = int(sys.argv[1]) if len(sys.argv) > 1 else None
+    main(vol)
