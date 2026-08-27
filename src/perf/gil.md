@@ -1,30 +1,29 @@
-# Multithreading and GIL
+# Многопоточность и GIL
 
-## || minimum
+## || минимум
 
-### Process
+### Процесс
 
-* Process - running program.
-* Each process has a state isolated from other processes:
-* * virtual address space,
-* * pointer to executable instruction,
-* * call stack,
-* * system resources, such as open file
-  descriptors.
-* Processes are convenient for simultaneously performing multiple tasks.
-* Alternative way: delegate each task to a thread.
+* Процесс — запущенная программа.
+* У каждого процесса есть изолированное от других процессов состояние:
+* * виртуальное адресное пространство,
+* * указатель на исполняемую инструкцию,
+* * стек вызовов,
+* * системные ресурсы, например открытые файловые дескрипторы.
+* Процессы удобны для одновременного выполнения нескольких задач.
+* Альтернативный способ: поручить каждую задачу потоку.
 
-### Thread
+### Поток
 
-* A thread is similar to a process in that its execution occurs independently of other threads (and processes).
-* Unlike a process, a thread executes within a process and shares the address space and system resources with it.
-* Threads are convenient for simultaneously performing several tasks that require access to a shared state.
-* The joint execution of several processes and threads is controlled by the operating system, sequentially allowing each process or thread to use some processor cycles.
+* Поток похож на процесс тем, что он исполняется независимо от других потоков (и процессов).
+* В отличие от процесса поток исполняется внутри процесса и разделяет с ним адресное пространство и системные ресурсы.
+* Потоки удобны для одновременного выполнения нескольких задач, которым нужен доступ к разделяемому состоянию.
+* Совместным исполнением нескольких процессов и потоков управляет операционная система, поочерёдно разрешая каждому процессу или потоку использовать сколько-то циклов процессора.
 
-## `threading` module
+## Модуль `threading`
 
-* A thread in Python is a system thread, that is, it is not the interpreter that controls its execution, but the operating system.
-* You can create a thread using the `Thread` class from the module of the standard `threading` library.
+* Поток в Python — это системный поток, то есть его исполнением управляет не интерпретатор, а операционная система.
+* Создать поток можно с помощью класса `Thread` из модуля стандартной библиотеки `threading`.
 
 
 ```python
@@ -50,7 +49,7 @@ t.start()
     2 left
 
 
-An alternative way to create a stream is inheritance:
+Альтернативный способ создать поток — наследование:
 
 
 ```python
@@ -59,7 +58,7 @@ class CountdownThread(Thread):
         super().__init__()
         self.n = n
         
-    def run(self): # start method.
+    def run(self): # вызывается методом start
         for i in range(self.n):
             print(self.n - i - 1, "left")
             time.sleep(1)
@@ -78,9 +77,9 @@ t.start()
     2 left
 
 
-The disadvantage of this approach is that it limits the reuse of code: the functionality of the `CountdownThread` class can be used only in a separate thread.
+Недостаток этого подхода в том, что он ограничивает переиспользование кода: функциональность класса `CountdownThread` можно использовать только в отдельном потоке.
 
-* When creating a stream, you can specify a name. By default it is **'Thread-N'**:
+* При создании потока можно указать имя. По умолчанию это **'Thread-N'**:
 
 
 ```python
@@ -106,7 +105,7 @@ Thread(name="NumberCruncher").name
 
 
 
-* Each active thread has an id - a non-negative number unique to all active threads.
+* У каждого активного потока есть идентификатор — неотрицательное число, уникальное среди всех активных потоков.
 
 
 ```python
@@ -122,16 +121,16 @@ t.ident
 
 
 
-* The `join` method allows you to wait until the stream finishes.
-* * The execution of the calling thread will pause until thread t ends.
-* * Repeated calls to the `join` method have no effect.
+* Метод `join` позволяет дождаться завершения потока.
+* * Исполнение вызывающего потока приостановится, пока поток t не завершится.
+* * Повторные вызовы метода `join` не имеют эффекта.
 
 
 ```python
 t = Thread(target=time.sleep, args=(5, )) 
 t.start()
-t.join() # locks for 5 seconds
-t.join() # performed instantly
+t.join() # блокирует на 5 секунд
+t.join() # выполняется мгновенно
 ```
 
     1 left
@@ -140,7 +139,7 @@ t.join() # performed instantly
     0 left
 
 
-* You can check if the thread is running using the `is_alive` method:
+* Проверить, работает ли поток, можно с помощью метода `is_alive`:
 
 
 ```python
@@ -150,7 +149,7 @@ t.start()
 
 
 ```python
-t.is_alive() # False after 5 seconds
+t.is_alive() # False через 5 секунд
 ```
 
 
@@ -160,9 +159,9 @@ t.is_alive() # False after 5 seconds
 
 
 
-* A daemon is a thread created with the `daemon=True` argument:
+* Демон — это поток, созданный с аргументом `daemon=True`:
 
-* The difference between a daemon thread and a regular thread is that daemon threads are **automatically** destroyed when exiting the interpreter.
+* Отличие потока-демона от обычного потока в том, что потоки-демоны **автоматически** уничтожаются при выходе из интерпретатора.
 
 
 ```python
@@ -182,11 +181,11 @@ t.daemon
 
 
 
-* In Python, there is no built-in mechanism for terminating threads - this is not an accident, but an informed decision of the language developers.
-* Correct termination of the flow is often associated with the release of resources, for example:
-* * a stream can work with a file whose descriptor needs to be closed,
-* * or capture a synchronization primitive.
-* To end a stream, a flag is usually used:
+* В Python нет встроенного механизма завершения потоков — это не случайность, а осознанное решение разработчиков языка.
+* Корректное завершение потока часто связано с освобождением ресурсов, например:
+* * поток может работать с файлом, дескриптор которого нужно закрыть,
+* * или захватить примитив синхронизации.
+* Для завершения потока обычно используют флаг:
 
 
 ```python
@@ -202,15 +201,15 @@ class Task:
             ...
 ```
 
-The set of synchronization primitives in the threading module is standard:
-* `Lock` - a regular mutex, used to provide exclusive access to a shared state.
-* `RLock` - a recursive mutex that allows a thread that owns a mutex to capture the mutex more than once.
-* `Semaphore` - a variation of the mutex that allows you to capture yourself no more than a fixed number of times.
-* `BoundedSemaphore` - a semaphore that makes sure that it is captured and released the same number of times.
+Набор примитивов синхронизации в модуле `threading` стандартный:
+* `Lock` — обычный мьютекс, используется для организации эксклюзивного доступа к разделяемому состоянию.
+* `RLock` — рекурсивный мьютекс, который разрешает потоку, владеющему мьютексом, захватывать его больше одного раза.
+* `Semaphore` — вариация мьютекса, которую можно захватить не более фиксированного числа раз.
+* `BoundedSemaphore` — семафор, который следит за тем, чтобы его захватывали и освобождали одинаковое число раз.
 
-All synchronization primitives implement a single interface:
-* the acquire method captures the synchronization primitive,
-* and the release method releases it.
+Все примитивы синхронизации реализуют единый интерфейс:
+* метод `acquire` захватывает примитив синхронизации,
+* а метод `release` освобождает его.
 
 
 ```python
@@ -228,37 +227,36 @@ class SharedCounter:
         return self._value
 ```
 
-## `queue` module
+## Модуль `queue`
 
-The `queue` module implements several thread-safe queues:
-* `Queue` - FIFO queue,
-* `LifoQueue` — LIFO queue of stacks,
-* `PriorityQueue` — a queue of elements — a parse
-(priority, item).
-* There are no special frills in the implementation of queues: all state-changing methods work “inside” the mutex.
-* The `Queue` class uses `deque` as the container, and the `LifoQueue` and `PriorityQueue` classes use the list.
+Модуль `queue` реализует несколько потокобезопасных очередей:
+* `Queue` — очередь FIFO,
+* `LifoQueue` — очередь LIFO, то есть стек,
+* `PriorityQueue` — очередь элементов — пар (priority, item).
+* Никаких особых изысков в реализации очередей нет: все изменяющие состояние методы работают «внутри» мьютекса.
+* Класс `Queue` использует в качестве контейнера `deque`, а классы `LifoQueue` и `PriorityQueue` — список.
 
 
 ```python
 def worker(q):
     while True:
-        item = q.get() # blocking expects next
-        do_something(item) # element
-        q.task_done() # notifies the execution queue
+        item = q.get() # блокирующе ждёт следующий
+        do_something(item) # элемент
+        q.task_done() # уведомляет очередь о выполнении
         
 def master(q):
     for item in source():
         q.put(item)
         
-        # blocking waits until all elements of the queue
-        # will not be processed
+        # блокирующе ждёт, пока все элементы
+        # очереди не будут обработаны
         q.join()
 ```
 
-## `futures` module
+## Модуль `futures`
 
-* The `concurrent.futures` module contains the abstract class `Executor` and its implementation as a thread pool - `ThreadPoolExecutor`.
-* The executor’s interface consists of only three methods:
+* Модуль `concurrent.futures` содержит абстрактный класс `Executor` и его реализацию в виде пула потоков — `ThreadPoolExecutor`.
+* Интерфейс исполнителя состоит всего из трёх методов:
 
 
 ```python
@@ -308,7 +306,7 @@ list(executor.map(print, ["Knock?", "Knock!"]))
 executor.shutdown()
 ```
 
-* Contractors support the context manager protocol:
+* Исполнители поддерживают протокол менеджеров контекста:
 
 
 ```python
@@ -316,9 +314,9 @@ with ThreadPoolExecutor(max_workers=4) as executor:
     ...
 ```
 
-* The `Executor.submit` method returns an instance of the `Future` class that encapsulates asynchronous calculations.
+* Метод `Executor.submit` возвращает экземпляр класса `Future`, который инкапсулирует асинхронное вычисление.
 
-What can be done with `Future`?
+Что можно сделать с `Future`?
 
 
 ```python
@@ -326,7 +324,7 @@ with ThreadPoolExecutor(max_workers=4) as executor:
     f = executor.submit(sorted, [4, 3, 1, 2])
 ```
 
-* Ask about the calculation status:
+* Спросить о статусе вычисления:
 
 
 ```python
@@ -340,7 +338,7 @@ f.running(), f.done(), f.cancelled()
 
 
 
-* Wait for the blocking result of the calculation:
+* Блокирующе дождаться результата вычисления:
 
 
 ```python
@@ -358,7 +356,7 @@ print(f.exception())
     None
 
 
-* Add a function that will be called after the calculation is completed:
+* Добавить функцию, которая будет вызвана после завершения вычисления:
 
 
 ```python
@@ -368,7 +366,7 @@ f.add_done_callback(print)
     <Future at 0x1043b7f10 state=finished returned list>
 
 
-## `futures` module example: `integrate`
+## Пример с модулем `futures`: `integrate`
 
 
 ```python
@@ -420,9 +418,9 @@ integrate_async(math.cos, 0, math.pi / 2, n_jobs=2)
 
 
 
-## Concurrency and Competition
+## Параллелизм и конкурентность
 
-Compare the performance of the serial and parallel versions of the integrate function using the “magic” `timeit` command:
+Сравни производительность последовательной и параллельной версий функции `integrate` с помощью «магической» команды `timeit`:
 
 
 ```python
@@ -444,15 +442,15 @@ integrate_async(math.cos, 0, math.pi / 2, n_iter=10**6, n_jobs=2)
 
 ### GIL
 
-* GIL (global interpreter lock) is a mutex that ensures that only one thread at a time has access to the internal state of the interpreter.
-* The Python C API allows you to release the GIL, but it is only safe when working with objects that are not dependent on the Python interpreter.
+* GIL (global interpreter lock, глобальная блокировка интерпретатора) — это мьютекс, который гарантирует, что в каждый момент времени доступ к внутреннему состоянию интерпретатора имеет только один поток.
+* Python C API позволяет освободить GIL, но это безопасно только при работе с объектами, которые не зависят от интерпретатора Python.
 
-### Is GIL Bad?
-* The answer depends on the task.
-* The presence of GIL makes it impossible to use threads in Python for parallelism: several threads do not speed up, and sometimes even slow down the program.
-* GIL does not interfere with the use of threads for competition when working with I/O.
+### Плох ли GIL?
+* Ответ зависит от задачи.
+* Наличие GIL делает невозможным использование потоков в Python для параллелизма: несколько потоков не ускоряют, а иногда даже замедляют программу.
+* GIL не мешает использовать потоки для конкурентности при работе с вводом-выводом.
 
-### C and Cython - GIL Remedy
+### C и Cython — лекарство от GIL
 
 
 ```python
@@ -484,12 +482,12 @@ integrate_async(math.cos, 0, math.pi / 2, n_iter=10**6, n_jobs=2)
     5.88 ms ± 126 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 
 
-## `multiprocessing` module
-### Processes Another GIL Remedy
+## Модуль `multiprocessing`
+### Процессы — ещё одно лекарство от GIL
 
-* You can use processes instead of threads.
-* Each process will have its own GIL, but it will not prevent them from working in parallel.
-* The `multiprocessing` module is responsible for working with processes in Python:
+* Вместо потоков можно использовать процессы.
+* У каждого процесса будет свой GIL, но он не помешает им работать параллельно.
+* За работу с процессами в Python отвечает модуль `multiprocessing`:
 
 
 ```python
@@ -513,8 +511,8 @@ p.start()
     0 left
 
 
-* The module implements basic synchronization primitives: mutexes, semaphores, conditional variables.
-* To organize the interaction between processes, you can use `Pipe` - a socket-based connection between two processes:
+* В модуле реализованы основные примитивы синхронизации: мьютексы, семафоры, условные переменные.
+* Для организации взаимодействия между процессами можно использовать `Pipe` — основанное на сокетах соединение между двумя процессами:
 
 
 ```python
@@ -550,9 +548,9 @@ parent_conn.recv()
 p.join()
 ```
 
-## Process and performance
+## Процессы и производительность
 
-The implementation of the `integrate_async` function based on the thread pool worked for a long time, let's try to use the process pool:
+Реализация функции `integrate_async` на основе пула потоков работала долго, попробуем использовать пул процессов:
 
 
 ```python
@@ -582,9 +580,9 @@ integrate_async(math.cos, 0, math.pi / 2, n_iter=10**6, n_jobs=2)
     16.6 ms ± 144 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 
 
-## `joblib` package
+## Пакет `joblib`
 
-The `joblib` package implements a parallel analogue of the for loop, which is convenient for parallel execution of independent tasks.
+Пакет `joblib` реализует параллельный аналог цикла `for`, который удобен для параллельного выполнения независимых задач.
 
 
 ```python
@@ -618,15 +616,15 @@ integrate_async(math.cos, 0, math.pi / 2, n_iter=10**6, n_jobs=2, backend="multi
     290 ms ± 1.13 ms per loop (mean ± std. dev. of 7 runs, 100 loops each)
 
 
-## Summary
+## Резюме
 
-* GIL is a global mutex that limits the use of threads for parallelism in programs in Python.
-* For programs that use mainly I / O, GIL is not scary: in CPython, these operations release the GIL.
-* For programs that need parallelism, there are options for increasing productivity:
-* * write critical functionality in C or Cython; 
-* * or use the multiprocessing module.
+* GIL — это глобальный мьютекс, который ограничивает использование потоков для параллелизма в программах на Python.
+* Программам, которые в основном занимаются вводом-выводом, GIL не страшен: в CPython эти операции освобождают GIL.
+* Для программ, которым нужен параллелизм, есть варианты повышения производительности:
+* * написать критичную функциональность на C или Cython;
+* * или использовать модуль `multiprocessing`.
 
-## `numba` JIT compiler
+## JIT-компилятор `numba`
 
 
 ```python
@@ -651,4 +649,4 @@ integrate(0, math.pi / 2, n_iter=10**6)
     5.11 ms ± 983 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 
 
-Profit.
+Профит.

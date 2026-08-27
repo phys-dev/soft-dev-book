@@ -1,13 +1,13 @@
 # Оптимизация огибающей пучка заряженных частиц с помощью генетического алгоритма
 
 
-Sometimes it’s useful to use a computer to adjust the envelope.
+Иногда полезно поручить настройку огибающей компьютеру.
 
-Genetic algorithms work similarly to natural selection in nature. The basis of the genetic algorithm is the individual, chromosomes (genes), population (set of individuals), the functions of adaptability, selection, crossing and mutation. In practice, everything happens like this: the creation of the first generation, assessment, selection, crossing, mutation, new generation, evaluation, etc. until we get the desired result.
+Генетические алгоритмы работают по аналогии с естественным отбором в природе. Основа генетического алгоритма — особь, хромосомы (гены), популяция (набор особей), функции приспособленности, отбора, скрещивания и мутации. На практике всё происходит так: создание первого поколения, оценка, отбор, скрещивание, мутация, новое поколение, оценка — и так далее, пока не получим желаемый результат.
 
 DEAP is a framework for working with genetic algorithms, containing many ready-made tools, the main thing is to know how to use them.
 
-## Create a beam and accelerator.
+## Создаём пучок и ускоритель
 
 
 ```python
@@ -64,7 +64,7 @@ simulation = kv.Simulation(beam, accelerator)
 simulation.track()
 ```
 
-## Graphic
+## График
 
 ### matplotlib
 
@@ -249,13 +249,13 @@ z_r = hv.Area(((accelerator.parameter,simulation.envelope_x(accelerator.paramete
 
 
 
-As you can see, the envelope is far from perfect.
+Как видно, огибающая далека от идеальной.
 
-Apply the genetic algorithm.
+Применим генетический алгоритм.
 
-## Genetic algorithm
+## Генетический алгоритм
 
-First we construct a model envelope.
+Сначала построим модельную огибающую.
 
 
 ```python
@@ -279,7 +279,7 @@ z_env
 
 
 
-Connect the necessary libraries.
+Подключим необходимые библиотеки.
 
 
 ```python
@@ -287,7 +287,7 @@ import random
 from deap import creator, base, tools, algorithms
 ```
 
-The first step is to create the necessary types. Usually it is fitness and the individual.
+Первый шаг — создать необходимые типы. Обычно это функция приспособленности (fitness) и особь (individual).
 
 
 ```python
@@ -319,7 +319,7 @@ toolbox.register("individual", tools.initRepeat, creator.Individual, toolbox.att
 toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 ```
 
-Create a fitness function.
+Создадим функцию приспособленности.
 
 
 ```python
@@ -348,7 +348,7 @@ toolbox.register("mutate", tools.mutGaussian, mu=0, sigma=((Sol_B_max - Sol_B_mi
 toolbox.register("select", tools.selTournament, tournsize=NGEN//3)
 ```
 
-Logbook.
+Журнал эволюции (logbook).
 
 
 ```python

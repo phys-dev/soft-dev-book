@@ -566,13 +566,16 @@ Broadcasting снимает правило одной размерности и 
 
 Правило согласования размерностей выражается в одном предложение: 
 
-```In order to broadcast, the size of the trailing axes for both arrays in an operation must either be the same size or one of them must be one```
+> In order to broadcast, the size of the trailing axes for both arrays in an operation must either be the same size or one of them must be one.
 
-Если количество размерностей не совпадают, то к массиву меньшей размерности добавляются фиктивные размерности "слева", например:
-```
-a  = np.ones((2,3,4))
+То есть: чтобы broadcasting сработал, длины осей, считая с конца, должны либо совпадать, либо одна из них должна быть равна единице.
+
+Если количество размерностей не совпадает, то к массиву меньшей размерности добавляются фиктивные размерности «слева», например:
+
+```python
+a = np.ones((2, 3, 4))
 b = np.ones(4)
-c = a * b # here a.shape=(2,3,4) and b.shape is considered to be (1,1,4)
+c = a * b  # здесь a.shape = (2, 3, 4), а b.shape считается равным (1, 1, 4)
 ```
 
 Прибавим к каждой строчки матрицы один и тот же вектор:

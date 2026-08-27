@@ -1,13 +1,13 @@
-# Релятивисткая разностная схема для расчета динамики частиц в сложных электрических и магнитных полях
+# Релятивистская разностная схема для расчета динамики частиц в сложных электрических и магнитных полях
 
-First, we write the main quantities in the difference scheme, then we consider the algorithm.
+Сначала выпишем основные величины разностной схемы, а затем разберём сам алгоритм.
 
-## Basic values
+## Основные величины
 
-At the initial time \\(t\\) set Cartesian coordinates of the \\(i -\\)particles \\(\overrightarrow{r_{i}} = (x_i, y_i, z_i)\\)nd the initial pulses \\(\overrightarrow{p_{i}} = (p_{x_i}, p_{y_i}, p_{z_i})\\).
-Minimum time step is set \\(\delta t\\).
+В начальный момент времени \\(t\\) заданы декартовы координаты \\(i\\)-х частиц \\(\overrightarrow{r_{i}} = (x_i, y_i, z_i)\\) и их начальные импульсы \\(\overrightarrow{p_{i}} = (p_{x_i}, p_{y_i}, p_{z_i})\\).
+Задан минимальный шаг по времени \\(\delta t\\).
 
-For convenience, made dimensionless physical quantities (with tilde):
+Для удобства обезразмерим физические величины (обозначим их тильдой):
 \begin{equation}
     \widetilde{\overrightarrow{r_i}} = \frac{\overrightarrow{r_i}}{c \delta t},
 \end{equation}
@@ -17,30 +17,30 @@ For convenience, made dimensionless physical quantities (with tilde):
 \begin{equation}
     \widetilde{\overrightarrow{H_i}} = \frac{\overrightarrow{H_i}e}{mc} \delta t,
 \end{equation}
-where \\(m\\) is the speed of light, \\(e\\) is the particle charge and \\(m\\) is the particle mass.
+где \\(c\\) — скорость света, \\(e\\) — заряд частицы, \\(m\\) — масса частицы.
 
-## Algorithm
+## Алгоритм
 
-Consider the relativistic difference scheme algorithm step by step:
+Разберём алгоритм релятивистской разностной схемы по шагам:
 
-- Calculation of electric fields \\(\overrightarrow{E_i}\\) at the points where the particles are.
-- Pulse increment:
+- Вычисление электрических полей \\(\overrightarrow{E_i}\\) в точках, где находятся частицы.
+- Приращение импульса:
 \begin{equation}
     \overrightarrow{p_i} = \overrightarrow{p_i} + 2\cdot\overrightarrow{E_i},
 \end{equation}
-where the coefficient means that the increment of the pulse is made for the entire time interval \\(2\delta t\\).
-- New speeds are calculated by new impulses:
+где коэффициент означает, что приращение импульса выполняется за весь интервал времени \\(2\delta t\\).
+- По новым импульсам вычисляются новые скорости:
 \begin{equation}
     \overrightarrow{v_i} = \frac{\overrightarrow{p_i}}{\gamma_i},
 \end{equation}
-where \\(\gamma_i = \sqrt{1 + \overrightarrow{p_i}^2}.\\)
-- At new speeds, new coordinates are calculated:
+где \\(\gamma_i = \sqrt{1 + \overrightarrow{p_i}^2}.\\)
+- По новым скоростям вычисляются новые координаты:
 \begin{equation}
     \overrightarrow{r_i} = \overrightarrow{r_i} + 1\cdot\overrightarrow{v_i},
 \end{equation}
-where the coefficient means that the increment of the coordinate is made for the time interval \\(\delta t.\\)
-- Calculation of magnetic fields \\(\overrightarrow{H_i}\\) at the new points where the particles are.
-- Calculated velocity values (after rotation in a magnetic field):
+где коэффициент означает, что приращение координаты выполняется за интервал времени \\(\delta t.\\)
+- Вычисление магнитных полей \\(\overrightarrow{H_i}\\) в новых точках, где находятся частицы.
+- Вычисляются новые значения скоростей (после поворота в магнитном поле):
     
     \\[
             b_1 = 1 - \frac{H_i^2}{\gamma_i},
@@ -59,14 +59,14 @@ where the coefficient means that the increment of the coordinate is made for the
     \begin{equation}
         \overrightarrow{r_i} = \overrightarrow{r_i} + 1\cdot\overrightarrow{v_i},
     \end{equation}
-    where the coefficient means that the increment of the coordinate is made for the time interval $\delta t.$   
-- New impulses are calculated according to the new rates:
+    где коэффициент означает, что приращение координаты выполняется за интервал времени \\(\delta t.\\)
+- По новым скоростям вычисляются новые импульсы:
     \begin{equation}
         \overrightarrow{p_i} = \overrightarrow{v_i}\gamma_i.
     \end{equation}
     
     
-One cycle is performed in a time interval \\(2\delta t.\\)
+Один цикл схемы выполняется за интервал времени \\(2\delta t.\\)
 
 ## Python
 
@@ -85,7 +85,7 @@ warnings.filterwarnings('ignore')
 rp.__version__
 ```
 
-## Some plotting options
+## Настройки графиков
 
 
 ```python
@@ -95,7 +95,7 @@ rp.__version__
 %opts Scatter (alpha=0.7 s=0.5)
 ```
 
-## Define accelerator beamline parameters
+## Задаём параметры ускорительного тракта
 
 
 ```python
@@ -175,7 +175,7 @@ print(acc)
     
 
 
-## Define beam parameters
+## Задаём параметры пучка
 
 
 ```python
@@ -411,7 +411,7 @@ print(beam)
             
 
 
-## Run simulation
+## Запускаем моделирование
 
 
 ```python
@@ -421,7 +421,7 @@ rp_sim.track()
 
     z = 4.98 m (99.5 %) 
 
-## Plot the simulation results
+## Строим результаты моделирования
 
 
 ```python

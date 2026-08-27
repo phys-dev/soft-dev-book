@@ -1,5 +1,11 @@
-# Accelerator beamline layout in [CadQuery](https://cadquery.readthedocs.io)
-[A. Petrenko](https://www.inp.nsk.su/~petrenko/) (Novosibirsk, 2024)
+# Схема ускорителя заряженных частиц в [CadQuery](https://cadquery.readthedocs.io)
+[А. Петренко](https://www.inp.nsk.su/~petrenko/) (Новосибирск, 2024)
+
+Обычно трёхмерную модель установки рисуют мышкой в CAD-редакторе. CadQuery предлагает другой подход: **геометрия описывается кодом на Python**. Для физика это меняет очень многое — модель попадает под контроль версий, собирается в CI, а главное, строится не вручную, а прямо из расчётного файла магнитной структуры.
+
+Именно это и происходит в примере ниже. Магнитная структура кольца задана в файле `machine.lte` для кода [ELEGANT](https://www.aps.anl.gov/Accelerator-Operations-Physics/Software) — стандартном описании ускорителя: дрейфы, квадруполи, секступоли, поворотные магниты и их параметры. Программа читает результат расчёта ELEGANT, для каждого элемента строит трёхмерное тело и расставляет их вдоль траектории пучка. На выходе — модель всей установки, которая автоматически пересобирается при любом изменении оптики.
+
+Разбирая пример, обрати внимание на общий приём: сложная геометрия собирается из небольших функций-конструкторов (`SBEND`, `QUAD`, `SEXT`, `box`, `cylinder`), каждая из которых отвечает за один тип элемента. Это ровно тот подход к декомпозиции, о котором мы говорили в главе про [прикладное программирование](../../dev/app.md).
 
 
 ```python
@@ -15,7 +21,7 @@ from io import StringIO
 
 ```python
 if not os.path.exists("results/"): os.mkdir("results/")
-# clear the "results" folder:
+# очистим папку "results":
 for f in glob.glob('results/*'): os.remove(f)
 ```
 
@@ -91,8 +97,10 @@ print("\n".join(out[-20:]))
 
 
 
+ELEGANT сохраняет результаты в формате SDDS. Напишем пару вспомогательных функций: одна превращает SDDS-файл в `DataFrame` библиотеки pandas, другая достаёт значение конкретного параметра конкретного элемента.
+
 ```python
-# read SDDS-file into pandas dataframe
+# читаем SDDS-файл в датафрейм pandas
 def sdds2df(sdds_file, columns="all"):
     if columns=="all":
         columns = !sddsquery $sdds_file -columnlist
@@ -434,9 +442,11 @@ https://mad8.web.cern.ch/doc/mad8_user.pdf
 ![image.png](c18a82fd-ebf3-49e1-b313-c13644cea4c2.png)
 
 
+Теперь займёмся геометрией. Зададим характерные размеры элементов — от них будут отсчитываться пропорции всех тел.
+
 ```python
-#element_width  = 1.0 # m
-element_width  = 0.4 # m
+#element_width  = 1.0 # м
+element_width  = 0.4 # м
 
 pipe_width = element_width*0.3
 quad_width = element_width*1.2
@@ -449,12 +459,14 @@ mm = 1e-3
 ```
 
 
+Самый интересный конструктор — поворотный магнит. Его тело ограничено двумя дугами разного радиуса (внешней и внутренней) и торцами, которые в общем случае наклонены на углы `e1` и `e2`. Функция вычисляет шесть опорных точек в плоскости `ZX`, соединяет их отрезками и дугами (`threePointArc`), замыкает контур и выдавливает его на высоту магнита.
+
 ```python
 def SBEND(angle=np.pi/4, L=1.0, e1=0, e2=0, width=dipole_width, height=dipole_height):
-    w = width/mm # mm
-    h = height/mm # mm
-    R = (L/mm)/angle # mm
-    # Orbit cirlce center
+    w = width/mm # мм
+    h = height/mm # мм
+    R = (L/mm)/angle # мм
+    # Центр окружности орбиты
     z0 = 0; x0 = -R
 
     def point(r, phi):
@@ -462,25 +474,25 @@ def SBEND(angle=np.pi/4, L=1.0, e1=0, e2=0, width=dipole_width, height=dipole_he
         x = x0 + r*np.cos(phi)
         return z, x
 
-    #phi = e2 - np.arcsin(R*np.sin(e2)/(R + width/2)) # rad
+    #phi = e2 - np.arcsin(R*np.sin(e2)/(R + width/2)) # рад
 
-    # e1=e2=0 case first:
-    phi = e2 - np.arcsin(R*np.sin(e2)/(R + w/2)) # rad
+    # сначала случай e1=e2=0:
+    phi = e2 - np.arcsin(R*np.sin(e2)/(R + w/2)) # рад
     p1 = point(R+w/2, phi)
 
     phi = angle/2
     p2 = point(R+w/2, phi)
     
-    phi = angle - ( e1 - np.arcsin(R*np.sin(e1)/(R + w/2)) ) # rad
+    phi = angle - ( e1 - np.arcsin(R*np.sin(e1)/(R + w/2)) ) # рад
     p3 = point(R+w/2, phi)
     
-    phi = angle - ( e1 - np.arcsin(R*np.sin(e1)/(R - w/2)) ) # rad
+    phi = angle - ( e1 - np.arcsin(R*np.sin(e1)/(R - w/2)) ) # рад
     p4 = point(R-w/2, phi)
 
     phi = angle/2
     p5 = point(R-w/2, phi)
 
-    phi = e2 - np.arcsin(R*np.sin(e2)/(R - w/2)) # rad
+    phi = e2 - np.arcsin(R*np.sin(e2)/(R - w/2)) # рад
     p6 = point(R-w/2, phi)
 
     return (
@@ -527,10 +539,12 @@ SVG(bend.toSvg(opts={"projectionDir": (0, 1, 0), "marginLeft": 10, "marginRight"
 
 
 
+Остальные элементы устроены проще — это параллелепипеды и цилиндры, из которых собираются квадруполи, секступоли и вакуумная камера.
+
 ```python
 def box(L=1.0, width=element_width, height=element_width):
-    w = width/mm # mm
-    h = height/mm # mm
+    w = width/mm # мм
+    h = height/mm # мм
 
     return (
         cq.Workplane("ZX")
@@ -854,19 +868,9 @@ pwd
 
     '/data/shared/examples/Elegant/CadQuery'
 
+## Что стоит из этого вынести
 
-
-
-```python
-!jupyter nbconvert --to HTML layout.ipynb
-```
-
-    [NbConvertApp] Converting notebook layout.ipynb to HTML
-    [NbConvertApp] WARNING | Alternative text is missing on 6 image(s).
-    [NbConvertApp] Writing 2380929 bytes to layout.html
-
-
-
-```python
-
-```
+* **Геометрия как код.** Модель установки хранится в git, ревьюится как обычная программа и пересобирается одной командой — вместе с расчётом оптики.
+* **Единый источник правды.** Размеры берутся из того же файла структуры, по которому считается динамика пучка, поэтому чертёж не может разойтись с расчётом.
+* **Композиция.** Каждый тип элемента — отдельная небольшая функция; вся установка собирается их вызовами в цикле.
+* **Экспорт.** Готовую модель CadQuery выгружает в STEP или STL — то есть её можно открыть в любом инженерном пакете и отдать в производство.

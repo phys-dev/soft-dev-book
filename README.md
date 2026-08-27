@@ -2,5 +2,11 @@
 
 Здесь лежат md-файлы книги "Разработка и применение программного обеспечения в физических исследованиях".
 
-Книга собирается в [HTML](https://phys-dev.github.io/phys-dev-book/) с помощью
+Книга собирается в [HTML](https://phys-dev.github.io/soft-dev-book/) с помощью
 [mdbook](https://rust-lang.github.io/mdBook/).
+
+Локальная сборка:
+
+```bash
+mdbook serve --open
+```

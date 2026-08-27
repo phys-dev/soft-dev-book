@@ -1,14 +1,14 @@
-## Basics of Python
+# Основы Python
 
-Python is a high-level, dynamically typed multiparadigm programming language. Python code is often said to be almost like pseudocode, since it allows you to express very powerful ideas in very few lines of code while being very readable.
+Python — высокоуровневый мультипарадигменный язык программирования с динамической типизацией. Про код на Python часто говорят, что он почти как псевдокод: очень мощные идеи выражаются буквально в нескольких строках и при этом легко читаются.
 
-We recommend to read [PEP 8](https://www.python.org/dev/peps/pep-0008/).
+Рекомендуем прочитать [PEP 8](https://www.python.org/dev/peps/pep-0008/).
 
-### Python versions and Zen of Python
+### Версии Python и Дзен Python
 
-There are currently supported versions of Python 3.X. Support for Python 2.7 ended in 2020. For this class all code will use Python 3.7.
+Сейчас поддерживаются версии Python 3.X. Поддержка Python 2.7 прекратилась в 2020 году. В этом курсе весь код будет использовать Python 3.7.
 
-You can check your Python version at the command line by running python --version.
+Проверить свою версию Python можно в командной строке, запустив python --version.
 
 
 ```python
@@ -46,11 +46,11 @@ import this
     Namespaces are one honking great idea -- let's do more of those!
 
 
-### Basic data types
+### Основные типы данных
 
-#### Numbers
+#### Числа
 
-Integers and floats work as you would expect from other languages:
+Целые и вещественные числа работают так, как ты и ожидаешь по опыту других языков:
 
 
 ```python
@@ -63,10 +63,10 @@ print(x, type(x))
 
 
 ```python
-print(x + 1)   # Addition;
-print(x - 1)   # Subtraction;
-print(x * 2)   # Multiplication;
-print(x ** 2)  # Exponentiation;
+print(x + 1)   # Сложение;
+print(x - 1)   # Вычитание;
+print(x * 2)   # Умножение;
+print(x ** 2)  # Возведение в степень;
 ```
 
     4
@@ -78,9 +78,9 @@ print(x ** 2)  # Exponentiation;
 
 ```python
 x += 1
-print(x)  # Prints "4"
+print(x)  # Выведет "4"
 x *= 2
-print(x)  # Prints "8"
+print(x)  # Выведет "8"
 ```
 
     4
@@ -90,39 +90,39 @@ print(x)  # Prints "8"
 
 ```python
 y = 2.5
-print(type(y)) # Prints "<type 'float'>"
-print(y, y + 1, y * 2, y ** 2) # Prints "2.5 3.5 5.0 6.25"
+print(type(y)) # Выведет "<type 'float'>"
+print(y, y + 1, y * 2, y ** 2) # Выведет "2.5 3.5 5.0 6.25"
 ```
 
     <class 'float'>
     2.5 3.5 5.0 6.25
 
 
-Note that unlike many languages, Python does not have unary increment (x++) or decrement (x--) operators.
+Обрати внимание: в отличие от многих языков, в Python нет унарных операторов инкремента (x++) и декремента (x--).
 
-Python also has built-in types for long integers and complex numbers; you can find all of the details in the [documentation](https://docs.python.org/3.7/library/stdtypes.html#numeric-types-int-float-long-complex).
+В Python также есть встроенные типы для длинных целых и комплексных чисел; все подробности найдёшь в [документации](https://docs.python.org/3.7/library/stdtypes.html#numeric-types-int-float-long-complex).
 
-#### Booleans
+#### Булевы значения
 
-Python implements all of the usual operators for Boolean logic, but uses English words rather than symbols (`&&`, `||`, etc.):
+В Python реализованы все привычные операторы булевой логики, но вместо символов (`&&`, `||` и т.д.) используются английские слова:
 
 
 ```python
 T, F = True, False
-print(type(T)) # Prints "<type 'bool'>"
+print(type(T)) # Выведет "<type 'bool'>"
 ```
 
     <class 'bool'>
 
 
-Now we let's look at the operations:
+А теперь посмотрим на операции:
 
 
 ```python
-print(T and F) # Logical AND;
-print(T or F)  # Logical OR;
-print(not T)   # Logical NOT;
-print(T != F)  # Logical XOR;
+print(T and F) # Логическое И;
+print(T or F)  # Логическое ИЛИ;
+print(not T)   # Логическое НЕ;
+print(T != F)  # Логическое исключающее ИЛИ;
 ```
 
     False
@@ -131,12 +131,12 @@ print(T != F)  # Logical XOR;
     True
 
 
-#### Strings
+#### Строки
 
 
 ```python
-hello = 'hello'   # String literals can use single quotes
-world = "world"   # or double quotes; it does not matter.
+hello = 'hello'   # Строковые литералы можно записывать в одинарных кавычках
+world = "world"   # или в двойных — это не имеет значения.
 print(hello, len(hello))
 ```
 
@@ -145,8 +145,8 @@ print(hello, len(hello))
 
 
 ```python
-hw = hello + ' ' + world  # String concatenation
-print(hw)  # prints "hello world"
+hw = hello + ' ' + world  # Конкатенация строк
+print(hw)  # выведет "hello world"
 ```
 
     hello world
@@ -154,25 +154,25 @@ print(hw)  # prints "hello world"
 
 
 ```python
-hw12 = '%s %s %d' % (hello, world, 12)  # sprintf style string formatting
-print(hw12)  # prints "hello world 12"
+hw12 = '%s %s %d' % (hello, world, 12)  # форматирование строки в стиле sprintf
+print(hw12)  # выведет "hello world 12"
 ```
 
     hello world 12
 
 
-String objects have a bunch of useful methods; for example:
+У строковых объектов есть куча полезных методов; например:
 
 
 ```python
 s = "hello"
-print(s.capitalize())  # Capitalize a string; prints "Hello"
-print(s.upper())       # Convert a string to uppercase; prints "HELLO"
-print(s.rjust(7))      # Right-justify a string, padding with spaces; prints "  hello"
-print(s.center(7))     # Center a string, padding with spaces; prints " hello "
-print(s.replace('l', '(ell)'))  # Replace all instances of one substring with another;
-                               # prints "he(ell)(ell)o"
-print('  world '.strip())  # Strip leading and trailing whitespace; prints "world"
+print(s.capitalize())  # Первая буква становится заглавной; выведет "Hello"
+print(s.upper())       # Перевод строки в верхний регистр; выведет "HELLO"
+print(s.rjust(7))      # Выравнивание по правому краю с дополнением пробелами; выведет "  hello"
+print(s.center(7))     # Центрирование строки с дополнением пробелами; выведет " hello "
+print(s.replace('l', '(ell)'))  # Замена всех вхождений одной подстроки на другую;
+                               # выведет "he(ell)(ell)o"
+print('  world '.strip())  # Удаление пробелов в начале и в конце; выведет "world"
 ```
 
     Hello
@@ -183,21 +183,21 @@ print('  world '.strip())  # Strip leading and trailing whitespace; prints "worl
     world
 
 
-You can find a list of all string methods in the [documentation](https://docs.python.org/3.7/library/stdtypes.html#string-methods).
+Список всех строковых методов найдёшь в [документации](https://docs.python.org/3.7/library/stdtypes.html#string-methods).
 
-### Containers
+### Контейнеры
 
-Python includes several built-in container types: lists, dictionaries, sets, and tuples.
+В Python есть несколько встроенных контейнерных типов: списки, словари, множества и кортежи.
 
-#### Lists
+#### Списки
 
-A list is the Python equivalent of an array, but is resizeable and can contain elements of different types:
+Список — это аналог массива в Python, но его размер можно менять, а элементы могут быть разных типов:
 
 
 ```python
-xs = [3, 1, 2]   # Create a list
+xs = [3, 1, 2]   # Создаём список
 print(xs, xs[2])
-print(xs[-1])     # Negative indices count from the end of the list; prints "2"
+print(xs[-1])     # Отрицательные индексы отсчитываются с конца списка; выведет "2"
 ```
 
     [3, 1, 2] 2
@@ -206,7 +206,7 @@ print(xs[-1])     # Negative indices count from the end of the list; prints "2"
 
 
 ```python
-xs[2] = 'foo'    # Lists can contain elements of different types
+xs[2] = 'foo'    # Списки могут содержать элементы разных типов
 print(xs)
 ```
 
@@ -215,7 +215,7 @@ print(xs)
 
 
 ```python
-xs.append('bar') # Add a new element to the end of the list
+xs.append('bar') # Добавляем новый элемент в конец списка
 print(xs)  
 ```
 
@@ -224,28 +224,28 @@ print(xs)
 
 
 ```python
-x = xs.pop()     # Remove and return the last element of the list
+x = xs.pop()     # Удаляем и возвращаем последний элемент списка
 print(x, xs) 
 ```
 
     bar [3, 1, 'foo']
 
 
-As usual, you can find all the gory details about lists in the [documentation](https://docs.python.org/3.7/tutorial/datastructures.html#more-on-lists).
+Как обычно, все кровавые подробности о списках найдёшь в [документации](https://docs.python.org/3.7/tutorial/datastructures.html#more-on-lists).
 
-#### Slicing
+#### Срезы
 
-In addition to accessing list elements one at a time, Python provides concise syntax to access sublists; this is known as slicing:
+Помимо доступа к элементам списка по одному, в Python есть лаконичный синтаксис для работы с подсписками — он называется срезами (slicing):
 
 
 ```python
-nums = range(5)    # range is a built-in function that creates a list of integers
-print(nums)         # Prints "[0, 1, 2, 3, 4]"
-print(nums[2:4])    # Get a slice from index 2 to 4 (exclusive); prints "[2, 3]"
-print(nums[2:])     # Get a slice from index 2 to the end; prints "[2, 3, 4]"
-print(nums[:2])     # Get a slice from the start to index 2 (exclusive); prints "[0, 1]"
-print(nums[:])      # Get a slice of the whole list; prints ["0, 1, 2, 3, 4]"
-print(nums[:-1])    # Slice indices can be negative; prints ["0, 1, 2, 3]"
+nums = range(5)    # range — встроенная функция, создающая список целых чисел
+print(nums)         # Выведет "[0, 1, 2, 3, 4]"
+print(nums[2:4])    # Срез с индекса 2 до 4 (не включая); выведет "[2, 3]"
+print(nums[2:])     # Срез с индекса 2 до конца; выведет "[2, 3, 4]"
+print(nums[:2])     # Срез с начала до индекса 2 (не включая); выведет "[0, 1]"
+print(nums[:])      # Срез всего списка; выведет ["0, 1, 2, 3, 4]"
+print(nums[:-1])    # Индексы среза могут быть отрицательными; выведет ["0, 1, 2, 3]"
 ```
 
     range(0, 5)
@@ -256,9 +256,9 @@ print(nums[:-1])    # Slice indices can be negative; prints ["0, 1, 2, 3]"
     range(0, 4)
 
 
-#### Loops
+#### Циклы
 
-You can loop over the elements of a list like this:
+Пройтись циклом по элементам списка можно так:
 
 
 ```python
@@ -272,7 +272,7 @@ for animal in animals:
     monkey
 
 
-If you want access to the index of each element within the body of a loop, use the built-in `enumerate` function:
+Если внутри тела цикла тебе нужен ещё и индекс каждого элемента, используй встроенную функцию `enumerate`:
 
 
 ```python
@@ -286,9 +286,9 @@ for idx, animal in enumerate(animals):
     #3: monkey
 
 
-#### List comprehensions:
+#### Генераторы списков (list comprehensions):
 
-When programming, frequently we want to transform one type of data into another. As a simple example, consider the following code that computes square numbers:
+При программировании нам часто нужно преобразовать данные одного вида в другой. В качестве простого примера рассмотрим код, который вычисляет квадраты чисел:
 
 
 ```python
@@ -302,7 +302,7 @@ print(squares)
     [0, 1, 4, 9, 16]
 
 
-You can make this code simpler using a list comprehension:
+Этот код можно записать проще с помощью генератора списка (list comprehension):
 
 
 ```python
@@ -314,7 +314,7 @@ print(squares)
     [0, 1, 4, 9, 16]
 
 
-List comprehensions can also contain conditions:
+List comprehensions могут содержать и условия:
 
 
 ```python
@@ -326,15 +326,15 @@ print(even_squares)
     [0, 4, 16]
 
 
-#### Dictionaries
+#### Словари
 
-A dictionary stores (key, value) pairs, similar to a `Map` in Java or an object in Javascript. You can use it like this:
+Словарь хранит пары (ключ, значение) — примерно как `Map` в Java или объект в Javascript. Использовать его можно так:
 
 
 ```python
-d = {'cat': 'cute', 'dog': 'furry'}  # Create a new dictionary with some data
-print(d['cat'])       # Get an entry from a dictionary; prints "cute"
-print('cat' in d)     # Check if a dictionary has a given key; prints "True"
+d = {'cat': 'cute', 'dog': 'furry'}  # Создаём новый словарь с данными
+print(d['cat'])       # Получаем запись из словаря; выведет "cute"
+print('cat' in d)     # Проверяем, есть ли в словаре ключ; выведет "True"
 ```
 
     cute
@@ -343,8 +343,8 @@ print('cat' in d)     # Check if a dictionary has a given key; prints "True"
 
 
 ```python
-d['fish'] = 'wet'    # Set an entry in a dictionary
-print(d['fish'])      # Prints "wet"
+d['fish'] = 'wet'    # Добавляем запись в словарь
+print(d['fish'])      # Выведет "wet"
 ```
 
     wet
@@ -352,8 +352,8 @@ print(d['fish'])      # Prints "wet"
 
 
 ```python
-print(d.get('monkey', 'N/A'))  # Get an element with a default; prints "N/A"
-print(d.get('fish', 'N/A'))   # Get an element with a default; prints "wet"
+print(d.get('monkey', 'N/A'))  # Получаем элемент со значением по умолчанию; выведет "N/A"
+print(d.get('fish', 'N/A'))   # Получаем элемент со значением по умолчанию; выведет "wet"
 ```
 
     N/A
@@ -362,16 +362,16 @@ print(d.get('fish', 'N/A'))   # Get an element with a default; prints "wet"
 
 
 ```python
-del d['fish']        # Remove an element from a dictionary
-print(d.get('fish', 'N/A')) # "fish" is no longer a key; prints "N/A"
+del d['fish']        # Удаляем элемент из словаря
+print(d.get('fish', 'N/A')) # ключа "fish" больше нет; выведет "N/A"
 ```
 
     N/A
 
 
-You can find all you need to know about dictionaries in the [documentation](https://docs.python.org/3.7/library/stdtypes.html#dict).
+Всё, что нужно знать о словарях, найдёшь в [документации](https://docs.python.org/3.7/library/stdtypes.html#dict).
 
-It is easy to iterate over the keys in a dictionary:
+Итерироваться по ключам словаря легко:
 
 
 ```python
@@ -386,7 +386,7 @@ for animal in d:
     A spider has 8 legs
 
 
-Dictionary comprehensions: These are similar to list comprehensions, but allow you to easily construct dictionaries. For example:
+Генераторы словарей (dictionary comprehensions): они похожи на list comprehensions, но позволяют легко строить словари. Например:
 
 
 ```python
@@ -398,15 +398,15 @@ print(even_num_to_square)
     {0: 0, 2: 4, 4: 16}
 
 
-#### Sets
+#### Множества
 
-A set is an unordered collection of distinct elements. As a simple example, consider the following:
+Множество — это неупорядоченная коллекция различных элементов. Для начала простой пример:
 
 
 ```python
 animals = {'cat', 'dog'}
-print('cat' in animals)   # Check if an element is in a set; prints "True"
-print('fish' in animals)  # prints "False"
+print('cat' in animals)   # Проверяем, есть ли элемент в множестве; выведет "True"
+print('fish' in animals)  # выведет "False"
 ```
 
     True
@@ -415,9 +415,9 @@ print('fish' in animals)  # prints "False"
 
 
 ```python
-animals.add('fish')      # Add an element to a set
+animals.add('fish')      # Добавляем элемент в множество
 print('fish' in animals)
-print(len(animals))       # Number of elements in a set;
+print(len(animals))       # Число элементов в множестве;
 ```
 
     True
@@ -426,9 +426,9 @@ print(len(animals))       # Number of elements in a set;
 
 
 ```python
-animals.add('cat')       # Adding an element that is already in the set does nothing
+animals.add('cat')       # Добавление элемента, который уже есть в множестве, ничего не делает
 print(len(animals))       
-animals.remove('cat')    # Remove an element from a set
+animals.remove('cat')    # Удаляем элемент из множества
 print(len(animals))       
 ```
 
@@ -436,14 +436,14 @@ print(len(animals))
     2
 
 
-_Loops_: Iterating over a set has the same syntax as iterating over a list; however since sets are unordered, you cannot make assumptions about the order in which you visit the elements of the set:
+_Циклы_: итерация по множеству синтаксически ничем не отличается от итерации по списку; но так как множества неупорядочены, нельзя строить предположения о том, в каком порядке ты обойдёшь их элементы:
 
 
 ```python
 animals = {'cat', 'dog', 'fish'}
 for idx, animal in enumerate(animals):
     print('#%d: %s' % (idx + 1, animal))
-# Prints "#1: fish", "#2: dog", "#3: cat"
+# Выведет "#1: fish", "#2: dog", "#3: cat"
 ```
 
     #1: fish
@@ -451,7 +451,7 @@ for idx, animal in enumerate(animals):
     #3: cat
 
 
-Set comprehensions: Like lists and dictionaries, we can easily construct sets using set comprehensions:
+Генераторы множеств (set comprehensions): как и списки со словарями, множества легко строить с помощью set comprehensions:
 
 
 ```python
@@ -462,14 +462,14 @@ print({int(sqrt(x)) for x in range(30)})
     {0, 1, 2, 3, 4, 5}
 
 
-#### Tuples
+#### Кортежи
 
-A tuple is an (immutable) ordered list of values. A tuple is in many ways similar to a list; one of the most important differences is that tuples can be used as keys in dictionaries and as elements of sets, while lists cannot. Here is a trivial example:
+Кортеж — это (неизменяемый) упорядоченный список значений. Во многом кортеж похож на список; одно из важнейших отличий в том, что кортежи можно использовать как ключи в словарях и как элементы множеств, а списки — нельзя. Вот тривиальный пример:
 
 
 ```python
-d = {(x, x + 1): x for x in range(10)}  # Create a dictionary with tuple keys
-t = (5, 6)       # Create a tuple
+d = {(x, x + 1): x for x in range(10)}  # Создаём словарь с ключами-кортежами
+t = (5, 6)       # Создаём кортеж
 print(type(t))
 print(d[t])       
 print(d[(1, 2)])
@@ -480,14 +480,14 @@ print(d[(1, 2)])
     1
 
 
-### Functions
+### Функции
 
-Python functions are defined using the `def` keyword. For example:
+Функции в Python определяются с помощью ключевого слова `def`. Например:
 
 
 ```python
 def sign(x: float) -> str:
-    '''Function sign''' # document line
+    '''Function sign''' # строка документации
     
     if x > 0:
         return 'positive'
@@ -517,7 +517,7 @@ help(sign)
     
 
 
-We will often define functions to take optional keyword arguments, like this:
+Мы часто будем определять функции с необязательными именованными аргументами, например так:
 
 
 ```python
@@ -556,9 +556,9 @@ help(hello)
     
 
 
-### Classes
+### Классы
 
-The syntax for defining classes in Python is straightforward:
+Синтаксис определения классов в Python прост:
 
 
 ```python
@@ -570,20 +570,20 @@ class Greeter:
     then the name is printed in capital letters.
     '''
 
-    # Constructor
+    # Конструктор
     def __init__(self, name):
-        self.name = name  # Create an instance variable
+        self.name = name  # Создаём переменную экземпляра
 
-    # Instance method
+    # Метод экземпляра
     def greet(self, loud: bool=False) ->None:
         if loud:
             print('HELLO, %s!' % self.name.upper())
         else:
             print('Hello, %s' % self.name)
 
-g = Greeter('Fred')  # Construct an instance of the Greeter class
-g.greet()            # Call an instance method; prints "Hello, Fred"
-g.greet(loud=True)   # Call an instance method; prints "HELLO, FRED!"
+g = Greeter('Fred')  # Создаём экземпляр класса Greeter
+g.greet()            # Вызываем метод экземпляра; выведет "Hello, Fred"
+g.greet(loud=True)   # Вызываем метод экземпляра; выведет "HELLO, FRED!"
 ```
 
     Hello, Fred

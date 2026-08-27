@@ -1,6 +1,6 @@
-# Performance
+# Скорость выполнения программ
 
-## Class `Matrix`
+## Класс `Matrix`
 
 
 ```python
@@ -33,7 +33,7 @@ class Matrix(list):
 
 ```python
 def matrix_product(X, Y):
-    """Computes the matrix product of X and Y.
+    """Вычисляет матричное произведение X и Y.
 
     >>> X = Matrix([[1], [2], [3]])
     >>> Y = Matrix([[4, 5, 6]])
@@ -89,9 +89,9 @@ def matrix_product(X, Y):
     Doctest mode is: OFF
 
 
-# Runtime measurement
+# Измерение времени выполнения
 
-Everything seems to work, but how fast? Use the magic `timeit` command to check.
+Вроде бы всё работает, но насколько быстро? Проверь с помощью магической команды `timeit`.
 
 
 ```python
@@ -102,9 +102,9 @@ matrix_product(X, Y)
     86.6 ms ± 1.52 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
 
 
-Total: Multiplying two 64x64 matrices takes near 0.1 seconds. Y U SO SLOW?
+Итого: умножение двух матриц 64x64 занимает почти 0.1 секунды. Почему так медленно?!
 
-We define an auxiliary function `bench`, which generates random matrices of the specified size, and then` n_iter` times multiplies them in a loop.
+Определим вспомогательную функцию `bench`, которая генерирует случайные матрицы указанного размера, а затем `n_iter` раз перемножает их в цикле.
 
 
 ```python
@@ -115,7 +115,7 @@ def bench(shape=(64, 64), n_iter=16):
         matrix_product(X, Y)    
 ```
 
-Let's try to look at it more closely with the help of the `line_profiler` module.
+Попробуем присмотреться к происходящему повнимательнее с помощью модуля `line_profiler`.
 
 
 ```python
@@ -128,7 +128,7 @@ Let's try to look at it more closely with the help of the `line_profiler` module
 %lprun -f matrix_product bench()
 ```
 
-Note that the operation `list .__ getitem__` is not free. Swap the `for` loops so that the code does less index lookups.
+Обрати внимание: операция `list.__getitem__` не бесплатна. Поменяем местами циклы `for` так, чтобы код делал меньше обращений по индексу.
 
 
 ```python
@@ -151,7 +151,7 @@ def matrix_product(X, Y):
 %lprun -f matrix_product bench()
 ```
 
-2 seconds faster, but still too slow:> 30% of the time goes exclusively to iteration! Fix it.
+На 2 секунды быстрее, но всё ещё слишком медленно: больше 30% времени уходит исключительно на итерацию! Исправим это.
 
 
 ```python
@@ -171,7 +171,7 @@ def matrix_product(X, Y):
 %lprun -f matrix_product bench()
 ```
 
-The matrix_product functions are pretty prettier. But, it seems, this is not the limit. Let’s try again to remove unnecessary index calls from the innermost cycle.
+Функция `matrix_product` заметно похорошела. Но, кажется, это ещё не предел. Попробуем ещё раз убрать лишние обращения по индексу из самого внутреннего цикла.
 
 
 ```python
@@ -188,7 +188,7 @@ def matrix_product(X, Y):
 
 # Numba
 
-Numba does not work with inline lists. Rewrite the `matrix_product` function using ndarray.
+Numba не умеет работать со встроенными списками. Перепишем функцию `matrix_product` с использованием ndarray.
 
 
 ```python
@@ -208,7 +208,7 @@ def jit_matrix_product(X, Y):
     return Z
 ```
 
-Let's see what happened.
+Посмотрим, что получилось.
 
 
 ```python
@@ -285,7 +285,7 @@ Y = Matrix.random(shape)
     21.4 ms ± 1.36 ms per loop (mean ± std. dev. of 7 runs, 100 loops each)
 
 
-The problem is that Cython cannot efficiently optimize work with lists that can contain elements of various types, so we rewrite `matrix_product` using *ndarray*.
+Проблема в том, что Cython не умеет эффективно оптимизировать работу со списками, в которых могут лежать элементы разных типов, поэтому перепишем `matrix_product` с использованием *ndarray*.
 
 
 ```python
@@ -318,7 +318,7 @@ def cy_matrix_product(X, Y):
     176 ms ± 4.65 ms per loop (mean ± std. dev. of 7 runs, 100 loops each)
 
 
-How so! It just got worse, with most of the code still using Python calls. Let's get rid of them by annotating the code with types.
+Как же так! Стало только хуже: большая часть кода по-прежнему использует вызовы Python. Избавимся от них, аннотировав код типами.
 
 
 ```python
@@ -349,7 +349,7 @@ def cy_matrix_product(np.ndarray X, np.ndarray Y):
     173 ms ± 4 ms per loop (mean ± std. dev. of 7 runs, 100 loops each)
 
 
-Unfortunately, typical annotations did not change the run time, because the body of the nested Cython itself could not optimize. Fatality-time: indicate the type of elements in *ndarray*.
+К сожалению, аннотации типов не изменили время работы, потому что тело вложенного цикла Cython так и не смог оптимизировать. Время для фаталити: укажем тип элементов в *ndarray*.
 
 
 ```python
@@ -381,7 +381,7 @@ def cy_matrix_product(np.ndarray[np.int64_t, ndim=2] X,
     541 µs ± 5.14 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 
 
-Let's try to go further and disable checks for going beyond the boundaries of the array and overflow of integer types.
+Попробуем пойти дальше и отключить проверки выхода за границы массива и переполнения целочисленных типов.
 
 
 ```python
@@ -437,10 +437,14 @@ Y = np.random.randint(-255, 255, shape)
 
 
 ```python
-%timeit -n100 X*Y
+%timeit -n100 X@Y
 ```
 
-    6.02 µs ± 1.54 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+    215 µs ± 3.8 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 
 
-Profit.
+Профит. Оператор `@` — это то же самое матричное умножение, что и `X.dot(Y)`, только записанное короче; разница в замерах здесь на уровне шума.
+
+Обрати внимание на масштаб: наивная реализация на чистом Python считала произведение матриц 64×64 около 0.1 секунды, NumPy справляется за сотни микросекунд — ускорение в сотни раз. И это без единой строчки на C с твоей стороны: под капотом NumPy вызывает BLAS — вылизанную десятилетиями библиотеку линейной алгебры, которая использует векторные инструкции процессора и оптимально работает с кешем.
+
+Отсюда главный вывод раздела: **прежде чем компилировать Python, попробуй не писать циклы вообще**. Numba и Cython нужны там, где задача принципиально не векторизуется; во всех остальных случаях правильно применённый NumPy обгонит их без всякой возни со сборкой и типами.

@@ -1,5 +1,5 @@
-# <center> Визуализация на Python
-## <center>Часть 1. Matplotlib
+# Визуализация на Python
+## Часть 1. Matplotlib
 
 
 В начале как всегда настроим окружение: импортируем все необходимые библиотеки и немного настроим дефолтное отображение картинок.
@@ -1039,7 +1039,7 @@ with open('developers_rend.html', 'w') as f:
  * [Документация pandas.style](http://pandas.pydata.org/pandas-docs/stable/style.html)
  * [Документация matplotlib](https://matplotlib.org/)
 
-## <center>Часть 2. Seaborn
+## Часть 2. Seaborn
 
 Теперь давайте перейдем к библиотеке seaborn. Seaborn — это по сути более высокоуровневое API на базе библиотеки matplotlib. Seaborn содержит более адекватные дефолтные настройки оформления графиков. Если просто добавить в код import seaborn, то картинки станут гораздо симпатичнее. Также в библиотеке есть достаточно сложные типы визуализации, которые в matplotlib потребовали бы большого количество кода.
 
@@ -1471,7 +1471,7 @@ sns.heatmap(platform_genre_sales, annot=False, fmt=".1f", center = True);
 * [Tutirial](https://seaborn.pydata.org/tutorial.html)
 * [Gellery](https://seaborn.pydata.org/examples/index.html)
 
-## <center>Часть 3. Plotly
+## Часть 3. Plotly
 
 Мы рассмотрели визуализации на базе библиотеки `matplotlib`. Однако, это не единственная опция для построения графиков на языке `python`. Познакомимся также с библиотекой __`plotly`__. `Plotly` - это open-source библиотека, которая позволяет строить интерактивные графики в jupyter.notebook'e без необходимости зарываться в javascript код. 
 

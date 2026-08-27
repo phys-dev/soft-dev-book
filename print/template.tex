@@ -1,0 +1,278 @@
+\documentclass[11pt,oneside]{book}
+
+%% ---------------------------------------------------------------
+%% Оригинал-макет по техническим требованиям ИПЦ НГУ:
+%% формат А5 (60x84 1/16), 148x210 мм; полоса набора 115x175 мм;
+%% поля: верхнее, правое, левое 17 мм, нижнее 20 мм;
+%% Times New Roman 10-11 пт, одинарный интервал, абзац 5 мм,
+%% колонцифра внизу по центру, автоматические переносы,
+%% выравнивание по ширине.
+%% ---------------------------------------------------------------
+
+\usepackage[paperwidth=148mm,paperheight=210mm,
+            top=17mm,left=17mm,right=17mm,bottom=20mm,
+            footskip=10mm,headsep=6mm]{geometry}
+
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\setmainlanguage{russian}
+\setotherlanguage{english}
+
+\setmainfont{Times New Roman}[Ligatures=TeX]
+\setsansfont{Arial}
+\setmonofont{Menlo}[Scale=0.78]
+%% polyglossia требует явно указать шрифты для кириллицы
+\newfontfamily\cyrillicfont{Times New Roman}[Ligatures=TeX]
+\newfontfamily\cyrillicfontsf{Arial}
+\newfontfamily\cyrillicfonttt{Menlo}[Scale=0.78]
+
+\usepackage{microtype}
+\usepackage{unicode-math}
+% математический шрифт, парный к Times New Roman
+\setmathfont{texgyretermes-math.otf}
+
+\usepackage{graphicx}
+%% таблицы (набор макросов, который ожидает pandoc)
+\usepackage{longtable,booktabs,array}
+\newcounter{none}                  % для ненумерованных таблиц
+\usepackage{calc}                  % расчёт ширины колонок
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+%% таблицы данных набираем мельче — в полосе 115 мм иначе не помещаются
+\AtBeginEnvironment{longtable}{\footnotesize}
+\usepackage{caption}
+\usepackage[table]{xcolor}
+\usepackage{fancyvrb}
+\usepackage{fvextra}   % перенос длинных строк в листингах
+\usepackage{framed}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+%% --- набор -------------------------------------------------------
+\linespread{1.0}
+\setlength{\parindent}{5mm}
+\setlength{\parskip}{0pt plus 1pt}
+\sloppy
+\hyphenpenalty=50
+\tolerance=2000
+\emergencystretch=3em
+\clubpenalty=10000
+\widowpenalty=10000
+
+%% --- колонтитулы: колонцифра внизу по центру ---------------------
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\fancypagestyle{plain}{%
+  \fancyhf{}\fancyfoot[C]{\small\thepage}%
+  \renewcommand{\headrulewidth}{0pt}}
+
+%% --- заголовки ---------------------------------------------------
+\titleformat{\chapter}[display]
+  {\normalfont\Large\bfseries\raggedright}
+  {\normalsize\MakeUppercase{\chaptertitlename}\ \thechapter}{6pt}{\Large}
+\titlespacing*{\chapter}{0pt}{0pt}{14pt}
+
+\titleformat{\section}{\normalfont\large\bfseries\raggedright}{\thesection}{0.6em}{}
+\titlespacing*{\section}{0pt}{12pt plus 3pt}{6pt}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries\raggedright}{\thesubsection}{0.6em}{}
+\titlespacing*{\subsection}{0pt}{10pt plus 2pt}{4pt}
+\titleformat{\subsubsection}{\normalfont\normalsize\itshape\raggedright}{}{0em}{}
+\titlespacing*{\subsubsection}{0pt}{8pt plus 2pt}{3pt}
+
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{2}
+
+%% --- листинги ----------------------------------------------------
+%% макросы подсветки синтаксиса, которые генерирует pandoc
+$highlighting-macros$
+
+\definecolor{shadecolor}{gray}{0.955}
+%% код набираем мелко и с переносом длинных строк — полоса набора узкая
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}%
+  {commandchars=\\\{\},fontsize=\footnotesize,xleftmargin=3mm,
+   breaklines,breakanywhere,breaksymbolleft={}}
+\DefineVerbatimEnvironment{verbatim}{Verbatim}%
+  {fontsize=\footnotesize,xleftmargin=3mm,breaklines,breakanywhere,
+   breaksymbolleft={}}
+\renewenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\setlength{\FrameSep}{2pt}
+\setlength{\OuterFrameSep}{3pt}
+
+%% --- прочее ------------------------------------------------------
+\setlist{nosep,leftmargin=6mm,topsep=3pt}
+\captionsetup{font=small,skip=4pt}
+%% Картинки вписываем в полосу набора: не шире 92% строки
+%% и не выше 42% полосы, чтобы иллюстрация не занимала страницу целиком.
+\setkeys{Gin}{width=0.92\linewidth,height=0.42\textheight,keepaspectratio}
+
+%% \pandocbounded — макрос pandoc 3.x, масштабирует картинку под полосу
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{%
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{0.42\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{0.92\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi%
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+\makeatother
+
+\hypersetup{
+  colorlinks=false, pdfborder={0 0 0},
+  pdftitle={$title$}, pdfauthor={$author$},
+  bookmarksnumbered=true, bookmarksopen=true}
+\urlstyle{same}
+
+% длинные url и пути не должны вылезать за полосу набора
+\usepackage{xurl}
+
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+%% Команды, которые понимает MathJax на сайте, но не знает LaTeX
+\providecommand{\lt}{<}
+\providecommand{\gt}{>}
+
+%% Пустой квадратик для чек-листов (- [ ] в markdown).
+%% amssymb здесь не подключить — он конфликтует с unicode-math.
+\providecommand{\square}{}
+\renewcommand{\square}{\mbox{\raisebox{0.1ex}{\framebox[1.5ex]{\rule{0pt}{1.1ex}}}}}
+
+\begin{document}
+
+%% ================= ТИТУЛЬНЫЙ ЛИСТ =================
+\thispagestyle{empty}
+\begin{center}
+  \setlength{\parindent}{0pt}
+  {\small МИНИСТЕРСТВО НАУКИ И ВЫСШЕГО ОБРАЗОВАНИЯ РФ}\\[2pt]
+  {\small НОВОСИБИРСКИЙ ГОСУДАРСТВЕННЫЙ УНИВЕРСИТЕТ}\\[2pt]
+  {\small Физический факультет}
+  \vfill
+  {\large В.\,В.~Федоров}\\[16mm]
+  {\LARGE\bfseries РАЗРАБОТКА И ПРИМЕНЕНИЕ}\\[4pt]
+  {\LARGE\bfseries ПРОГРАММНОГО ОБЕСПЕЧЕНИЯ}\\[4pt]
+  {\LARGE\bfseries В ФИЗИЧЕСКИХ ИССЛЕДОВАНИЯХ}\\[10mm]
+  {\large Учебное пособие}
+  \vfill
+  {\small Новосибирск}\\
+  {\small 2026}
+\end{center}
+\clearpage
+
+%% ================= ОБОРОТ ТИТУЛА =================
+\thispagestyle{empty}
+\setlength{\parindent}{0pt}
+{\small
+УДК~004.4:53(075.8)\\
+ББК~32.973-018я73\\
+Ф333
+\vspace{6mm}
+
+\textit{Рецензент}\\
+\underline{\hspace{55mm}}\\[1pt]
+{\footnotesize (учёная степень, звание, И.\,О.~Фамилия --- заполнить)}
+\vspace{4mm}
+
+Издание подготовлено в рамках реализации Программы развития
+Новосибирского государственного университета.
+\vspace{4mm}
+
+\textbf{Федоров, В.\,В.}\\
+Ф333\quad Разработка и применение программного обеспечения в физических
+исследованиях : учеб. пособие / В.\,В.~Федоров ; Новосиб. гос. ун-т.
+--- Новосибирск : ИПЦ НГУ, 2026. --- \pageref{LastPage}~с.
+\vspace{3mm}
+
+ISBN 978-5-4437-XXXX-X
+\vspace{4mm}
+
+Пособие знакомит студентов физических специальностей с инженерной
+стороной научной работы: операционной системой GNU/Linux, языком Python
+и его научными библиотеками, алгоритмами и структурами данных, основами
+вычислительной физики, практиками разработки и сопровождения программ,
+обработкой и анализом данных, машинным обучением, а также способами
+профилирования и ускорения программ вплоть до вычислений на графических
+ускорителях. Материал построен на разборе реальных кодов, применяемых
+в институтах СО РАН, и сопровождается задачами для самостоятельной работы.
+
+Предназначено для студентов третьего курса физического факультета НГУ,
+изучающих дисциплину <<Применение Python в физических исследованиях>>,
+и будет полезно всем, кто разрабатывает программное обеспечение
+для научных исследований.
+\vspace{4mm}
+
+УДК~004.4:53(075.8)\\
+ББК~32.973-018я73
+\vspace{5mm}
+
+Рекомендовано к печати кафедрой физики ускорителей\\
+физического факультета НГУ (протокол №~\underline{\hspace{12mm}}
+от \underline{\hspace{20mm}})
+\vfill
+
+\noindent
+\begin{tabular}{@{}p{34mm}@{}p{55mm}@{}}
+                       & \copyright{} Новосибирский государственный\\
+ISBN 978-5-4437-XXXX-X & \phantom{\copyright{}} университет, 2026\\
+                       & \copyright{} В.\,В.~Федоров, 2026\\
+\end{tabular}
+}
+\clearpage
+\setlength{\parindent}{5mm}
+
+%% ================= ОГЛАВЛЕНИЕ =================
+\pagestyle{fancy}
+\setcounter{page}{3}
+\renewcommand{\contentsname}{Оглавление}
+\tableofcontents
+\clearpage
+
+%% ================= ТЕКСТ =================
+$body$
+
+\clearpage
+\thispagestyle{empty}
+\vspace*{\fill}
+\begin{center}
+{\small
+Учебное издание
+\vspace{6mm}
+
+\textbf{Федоров Вячеслав Васильевич}
+\vspace{4mm}
+
+РАЗРАБОТКА И ПРИМЕНЕНИЕ ПРОГРАММНОГО ОБЕСПЕЧЕНИЯ\\
+В ФИЗИЧЕСКИХ ИССЛЕДОВАНИЯХ
+\vspace{4mm}
+
+Учебное пособие
+\vspace{10mm}
+
+Редактор \underline{\hspace{30mm}}\\
+Обложка \underline{\hspace{30mm}}
+\vspace{8mm}
+
+\begin{tabular}{@{}l@{}}
+Подписано в печать \underline{\hspace{20mm}}\quad Формат 60\,$$\times$$\,84/16\\
+Офсетная печать. Уч.-изд. л. \underline{\hspace{12mm}}\quad
+Усл. печ. л. \underline{\hspace{12mm}}\\
+Тираж \underline{\hspace{12mm}} экз. \quad Заказ № \underline{\hspace{12mm}}\\
+\end{tabular}
+\vspace{8mm}
+
+Издательско-полиграфический центр НГУ\\
+630090, Новосибирск, ул. Пирогова, 2
+}
+\end{center}
+\label{LastPage}
+\end{document}

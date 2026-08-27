@@ -1,12 +1,14 @@
-# Python Tutorial
+# Экспресс-курс Python
 
-Python is a great general-purpose programming language on its own, but with the help of a few popular libraries (numpy, scipy, matplotlib and holoviews) it becomes a powerful environment for scientific computing.
+Python — отличный язык программирования общего назначения сам по себе, а с парой популярных библиотек (NumPy, SciPy, Matplotlib, HoloViews) он превращается в мощную среду для научных вычислений.
 
-We expect that many of you will have some experience with Python and Numpy; for the rest of you, this section will serve as a quick crash course both on the Python programming language and on the use of Python for scientific computing.
+Скорее всего, у части читателей уже есть опыт работы с Python и NumPy; для остальных этот раздел станет быстрым экспресс-курсом как по самому языку, так и по его использованию для научных вычислений. Если ты уверенно владеешь базовым синтаксисом, смело пролистывай этот раздел — дальше в книге мы разберём устройство Python гораздо глубже.
 
-In this tutorial, we will cover:
+В этом разделе мы рассмотрим:
 
-* Basic Python: Basic data types, Functions, Classes
-* Numpy: Arrays, Array indexing, Datatypes, Array math, Broadcasting
-* Matplotlib: Plotting, Subplots, Images
-* IPython: Creating notebooks, Typical workflows
+* Основы Python: базовые типы данных, функции, классы;
+* NumPy: массивы, индексация, типы данных, операции над массивами, broadcasting;
+* SciPy: численное интегрирование, оптимизация, обработка сигналов;
+* Matplotlib: построение графиков, subplots, изображения;
+* HoloViews: интерактивная визуализация данных;
+* IPython и Jupyter: создание блокнотов и типичные сценарии работы.

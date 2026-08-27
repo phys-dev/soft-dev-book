@@ -1,30 +1,30 @@
 ## Matplotlib
 
-Matplotlib is a plotting library. In this section give a brief introduction to the `matplotlib.pyplot` module, which provides a plotting system similar to that of MATLAB.
+Matplotlib — это библиотека для построения графиков. В этом разделе мы кратко познакомимся с модулем `matplotlib.pyplot`, который предоставляет систему построения графиков, похожую на MATLAB. Здесь мы ограничимся самым необходимым минимумом: подробный разбор визуализации на Python (Matplotlib, Seaborn, Plotly) ждёт тебя в главе [«Визуализация данных»](./visualization/practice.md).
 
 
 ```python
 import matplotlib.pyplot as plt
 ```
 
-By running this special iPython command, we will be displaying plots inline:
+Выполнив эту специальную команду IPython, мы включим отображение графиков прямо в блокноте:
 
 
 ```python
 %matplotlib inline
 ```
 
-### Plotting
+### Построение графиков
 
-The most important function in `matplotlib` is plot, which allows you to plot 2D data. Here is a simple example:
+Самая важная функция в `matplotlib` — `plot`, которая строит графики двумерных данных. Вот простой пример:
 
 
 ```python
-# Compute the x and y coordinates for points on a sine curve
+# Вычисляем координаты x и y точек на синусоиде
 x = np.arange(0, 3 * np.pi, 0.1)
 y = np.sin(x)
 
-# Plot the points using matplotlib
+# Строим график с помощью matplotlib
 plt.plot(x, y)
 ```
 
@@ -41,14 +41,14 @@ plt.plot(x, y)
     
 
 
-With just a little bit of extra work we can easily plot multiple lines at once, and add a title, legend, and axis labels:
+Приложив совсем немного дополнительных усилий, мы легко построим несколько кривых сразу и добавим заголовок, легенду и подписи осей:
 
 
 ```python
 y_sin = np.sin(x)
 y_cos = np.cos(x)
 
-# Plot the points using matplotlib
+# Строим оба графика с помощью matplotlib
 plt.plot(x, y_sin)
 plt.plot(x, y_cos)
 plt.xlabel('x axis label')
@@ -70,31 +70,46 @@ plt.legend(['Sine', 'Cosine'])
     
 
 
-### Subplots 
+Запомни: в физике график без подписанных осей — не график. На осях всегда должны стоять величина и её единицы измерения («t, с», «U, мВ»), за это отвечают `plt.xlabel` и `plt.ylabel`; заголовок задаёт `plt.title`, а `plt.legend` выводит легенду — список кривых с их названиями.
 
-You can plot different things in the same figure using the subplot function. Here is an example:
+Ещё две мелочи, которые заметно повышают читаемость. Во-первых, имя кривой удобнее задавать прямо в `plot` через аргумент `label` — тогда `plt.legend()` вызывается без аргументов и точно ничего не перепутает. Во-вторых, координатная сетка `plt.grid(True)` помогает считывать значения с графика:
 
 
 ```python
-# Compute the x and y coordinates for points on sine and cosine curves
+plt.plot(x, y_sin, label='sin(x)')
+plt.plot(x, y_cos, '--', label='cos(x)')  # '--' — штриховая линия
+plt.xlabel('x, рад')
+plt.ylabel('f(x)')
+plt.title('Тригонометрические функции')
+plt.legend()    # имена кривых возьмутся из label
+plt.grid(True)  # координатная сетка
+```
+
+### Subplots
+
+С помощью функции `subplot` можно разместить несколько разных графиков на одном рисунке. Вот пример:
+
+
+```python
+# Вычисляем координаты x и y точек на синусоиде и косинусоиде
 x = np.arange(0, 3 * np.pi, 0.1)
 y_sin = np.sin(x)
 y_cos = np.cos(x)
 
-# Set up a subplot grid that has height 2 and width 1,
-# and set the first such subplot as active.
+# Задаём сетку subplot'ов высотой 2 и шириной 1
+# и делаем активным первый subplot.
 plt.subplot(2, 1, 1)
 
-# Make the first plot
+# Строим первый график
 plt.plot(x, y_sin)
 plt.title('Sine')
 
-# Set the second subplot as active, and make the second plot.
+# Делаем активным второй subplot и строим второй график.
 plt.subplot(2, 1, 2)
 plt.plot(x, y_cos)
 plt.title('Cosine')
 
-# Show the figure.
+# Показываем рисунок.
 plt.show()
 ```
 
@@ -104,4 +119,64 @@ plt.show()
     
 
 
-You can read much more about the `subplot` function in the [documentation](http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.subplot).
+Гораздо больше о функции `subplot` можно прочитать в [документации](https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplot.html).
+
+### Гистограммы
+
+Гистограмма — первое, что стоит построить, когда у тебя на руках набор повторных измерений: она показывает, как значения распределены. Сгенерируем 10 000 «измерений», рассыпанных вокруг истинного значения по закону Гаусса, и посмотрим на них с помощью `plt.hist`:
+
+
+```python
+# 10000 «измерений»: истинное значение 5.0, случайный шум 0.5
+values = np.random.normal(loc=5.0, scale=0.5, size=10000)
+
+plt.hist(values, bins=50, density=True, alpha=0.7)
+plt.xlabel('Измеренное значение')
+plt.ylabel('Плотность вероятности')
+plt.grid(True)
+```
+
+Аргумент `bins` задаёт число корзин: слишком мало — распределение размажется, слишком много — гистограмма станет «шумной». Флаг `density=True` нормирует гистограмму так, что её полная площадь равна единице, — в этих осях её можно напрямую сравнивать с теоретической плотностью вероятности, например с гауссианой. А полупрозрачность `alpha` пригодится, когда нужно наложить несколько распределений друг на друга.
+
+### Точки с погрешностями (errorbar)
+
+Главный жанр графика в экспериментальной физике — точки с погрешностями. За него отвечает `plt.errorbar`: помимо координат точек она принимает величины ошибок по осям (`yerr` и `xerr`) и рисует «усы»:
+
+
+```python
+# «Эксперимент»: период маятника в зависимости от длины подвеса
+L = np.array([0.2, 0.4, 0.6, 0.8, 1.0])        # длина, м
+T = 2 * np.pi * np.sqrt(L / 9.81)              # теоретический период, с
+T_exp = T + np.random.normal(0, 0.03, T.size)  # «измеренный» период, с
+T_err = np.full_like(T, 0.05)                  # погрешность измерения, с
+
+plt.errorbar(L, T_exp, yerr=T_err, fmt='o', capsize=3, label='эксперимент')
+plt.plot(L, T, '--', label='теория')
+plt.xlabel('L, м')
+plt.ylabel('T, с')
+plt.legend()
+plt.grid(True)
+```
+
+Обрати внимание на `fmt='o'`: экспериментальные точки рисуются маркерами и не соединяются ломаной — вместо этого рядом проводят теоретическую кривую или аппроксимацию. Аргумент `capsize` задаёт размер «шляпок» на концах усов, а `xerr` добавит горизонтальные усы, если погрешность есть и по оси x.
+
+### Сохранение рисунка в файл
+
+Пока ты работаешь в блокноте, графики живут внутри него. Чтобы вставить рисунок в отчёт или статью, его нужно сохранить в файл — это делает `plt.savefig`, а формат определяется расширением имени файла:
+
+
+```python
+plt.plot(x, np.sin(x))
+plt.savefig('sine.png', dpi=300, bbox_inches='tight')  # растровый формат
+plt.savefig('sine.pdf')                                # векторный формат
+```
+
+PNG — растровый формат: для приличного качества печати задавай разрешение `dpi=300` или выше. PDF и SVG — векторные форматы: они не теряют чёткости при любом увеличении, поэтому для статей и дипломов (особенно в LaTeX) выбирай `pdf`. Аргумент `bbox_inches='tight'` обрезает лишние белые поля вокруг рисунка. И важная деталь для скриптов: вызывай `savefig` до `plt.show()` — после показа фигура очищается, и в файл запишется пустой лист.
+
+### Полезные ссылки
+
+* [Официальная документация Matplotlib](https://matplotlib.org/stable/) — начни с раздела Tutorials;
+* [Галерея примеров](https://matplotlib.org/stable/gallery/index.html) — сотни готовых графиков с исходным кодом: чаще всего проще найти похожий пример, чем писать с нуля;
+* [Официальные шпаргалки (cheatsheets)](https://matplotlib.org/cheatsheets/) — вся библиотека на паре страниц, удобно держать под рукой;
+* [Anatomy of a figure](https://matplotlib.org/stable/gallery/showcase/anatomy.html) — из каких частей состоит рисунок matplotlib и как эти части называются;
+* [Scientific Visualization: Python + Matplotlib](https://github.com/rougier/scientific-visualization-book) — бесплатная книга Николя Ружье о научной визуализации для тех, кто захочет большего.
