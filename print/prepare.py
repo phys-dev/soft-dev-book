@@ -290,6 +290,18 @@ def shift_headings(text, base):
     return re.sub(r"^(#{1,6}) ", repl, text, flags=re.M)
 
 
+def strip_manual_numbering(text):
+    """Убирает ручную нумерацию из заголовков.
+
+    В электронной версии заголовки не нумеруются автоматически, поэтому
+    «1. Процессы», «2. Планировщик» читаются как список. В книге разделы
+    нумерует LaTeX, и такой заголовок превращается в «2.3.2 1. Процессы» —
+    номер задваивается.
+    """
+    return re.sub(r"^(#{2,6}) +\d+(?:\.\d+)*\.? +(?=\S)", r"\1 ",
+                  text, flags=re.M)
+
+
 def clean_output_blocks(text):
     """Ограничивает длину блоков вывода — в печати они занимают страницы."""
     lines, out, buf = text.split("\n"), [], []
@@ -343,6 +355,7 @@ def main():
         text = fix_unicode(text)
         text = fix_links(text)
         text = clean_output_blocks(text)
+        text = strip_manual_numbering(text)
         # уровень: front-matter и главы верхнего уровня -> ##, вложенные -> ###
         text = shift_headings(text, 2 + level)
         if kind == "front":

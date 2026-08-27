@@ -69,9 +69,9 @@
 - [Визуализация данных](./dev/python/visualization/practice.md)
 - [Машинное обучение](./ds/intro.md)
   - [Основные понятия](./ds/basic.md)
-  - [Инструменты: scikit-learn](./ds/tools.md)
   - [Классические алгоритмы](./ds/ml.md)
   - [Нейронные сети](./ds/nn.md)
+  - [Инструменты: scikit-learn](./ds/tools.md)
 
 # Ускоряем код
 

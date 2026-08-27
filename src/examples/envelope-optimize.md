@@ -5,7 +5,7 @@
 
 Генетические алгоритмы работают по аналогии с естественным отбором в природе. Основа генетического алгоритма — особь, хромосомы (гены), популяция (набор особей), функции приспособленности, отбора, скрещивания и мутации. На практике всё происходит так: создание первого поколения, оценка, отбор, скрещивание, мутация, новое поколение, оценка — и так далее, пока не получим желаемый результат.
 
-DEAP is a framework for working with genetic algorithms, containing many ready-made tools, the main thing is to know how to use them.
+DEAP — фреймворк для работы с генетическими алгоритмами. В нём уже есть множество готовых инструментов, главное — знать, как ими пользоваться.
 
 ## Создаём пучок и ускоритель
 
@@ -295,7 +295,7 @@ creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
 creator.create("Individual", list, fitness=creator.FitnessMin)
 ```
 
-Next, you need to create a toolkit. To do this, you need to set the basic parameters for our algorithm.
+Дальше нужно собрать набор инструментов (toolbox) — задать основные параметры нашего алгоритма.
 
 
 ```python

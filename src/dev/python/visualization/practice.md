@@ -2360,13 +2360,13 @@ plot_width = 400
 section_h = 100
 section_d = 10
 
-# multiplication factor to calculate the width of other sections
+# множитель для расчёта ширины остальных секций
 unit_width = plot_width / max(values)
 
-# width of each funnel section relative to the plot width
+# ширина каждой секции воронки относительно ширины графика
 phase_w = [int(value * unit_width) for value in values]
 
-# plot height based on the number of sections and the gap in between them
+# высота графика по числу секций и зазорам между ними
 height = section_h * n_phase + section_d * (n_phase - 1)
 ```
 
@@ -2375,7 +2375,7 @@ height = section_h * n_phase + section_d * (n_phase - 1)
 # list containing all the plot shapes
 shapes = []
 
-# list containing the Y-axis location for each section's name and value text
+# положения по оси Y для подписи и значения каждой секции
 label_y = []
 
 for i in range(n_phase):
@@ -2397,7 +2397,7 @@ for i in range(n_phase):
         }
         shapes.append(shape)
         
-        # Y-axis location for this section's details (text)
+        # положение по оси Y для подписи этой секции
         label_y.append(height - (section_h / 2))
 
         height = height - (section_h + section_d)
@@ -2566,7 +2566,7 @@ if (outputEl) {{
 
 
 ### Обертки для plotly
-Как вы могли заметить, описывать все traces бывает достаточно многословно. Поэтому для частых cases удобно написать функции-обертки на DataFrame. Мои самые частые сценарии - это line plot и несколько line plots с drop down.
+Как ты мог заметить, описывать все traces бывает достаточно многословно. Поэтому для частых cases удобно написать функции-обертки на DataFrame. Мои самые частые сценарии - это line plot и несколько line plots с drop down.
 
 
 ```python
