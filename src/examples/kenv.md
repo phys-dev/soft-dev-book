@@ -1,6 +1,6 @@
 # Уравнение огибающей Капчинского-Владимирского для пучка заряженных частиц
 
-Сначала разберем теорию, а затем рассчитаем огибающую электронного пучка в линейном ускорителе с помощью Python.
+Сначала разберём теорию, а затем рассчитаем огибающую электронного пучка в линейном ускорителе с помощью Python.
 
 ## Уравнения Максвелла
 
@@ -20,7 +20,7 @@ $$
 \oint\limits_{\eth S} \vec{H}\vec{dl} = \frac{4\pi}{c}\int\limits_S\vec{\jmath}\vec{dS}.
 $$
 
-Найдем \\(D_r\\) для цилиндрического пучка радиуса \\(a\\) с постоянной плотностью \\(\rho_0\\):
+Найдём \\(D_r\\) для цилиндрического пучка радиуса \\(a\\) с постоянной плотностью \\(\rho_0\\):
 $$
 D_r = \frac{4\pi}{r}\int\limits^r_0\rho(\xi)\xi d\xi = 
 \begin{equation*}
@@ -67,11 +67,11 @@ $$
 $$
 \gamma m \ddot r = \displaystyle \frac{2 I e}{\gamma^2 a \upsilon}. 
 $$
-Перейдем к дифференцированию по \\(z\\), учтем, что \\(\displaystyle dt = \frac{dz}{v}\\), тогда:
+Перейдём к дифференцированию по \\(z\\), учтем, что \\(\displaystyle dt = \frac{dz}{v}\\), тогда:
 $$
 a'' = \displaystyle \frac{e}{a}\frac{2I}{m\gamma^3\upsilon^3}.
 $$
-Введем характерный альфвеновский ток \\(I_a = \displaystyle \frac{mc^3}{e} \approx\\) 17 kA, следовательно:
+Введём характерный альфвеновский ток \\(I_a = \displaystyle \frac{mc^3}{e} \approx\\) 17 kA, следовательно:
 $$
 a'' = \displaystyle \frac{2I}{I_a (\beta\gamma)^3} \frac{1}{a}.
 $$
@@ -174,7 +174,7 @@ $$
 $$
 \ddot r = r'' (\dot z)^2 + r'\ddot z \approx r'' \beta^2 c^2 + r' \beta' \beta c^2.
 $$
-А также, если в области пучка нет никаких зарядов, то, разлагая в ряд Тейлора в окрестности оси и оставляя только первый член, с учетом $$\nabla \vec{E} = 0$$ получаем
+А также, если в области пучка нет никаких зарядов, то, разлагая в ряд Тейлора в окрестности оси и оставляя только первый член, с учётом $$\nabla \vec{E} = 0$$ получаем
 $$
 E_r = -0.5 r E'_z \approx - 0.5 r \gamma'' mc^2/q.
 $$
@@ -206,7 +206,7 @@ $$
 
 ### Квадруполи
 
-\\(k_q = \displaystyle\frac{eG}{pc}\\) - жесткость квадруполя, где \\(G = \displaystyle\frac{\partial B_x}{\partial y} = \displaystyle\frac{\partial B_y}{\partial x}\\) - градиент магнитного поля, причем \\(k_x = k_q, k_y = -k_q.\\)
+\\(k_q = \displaystyle\frac{eG}{pc}\\) - жесткость квадруполя, где \\(G = \displaystyle\frac{\partial B_x}{\partial y} = \displaystyle\frac{\partial B_y}{\partial x}\\) - градиент магнитного поля, причём \\(k_x = k_q, k_y = -k_q.\\)
 $$
 k_q = \left ( \frac{eG}{m_ec\beta\gamma} \right ) = \left ( \frac{eG}{\beta\gamma\cdot 0.511\cdot 10^6 e \cdot \mathrm{volt}/c} \right ) =
 \left ( \frac{cG}{\beta\gamma\cdot 0.511\cdot 10^6 \cdot \mathrm{volt}} \right ).
@@ -292,7 +292,7 @@ $$
 \end{equation*}
 $$
 
-## Расчет в Python
+## Расчёт в Python
 
 Сначала подключим необходимые библиотеки и настроим параметры графики
 
@@ -549,7 +549,7 @@ U9k9N2vl5+cH0en0TRiGWX18fC65vnh+LxqNBq2oqFhgMpmi7XY7arVaj+zdu/fxn/l/4bSZl5fH
 
 
 
-Настроим область и шаг счета
+Настроим область и шаг счёта
 
 
 ```python
@@ -786,7 +786,7 @@ $$
 \displaystyle r'' + \frac{1}{\beta^2\gamma} \gamma' r' + \frac{1}{2\beta^2\gamma}\gamma''r + kr - \frac{2I}{I_a (\beta\gamma)^3}\frac{1}{r} - \frac{\epsilon^2}{r^3} = 0.
 $$
 
-Перейдем к среднеквадратичному радиусу для распределения Капчинского-Владимирского и первеансу \\(\displaystyle  r_{rms} = \frac{r}{2}\\) и \\(\displaystyle P = \frac{2I}{I_a\beta^3\gamma^3} \\). Получим
+Перейдём к среднеквадратичному радиусу для распределения Капчинского-Владимирского и первеансу \\(\displaystyle  r_{rms} = \frac{r}{2}\\) и \\(\displaystyle P = \frac{2I}{I_a\beta^3\gamma^3} \\). Получим
 $$
 \displaystyle r_{rms}'' + \frac{1}{\beta^2\gamma} \gamma' r_{rms}'  +  \frac{1}{2\beta^2\gamma}\gamma''r_{rms} + kr_{rms} - \frac{P}{4r_{rms}} - \frac{\epsilon^2}{16{r_{rms}}^3} = 0.
 $$

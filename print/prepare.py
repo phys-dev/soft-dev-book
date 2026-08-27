@@ -333,19 +333,52 @@ VAGUE_LINKS = {"здесь", "тут", "сюда", "ссылка", "по ссы�
 def fix_links(text):
     """Приводит ссылки к виду, пригодному для бумаги.
 
-    Относительные ссылки на другие главы заменяем их названием — в печати
-    переходить всё равно некуда. У внешних ссылок с невнятным текстом
-    («здесь», «тут») дописываем адрес, иначе на бумаге он пропадёт.
-    """
-    def repl(match):
-        title, target = match.group(1), match.group(2)
-        if not target.startswith("http"):
-            return title
-        if title.strip().lower().strip(".,:;") in VAGUE_LINKS:
-            return f"{title} ({target})"
-        return match.group(0)
+    На бумаге по ссылке не кликнешь, поэтому:
 
-    return re.sub(r"(?<!!)\[([^\]]+)\]\(([^)\s]+)\)", repl, text)
+    * относительные ссылки на другие главы заменяем их названием —
+      искать всё равно придётся по оглавлению;
+    * в справочных разделах («Полезные ссылки», «Литература») адрес
+      печатаем прямо в строке — это и есть список источников;
+    * ссылки внутри текста уводим в подстрочную сноску, чтобы адрес
+      не разрывал фразу, но и не потерялся.
+    """
+    REF_HEADS = ("полезные ссылки", "ресурсы", "литература", "полезные материалы",
+                 "что почитать", "источники", "полезное")
+
+    out, in_fence, in_refs = [], False, False
+    for line in text.split("\n"):
+        if line.startswith("```"):
+            in_fence = not in_fence
+            out.append(line)
+            continue
+        head = re.match(r"^(#{1,6}) +(.*)$", line)
+        if head and not in_fence:
+            in_refs = head.group(2).strip().lower().rstrip(":").startswith(REF_HEADS)
+        if in_fence or line.startswith("    "):
+            out.append(line)
+            continue
+
+        def repl(match):
+            title, target = match.group(1), match.group(2)
+            if not target.startswith("http"):
+                return title                      # ссылка на главу книги
+            if target in title:
+                return title                      # адрес и так виден
+            if in_refs:
+                return f"{title}\x01{target}\x02"   # адрес переставим в конец строки
+            if title.strip().lower().strip(".,:;") in VAGUE_LINKS:
+                return f"{title} — {target}"
+            return f"{title}^[{target}]"          # сноска в тексте
+
+        new_line = re.sub(r"(?<!!)\[([^\]]+)\]\(([^)\s]+)\)", repl, line)
+        # в списке источников адрес ставим в конец: «Название — описание. URL: …»
+        if "\x01" in new_line:
+            urls = re.findall(r"\x01(.*?)\x02", new_line)
+            new_line = re.sub(r"\x01.*?\x02", "", new_line).rstrip()
+            tail = "" if new_line.endswith((".", "!", "?", ":", ";")) else "."
+            new_line = new_line + tail + " URL: " + ", ".join(urls)
+        out.append(new_line)
+    return "\n".join(out)
 
 
 def _split_fences(text):
@@ -600,10 +633,23 @@ def main(volume=None):
         # уровень: front-matter и главы верхнего уровня -> ##, вложенные -> ###
         text = shift_headings(text, 2 + level)
         if kind == "front":
-            # «О книге» и «О себе» идут до частей — не нумеруем их,
-            # иначе pandoc заводит фантомную главу 0.
-            text = re.sub(r"^#+ .*$", f"## {title} {{.unnumbered}}",
-                          text, count=1, flags=re.M)
+            # «О книге» и «О себе» идут до частей. Нумерации у них быть
+            # не должно — иначе pandoc заводит фантомную главу 0 и всё
+            # содержимое вводных страниц попадает в оглавление как 0.0.1.
+            lines, first = [], True
+            in_fence = False
+            for line in text.split("\n"):
+                if line.startswith("```"):
+                    in_fence = not in_fence
+                elif not in_fence and re.match(r"^#+ ", line):
+                    if first:
+                        line, first = f"## {title} {{.unnumbered}}", False
+                    else:
+                        # подзаголовки вводных страниц в оглавление не выносим
+                        line = re.sub(r"^#+ (.*)$",
+                                      r"### \1 {.unnumbered .unlisted}", line)
+                lines.append(line)
+            text = "\n".join(lines)
         parts.append(text.strip() + "\n\n")
         stats.append((path, before, len(text)))
 

@@ -41,7 +41,7 @@
 
 1. **Комментируй свои намерения**:
    ```python
-   # Напиши функцию для расчета среднего значения списка
+   # Напиши функцию для расчёта среднего значения списка
    # Copilot предложит:
    def calculate_average(numbers):
        return sum(numbers) / len(numbers) if numbers else 0
