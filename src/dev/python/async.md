@@ -1,16 +1,13 @@
-# Асинхронное API
+# Итераторы, генераторы и корутины
 
-## Введение в асинхронное программирование
+Эта глава — о трёх родственных механизмах языка, которые связывает одна идея: **не вычислять всё сразу**. Итератор выдаёт элементы по одному, генератор умеет приостанавливать выполнение функции и возвращаться в неё, а корутина вдобавок умеет принимать значения снаружи.
 
-Асинхронное программирование стало неотъемлемой частью современной Python-разработки и продолжает набирать популярность среди веб-разработчиков.
+Механизмы полезны сами по себе — они позволяют обрабатывать файлы, которые не помещаются в память, и описывать бесконечные последовательности. Но главное, ради чего мы их разбираем: на генераторах построена вся асинхронность Python. Разобравшись здесь, ты без труда поймёшь `asyncio` в главе про [асинхронность](../../perf/async.md).
 
-## Основные темы
 
-### Итераторы, генераторы и корутины
+## Итераторы
 
-#### Итераторы
-
-Итераторы - фундаментальная концепция Python, которую разработчики используют ежедневно, часто не задумываясь об их работе. Любая коллекция в Python (списки, словари, множества, строки, файлы) является итерабельной.
+Итераторы — фундаментальная концепция Python, которую разработчики используют ежедневно, часто не задумываясь об их работе. Любая коллекция в Python (списки, словари, множества, строки, файлы) является итерабельной.
 
 **Реализация аналога функции range():**
 
@@ -66,7 +63,7 @@ while True:
         break
 ```
 
-#### Генераторы
+## Генераторы
 
 Генераторы работают на принципе запоминания контекста выполнения функции с помощью ключевого слова `yield`.
 
@@ -106,9 +103,9 @@ def func():
     yield from numbers
 ```
 
-#### Корутины
+## Корутины
 
-Корутины - основные строительные блоки асинхронного программирования, появившиеся как решение проблемы GIL (Global Interpreter Lock).
+Корутины — основные строительные блоки асинхронного программирования, появившиеся как решение проблемы GIL (Global Interpreter Lock).
 
 **Пример корутины для финансовых расчетов:**
 
@@ -135,256 +132,8 @@ for item in values:
 coro.close()
 ```
 
-### Асинхронность в Python и asyncio
+## Что дальше
 
-#### Типы задач
+Мы разобрали механику: итератор отдаёт элементы по одному, генератор приостанавливает функцию на `yield` и продолжает с того же места, корутина умеет ещё и принимать значения через `send()`.
 
-- **CPU bound-задачи** - интенсивное использование процессора (математические модели, нейросети, рендеринг)
-- **I/O bound-задачи** - основная работа с вводом/выводом (файловая система, сеть)
-- **Memory bound-задачи** - интенсивная работа с оперативной памятью
-
-#### Проблема блокирующих операций
-
-```python
-import requests
-
-def do_some_logic(data):
-    pass
-
-def save_to_database(data):
-    pass
-
-# Блокирующий код
-data = requests.get('https://data.aggregator.com/films')
-processed_data = do_some_logic(data)
-save_to_database(data)
-```
-
-#### Event Loop - сердце асинхронных программ
-
-**Базовая реализация планировщика:**
-
-```python
-import logging
-from typing import Generator
-from queue import Queue
-
-class Scheduler:
-    def __init__(self):
-        self.ready = Queue()
-        self.task_map = {}
-    
-    def add_task(self, coroutine: Generator) -> int:
-        new_task = Task(coroutine)
-        self.task_map[new_task.tid] = new_task
-        self.schedule(new_task)
-        return new_task.tid
-    
-    def exit(self, task: Task):
-        del self.task_map[task.tid]
-    
-    def schedule(self, task: Task):
-        self.ready.put(task)
-    
-    def _run_once(self):
-        task = self.ready.get()
-        try:
-            result = task.run()
-        except StopIteration:
-            self.exit(task)
-            return
-        self.schedule(task)
-    
-    def event_loop(self):
-        while self.task_map:
-            self._run_once()
-```
-
-**Реализация задачи (Task):**
-
-```python
-import types
-from typing import Generator, Union
-
-class Task:
-    task_id = 0
-    
-    def __init__(self, target: Generator):
-        Task.task_id += 1
-        self.tid = Task.task_id
-        self.target = target
-        self.sendval = None
-        self.stack = []
-    
-    def run(self):
-        while True:
-            try:
-                result = self.target.send(self.sendval)
-                
-                if isinstance(result, types.GeneratorType):
-                    self.stack.append(self.target)
-                    self.sendval = None
-                    self.target = result
-                else:
-                    if not self.stack:
-                        return
-                    self.sendval = result
-                    self.target = self.stack.pop()
-            
-            except StopIteration:
-                if not self.stack:
-                    raise
-                self.sendval = None
-                self.target = self.stack.pop()
-```
-
-#### Asyncio
-
-С версии Python 3.5 появился синтаксис async/await для нативных корутин.
-
-**Простая программа с asyncio:**
-
-```python
-import random
-import asyncio
-
-async def func():
-    r = random.random()
-    await asyncio.sleep(r)
-    return r
-
-async def value():
-    result = await func()
-    print(result)
-
-if __name__ == '__main__':
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(value())
-    loop.close()
-```
-
-**Основные функции asyncio:**
-
-- `gather` - одновременное выполнение корутин
-- `sleep` - приостановка выполнения
-- `wait` / `wait_for` - ожидание выполнения корутин
-
-**Основные функции event_loop:**
-
-- `get_event_loop` - получение объекта цикла событий
-- `run_until_complete` / `run` - запуск асинхронных функций
-- `shutdown_asyncgens` - корректное завершение
-- `call_soon` - планирование выполнения
-
-### Асинхронные фреймворки
-
-#### Twisted
-
-Один из старейших асинхронных фреймворков с собственной реализацией event-loop.
-
-**Основные концепции:**
-
-1. **Protocol** - описание получения и отправки данных
-2. **Factory** - управление созданием объектов протокола
-3. **Reactor** - собственная реализация event-loop
-4. **Deferred-объекты** - цепочки обратных вызовов
-
-**Пример Deferred-объекта:**
-
-```python
-from twisted.internet import defer
-
-def toint(data):
-    return int(data)
-
-def increment_number(data):
-    return data + 1
-
-def print_result(data):
-    print(data)
-
-def handleFailure(f):
-    print("OOPS!")
-
-def get_deferred():
-    d = defer.Deferred()
-    return d.addCallbacks(toint, handleFailure)\
-           .addCallbacks(increment_number, handleFailure)\
-           .addCallback(print_result)
-```
-
-#### Aiohttp
-
-Асинхронные HTTP-клиент и сервер, построенные поверх asyncio.
-
-**Пример приложения:**
-
-```python
-import aiohttp
-from aiohttp import web
-
-async def get_phrase():
-    async with aiohttp.ClientSession() as session:
-        async with session.get('https://fish-text.ru/get', 
-                             params={'type': 'title'}) as response:
-            result = await response.json(content_type='text/html; charset=utf-8')
-            return result.get('text')
-
-async def index_handler(request):
-    return web.Response(text=await get_phrase())
-
-async def response_signal(request, response):
-    response.text = response.text.upper()
-    return response
-
-async def make_app():
-    app = web.Application()
-    app.on_response_prepare.append(response_signal)
-    app.add_routes([web.get('/', index_handler)])
-    return app
-
-web.run_app(make_app())
-```
-
-#### FastAPI
-
-Современный фреймворк для быстрой разработки API, построенный на Starlette и Pydantic.
-
-**Простой пример API:**
-
-```python
-from fastapi import FastAPI
-from pydantic import BaseModel, Field
-from typing import Optional
-
-app = FastAPI(title="Простые математические операции")
-
-class Add(BaseModel):
-    first_number: int = Field(title='Первое слагаемое')
-    second_number: Optional[int] = Field(title='Второе слагаемое')
-
-class Result(BaseModel):
-    result: int = Field(title='Результат')
-
-@app.post("/add", response_model=Result)
-async def create_item(item: Add):
-    return {
-        'result': item.first_number + (item.second_number or 1)
-    }
-```
-
-## Заключение
-
-Ты познакомились с основами асинхронного программирования в Python, изучили ключевые концепции итераторов, генераторов и корутин, освоили работу с asyncio и популярными асинхронными фреймворками.
-
-## Полезные ссылки
-
-1. https://dbader.org/blog/python-iterators
-2. https://www.techbeamers.com/python-iterator/
-3. https://realpython.com/introduction-to-python-generators/
-4. https://www.python.org/dev/peps/pep-0255
-5. https://ru.wikipedia.org/wiki/Ленивые_вычисления
-6. https://medium.com/@chandansingh_99754/python-generators-and-coroutines-d54ed9c343ae
-7. https://www.youtube.com/watch?v=AXkOli6BsBY
-8. https://realpython.com/python-sockets/#reference
-9. https://snarky.ca/how-the-heck-does-async-await-work-in-python-3-5/
+Именно на этом фундаменте построена асинхронность в Python. Цикл событий — это, по сути, планировщик, который переключается между приостановленными генераторами, отдавая процессорное время тому, кто готов работать, пока остальные ждут ответа от сети или диска. Как это устроено внутри и как этим пользоваться через `asyncio`, разбирается в главе про асинхронность в разделе «Ускоряем код».

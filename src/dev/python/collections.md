@@ -215,7 +215,7 @@ meta_set = {fs1, fs2}  # Valid
   from collections import deque
   queue = deque([1, 2, 3])
   queue.append(4)    # O(1)
-  queue.popleft()    # O(1) - в отличие от списка!
+  queue.popleft()    # O(1) — в отличие от списка!
   ```
 
 - **`OrderedDict`** — словарь, который помнит порядок. В Python 3.7+ обычный `dict` тоже упорядочен, но `OrderedDict` имеет дополнительные методы (`move_to_end`, `popitem(last=True/False)`).

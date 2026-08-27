@@ -306,7 +306,7 @@ print(my_func.custom_attr)  # 42
 
 **Полезные материалы:**
 - [Python Documentation](https://docs.python.org/3/)
-- [Ned Batchelder - Facts and Myths about Python Names and Values](https://nedbatchelder.com/text/names.html)
-- [Real Python - Python Memory Management](https://realpython.com/python-memory-management/)
+- [Ned Batchelder — Facts and Myths about Python Names and Values](https://nedbatchelder.com/text/names.html)
+- [Real Python — Python Memory Management](https://realpython.com/python-memory-management/)
 
 Эта глава даёт прочную основу для понимания того, как Python работает "под капотом", что необходимо для написания эффективных и надёжных программ.
