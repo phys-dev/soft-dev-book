@@ -117,7 +117,7 @@ https://docs.python.org/3/whatsnew/3.11.html#faster-cpython
 1. https://github.com/faster-cpython/
 1. Multithreaded Python without the GIL — https://docs.google.com/document/d/18CXhDb1ygxg-YXNBJNzfzZsDFosB5e6BfnXLlejd9l0/edit#
 
-# Когда оптимизировать
+## Когда оптимизировать
 
 ## *Premature optimization is the root of all evil*
 Так ли это?
@@ -154,7 +154,7 @@ https://ru.wikipedia.org/wiki/%D0%91%D0%BE%D0%BB%D1%8C%D1%88%D0%BE%D0%B9_%D0%BA%
 2. Делай это позже
 3. Делай это оптимально
 
-# Как оптимизировать
+## Как оптимизировать
 
 <center><img src="http://lh6.ggpht.com/_AALI9OaE6pk/Sjio4NqVK0I/AAAAAAAAAEM/9xwU-xHtEBY/s800/premature2.PNG">
 <a href="https://dl.acm.org/citation.cfm?doid=356635.356640"> Knuth, D. E. 1974. Structured Programming with go to Statements</a>, ACM Comput. Surv. 6, 4 (Dec. 1974), 261-301.</center>
@@ -177,7 +177,7 @@ https://ru.wikipedia.org/wiki/%D0%91%D0%BE%D0%BB%D1%8C%D1%88%D0%BE%D0%B9_%D0%BA%
 Твои оптимизации вполне могут сломать код. <br>
 Стоит покрыть дополнительными тестами те части, которые ты хочешь поменять.
 
-# Профилирование
+## Профилирование
 
 Основной инструментарий:
 1. cProfile
@@ -190,7 +190,7 @@ Profile demo
 1. <a href="https://github.com/benfred/py-spy">py-spy</a> - позволяет снять профиль с работающей программы, без изменений кода
 2. <a href="https://github.com/pyutils/line_profiler">line_profiler</a> - профилирование по строчкам (показывает количество времени проведенную в каждой строчке)
 
-# Измерение времени
+## Измерение времени
 
 Иногда хочется просто замерить время, а не снимать полноценный профиль. <br>
 Например, когда мы оптимизируем одну конкретную функцию.
@@ -267,7 +267,7 @@ def reverse_0(s: str) -> str:
     2.09 μs ± 130 ns per loop (mean ± std. dev. of 7 runs, 100 loops each)
 
 
-# Оптимизация
+## Оптимизация
 
 ## Часть 1. Что оптимизировать
 
@@ -988,7 +988,7 @@ def squares2(elements):
 2. <a href="https://pythran.readthedocs.io/en/latest/">Pythran</a> - Другой подход к компиляции кода
 3. <a href="https://github.com/pyston/pyston">Pyston</a> - еще один интерпретатор с JIT-компилятором
 
-# Оптимизируем память
+## Оптимизируем память
 
 ## Замеряем память
 
