@@ -112,7 +112,9 @@ def parse_summary():
             continue
         front = re.match(r"^\[([^\]]+)\]\((\./[^)]+)\)", line.strip())
         if front:
-            items.append(("front", front.group(1), front.group(2), 0))
+            # до первой части — вводные страницы, после — заключительные
+            kind = "back" if any(i[0] == "part" for i in items) else "front"
+            items.append((kind, front.group(1), front.group(2), 0))
     return items
 
 
@@ -540,10 +542,17 @@ def brief_practicum(text, max_items=8):
         if not stripped:
             continue
         if stripped.startswith(("- ", "* ", "+ ")) or re.match(r"^\d+\.", stripped):
-            items += 1
-            if items > max_items:
+            # сохраняем вложенность: иначе подпункты становятся
+            # отдельными требованиями и смысл списка ломается
+            indent = len(line) - len(line.lstrip())
+            if indent == 0:
+                items += 1
+                if items > max_items:
+                    continue
+            elif items > max_items:
                 continue
-            body.append("* " + re.sub(r"^([-*+]|\d+\.)\s*", "", stripped))
+            pad = "    " * min(indent // 2, 2)
+            body.append(pad + "* " + re.sub(r"^([-*+]|\d+\.)\s*", "", stripped))
         elif stripped.startswith("["):
             continue                       # ссылки соберём в конце
         elif items == 0:
@@ -600,10 +609,16 @@ def main(volume=None):
             if keep:
                 parts.append(f"\n\n# {title}\n\n")
             continue
-        if not keep and kind != "front":
+        if not keep and kind not in ("front", "back"):
             continue
         if kind == "front" and volume == 2:
             continue          # «О книге» и «О себе» — только в первой части
+        if kind == "back" and volume == 1:
+            # «Заключение» подводит итог всей книге — его место в конце
+            # второй части. Список литературы нужен в обеих: каждая часть
+            # должна быть самодостаточной.
+            if "literature" not in (path or ""):
+                continue
         if path is None or path in SKIP:
             continue
         full = os.path.normpath(os.path.join(SRC, path[2:]))
@@ -632,7 +647,7 @@ def main(volume=None):
         text = strip_manual_numbering(text)
         # уровень: front-matter и главы верхнего уровня -> ##, вложенные -> ###
         text = shift_headings(text, 2 + level)
-        if kind == "front":
+        if kind in ("front", "back"):
             # «О книге» и «О себе» идут до частей. Нумерации у них быть
             # не должно — иначе pandoc заводит фантомную главу 0 и всё
             # содержимое вводных страниц попадает в оглавление как 0.0.1.
