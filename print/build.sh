@@ -37,7 +37,8 @@ build_volume() {
   # поэтому не связываем проходы через && — успех проверяем по файлу
   ( cd print/build
     xelatex -interaction=nonstopmode "book${vol}.tex" > /dev/null 2>&1 || true
-    texindy -L russian -C utf8 -o "book${vol}.ind" "book${vol}.idx" > /dev/null 2>&1 || true
+    texindy -L russian -C utf8 -M ../ruindex.xdy \
+      -o "book${vol}.ind" "book${vol}.idx" > /dev/null 2>&1 || true
     xelatex -interaction=nonstopmode "book${vol}.tex" > /dev/null 2>&1 || true
     xelatex -interaction=nonstopmode "book${vol}.tex" > /dev/null 2>&1 || true
     if [ ! -f "book${vol}.pdf" ]; then

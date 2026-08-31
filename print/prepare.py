@@ -642,39 +642,93 @@ def _index_key(entry):
     return "!".join(out)
 
 
-def add_index_entries(text, seen):
+def _index_candidates(text):
+    """Находит места, где можно поставить метку указателя.
+
+    Возвращает список (номер строки, позиция, длина, термин, качество).
+    Качество: 0 — заголовок, 1 — полужирное выделение, 2 — обычная проза.
+    Строки таблиц, листингов и пункты списков со ссылками пропускаем:
+    там термин лишь перечислен, а не введён.
+    """
+    res, in_fence = [], False
+    for n, line in enumerate(text.split("\n")):
+        if line.startswith("```"):
+            in_fence = not in_fence
+            continue
+        if in_fence or line.startswith("    ") or line.lstrip().startswith("|"):
+            continue
+        is_head = line.lstrip().startswith("#")
+        is_item = bool(re.match(r"^\s*([-*+]|\d+\.)\s", line))
+        if is_item and "](" in line:
+            continue          # перечисление глав, а не определение
+        # в заголовке сравниваем сам текст: уровень к этому моменту уже
+        # сдвинут, и шаблон «## Термин» иначе поймает «### Терминал»
+        hay = line.lstrip("#").strip() if is_head else line
+        for entry, variants in INDEX_TERMS.items():
+            for v in variants:
+                needle = v.lstrip("#").strip() if is_head else v
+                pos = hay.find(needle)
+                if pos < 0 or hay.count("`", 0, pos) % 2:
+                    continue
+                # латинские названия в русском тексте не склоняются, так что
+                # «Git» не должен срабатывать внутри «GitHub»
+                tail = hay[pos + len(needle):pos + len(needle) + 1]
+                if needle[-1:].isascii() and needle[-1:].isalnum() and \
+                        tail.isascii() and tail.isalnum():
+                    continue
+                pos += len(line) - len(hay) if is_head else 0
+                v = needle
+                if is_head:
+                    quality = 0
+                elif line.count("**", 0, pos) % 2 or line[max(0, pos - 2):pos] == "**":
+                    quality = 1
+                else:
+                    quality = 2
+                res.append((n, pos, len(v), entry, quality))
+                break
+    return res
+
+
+def add_index_entries(text, seen, only_definitions=False):
     """Расставляет метки предметного указателя.
 
     Термин отмечается там, где книга его вводит: в заголовке или
-    в полужирном выделении. Каждый термин помечается не более двух раз,
-    иначе указатель превращается в перечень всех страниц подряд.
+    в полужирном выделении. На проходные упоминания в прозе метка
+    ставится только вторым проходом и только если места получше не
+    нашлось. Каждый термин отмечается не более двух раз, иначе
+    указатель превращается в перечень всех страниц подряд.
     """
-    lines, out, in_fence = text.split("\n"), [], False
-    for line in lines:
-        if line.startswith("```"):
-            in_fence = not in_fence
-            out.append(line)
+    picked = {}
+    for n, pos, ln, entry, quality in _index_candidates(text):
+        if only_definitions and quality == 2:
             continue
-        if in_fence or line.startswith("    "):
-            out.append(line)
+        if not only_definitions and seen.get(entry, 0):
+            # определение уже нашлось — проходные упоминания не нужны
             continue
-        for entry, variants in INDEX_TERMS.items():
-            if seen.get(entry, 0) >= 2:
+        if seen.get(entry, 0) + len(picked.get(entry, [])) >= 2:
+            continue
+        picked.setdefault(entry, []).append((n, pos, ln, quality))
+    marks = {}
+    for entry, places in picked.items():
+        for n, pos, ln, quality in places:
+            marks.setdefault(n, []).append((pos, ln, entry))
+            seen[entry] = seen.get(entry, 0) + 1
+    lines = text.split("\n")
+    for n, items in marks.items():
+        line = lines[n]
+        for pos, ln, entry in sorted(items, reverse=True):
+            mark = "\\index{" + _index_key(entry) + "}"
+            if line.lstrip().startswith("#"):
+                line = line + mark
                 continue
-            for v in variants:
-                pos = line.find(v)
-                if pos < 0:
-                    continue
-                # не лезем внутрь инлайн-кода и ссылок
-                if line.count("`", 0, pos) % 2:
-                    continue
-                seen[entry] = seen.get(entry, 0) + 1
-                # метку ставим в конец строки: в заголовке она иначе
-                # попадёт в оглавление, а в абзаце разорвёт фразу
-                line = line + "\\index{" + _index_key(entry) + "}"
-                break
-        out.append(line)
-    return "\n".join(out)
+            end = pos + ln
+            for wrap in ("**", "*", "`"):
+                if line[end:end + len(wrap)] == wrap:
+                    end += len(wrap)
+                    break
+            line = line[:end] + mark + line[end:]
+        lines[n] = line
+    return "\n".join(lines)
 
 
 def clean_output_blocks(text, limit=8):
@@ -713,6 +767,7 @@ def main(volume=None):
     index_seen = {}          # сколько раз термин уже отмечен в этом томе
     wanted = VOLUMES[volume]["parts"] if volume else None
     parts = []
+    chapter_slots = []
     stats = []
     keep = wanted is None
     for kind, title, path, level in parse_summary():
@@ -757,10 +812,6 @@ def main(volume=None):
         text = clean_output_blocks(
             text, OUTPUT_LIMIT_NB if is_nb else OUTPUT_LIMIT)
         text = strip_manual_numbering(text)
-        if kind == "chapter":
-            # во вводных и заключительных страницах термины только
-            # перечислены — отмечать их в указателе незачем
-            text = add_index_entries(text, index_seen)
         # уровень: front-matter и главы верхнего уровня -> ##, вложенные -> ###
         text = shift_headings(text, 2 + level)
         if kind in ("front", "back"):
@@ -784,8 +835,22 @@ def main(volume=None):
                                       r"### \1 {.unnumbered .unlisted}", line)
                 lines.append(line)
             text = "\n".join(lines)
+        if kind == "chapter":
+            # во вводных и заключительных страницах термины только
+            # перечислены — отмечать их в указателе незачем
+            chapter_slots.append(len(parts))
         parts.append(text.strip() + "\n\n")
         stats.append((path, before, len(text)))
+
+    # Разметка указателя идёт двумя проходами по всей книге: сперва
+    # заголовки и полужирные выделения, то есть места, где термин вводят,
+    # и только затем — обычная проза для тех терминов, которым места
+    # получше не нашлось. Иначе ссылка ведёт на первое попавшееся
+    # упоминание в перечислении из вводной главы.
+    for definitions_only in (True, False):
+        for slot in chapter_slots:
+            parts[slot] = add_index_entries(
+                parts[slot], index_seen, definitions_only)
 
     note = """# От автора к печатному изданию {.unnumbered}
 

@@ -1,0 +1,11 @@
+; Регистронезависимая сортировка латиницы. Без этого xindy сравнивает
+; по кодам символов, и «DNS» встаёт перед «DataFrame», «SciPy» — после
+; «SQL-инъекция», а «argparse» — после «UEFI».
+(require "lang/russian/utf8.xdy")
+(sort-rule "A" "a") (sort-rule "B" "b") (sort-rule "C" "c") (sort-rule "D" "d")
+(sort-rule "E" "e") (sort-rule "F" "f") (sort-rule "G" "g") (sort-rule "H" "h")
+(sort-rule "I" "i") (sort-rule "J" "j") (sort-rule "K" "k") (sort-rule "L" "l")
+(sort-rule "M" "m") (sort-rule "N" "n") (sort-rule "O" "o") (sort-rule "P" "p")
+(sort-rule "Q" "q") (sort-rule "R" "r") (sort-rule "S" "s") (sort-rule "T" "t")
+(sort-rule "U" "u") (sort-rule "V" "v") (sort-rule "W" "w") (sort-rule "X" "x")
+(sort-rule "Y" "y") (sort-rule "Z" "z")
