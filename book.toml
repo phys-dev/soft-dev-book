@@ -7,5 +7,6 @@ title = "Разработка и применение программного �
 
 [output.html]
 mathjax-support = true
+additional-js = ["web/print-edition.js"]
 url = "https://phys-dev.github.io/soft-dev-book/"
 git-repository-url = "https://github.com/phys-dev/soft-dev-book/"

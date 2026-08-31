@@ -8,3 +8,4 @@ print/build/
 *.db
 __pycache__/
 .venv/
+site-preview/
