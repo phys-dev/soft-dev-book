@@ -5,12 +5,12 @@
 # Ищем помощников
 
 - [ИИ для разработки](./ai/intro.md)
-   - [Контекст и скорость изменений](./ai/context.md)
-   - [ИИ и разработчик](./ai/develop.md)
-   - [Технические основы](./ai/basic.md)
-   - [Инструментарий](./ai/instruments.md)
-   - [GitHub Copilot](./ai/copilot.md)
-   - [Вопросы и ответы](./ai/qa.md)
+  - [Контекст и скорость изменений](./ai/context.md)
+  - [ИИ и разработчик](./ai/develop.md)
+  - [Технические основы](./ai/basic.md)
+  - [Инструментарий](./ai/instruments.md)
+  - [GitHub Copilot](./ai/copilot.md)
+  - [Вопросы и ответы](./ai/qa.md)
 - [Экспресс-курс Python](./dev/python/intro.md)
   - [Основы Python](./dev/python/basics.md)
   - [NumPy](./dev/python/numpy.md)
@@ -24,9 +24,9 @@
 # Загружаем Linux
 
 - [Основы Linux](./linux/intro.md)
-    - [Процесс загрузки](./linux/booting.md)
-    - [Файловые системы](./linux/filesystems.md)
-    - [Инструменты](./linux/tools.md)
+  - [Процесс загрузки](./linux/booting.md)
+  - [Файловые системы](./linux/filesystems.md)
+  - [Инструменты](./linux/tools.md)
 - [Установка Arch Linux](./linux/install-arch-linux.md)
 - [Внутреннее устройство Linux](./linux/structure.md)
 
@@ -65,7 +65,7 @@
 
 # Обрабатываем данные
 
-- [Обработка данных](./dev/python/numpy-and-pandas.md)
+- [NumPy и pandas](./dev/python/numpy-and-pandas.md)
 - [Визуализация данных](./dev/python/visualization/practice.md)
 - [Машинное обучение](./ds/intro.md)
   - [Основные понятия](./ds/basic.md)
@@ -75,7 +75,7 @@
 
 # Ускоряем код
 
-- [Ускоряем код](./perf/intro.md)
+- [С чего начинать оптимизацию](./perf/intro.md)
   - [Почему Python не очень быстрый](./dev/python/optimization.md)
   - [Скорость выполнения программ](./perf/perf.md)
   - [Многопоточность и GIL](./perf/gil.md)
@@ -87,7 +87,7 @@
 - [Коды и скрипты](./examples/intro.md)
   - [Уравнение огибающей Капчинского-Владимирского для пучка заряженных частиц](./examples/kenv.md)
   - [Оптимизация огибающей пучка заряженных частиц с помощью генетического алгоритма](./examples/envelope-optimize.md)
-  - [Релятивистская разностная схема для расчёта динамики частиц в сложных электрических и магнитных полях](./examples/redpic.md)
+  - [Релятивистская разностная схема для расчёта динамики частиц](./examples/redpic.md)
   - [Коррекция равновесной орбиты с применением матрицы отклика и нейронных сетей](./examples/orbit-correction.md)
   - [Схема ускорителя заряженных частиц в CadQuery](./examples/cadquery/layout.md)
   - [Асинхронное API для кинотеатра](./examples/async-api.md)

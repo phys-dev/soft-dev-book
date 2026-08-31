@@ -764,9 +764,12 @@ def main(volume=None):
         # уровень: front-matter и главы верхнего уровня -> ##, вложенные -> ###
         text = shift_headings(text, 2 + level)
         if kind in ("front", "back"):
-            # «О книге» и «О себе» идут до частей. Нумерации у них быть
-            # не должно — иначе pandoc заводит фантомную главу 0 и всё
-            # содержимое вводных страниц попадает в оглавление как 0.0.1.
+            # «О книге» и «О себе» идут до частей, «Заключение» и
+            # «Литература» — после. Уровень главы, чтобы в оглавлении они
+            # стояли вровень с частями и с предметным указателем, а не
+            # выглядели разделом последней части. Без {.unnumbered} pandoc
+            # заводит фантомную главу 0 и всё их содержимое попадает
+            # в оглавление как 0.0.1.
             lines, first = [], True
             in_fence = False
             for line in text.split("\n"):
@@ -774,7 +777,7 @@ def main(volume=None):
                     in_fence = not in_fence
                 elif not in_fence and re.match(r"^#+ ", line):
                     if first:
-                        line, first = f"## {title} {{.unnumbered}}", False
+                        line, first = f"# {title} {{.unnumbered}}", False
                     else:
                         # подзаголовки вводных страниц в оглавление не выносим
                         line = re.sub(r"^#+ (.*)$",
@@ -784,7 +787,7 @@ def main(volume=None):
         parts.append(text.strip() + "\n\n")
         stats.append((path, before, len(text)))
 
-    note = """## От автора к печатному изданию {.unnumbered}
+    note = """# От автора к печатному изданию {.unnumbered}
 
 У этой книги есть постоянно обновляемая электронная версия:
 **https://phys-dev.github.io/soft-dev-book/**

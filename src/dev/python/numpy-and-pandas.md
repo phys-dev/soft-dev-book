@@ -1,4 +1,4 @@
-# Обработка данных
+# NumPy и pandas
 
 Мы разобрались, как устроен Python и как писать на нём сопровождаемые программы. Пришло время заняться тем, ради чего физик вообще берёт в руки язык программирования, — данными.
 
@@ -35,7 +35,7 @@
 import numpy as np
 ```
 
-## Способы создания Numpy arrays
+### Способы создания Numpy arrays
 * Конвертация из Python structures
 * Генерация с помощью встроенных функций
 * Чтение с диска
@@ -203,7 +203,7 @@ array
 
 
 ```python
-## Чему равень ndim и shape в следующих случаях
+## Чему равны ndim и shape в следующих случаях
 print(np.diag([1,2,3]).shape, np.diag([1,2,3]).ndim)
 print(np.zeros((5, 5, 5)).shape, np.zeros((5, 5, 5)).ndim)
 ```
@@ -255,7 +255,7 @@ print(np.reshape(np.diag([1,2]), [1, 4]))
     [[1 0 0 2]]
 
 
-## Индексация
+### Индексация
 
 В NumPy работает привычная индексация Python, включая использование отрицательных индексов и срезов
 
@@ -556,7 +556,7 @@ features_versicolor - features_setosa
 
 
 
-## [Broadcasting](https://docs.scipy.org/doc/numpy/user/basics.broadcasting.html)
+### [Broadcasting](https://docs.scipy.org/doc/numpy/user/basics.broadcasting.html)
 
 Broadcasting снимает правило одной размерности и позволяет производить арифметические операции над массивами разных, но всё-таки созгласованных размерностей. Простейшим примером является умножение вектора на число:
 
@@ -1517,7 +1517,7 @@ df[["Sex", "Cabin"]].describe()
 
 
 
-## Срезы в DataFrame
+### Срезы в DataFrame
 
 ### Индексация
 
