@@ -35,10 +35,10 @@ WEB = "https://phys-dev.github.io/soft-dev-book/"
 # (данные, ускорение, разбор реальных кодов).
 VOLUMES = {
     1: {
-        "title": "Инструменты и основы",
-        "parts": ["Ищем помощников", "Загружаем Linux",
+        "title": "С чего начинается работа",
+        "parts": ["Собираем инструменты", "Осваиваем Linux",
                   "Разбираемся в алгоритмах", "Считаем численно",
-                  "Погружаемся в Python", "Изучаем хорошие практики"],
+                  "Погружаемся в Python", "Пишем надёжный код"],
         "abstract": (
             "Первая часть пособия вводит в рабочую среду и базовые знания, "
             "без которых научная разработка превращается в кустарщину: "
@@ -48,7 +48,7 @@ VOLUMES = {
             "цикла программы до баз данных."),
     },
     2: {
-        "title": "Данные, ускорение и практика",
+        "title": "Когда данных много, а времени мало",
         "parts": ["Обрабатываем данные", "Ускоряем код", "Учимся у других",
                   "Работаем самостоятельно"],
         "abstract": (
@@ -210,6 +210,37 @@ def _table_to_md_raw(match):
     return _table_html_to_md(match.group(0))
 
 
+def _too_small(data, limit=200):
+    """Правда ли, что растр меньше limit пикселей по обеим сторонам.
+
+    В выводе блокнотов попадаются логотипы библиотек размером 32x32 и
+    64x64. Как иллюстрации они бессмысленны, а на полосе А5 растягиваются
+    на треть страницы и выглядят мутным пятном.
+    """
+    if len(data) < 24 or data[:8] != b"\x89PNG\r\n\x1a\n":
+        return len(data) < 3000
+    width = int.from_bytes(data[16:20], "big")
+    height = int.from_bytes(data[20:24], "big")
+    return width < limit and height < limit
+
+
+JUNK_ALT = re.compile(r"^(png|jpe?g|svg|image|output|рис\.?|figure)?[\s._-]*"
+                      r"[\w.\-]*\.(png|jpe?g|svg|gif)$|^(png|jpe?g|svg)$",
+                      re.I)
+
+
+def clean_alt(text):
+    """Убирает бессмысленные подписи к рисункам.
+
+    Блокноты подставляют в alt имя формата или файла, и в печати это даёт
+    подписи вида «Рис. 1.2: png» и «Рис. 2.5: 1_Event_Loop_1629282397.png».
+    Пустой alt pandoc печатает без подписи — так и нужно.
+    """
+    return re.sub(r"!\[([^\]]*)\]\(",
+                  lambda m: "![](" if JUNK_ALT.match(m.group(1).strip()) else m.group(0),
+                  text)
+
+
 def extract_base64_images(text, prefix):
     """Сохраняет base64-картинки из <img> в файлы, возвращает markdown-ссылки.
 
@@ -237,6 +268,8 @@ def extract_base64_images(text, prefix):
                 os.remove(svg)
         else:
             ext = "png" if "png" in mime else "jpg"
+            if _too_small(data):
+                return ""     # логотип библиотеки из вывода блокнота
             name = f"{prefix}-{digest}.{ext}"
             with open(os.path.join(IMG, name), "wb") as f:
                 f.write(data)
@@ -797,6 +830,7 @@ def main(volume=None):
         text = strip_html(text)
         text = extract_base64_images(text, os.path.basename(full)[:-3])
         text = fix_images(text, os.path.dirname(full))
+        text = clean_alt(text)
         text = fix_math(text)
         text = fix_unicode(text)
         text = fix_links(text)
@@ -874,8 +908,7 @@ Seaborn) на месте.
 просто названиями глав — ищи их по оглавлению.
 
 Замечания, опечатки и предложения присылай в issues репозитория
-**https://github.com/phys-dev/soft-dev-book** или в Telegram-канал
-**https://t.me/physdev**.
+**https://github.com/phys-dev/soft-dev-book**.
 
 """
     if volume in (None, 1):
