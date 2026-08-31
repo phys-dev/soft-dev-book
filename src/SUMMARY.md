@@ -11,13 +11,6 @@
   - [Инструментарий](./ai/instruments.md)
   - [GitHub Copilot](./ai/copilot.md)
   - [Вопросы и ответы](./ai/qa.md)
-- [Экспресс-курс Python](./dev/python/intro.md)
-  - [Основы Python](./dev/python/basics.md)
-  - [NumPy](./dev/python/numpy.md)
-  - [SciPy](./dev/python/scipy.md)
-  - [Matplotlib](./dev/python/matplotlib.md)
-  - [HoloViews](./dev/python/holo.md)
-  - [Требования к коду](./dev/python/requirements.md)
 - [Git](./dev/git.md)
 - [Docker](./dev/docker.md)
 
@@ -53,6 +46,7 @@
 
 # Пишем надёжный код
 
+- [Требования к коду](./dev/python/requirements.md)
 - [Жизненный цикл ПО](./dev/life.md)
 - [От скрипта к приложению](./dev/app.md)
 - [Основы WEB](./dev/web.md)
@@ -60,6 +54,12 @@
 
 # Обрабатываем данные
 
+- [Научные библиотеки Python](./dev/python/intro.md)
+  - [Основы Python](./dev/python/basics.md)
+  - [NumPy](./dev/python/numpy.md)
+  - [SciPy](./dev/python/scipy.md)
+  - [Matplotlib](./dev/python/matplotlib.md)
+  - [HoloViews](./dev/python/holo.md)
 - [NumPy и pandas](./dev/python/numpy-and-pandas.md)
 - [Визуализация данных](./dev/python/visualization/practice.md)
 - [Машинное обучение](./ds/intro.md)
@@ -85,6 +85,9 @@
   - [Релятивистская разностная схема для расчёта динамики частиц](./examples/redpic.md)
   - [Коррекция равновесной орбиты с применением матрицы отклика и нейронных сетей](./examples/orbit-correction.md)
   - [Схема ускорителя заряженных частиц в CadQuery](./examples/cadquery/layout.md)
+  - [Цифровой двойник ускорителя](./examples/accumulator.md)
+  - [Мультиагентный помощник оператора](./examples/sava.md)
+  - [Автономный исследователь на языковых моделях](./examples/ai-scientist.md)
   - [Асинхронное API для кинотеатра](./examples/async-api.md)
 
 # Работаем самостоятельно
