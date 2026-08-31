@@ -1,5 +1,8 @@
 # Установка Arch Linux вручную с RAID1 и UEFI
 
+> Опирается на главы [«Процесс загрузки»](../linux/booting.md), [«Файловые системы»](../linux/filesystems.md) и [«Установка Arch Linux»](../linux/install-arch-linux.md).
+
+
 ## Условия задания
 
 1. **Настройка виртуальной машины**:
