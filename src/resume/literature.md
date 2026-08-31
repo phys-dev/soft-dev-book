@@ -20,7 +20,7 @@
 
 9. Лутц М. Изучаем Python / М. Лутц. – 5-е изд. – М.: Диалектика, 2020.
 10. Рамальо Л. Python. К вершинам мастерства / Л. Рамальо. – 2-е изд. – М.: ДМК Пресс, 2023.
-11. Слаткин Б. Секреты Python: 59 рекомендаций по написанию эффективного кода / Б. Слаткин. – 2-е изд. – М.: Диалектика, 2020.
+11. Слаткин Б. Секреты Python: 90 рекомендаций по написанию эффективного кода / Б. Слаткин. – 2-е изд. – М.: Диалектика, 2020.
 12. Бизли Д. Python. Книга рецептов / Д. Бизли, Б. Джонс. – М.: ДМК Пресс, 2019.
 
 ## Инженерные практики
@@ -32,7 +32,7 @@
 17. Momjian B. PostgreSQL: introduction and concepts / B. Momjian. – Addison-Wesley, 2001.
 18. Bradshaw S. MongoDB: the definitive guide / S. Bradshaw, E. Brazil, K. Chodorow. – 3rd ed. – O'Reilly Media, 2019.
 19. Carlson J. Redis in action / J. Carlson. – Manning, 2013.
-20. Williams J. RabbitMQ in action: distributed messaging for everyone / J. Williams, A. Videla. – Manning, 2012.
+20. Videla A. RabbitMQ in action: distributed messaging for everyone / A. Videla, J. J. W. Williams. – Manning, 2012.
 21. Harenslak B. P. Data pipelines with Apache Airflow / B. P. Harenslak, J. de Ruiter. – Manning, 2021.
 22. Chhajed S. Learning ELK stack / S. Chhajed. – Packt Publishing, 2015.
 

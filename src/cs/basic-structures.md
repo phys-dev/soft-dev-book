@@ -474,7 +474,7 @@ def factorial(n):
 
 Стек вызовов переполнится, и программа аварийно завершит работу.
 
-Памяти под стек выделяется совсем немного — несопоставимо меньше, чем всего оперативной памяти в машине. Поэтому глубже нескольких десятков тысяч вызовов рекурсию загонять нельзя (англ. stack overflow). На одних языках ты получишь исключение «Stack Overflow», на других — ошибку «Segmentation Fault».
+Ограничений тут два, и путать их не надо. Своё Python ставит сам: по умолчанию около тысячи вложенных вызовов, дальше `RecursionError`, а поднять порог можно через `sys.setrecursionlimit`. Второе — настоящий стек операционной системы, обычно 8 МБ; в него помещаются десятки тысяч кадров, и упереться в него получится, только сняв первое ограничение. Поэтому глубже нескольких десятков тысяч вызовов рекурсию загонять нельзя (англ. stack overflow). На одних языках ты получишь исключение «Stack Overflow», на других — ошибку «Segmentation Fault».
 
 
 ```python
@@ -647,7 +647,7 @@ def paginated_get():
         with conn.cursor() as cursor:
             cursor.execute(
                 'SELECT "id", "todo" FROM "todos" ORDER BY "id" OFFSET %s LIMIT %s;',
-                (page * PAGE_SIZE, (page + 1) * PAGE_SIZE)
+                (page * PAGE_SIZE, PAGE_SIZE)
             )
             return {
                 "result": [ {"id": row[0], "data": row[1]} for row in cursor]
@@ -720,7 +720,7 @@ def paginated_get():
         with conn.cursor() as cursor:
             cursor.execute(
                 'SELECT "id", "todo" FROM "todos" ORDER BY "id" OFFSET %s LIMIT %s;',
-                (page * PAGE_SIZE, (page + 1) * PAGE_SIZE)
+                (page * PAGE_SIZE, PAGE_SIZE)
             )
             result = json.dumps({
                 "result": [{"id": row[0], "data": row[1]} for row in cursor]

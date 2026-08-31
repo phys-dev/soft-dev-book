@@ -490,7 +490,7 @@ integrate_async(math.cos, 0, math.pi / 2, n_iter=10**6, n_jobs=2)
     5.88 ms ± 126 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 
 
-Те же два потока, тот же `integrate_async`, и 5.88 мс вместо 142. Вот что значит выпустить GIL из рук на время счёта.
+Те же два потока, тот же `integrate_async`, и 5.88 мс вместо 142. Только выигрыш этот составной, и делить его надо честно. Потоков всего два, поэтому на снятие GIL приходится не больше двух раз; остальное — примерно тринадцатикратное — дала компиляция в машинный код. Вывод отсюда не «`nogil` ускоряет в двадцать четыре раза», а «сначала Cython, и только потом распараллеливание того, что он скомпилировал».
 
 > **О замерах ниже.** Ячейка выше переопределила имя `integrate`: теперь под ним живёт скомпилированная Cython-версия, а не та, с которой глава начиналась. Все дальнейшие числа получены с ней, поэтому сравнивать их со 142 мс из раздела про потоки нельзя; между собой — можно. Если хочешь сравнить способы распараллеливания начистоту, перезапусти блокнот, пропустив ячейку с Cython.
 
@@ -640,8 +640,8 @@ integrate_async(math.cos, 0, math.pi / 2, n_iter=10**6, n_jobs=2, backend="multi
 import math
 from numba import jit, prange
 
-@jit(nopython=True, parallel=True, fastmath=True, cache=True)
-def integrate(a, b, *, n_iter=1000):
+@jit(nopython=True, parallel=True, fastmath=True)
+def integrate(a, b, n_iter=1000):
     acc = 0
     step = (b - a) / n_iter
     for i in prange(n_iter):

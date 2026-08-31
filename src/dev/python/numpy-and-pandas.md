@@ -393,7 +393,7 @@ print(x)
     [0 1 2 3 4 5 6 7 8 9]
 
 
-Срез массива в NumPy — представление на те же данные, а не их копия. Изменишь срез — изменится и исходный массив. Когда нужны свои данные, есть метод `copy`.
+Срез массива в NumPy — представление на те же данные, а не их копия. Изменишь срез вроде `x[2:5]` — изменится и исходный массив. А вот отбор по маске или по списку индексов, как в примере выше, всегда возвращает копию, и исходный массив остаётся нетронутым. Когда нужны свои данные, есть метод `copy`.
 
 
 ```python
@@ -647,11 +647,11 @@ np.arange(4)[:, np.newaxis]+np.array([[0, 0, 0], [10, 10, 10], [20, 20, 20], [30
 
 ```python
 print('Среднее значение всех значений класса versicolor: %s'%np.mean(features_versicolor))
-print('Среднее значение каждого признака класса versicolor: %s'%np.mean(features_versicolor, axis=1))
+print('Среднее значение каждого признака класса versicolor: %s'%np.mean(features_versicolor, axis=0))
 ```
 
     Среднее значение всех значений класса versicolor: 1192.20625
-    Среднее значение каждого признака класса versicolor: [ 112.25    68.25  4552.      36.325]
+    Среднее значение каждого признака класса versicolor: [  36.75   117.325 1153.75  3461.   ]
 
 
 Теперь эффективно посчитаем \\(\frac{1}{n} \sum\limits_{i=1}^n |x_i-y_i|\\) для каждой пары \\((x, y)\\), где \\(x\\) — вектор признаков объекта из класса setosa, а \\(y\\) — вектор признаков объекта из класса versicolor.
@@ -921,23 +921,23 @@ np.array(x, dtype=np.float32)
 np.array(x, dtype=np.uint16)
 ```
 
-    /tmp/ipykernel_984447/2771282312.py:1: DeprecationWarning: NumPy will stop allowing conversion of out-of-bound Python integers to integer arrays.  The conversion of 70000 to uint16 will fail in the future.
-    For the old behavior, usually:
-        np.array(value).astype(dtype)
-    will give the desired result (the cast overflows).
-      np.array(x, dtype=np.uint16)
+    OverflowError: Python integer 70000 out of bounds for uint16
 
-
-
-
-
-    array([   1,    2, 4464], dtype=uint16)
-
-
-
+Раньше NumPy молча обрезал такое значение и лишь предупреждал; с версии 2.0
+это ошибка. Тихое переполнение осталось только у явного приведения:
 
 ```python
-np.array(x, dtype=np.unicode_)
+np.array(70000).astype(np.uint16)
+```
+
+    4464
+
+Число не случайное: `uint16` хранит остаток по модулю \\( 2^{16} \\), а
+\\( 70000 - 65536 = 4464 \\). Такая ошибка не падает и ничего не печатает,
+поэтому тип массива и стоит выбирать осознанно.
+
+```python
+np.array(x, dtype=np.str_)
 ```
 
 
@@ -1290,7 +1290,7 @@ df[(df['Sex'] == 'female') & (df['Age'] > 30)].index
 
 
 ```python
-df.drop(index=(df[(df['Sex'] == 'female') & (df['Age'] > 30)].index),axis=1, inplace=True)
+df.drop(index=df[(df['Sex'] == 'female') & (df['Age'] > 30)].index, inplace=True)
 ```
 
 
@@ -3426,11 +3426,11 @@ df["Cabin"].fillna(3).head(5)
 
 
 ```python
-df["Cabin"].fillna(method="bfill").head(15)
+df["Cabin"].bfill().head(15)
 ```
 
     /tmp/ipykernel_984447/671977776.py:1: FutureWarning: Series.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
-      df["Cabin"].fillna(method="bfill").head(15)
+      df["Cabin"].bfill().head(15)
 
 
 

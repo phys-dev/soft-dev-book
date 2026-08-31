@@ -448,21 +448,24 @@ one_million_elements_set = set(one_million_elements)
 
 
 ```python
-%timeit sorted(one_million_elements)
+import random
+
+data = [random.random() for _ in range(1_000_000)]
+%timeit sorted(data)
 ```
 
-    16.9 ms ± 819 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+    120.7 ms ± 3.1 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
 
 
 
 ```python
-%timeit one_million_elements.sort()
+%timeit (lambda a: a.sort())(data[:])
 ```
 
-    8.52 ms ± 700 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+    108.5 ms ± 2.8 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
 
 
-Сортировка на месте заметно быстрее — она не копирует список. Если исходный порядок не нужен, пользуйся ей.
+Данные здесь взяты случайные, и это принципиально. На уже отсортированном списке Timsort вырождается в один линейный проход, оба замера дают около 4 мс, и разницы между ними нет вовсе — мерился бы не порядок, а копирование. На случайных данных `sort` выигрывает около 10 %: ровно столько стоит лишняя копия. Если исходный порядок не нужен, пользуйся ей.
 
 ### Совет 5. Условия if
 
