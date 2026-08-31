@@ -42,14 +42,14 @@
 
 # Погружаемся в Python
 
-- [Начало](./dev/python/init.md)
+- [Как устроен Python](./dev/python/init.md)
   - [Объекты и память](./dev/python/objects.md)
   - [Коллекции](./dev/python/collections.md)
   - [Асимптотическая сложность](./dev/python/o-notation.md)
-- [Функции](./dev/python/functions.md)
-- [Декораторы и functools](./dev/python/decorators.md)
-- [Классы](./dev/python/classes.md)
-- [Итераторы, генераторы и корутины](./dev/python/async.md)
+  - [Функции](./dev/python/functions.md)
+  - [Итераторы, генераторы и корутины](./dev/python/async.md)
+  - [Декораторы и functools](./dev/python/decorators.md)
+  - [Классы](./dev/python/classes.md)
 
 # Пишем надёжный код
 
