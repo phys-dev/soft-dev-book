@@ -1,0 +1,592 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Деревья - Разработка и применение программного обеспечения в физических исследованиях</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../intro/intro.html">О книге</a></li><li class="chapter-item expanded affix "><a href="../intro/about-me.html">О себе</a></li><li class="chapter-item expanded affix "><li class="part-title">Ищем помощников</li><li class="chapter-item expanded "><a href="../ai/intro.html"><strong aria-hidden="true">1.</strong> ИИ для разработки</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ai/context.html"><strong aria-hidden="true">1.1.</strong> Контекст и скорость изменений</a></li><li class="chapter-item expanded "><a href="../ai/develop.html"><strong aria-hidden="true">1.2.</strong> ИИ и разработчик</a></li><li class="chapter-item expanded "><a href="../ai/basic.html"><strong aria-hidden="true">1.3.</strong> Технические основы</a></li><li class="chapter-item expanded "><a href="../ai/instruments.html"><strong aria-hidden="true">1.4.</strong> Инструментарий</a></li><li class="chapter-item expanded "><a href="../ai/copilot.html"><strong aria-hidden="true">1.5.</strong> GitHub Copilot</a></li><li class="chapter-item expanded "><a href="../ai/qa.html"><strong aria-hidden="true">1.6.</strong> Вопросы и ответы</a></li></ol></li><li class="chapter-item expanded "><a href="../dev/python/intro.html"><strong aria-hidden="true">2.</strong> Экспресс-курс Python</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../dev/python/basics.html"><strong aria-hidden="true">2.1.</strong> Основы Python</a></li><li class="chapter-item expanded "><a href="../dev/python/numpy.html"><strong aria-hidden="true">2.2.</strong> NumPy</a></li><li class="chapter-item expanded "><a href="../dev/python/scipy.html"><strong aria-hidden="true">2.3.</strong> SciPy</a></li><li class="chapter-item expanded "><a href="../dev/python/matplotlib.html"><strong aria-hidden="true">2.4.</strong> Matplotlib</a></li><li class="chapter-item expanded "><a href="../dev/python/holo.html"><strong aria-hidden="true">2.5.</strong> HoloViews</a></li><li class="chapter-item expanded "><a href="../dev/python/requirements.html"><strong aria-hidden="true">2.6.</strong> Требования к коду</a></li></ol></li><li class="chapter-item expanded "><a href="../dev/git.html"><strong aria-hidden="true">3.</strong> Git</a></li><li class="chapter-item expanded "><a href="../dev/docker.html"><strong aria-hidden="true">4.</strong> Docker</a></li><li class="chapter-item expanded affix "><li class="part-title">Загружаем Linux</li><li class="chapter-item expanded "><a href="../linux/intro.html"><strong aria-hidden="true">5.</strong> Основы Linux</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../linux/booting.html"><strong aria-hidden="true">5.1.</strong> Процесс загрузки</a></li><li class="chapter-item expanded "><a href="../linux/filesystems.html"><strong aria-hidden="true">5.2.</strong> Файловые системы</a></li><li class="chapter-item expanded "><a href="../linux/tools.html"><strong aria-hidden="true">5.3.</strong> Инструменты</a></li></ol></li><li class="chapter-item expanded "><a href="../linux/install-arch-linux.html"><strong aria-hidden="true">6.</strong> Установка Arch Linux</a></li><li class="chapter-item expanded "><a href="../linux/structure.html"><strong aria-hidden="true">7.</strong> Внутреннее устройство Linux</a></li><li class="chapter-item expanded affix "><li class="part-title">Разбираемся в алгоритмах</li><li class="chapter-item expanded "><a href="../cs/intro.html"><strong aria-hidden="true">8.</strong> Общие знания</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../cs/basic-algos.html"><strong aria-hidden="true">8.1.</strong> Введение в алгоритмы</a></li><li class="chapter-item expanded "><a href="../cs/basic-structures.html"><strong aria-hidden="true">8.2.</strong> Основные структуры данных</a></li><li class="chapter-item expanded "><a href="../cs/recurs-and-sorts.html"><strong aria-hidden="true">8.3.</strong> Рекурсия и сортировки</a></li><li class="chapter-item expanded "><a href="../cs/hash-funcs.html"><strong aria-hidden="true">8.4.</strong> Хеш-функции</a></li><li class="chapter-item expanded "><a href="../cs/trees.html" class="active"><strong aria-hidden="true">8.5.</strong> Деревья</a></li><li class="chapter-item expanded "><a href="../cs/graphs.html"><strong aria-hidden="true">8.6.</strong> Графы</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Считаем численно</li><li class="chapter-item expanded "><a href="../compute/intro.html"><strong aria-hidden="true">9.</strong> Введение в вычислительную физику</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../compute/basic-concepts.html"><strong aria-hidden="true">9.1.</strong> Сходимость, аппроксимация и устойчивость</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Погружаемся в Python</li><li class="chapter-item expanded "><a href="../dev/python/init.html"><strong aria-hidden="true">10.</strong> Начало</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../dev/python/objects.html"><strong aria-hidden="true">10.1.</strong> Объекты и память</a></li><li class="chapter-item expanded "><a href="../dev/python/collections.html"><strong aria-hidden="true">10.2.</strong> Коллекции</a></li><li class="chapter-item expanded "><a href="../dev/python/o-notation.html"><strong aria-hidden="true">10.3.</strong> Асимптотическая сложность</a></li></ol></li><li class="chapter-item expanded "><a href="../dev/python/functions.html"><strong aria-hidden="true">11.</strong> Функции</a></li><li class="chapter-item expanded "><a href="../dev/python/decorators.html"><strong aria-hidden="true">12.</strong> Декораторы и functools</a></li><li class="chapter-item expanded "><a href="../dev/python/classes.html"><strong aria-hidden="true">13.</strong> Классы</a></li><li class="chapter-item expanded "><a href="../dev/python/async.html"><strong aria-hidden="true">14.</strong> Итераторы, генераторы и корутины</a></li><li class="chapter-item expanded affix "><li class="part-title">Изучаем хорошие практики</li><li class="chapter-item expanded "><a href="../dev/life.html"><strong aria-hidden="true">15.</strong> Жизненный цикл ПО</a></li><li class="chapter-item expanded "><a href="../dev/app.html"><strong aria-hidden="true">16.</strong> От скрипта к приложению</a></li><li class="chapter-item expanded "><a href="../dev/web.html"><strong aria-hidden="true">17.</strong> Основы WEB</a></li><li class="chapter-item expanded "><a href="../dev/bd.html"><strong aria-hidden="true">18.</strong> Базы данных</a></li><li class="chapter-item expanded affix "><li class="part-title">Обрабатываем данные</li><li class="chapter-item expanded "><a href="../dev/python/numpy-and-pandas.html"><strong aria-hidden="true">19.</strong> NumPy и pandas</a></li><li class="chapter-item expanded "><a href="../dev/python/visualization/practice.html"><strong aria-hidden="true">20.</strong> Визуализация данных</a></li><li class="chapter-item expanded "><a href="../ds/intro.html"><strong aria-hidden="true">21.</strong> Машинное обучение</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ds/basic.html"><strong aria-hidden="true">21.1.</strong> Основные понятия</a></li><li class="chapter-item expanded "><a href="../ds/ml.html"><strong aria-hidden="true">21.2.</strong> Классические алгоритмы</a></li><li class="chapter-item expanded "><a href="../ds/nn.html"><strong aria-hidden="true">21.3.</strong> Нейронные сети</a></li><li class="chapter-item expanded "><a href="../ds/tools.html"><strong aria-hidden="true">21.4.</strong> Инструменты: scikit-learn</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Ускоряем код</li><li class="chapter-item expanded "><a href="../perf/intro.html"><strong aria-hidden="true">22.</strong> С чего начинать оптимизацию</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../dev/python/optimization.html"><strong aria-hidden="true">22.1.</strong> Почему Python не очень быстрый</a></li><li class="chapter-item expanded "><a href="../perf/perf.html"><strong aria-hidden="true">22.2.</strong> Скорость выполнения программ</a></li><li class="chapter-item expanded "><a href="../perf/gil.html"><strong aria-hidden="true">22.3.</strong> Многопоточность и GIL</a></li><li class="chapter-item expanded "><a href="../perf/async.html"><strong aria-hidden="true">22.4.</strong> Асинхронность</a></li><li class="chapter-item expanded "><a href="../perf/cuda.html"><strong aria-hidden="true">22.5.</strong> CUDA и вычисления на GPU</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Учимся у других</li><li class="chapter-item expanded "><a href="../examples/intro.html"><strong aria-hidden="true">23.</strong> Коды и скрипты</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../examples/kenv.html"><strong aria-hidden="true">23.1.</strong> Уравнение огибающей Капчинского-Владимирского для пучка заряженных частиц</a></li><li class="chapter-item expanded "><a href="../examples/envelope-optimize.html"><strong aria-hidden="true">23.2.</strong> Оптимизация огибающей пучка заряженных частиц с помощью генетического алгоритма</a></li><li class="chapter-item expanded "><a href="../examples/redpic.html"><strong aria-hidden="true">23.3.</strong> Релятивистская разностная схема для расчёта динамики частиц</a></li><li class="chapter-item expanded "><a href="../examples/orbit-correction.html"><strong aria-hidden="true">23.4.</strong> Коррекция равновесной орбиты с применением матрицы отклика и нейронных сетей</a></li><li class="chapter-item expanded "><a href="../examples/cadquery/layout.html"><strong aria-hidden="true">23.5.</strong> Схема ускорителя заряженных частиц в CadQuery</a></li><li class="chapter-item expanded "><a href="../examples/async-api.html"><strong aria-hidden="true">23.6.</strong> Асинхронное API для кинотеатра</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Работаем самостоятельно</li><li class="chapter-item expanded "><a href="../practicum/review-code-task.html"><strong aria-hidden="true">24.</strong> Ищем ошибки в чужом коде</a></li><li class="chapter-item expanded "><a href="../practicum/markov-chain-task.html"><strong aria-hidden="true">25.</strong> Делаем свою LLM</a></li><li class="chapter-item expanded "><a href="../practicum/booting-linux-task.html"><strong aria-hidden="true">26.</strong> Установка Linux</a></li><li class="chapter-item expanded "><a href="../practicum/linux-tools-task.html"><strong aria-hidden="true">27.</strong> Набор упражнений для работы в Linux</a></li><li class="chapter-item expanded "><a href="../practicum/linux-structure-task.html"><strong aria-hidden="true">28.</strong> Маленькая задачка c Linux</a></li><li class="chapter-item expanded "><a href="../practicum/python-algo-task.html"><strong aria-hidden="true">29.</strong> Пишем эффективный код</a></li><li class="chapter-item expanded "><a href="../practicum/kitty-startup-task.html"><strong aria-hidden="true">30.</strong> Деплой стартапа</a></li><li class="chapter-item expanded "><a href="../practicum/final-project-requirements.html"><strong aria-hidden="true">31.</strong> Итоговый проект</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded affix "><a href="../resume/intro.html">Заключение</a></li><li class="chapter-item expanded affix "><a href="../resume/literature.html">Литература и статьи</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Разработка и применение программного обеспечения в физических исследованиях</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/phys-dev/soft-dev-book/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="Деревья"><a class="header" href="#Деревья">Деревья</a></h1>
+<p>В предыдущих главах мы работали с линейными структурами данных: в массиве, связном списке, стеке и очереди элементы выстроены друг за другом, как вагоны поезда. Но далеко не все данные устроены так просто. Файловая система на твоём диске, структура HDF5-файла с результатами измерений, иерархия объёмов детектора в Geant4, дерево вызовов функций в профилировщике — всё это иерархии. Для их описания есть отдельная структура данных — дерево.</p>
+<p>С деревьями мы уже негласно встречались. В главе про рекурсию дерево вариантов помогало понять генерацию последовательностей из нулей и единиц, а сортировку слиянием мы рисовали как дерево рекурсивных вызовов. Теперь познакомимся с деревьями как с полноценной структурой данных.</p>
+<h2 id="Что-такое-дерево"><a class="header" href="#Что-такое-дерево">Что такое дерево</a></h2>
+<p><strong>Дерево</strong> — набор узлов (вершин), соединённых рёбрами, в котором:</p>
+<ul>
+<li>есть один выделенный узел — <strong>корень</strong> (англ. root);</li>
+<li>у каждого узла, кроме корня, ровно один <strong>родитель</strong> (англ. parent);</li>
+<li>от корня до любого узла можно дойти по рёбрам, причём ровно одним способом.</li>
+</ul>
+<p>Забегая в следующую главу: дерево — связный граф без циклов. Программисты, в отличие от ботаников, рисуют деревья корнем вверх: корень наверху, ветви растут вниз.</p>
+<p>Основная терминология:</p>
+<ul>
+<li><strong>потомки</strong> (дети) узла — узлы, для которых он является родителем;</li>
+<li><strong>лист</strong> (англ. leaf) — узел без потомков;</li>
+<li><strong>внутренний узел</strong> — узел, у которого есть хотя бы один потомок;</li>
+<li><strong>поддерево</strong> — узел вместе со всеми его потомками, потомками потомков и так далее; каждый узел можно рассматривать как корень собственного поддерева;</li>
+<li><strong>глубина узла</strong> — число рёбер на пути от корня до узла (у корня глубина 0);</li>
+<li><strong>уровень</strong> — множество узлов одной глубины;</li>
+<li><strong>высота дерева</strong> — наибольшая глубина среди всех узлов.</li>
+</ul>
+<p>Обрати внимание: глубину и высоту иногда измеряют не в рёбрах, а в узлах — тогда все значения на единицу больше. Оба соглашения встречаются в литературе, поэтому в задачах всегда уточняй, что именно считается. Ниже, в разборе задачи про максимальную глубину, мы будем считать её именно в узлах — так требует условие.</p>
+<p>Рекурсивность — главное свойство дерева. Дерево состоит из корня и поддеревьев, каждое из которых само является деревом. Поэтому почти все алгоритмы на деревьях естественно записываются рекурсивно: обработай корень и рекурсивно обработай его поддеревья. Базовый случай — пустое дерево. Всё, что мы обсуждали в главе про рекурсию, здесь заработает в полную силу.</p>
+<h2 id="Двоичные-деревья-и-класс-node"><a class="header" href="#Двоичные-деревья-и-класс-node">Двоичные деревья и класс Node</a></h2>
+<p><strong>Двоичное (бинарное) дерево</strong> — дерево, в котором у каждого узла не больше двух потомков, причём они различаются: <strong>левый</strong> и <strong>правый</strong>. Двоичные деревья особенно важны: на них строятся деревья поиска и кучи, а любое дерево общего вида можно свести к двоичному.</p>
+<p>В Python узел дерева удобно описывать классом со ссылками на потомков — так же, как мы описывали элемент связного списка, только ссылок теперь две:</p>
+<pre><code class="language-python">class Node:
+    def __init__(self, value, left=None, right=None):
+        self.value = value  # данные, хранящиеся в узле
+        self.left = left    # ссылка на левого потомка (или None)
+        self.right = right  # ссылка на правого потомка (или None)
+</code></pre>
+<p>Соберём небольшое дерево:</p>
+<pre><code>      5
+     / \
+    3   8
+   / \
+  1   4
+</code></pre>
+<pre><code class="language-python">root = Node(5, Node(3, Node(1), Node(4)), Node(8))
+</code></pre>
+<p>Всё дерево представлено одной ссылкой на корень: зная корень, можно добраться до любого узла. Пустое дерево — это просто <code>None</code>. Именно поэтому функции, работающие с деревьями, принимают корень и первым делом проверяют, не равен ли он <code>None</code>. Это и есть базовый случай рекурсии.</p>
+<h2 id="Обходы-дерева"><a class="header" href="#Обходы-дерева">Обходы дерева</a></h2>
+<p>Обойти дерево — значит побывать в каждом узле ровно один раз. В отличие от массива, где порядок обхода очевиден, у дерева есть несколько естественных порядков. Все они делятся на два семейства: обходы в глубину (DFS, англ. depth-first search) и обход в ширину (BFS, англ. breadth-first search).</p>
+<h3 id="Обходы-в-глубину"><a class="header" href="#Обходы-в-глубину">Обходы в глубину</a></h3>
+<p>Обход в глубину сначала уходит по ветке до самого низа и только потом возвращается. Рекурсивная реализация тривиальна, а три классических варианта отличаются лишь моментом, когда мы обрабатываем сам узел относительно его поддеревьев:</p>
+<pre><code class="language-python">def preorder(root):        # корень -&gt; левое -&gt; правое
+    if root is None:
+        return
+    print(root.value)      # обрабатываем узел до потомков
+    preorder(root.left)
+    preorder(root.right)
+
+
+def inorder(root):         # левое -&gt; корень -&gt; правое
+    if root is None:
+        return
+    inorder(root.left)
+    print(root.value)      # обрабатываем узел между потомками
+    inorder(root.right)
+
+
+def postorder(root):       # левое -&gt; правое -&gt; корень
+    if root is None:
+        return
+    postorder(root.left)
+    postorder(root.right)
+    print(root.value)      # обрабатываем узел после потомков
+</code></pre>
+<p>Для дерева с картинки выше <code>preorder</code> напечатает <code>5 3 1 4 8</code>, <code>inorder</code> — <code>1 3 4 5 8</code>, а <code>postorder</code> — <code>1 4 3 8 5</code>.</p>
+<p>Каждый вариант полезен по-своему. Pre-order подходит для копирования и сериализации дерева (сначала создаём узел, потом его потомков). Post-order — для удаления и для вычислений «снизу вверх», когда результат в узле зависит от результатов в поддеревьях: так вычисляют высоту, размер поддеревьев, значение арифметического выражения по его дереву. In-order, как мы вскоре увидим, выдаёт элементы дерева поиска в отсортированном порядке.</p>
+<h3 id="Обход-в-ширину"><a class="header" href="#Обход-в-ширину">Обход в ширину</a></h3>
+<p>Обход в ширину идёт по уровням: сначала корень, затем все узлы глубины 1, затем глубины 2 и так далее. Рекурсией здесь не обойтись — нужна очередь, знакомая нам по главе о базовых структурах:</p>
+<pre><code class="language-python">from collections import deque
+
+
+def level_order(root):
+    if root is None:
+        return
+    queue = deque([root])
+    while queue:
+        node = queue.popleft()      # берём узел из начала очереди
+        print(node.value)
+        if node.left:               # и ставим его потомков в конец
+            queue.append(node.left)
+        if node.right:
+            queue.append(node.right)
+</code></pre>
+<p>Для того же дерева получится <code>5 3 8 1 4</code> — ровно по уровням. Любой обход посещает каждый узел ровно один раз (обход в глубину вдобавок проходит по каждому ребру дважды — вниз и обратно), поэтому все они работают за \( O(n) \), где \( n \) — число узлов. Дополнительная память — \( O(h) \) на стек рекурсии у DFS (где \( h \) — высота дерева) и до \( O(n) \) на очередь у BFS (самый широкий уровень).</p>
+<h2 id="Двоичное-дерево-поиска"><a class="header" href="#Двоичное-дерево-поиска">Двоичное дерево поиска</a></h2>
+<p><strong>Двоичное дерево поиска</strong> (англ. binary search tree, BST) — двоичное дерево, в каждом узле которого выполняется свойство порядка: все значения в левом поддереве строго меньше значения узла, а все значения в правом — строго больше.</p>
+<p>Это свойство превращает поиск в аналог двоичного поиска по отсортированному массиву. Сравнили искомый ключ с корнем: меньше — идём налево, больше — направо. На каждом шаге спускаемся на уровень ниже, отбрасывая целое поддерево:</p>
+<pre><code class="language-python">def find(root, key):
+    while root is not None and root.value != key:
+        root = root.left if key &lt; root.value else root.right
+    return root  # узел с ключом key или None, если ключа нет
+</code></pre>
+<p>Вставка устроена так же: спускаемся, как при поиске, и подвешиваем новый узел на место, где упёрлись в <code>None</code>:</p>
+<pre><code class="language-python">def insert(root, key):
+    if root is None:
+        return Node(key)          # нашли свободное место
+    if key &lt; root.value:
+        root.left = insert(root.left, key)
+    elif key &gt; root.value:
+        root.right = insert(root.right, key)
+    return root                   # ключ уже есть — ничего не меняем
+</code></pre>
+<p>Поиск, вставка и удаление стоят \( O(h) \) — мы проходим один путь от корня вниз. А in-order-обход дерева поиска выдаёт ключи по возрастанию: сначала всё меньшее (левое поддерево), потом узел, потом всё большее. Получается структура, которая одновременно поддерживает быстрый поиск, вставку, удаление и перебор в отсортированном порядке — то, чего не умеют ни отсортированный массив (медленная вставка), ни хеш-таблица (нет порядка).</p>
+<h3 id="Сбалансированность"><a class="header" href="#Сбалансированность">Сбалансированность</a></h3>
+<p>Вся эффективность BST держится на высоте \( h \). Если вставлять ключи в случайном порядке, дерево получается «кустистым» и \( h \approx \log_2 n \). Но если вставить ключи 1, 2, 3, ..., n по порядку, каждый новый узел уйдёт направо, и дерево выродится в связный список высотой \( n \). Все операции станут линейными.</p>
+<p>Дерево называется <strong>сбалансированным</strong>, если у каждого узла высоты левого и правого поддеревьев отличаются не больше чем на единицу. У сбалансированного дерева \( h = O(\log n) \), а значит, все операции работают за \( O(\log n) \).</p>
+<p>Заставить дерево оставаться сбалансированным при любых вставках и удалениях можно — для этого придуманы самобалансирующиеся деревья (АВЛ-дерево, красно-чёрное дерево), которые после каждой операции делают небольшие локальные перестройки — повороты. Именно они прячутся за <code>std::map</code> в C++ и <code>TreeMap</code> в Java, о которых мы упоминали в главе про хеш-таблицы. В стандартной библиотеке Python дерева поиска нет — обычно хватает <code>dict</code>, <code>set</code> и модуля <code>bisect</code> для отсортированного списка.</p>
+<h2 id="Куча"><a class="header" href="#Куча">Куча</a></h2>
+<p><strong>Куча</strong> (англ. heap) — структура данных для задач, где нужно быстро находить максимум (или минимум) меняющегося набора элементов. В <strong>невозрастающей куче</strong> (max-heap) выполняется основное свойство кучи: значение любого узла не меньше значений его потомков. Значит, в корне всегда лежит максимум. В min-heap всё наоборот — в корне минимум.</p>
+<p>В отличие от дерева поиска, куча не упорядочивает элементы полностью — между левым и правым поддеревом никакого порядка нет. Взамен куча обходится <strong>почти полным</strong> двоичным деревом: все уровни, кроме последнего, заполнены целиком, а последний заполняется слева направо. Такое дерево не бывает вырожденным, его высота всегда \( O(\log n) \).</p>
+<h3 id="Куча-в-массиве"><a class="header" href="#Куча-в-массиве">Куча в массиве</a></h3>
+<p>Почти полное дерево можно хранить без всяких ссылок — в обычном массиве, выписав узлы по уровням:</p>
+<pre><code>Куча:                Массив:
+
+      9              [9, 7, 8, 3, 1, 4]
+     / \              0  1  2  3  4  5
+    7   8
+   / \  /
+  3  1 4
+</code></pre>
+<p>Индексы связаны простой арифметикой: у узла с индексом \( i \) потомки лежат в ячейках \( 2i + 1 \) и \( 2i + 2 \), а родитель — в ячейке \( \lfloor (i-1)/2 \rfloor \). Никаких классов и указателей: любой массив уже готов стать деревом.</p>
+<p>Держится куча на двух операциях «просеивания»:</p>
+<ul>
+<li><strong>просеивание вверх</strong> (sift up): новый элемент дописывается в конец массива и меняется местами с родителем, пока он больше родителя;</li>
+<li><strong>просеивание вниз</strong> (sift down): если корень стал меньше потомков, он меняется местами с бóльшим из них и опускается, пока свойство кучи не восстановится.</li>
+</ul>
+<p>Оба просеивания проходят не больше одного пути от корня до листа, то есть стоят \( O(\log n) \). На них строится <strong>приоритетная очередь</strong>: добавить элемент — \( O(\log n) \), посмотреть максимум — \( O(1) \), извлечь максимум (переставить последний элемент в корень и просеять вниз) — \( O(\log n) \).</p>
+<p>В Python куча реализована модулем <code>heapq</code> — min-heap поверх обычного списка:</p>
+<pre><code class="language-python">import heapq
+
+distances = [5.2, 1.1, 3.7, 0.4]
+heapq.heapify(distances)          # превращает список в кучу за O(n)
+heapq.heappush(distances, 2.6)    # добавление за O(log n)
+print(heapq.heappop(distances))   # 0.4 — минимум, за O(log n)
+</code></pre>
+<p>Если нужен max-heap, есть стандартный трюк: хранить в куче элементы с обратным знаком. Он ещё пригодится нам в следующей главе — в алгоритме построения остовного дерева.</p>
+<h3 id="Пирамидальная-сортировка"><a class="header" href="#Пирамидальная-сортировка">Пирамидальная сортировка</a></h3>
+<p>Куча даёт ещё один способ сортировать за \( O(n \log n) \) — <strong>пирамидальную сортировку</strong> (англ. heap sort). Идея в два этапа:</p>
+<ol>
+<li>Превратить массив в max-heap, просеяв вниз все внутренние узлы от последнего к корню.</li>
+<li>Повторять \( n - 1 \) раз: обменять корень (текущий максимум) с последним элементом неотсортированной части и просеять новый корень вниз. Максимумы один за другим встают в конец массива на свои окончательные места.</li>
+</ol>
+<p>В отличие от сортировки слиянием, heap sort не требует дополнительной памяти — всё происходит в исходном массиве. В отличие от быстрой сортировки, у него нет плохих входов: любой массив обрабатывается за \( O(n \log n) \). Платить за это приходится неустойчивостью и несколько большей константой — на практике heap sort обычно чуть медленнее quick sort. Полную реализацию мы разберём ниже в задачах.</p>
+<h2 id="Деревья-в-физических-задачах"><a class="header" href="#Деревья-в-физических-задачах">Деревья в физических задачах</a></h2>
+<p>Деревья в вычислительной физике — не абстракция, а рабочий инструмент. Вот три типичных сюжета.</p>
+<p><strong>Поиск соседей и k-d деревья.</strong> В молекулярной динамике, методе SPH или при кластеризации экспериментальных точек постоянно нужно отвечать на вопрос: какие частицы находятся рядом с данной? Перебор всех пар стоит \( O(N^2) \). <strong>k-d дерево</strong> (k-dimensional tree) рекурсивно делит пространство плоскостями пополам, так что запрос «ближайшие соседи точки» выполняется в среднем за \( O(\log N) \). В SciPy оно уже реализовано:</p>
+<pre><code class="language-python">import numpy as np
+from scipy.spatial import KDTree
+
+points = np.random.rand(100_000, 3)      # частицы в единичном кубе
+tree = KDTree(points)                    # построение за O(N log N)
+
+dist, idx = tree.query(points[0], k=10)          # 10 ближайших соседей
+neighbors = tree.query_ball_point(points[0], r=0.05)  # все соседи в радиусе
+</code></pre>
+<p><strong>Гравитационная задача N тел и октодеревья.</strong> Прямое суммирование сил между \( N \) телами требует \( O(N^2) \) операций на шаг — для галактики из миллиардов звёзд это безнадёжно. Алгоритм Барнса — Хата строит <strong>октодерево</strong> (англ. octree): куб пространства рекурсивно делится на 8 октантов, пока в каждом листе не останется по частице. Для далёкой группы частиц незачем суммировать вклады по одной — достаточно одного слагаемого от её суммарной массы в центре масс, который хранится в узле дерева. Критерий простой: если угловой размер ячейки \( s/d \) меньше порога \( \theta \), ячейка не раскрывается. Сложность падает до \( O(N \log N) \), и именно такие деревья (вместе с более хитрым быстрым мультипольным методом) работают внутри современных астрофизических кодов вроде GADGET.</p>
+<p><strong>Иерархические данные.</strong> Формат HDF5, стандарт де-факто для больших численных данных, устроен как дерево: группы содержат подгруппы и датасеты, как каталоги и файлы. Деревом является и геометрия детектора в Geant4 (объёмы, вложенные в объёмы), и символьное выражение в SymPy — там узлы это операции, а листья — переменные и константы. Когда встречаешь иерархию, знай: под капотом почти наверняка дерево и рекурсивные обходы из этой главы.</p>
+<h2 id="Разбор-задач"><a class="header" href="#Разбор-задач">Разбор задач</a></h2>
+<p>Разберём несколько классических задач о деревьях. Во всех задачах, где на вход подаётся корень дерева, используется класс <code>Node</code>, описанный выше. Попробуй сначала решить каждую задачу самостоятельно — все они собраны в <a href="https://contest.yandex.ru/contest/24809/problems/">тренажёре</a>.</p>
+<h3 id="Задача-1-Максимальная-глубина"><a class="header" href="#Задача-1-Максимальная-глубина">Задача 1. Максимальная глубина</a></h3>
+<p><strong>Условие.</strong> Дан корень двоичного дерева. Найди его максимальную глубину — наибольшее число узлов на пути от корня до листа (включая корень и лист).</p>
+<p><strong>Идея решения.</strong> Задача рекурсивна по построению: глубина дерева — глубина более глубокого из поддеревьев плюс один (сам корень). Базовый случай — пустое дерево глубины 0.</p>
+<pre><code class="language-python">def max_depth(root):
+    # Базовый случай: пустое дерево не добавляет к глубине ничего
+    if root is None:
+        return 0
+    # Более глубокое из поддеревьев плюс сам корень
+    return 1 + max(max_depth(root.left), max_depth(root.right))
+</code></pre>
+<p><strong>Сложность.</strong> По времени — \( O(n) \): каждый узел посещается один раз. По памяти — \( O(h) \) на стек рекурсии, где \( h \) — высота дерева.</p>
+<h3 id="Задача-2-Сбалансированное-дерево"><a class="header" href="#Задача-2-Сбалансированное-дерево">Задача 2. Сбалансированное дерево</a></h3>
+<p><strong>Условие.</strong> Определи, сбалансировано ли двоичное дерево: у каждого узла высоты левого и правого поддеревьев должны отличаться не больше чем на единицу.</p>
+<p><strong>Идея решения.</strong> Напрашивается лобовое решение: для каждого узла посчитать высоты поддеревьев функцией из предыдущей задачи и сравнить. Но тогда высота каждого узла будет вычисляться заново на каждом уровне выше него, и в худшем случае получится \( O(n^2) \).</p>
+<p>Лучше совместить оба вычисления в одном обходе. Пусть функция возвращает высоту поддерева, а если поддерево несбалансировано — специальное значение-сигнал <code>-1</code>, которое немедленно передаётся наверх без дальнейших проверок.</p>
+<pre><code class="language-python">def check_height(root):
+    """Высота поддерева или -1, если оно несбалансировано."""
+    if root is None:
+        return 0
+
+    left = check_height(root.left)
+    if left == -1:                 # слева уже нашли дисбаланс
+        return -1
+
+    right = check_height(root.right)
+    if right == -1:                # справа уже нашли дисбаланс
+        return -1
+
+    if abs(left - right) &gt; 1:      # дисбаланс в текущем узле
+        return -1
+
+    return 1 + max(left, right)
+
+
+def is_balanced(root):
+    return check_height(root) != -1
+</code></pre>
+<p><strong>Сложность.</strong> По времени — \( O(n) \): один post-order-обход, высота каждого узла вычисляется ровно один раз. По памяти — \( O(h) \) на стек рекурсии.</p>
+<h3 id="Задача-3-Дерево-поиска"><a class="header" href="#Задача-3-Дерево-поиска">Задача 3. Дерево поиска</a></h3>
+<p><strong>Условие.</strong> Проверь, является ли двоичное дерево деревом поиска: значения в левом поддереве каждого узла строго меньше значения узла, в правом — строго больше.</p>
+<p><strong>Идея решения.</strong> Частая ошибка — проверять только соседние узлы: <code>left.value &lt; node.value &lt; right.value</code>. Такой локальной проверки недостаточно:</p>
+<pre><code>Дерево поиска:        Не дерево поиска:
+      5                     5
+     / \                   / \
+    3   8                 3   8
+   / \                   / \
+  1   4                 1   6
+</code></pre>
+<p>В правом дереве узел 6 больше своего родителя 3 — локально всё хорошо. Но 6 находится в левом поддереве корня 5, а значит, обязан быть меньше 5. Условие глобальное: каждый узел ограничен всеми своими предками.</p>
+<p>Будем спускаться по дереву и передавать вниз интервал допустимых значений \( (\text{low}, \text{high}) \). Уходя налево, ужесточаем верхнюю границу значением узла, уходя направо — нижнюю.</p>
+<pre><code class="language-python">def is_bst(root, low=float('-inf'), high=float('inf')):
+    if root is None:
+        return True
+    # Значение узла обязано лежать строго внутри интервала предков
+    if not (low &lt; root.value &lt; high):
+        return False
+    return (is_bst(root.left, low, root.value)      # слева всё &lt; root.value
+            and is_bst(root.right, root.value, high))  # справа всё &gt; root.value
+</code></pre>
+<p>Есть и изящная альтернатива: сделать in-order-обход и проверить, что значения идут строго по возрастанию: для дерева поиска это критерий.</p>
+<p><strong>Сложность.</strong> По времени — \( O(n) \), по памяти — \( O(h) \) на стек рекурсии.</p>
+<h3 id="Задача-4-Сколько-существует-деревьев-поиска"><a class="header" href="#Задача-4-Сколько-существует-деревьев-поиска">Задача 4. Сколько существует деревьев поиска</a></h3>
+<p><strong>Условие.</strong> Сколько различных двоичных деревьев поиска можно построить из всех чисел от 1 до \( n \)? Число \( n \) не превосходит 20.</p>
+<p><strong>Идея решения.</strong> Выберем корнем число \( k \). Тогда числа \( 1, \dots, k-1 \) обязаны попасть в левое поддерево, а \( k+1, \dots, n \) — в правое, и каждое из поддеревьев — само дерево поиска. Число деревьев из \( m \) последовательных чисел зависит только от \( m \), поэтому получаем рекуррентность</p>
+<p>\[ C_n = \sum_{k=1}^{n} C_{k-1} , C_{n-k}, \qquad C_0 = 1. \]</p>
+<p>Это знаменитые <strong>числа Каталана</strong> — они же считают правильные скобочные последовательности и одномерные случайные блуждания, не опускающиеся ниже нуля. Для них известна замкнутая формула</p>
+<p>\[ C_n = \frac{1}{n+1} \binom{2n}{n} = \frac{(2n)!}{n! , (n+1)!}. \]</p>
+<pre><code class="language-python">from math import comb
+
+
+def count_bst(n):
+    # Число Каталана: C(2n, n) / (n + 1), деление всегда нацело
+    return comb(2 * n, n) // (n + 1)
+</code></pre>
+<p>Если формулу не помнишь, ответ считается и по рекуррентности — динамическим программированием:</p>
+<pre><code class="language-python">def count_bst_dp(n):
+    counts = [1] + [0] * n           # counts[0] = 1: пустое дерево одно
+    for size in range(1, n + 1):
+        for root in range(1, size + 1):
+            # root - 1 чисел уходит налево, size - root — направо
+            counts[size] += counts[root - 1] * counts[size - root]
+    return counts[n]
+</code></pre>
+<p>Важно работать с целыми числами: наивное <code>fac(2*n) / (fac(n) * fac(n+1))</code> через вещественное деление начнёт терять точность — <code>float</code> хранит лишь около 16 значащих цифр, а \( C_{20} = 6,564,120,420 \) уже требует точного ответа.</p>
+<p><strong>Сложность.</strong> Формула с биномиальным коэффициентом — \( O(n) \) умножений; вариант с динамикой — \( O(n^2) \) операций и \( O(n) \) памяти.</p>
+<h3 id="Задача-5-Удаление-узла-из-дерева-поиска"><a class="header" href="#Задача-5-Удаление-узла-из-дерева-поиска">Задача 5. Удаление узла из дерева поиска</a></h3>
+<p><strong>Условие.</strong> Дано дерево поиска с уникальными целыми ключами. Удали узел с заданным ключом так, чтобы дерево осталось корректным деревом поиска, и верни корень изменённого дерева. Если ключа нет — верни дерево без изменений. Создавать новые узлы нельзя, сложность должна быть \( O(h) \).</p>
+<p><strong>Идея решения.</strong> Сначала спускаемся к удаляемому узлу, как при обычном поиске. Дальше три случая:</p>
+<ol>
+<li>У узла нет потомков — просто убираем его (родитель начинает ссылаться на <code>None</code>).</li>
+<li>Один потомок — подвешиваем потомка на место удаляемого узла.</li>
+<li>Два потомка — находим <strong>преемника</strong>: минимальный узел правого поддерева (идём направо, затем налево до упора). Преемник больше всего левого поддерева и меньше всего остального правого, поэтому может законно встать на место удаляемого узла. Вырезаем его со старого места (у него нет левого потомка, так что это случай 1 или 2) и переставляем.</li>
+</ol>
+<pre><code class="language-python">def remove(root, key):
+    if root is None:                     # ключа в дереве нет
+        return None
+
+    if key &lt; root.value:                 # ищем слева
+        root.left = remove(root.left, key)
+    elif key &gt; root.value:               # ищем справа
+        root.right = remove(root.right, key)
+    else:                                # нашли узел с ключом key
+        if root.left is None:            # случаи 1 и 2: нет левого потомка
+            return root.right
+        if root.right is None:           # случай 2: нет правого потомка
+            return root.left
+
+        # Случай 3: ищем преемника — минимум правого поддерева
+        parent, succ = root, root.right
+        while succ.left is not None:
+            parent, succ = succ, succ.left
+
+        # Вырезаем преемника со старого места...
+        if parent.left is succ:
+            parent.left = succ.right
+        else:
+            parent.right = succ.right
+
+        # ...и ставим его на место удаляемого узла
+        succ.left = root.left
+        succ.right = root.right
+        return succ
+
+    return root
+</code></pre>
+<p><strong>Сложность.</strong> По времени — \( O(h) \): спуск к узлу и спуск к преемнику вместе образуют один путь от корня вниз. По памяти — \( O(h) \) на рекурсию поиска (её несложно переписать циклом до \( O(1) \)).</p>
+<h3 id="Задача-6-Пирамидальная-сортировка"><a class="header" href="#Задача-6-Пирамидальная-сортировка">Задача 6. Пирамидальная сортировка</a></h3>
+<p><strong>Условие.</strong> По результатам соревнования дан список участников: логин, число решённых задач \( P \) и штраф \( F \). Отсортируй таблицу результатов: выше стоит тот, у кого больше решённых задач; при равенстве — тот, у кого меньше штраф; если и штрафы равны — тот, чей логин идёт раньше по алфавиту. Кучу нужно реализовать самостоятельно, встроенными сортировками и <code>heapq</code> пользоваться нельзя.</p>
+<pre><code>Ввод:                  Вывод:
+5                      gena
+alla 4 100             timofey
+gena 6 1000            alla
+gosha 2 90             gosha
+rita 2 90              rita
+timofey 4 80
+</code></pre>
+<p><strong>Идея решения.</strong> Это задача на сортировку по составному ключу — вспомни раздел про сортировку по ключу из главы о сортировках. Подберём ключ так, чтобы обычное сравнение кортежей «меньше» означало «выше в таблице»: число решённых задач берём с минусом (больше задач — меньше ключ), штраф и логин — как есть:</p>
+<pre><code class="language-python">def sort_key(user):
+    login, solved, penalty = user
+    return (-solved, penalty, login)
+</code></pre>
+<p>Остаётся отсортировать массив по этому ключу пирамидальной сортировкой. Строим max-heap прямо в исходном массиве, затем раз за разом переставляем максимум (худшего из оставшихся участников) в конец неотсортированной части:</p>
+<pre><code class="language-python">def sift_down(items, start, end):
+    """Просеивает элемент start вниз внутри items[start:end + 1]."""
+    root = start
+    while True:
+        child = 2 * root + 1               # левый потомок
+        if child &gt; end:                    # потомков нет — дно кучи
+            break
+        # Из двух потомков выбираем большего
+        if child + 1 &lt;= end and sort_key(items[child]) &lt; sort_key(items[child + 1]):
+            child += 1
+        if sort_key(items[root]) &lt; sort_key(items[child]):
+            items[root], items[child] = items[child], items[root]
+            root = child                   # спускаемся за элементом дальше
+        else:
+            break                          # свойство кучи восстановлено
+
+
+def heap_sort(items):
+    n = len(items)
+    # Этап 1: строим кучу — просеиваем все внутренние узлы справа налево
+    for start in range((n - 2) // 2, -1, -1):
+        sift_down(items, start, n - 1)
+    # Этап 2: снимаем максимум с вершины кучи в конец массива
+    for end in range(n - 1, 0, -1):
+        items[0], items[end] = items[end], items[0]
+        sift_down(items, 0, end - 1)
+
+
+def main():
+    n = int(input())
+    users = []
+    for _ in range(n):
+        login, solved, penalty = input().split()
+        users.append((login, int(solved), int(penalty)))
+
+    heap_sort(users)
+
+    print('\n'.join(user[0] for user in users))
+
+
+if __name__ == '__main__':
+    main()
+</code></pre>
+<p>После этапа 1 максимальный (по нашему ключу — худший) участник стоит в корне кучи, то есть в ячейке 0. Обмен с последним элементом ставит его на окончательное место, а однократное просеивание вниз восстанавливает кучу в укоротившейся части массива. В итоге массив отсортирован по возрастанию ключа — лучшие участники в начале.</p>
+<p><strong>Сложность.</strong> Построение кучи — \( O(n) \) (низкие узлы просеиваются на маленькую глубину), затем \( n - 1 \) просеиваний по \( O(\log n) \). Итого \( O(n \log n) \) по времени в худшем случае и \( O(1) \) дополнительной памяти — сортировка происходит на месте. В боевом коде, конечно, достаточно <code>sorted(users, key=sort_key)</code> — но теперь ты знаешь, что могло бы происходить у него внутри.</p>
+<h2 id="Резюме"><a class="header" href="#Резюме">Резюме</a></h2>
+<ul>
+<li>Дерево — рекурсивная структура: корень и поддеревья, каждое из которых само дерево. Базовый случай алгоритмов — пустое дерево <code>None</code>.</li>
+<li>Обходы в глубину (pre-, in-, post-order) пишутся рекурсией, обход в ширину — очередью; все стоят \( O(n) \).</li>
+<li>Дерево поиска даёт поиск, вставку и удаление за \( O(h) \); чтобы \( h \) была \( O(\log n) \), дерево должно быть сбалансированным.</li>
+<li>Куча — почти полное дерево в массиве: максимум за \( O(1) \), вставка и извлечение за \( O(\log n) \); на ней строятся приоритетная очередь и heap sort.</li>
+<li>В физических расчётах деревья ускоряют поиск соседей (k-d деревья), задачу N тел (октодеревья Барнса — Хата) и организуют иерархические данные (HDF5).</li>
+</ul>
+<p>В следующей главе мы уберём у дерева ограничения: разрешим циклы и произвольные связи. Получится самая общая структура данных — граф.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../cs/hash-funcs.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../cs/graphs.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../cs/hash-funcs.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../cs/graphs.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

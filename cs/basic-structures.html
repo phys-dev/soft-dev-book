@@ -1,0 +1,744 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Основные структуры данных - Разработка и применение программного обеспечения в физических исследованиях</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../intro/intro.html">О книге</a></li><li class="chapter-item expanded affix "><a href="../intro/about-me.html">О себе</a></li><li class="chapter-item expanded affix "><li class="part-title">Ищем помощников</li><li class="chapter-item expanded "><a href="../ai/intro.html"><strong aria-hidden="true">1.</strong> ИИ для разработки</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ai/context.html"><strong aria-hidden="true">1.1.</strong> Контекст и скорость изменений</a></li><li class="chapter-item expanded "><a href="../ai/develop.html"><strong aria-hidden="true">1.2.</strong> ИИ и разработчик</a></li><li class="chapter-item expanded "><a href="../ai/basic.html"><strong aria-hidden="true">1.3.</strong> Технические основы</a></li><li class="chapter-item expanded "><a href="../ai/instruments.html"><strong aria-hidden="true">1.4.</strong> Инструментарий</a></li><li class="chapter-item expanded "><a href="../ai/copilot.html"><strong aria-hidden="true">1.5.</strong> GitHub Copilot</a></li><li class="chapter-item expanded "><a href="../ai/qa.html"><strong aria-hidden="true">1.6.</strong> Вопросы и ответы</a></li></ol></li><li class="chapter-item expanded "><a href="../dev/python/intro.html"><strong aria-hidden="true">2.</strong> Экспресс-курс Python</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../dev/python/basics.html"><strong aria-hidden="true">2.1.</strong> Основы Python</a></li><li class="chapter-item expanded "><a href="../dev/python/numpy.html"><strong aria-hidden="true">2.2.</strong> NumPy</a></li><li class="chapter-item expanded "><a href="../dev/python/scipy.html"><strong aria-hidden="true">2.3.</strong> SciPy</a></li><li class="chapter-item expanded "><a href="../dev/python/matplotlib.html"><strong aria-hidden="true">2.4.</strong> Matplotlib</a></li><li class="chapter-item expanded "><a href="../dev/python/holo.html"><strong aria-hidden="true">2.5.</strong> HoloViews</a></li><li class="chapter-item expanded "><a href="../dev/python/requirements.html"><strong aria-hidden="true">2.6.</strong> Требования к коду</a></li></ol></li><li class="chapter-item expanded "><a href="../dev/git.html"><strong aria-hidden="true">3.</strong> Git</a></li><li class="chapter-item expanded "><a href="../dev/docker.html"><strong aria-hidden="true">4.</strong> Docker</a></li><li class="chapter-item expanded affix "><li class="part-title">Загружаем Linux</li><li class="chapter-item expanded "><a href="../linux/intro.html"><strong aria-hidden="true">5.</strong> Основы Linux</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../linux/booting.html"><strong aria-hidden="true">5.1.</strong> Процесс загрузки</a></li><li class="chapter-item expanded "><a href="../linux/filesystems.html"><strong aria-hidden="true">5.2.</strong> Файловые системы</a></li><li class="chapter-item expanded "><a href="../linux/tools.html"><strong aria-hidden="true">5.3.</strong> Инструменты</a></li></ol></li><li class="chapter-item expanded "><a href="../linux/install-arch-linux.html"><strong aria-hidden="true">6.</strong> Установка Arch Linux</a></li><li class="chapter-item expanded "><a href="../linux/structure.html"><strong aria-hidden="true">7.</strong> Внутреннее устройство Linux</a></li><li class="chapter-item expanded affix "><li class="part-title">Разбираемся в алгоритмах</li><li class="chapter-item expanded "><a href="../cs/intro.html"><strong aria-hidden="true">8.</strong> Общие знания</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../cs/basic-algos.html"><strong aria-hidden="true">8.1.</strong> Введение в алгоритмы</a></li><li class="chapter-item expanded "><a href="../cs/basic-structures.html" class="active"><strong aria-hidden="true">8.2.</strong> Основные структуры данных</a></li><li class="chapter-item expanded "><a href="../cs/recurs-and-sorts.html"><strong aria-hidden="true">8.3.</strong> Рекурсия и сортировки</a></li><li class="chapter-item expanded "><a href="../cs/hash-funcs.html"><strong aria-hidden="true">8.4.</strong> Хеш-функции</a></li><li class="chapter-item expanded "><a href="../cs/trees.html"><strong aria-hidden="true">8.5.</strong> Деревья</a></li><li class="chapter-item expanded "><a href="../cs/graphs.html"><strong aria-hidden="true">8.6.</strong> Графы</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Считаем численно</li><li class="chapter-item expanded "><a href="../compute/intro.html"><strong aria-hidden="true">9.</strong> Введение в вычислительную физику</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../compute/basic-concepts.html"><strong aria-hidden="true">9.1.</strong> Сходимость, аппроксимация и устойчивость</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Погружаемся в Python</li><li class="chapter-item expanded "><a href="../dev/python/init.html"><strong aria-hidden="true">10.</strong> Начало</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../dev/python/objects.html"><strong aria-hidden="true">10.1.</strong> Объекты и память</a></li><li class="chapter-item expanded "><a href="../dev/python/collections.html"><strong aria-hidden="true">10.2.</strong> Коллекции</a></li><li class="chapter-item expanded "><a href="../dev/python/o-notation.html"><strong aria-hidden="true">10.3.</strong> Асимптотическая сложность</a></li></ol></li><li class="chapter-item expanded "><a href="../dev/python/functions.html"><strong aria-hidden="true">11.</strong> Функции</a></li><li class="chapter-item expanded "><a href="../dev/python/decorators.html"><strong aria-hidden="true">12.</strong> Декораторы и functools</a></li><li class="chapter-item expanded "><a href="../dev/python/classes.html"><strong aria-hidden="true">13.</strong> Классы</a></li><li class="chapter-item expanded "><a href="../dev/python/async.html"><strong aria-hidden="true">14.</strong> Итераторы, генераторы и корутины</a></li><li class="chapter-item expanded affix "><li class="part-title">Изучаем хорошие практики</li><li class="chapter-item expanded "><a href="../dev/life.html"><strong aria-hidden="true">15.</strong> Жизненный цикл ПО</a></li><li class="chapter-item expanded "><a href="../dev/app.html"><strong aria-hidden="true">16.</strong> От скрипта к приложению</a></li><li class="chapter-item expanded "><a href="../dev/web.html"><strong aria-hidden="true">17.</strong> Основы WEB</a></li><li class="chapter-item expanded "><a href="../dev/bd.html"><strong aria-hidden="true">18.</strong> Базы данных</a></li><li class="chapter-item expanded affix "><li class="part-title">Обрабатываем данные</li><li class="chapter-item expanded "><a href="../dev/python/numpy-and-pandas.html"><strong aria-hidden="true">19.</strong> NumPy и pandas</a></li><li class="chapter-item expanded "><a href="../dev/python/visualization/practice.html"><strong aria-hidden="true">20.</strong> Визуализация данных</a></li><li class="chapter-item expanded "><a href="../ds/intro.html"><strong aria-hidden="true">21.</strong> Машинное обучение</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ds/basic.html"><strong aria-hidden="true">21.1.</strong> Основные понятия</a></li><li class="chapter-item expanded "><a href="../ds/ml.html"><strong aria-hidden="true">21.2.</strong> Классические алгоритмы</a></li><li class="chapter-item expanded "><a href="../ds/nn.html"><strong aria-hidden="true">21.3.</strong> Нейронные сети</a></li><li class="chapter-item expanded "><a href="../ds/tools.html"><strong aria-hidden="true">21.4.</strong> Инструменты: scikit-learn</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Ускоряем код</li><li class="chapter-item expanded "><a href="../perf/intro.html"><strong aria-hidden="true">22.</strong> С чего начинать оптимизацию</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../dev/python/optimization.html"><strong aria-hidden="true">22.1.</strong> Почему Python не очень быстрый</a></li><li class="chapter-item expanded "><a href="../perf/perf.html"><strong aria-hidden="true">22.2.</strong> Скорость выполнения программ</a></li><li class="chapter-item expanded "><a href="../perf/gil.html"><strong aria-hidden="true">22.3.</strong> Многопоточность и GIL</a></li><li class="chapter-item expanded "><a href="../perf/async.html"><strong aria-hidden="true">22.4.</strong> Асинхронность</a></li><li class="chapter-item expanded "><a href="../perf/cuda.html"><strong aria-hidden="true">22.5.</strong> CUDA и вычисления на GPU</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Учимся у других</li><li class="chapter-item expanded "><a href="../examples/intro.html"><strong aria-hidden="true">23.</strong> Коды и скрипты</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../examples/kenv.html"><strong aria-hidden="true">23.1.</strong> Уравнение огибающей Капчинского-Владимирского для пучка заряженных частиц</a></li><li class="chapter-item expanded "><a href="../examples/envelope-optimize.html"><strong aria-hidden="true">23.2.</strong> Оптимизация огибающей пучка заряженных частиц с помощью генетического алгоритма</a></li><li class="chapter-item expanded "><a href="../examples/redpic.html"><strong aria-hidden="true">23.3.</strong> Релятивистская разностная схема для расчёта динамики частиц</a></li><li class="chapter-item expanded "><a href="../examples/orbit-correction.html"><strong aria-hidden="true">23.4.</strong> Коррекция равновесной орбиты с применением матрицы отклика и нейронных сетей</a></li><li class="chapter-item expanded "><a href="../examples/cadquery/layout.html"><strong aria-hidden="true">23.5.</strong> Схема ускорителя заряженных частиц в CadQuery</a></li><li class="chapter-item expanded "><a href="../examples/async-api.html"><strong aria-hidden="true">23.6.</strong> Асинхронное API для кинотеатра</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Работаем самостоятельно</li><li class="chapter-item expanded "><a href="../practicum/review-code-task.html"><strong aria-hidden="true">24.</strong> Ищем ошибки в чужом коде</a></li><li class="chapter-item expanded "><a href="../practicum/markov-chain-task.html"><strong aria-hidden="true">25.</strong> Делаем свою LLM</a></li><li class="chapter-item expanded "><a href="../practicum/booting-linux-task.html"><strong aria-hidden="true">26.</strong> Установка Linux</a></li><li class="chapter-item expanded "><a href="../practicum/linux-tools-task.html"><strong aria-hidden="true">27.</strong> Набор упражнений для работы в Linux</a></li><li class="chapter-item expanded "><a href="../practicum/linux-structure-task.html"><strong aria-hidden="true">28.</strong> Маленькая задачка c Linux</a></li><li class="chapter-item expanded "><a href="../practicum/python-algo-task.html"><strong aria-hidden="true">29.</strong> Пишем эффективный код</a></li><li class="chapter-item expanded "><a href="../practicum/kitty-startup-task.html"><strong aria-hidden="true">30.</strong> Деплой стартапа</a></li><li class="chapter-item expanded "><a href="../practicum/final-project-requirements.html"><strong aria-hidden="true">31.</strong> Итоговый проект</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded affix "><a href="../resume/intro.html">Заключение</a></li><li class="chapter-item expanded affix "><a href="../resume/literature.html">Литература и статьи</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Разработка и применение программного обеспечения в физических исследованиях</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/phys-dev/soft-dev-book/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="Основные-структуры-данных"><a class="header" href="#Основные-структуры-данных">Основные структуры данных</a></h1>
+<p>В прошлой главе мы научились оценивать, сколько операций делает алгоритм. Но скорость программы зависит не только от алгоритма — не в меньшей степени она определяется тем, <strong>как данные лежат в памяти</strong>.</p>
+<p>Эта глава как раз об этом. Мы начнём с того, как устроена оперативная память и во что обходится хранение простых значений, а затем разберём структуры, которые из них собираются: массивы постоянного и переменного размера, связные списки, стек, очередь и дек. Для каждой выясним главное — какие операции она выполняет быстро, а какие медленно, и почему.</p>
+<p>Знание это сугубо практическое. Выбор между списком и деком в обработке данных эксперимента может изменить время расчёта на порядок, и никакая оптимизация кода этого не компенсирует.</p>
+<h2 id="Оперативная-память-и-представление-данных"><a class="header" href="#Оперативная-память-и-представление-данных">Оперативная память и представление данных</a></h2>
+<p>Эффективность программы можно оценить по тому, как она расходует разные типы ресурсов компьютера. Основные из них — процессорное время и оперативная память. А ещё есть пропускная способность сетевых подключений, время работы жёсткого диска и некоторые другие ограниченные ресурсы.</p>
+<p>В предыдущей главе мы говорили о том, как алгоритм использует процессорное время. Теперь нас будет интересовать потребление оперативной памяти —  это называется пространственной сложностью алгоритма.</p>
+<h3 id="Как-устроена-оперативная-память"><a class="header" href="#Как-устроена-оперативная-память">Как устроена оперативная память</a></h3>
+<p>Оперативная память, или ОЗУ — своего рода «черновик», который программа использует для вычислений. В него можно записывать и перезаписывать информацию, и оттуда же её можно считывать.</p>
+<p>Оперативной памяти в компьютере на порядки меньше, чем места на диске — десятки гигабайт против терабайтов, и данные исчезают из неё сразу после завершения работы программы. Поэтому эта память не подходит для длительного хранения информации, зато она работает в сотни раз быстрее SSD и во многие тысячи раз быстрее обыкновенного жёсткого диска.</p>
+<p>Оперативная память разбита на ячейки размером в 1 байт. У каждой ячейки есть свой порядковый номер, который называется «адрес» (отдельные биты внутри ячейки адресов не имеют). Процессор взаимодействует с оперативной памятью напрямую и использует адреса, чтобы обращаться к данным, почти как программа обращается к переменным по имени.</p>
+<p>Чтобы понять, сколько памяти потребляет программа, нужно выяснить, сколько места занимают отдельные объекты. В разных языках программирования этот объём памяти может отличаться, но основные принципы будут общими. Для начала мы разберём, как используется память в языке C++, так как он позволяет сделать это очень эффективно, гибко и предсказуемо.</p>
+<h3 id="Представление-базовых-типов-данных-в-ОП"><a class="header" href="#Представление-базовых-типов-данных-в-ОП">Представление базовых типов данных в ОП</a></h3>
+<p>Что можно записать в одну ячейку памяти? Как мы уже говорили, размер наименьшей ячейки —  1 байт, состоящий из 8 бит. Каждый бит может принимать одно из двух значений: либо 0, либо 1. Восемь бит позволяют закодировать \(2^8 = 256\) вариантов значений. Получается, что в такую ячейку можно записать, например, целое число в промежутке от 0 до 255.</p>
+<p>Если считать эти числа номерами символов, то в 1 байт можно уместить 1 символ текста (тип <code>char</code>): все буквы латиницы и кириллицы, цифры и основные символы вполне умещаются в 256 вариантов.</p>
+<p>Самый распространённый тип целых чисел <code>int</code> занимает 4 байта и позволяет закодировать числа от –2 147 483 648 до 2 147 483 647.</p>
+<p>Эти границы можно вычислить: в 4 байтах содержится 32 бита. Один бит тратится на то, чтобы закодировать знак. Оставшийся 31 бит позволяет закодировать \(2^{31} = 2;147;483;648\) чисел. Число «ноль» тоже нужно закодировать, поэтому положительных чисел остаётся на одно меньше, чем отрицательных.</p>
+<p>Если твои числа не превышают по модулю два миллиарда, можно пользоваться этим типом чисел. Обрати внимание, что всего чисел около четырёх миллиардов, но половина из них отрицательные. Если точно известно, что переменная не может быть отрицательной, можно воспользоваться типом беззнаковых целых <code>unsigned int</code>, он позволяет хранить числа от 0 до 4 294 967 295.</p>
+<p>Вещественные (то есть дробные) числа чаще всего кодируются типом <code>double</code> — «числа с плавающей точкой», которые занимают 8 байт. Они могут кодировать как очень большие числа, такие как \(\pm10^{308}\), так и близкие к нулю, например \(\pm10^{-308}\).</p>
+<h3 id="Составные-типы-данных"><a class="header" href="#Составные-типы-данных">Составные типы данных</a></h3>
+<p>Теперь посчитаем, сколько памяти потребуется для хранения массива из 10 строк по 20 символов каждая.</p>
+<p>Во-первых, потребуется хранить сам текст. Это займёт
+$$10; строк \cdot (20; \frac{символов}{строка}) \cdot (1;\frac{байт}{символ}) = 200; байт$$
+Этого было бы достаточно, если бы строки располагались в памяти друг за другом. Но производить с ними какие-либо операции будет сложно.</p>
+<p>Поэтому в массивы (и в другие составные структуры) зачастую помещаются не сами объекты, а только указатели на них — адреса, по которым они хранятся в ячейках оперативной памяти.</p>
+<p>Во многих других языках каждый объект в программе записан в специальную «обёртку», которая, помимо данных, содержит вспомогательную информацию. Из-за этого, например, в языке Python даже короткие целые числа могут занимать не 4 байта, а почти 30 байт. Для хранения строки требуется около 40 байт вспомогательной информации, для хранения массива — ещё больше. Обычно объекты в таких языках ведут себя подобно строкам из предыдущего примера: они могут находиться в произвольном месте памяти, и любое обращение к ним происходит по сохранённому адресу.</p>
+<p>Посчитаем, например, сколько памяти расходует массив из 10 чисел в Python и на что она уходит:</p>
+<pre><code class="language-python">import sys
+print(sys.getsizeof(42))  # =&gt; 28 байт занимает короткое целое число
+print(sys.getsizeof([]))  # =&gt; 56 байт занимает пустой массив
+print(sys.getsizeof([42]))  # =&gt; 64 = (56 + 8) байт занимает массив с одним элементом.
+print(sys.getsizeof([1,2,3,4,5,6,7,8,9,10]))  # =&gt; 136 = (56 + 8*10) байт занимает массив
+                               # с десятью элементами.
+                               # сами данные хранятся отдельно
+                               # и добавляют 280 = (28 * 10) байт
+</code></pre>
+<p>Получается, мы тратим 56 байт на то, чтобы создать массив, а дальше по 8 байт на каждый новый объект в массиве — адреса элементов. Но это ещё не всё. Ведь каждому числу нужно ещё по 28 байт. Итого массив из десяти чисел в Python занимает суммарно 56 + (8 + 28) * 10 байт = 416 байт. Сравни это с 40 байтами в языке C++.</p>
+<h3 id="Как-освобождается-память"><a class="header" href="#Как-освобождается-память">Как освобождается память</a></h3>
+<p>Важно понимать, что если ты перестал пользоваться объектом, это ещё не значит, что он освободил занимаемую память. В языке C++ приходится следить за тем, чтобы выделенная память освобождалась. Встроенные контейнеры, такие как std::vector, упрощают задачу: они автоматически выделяют необходимую память при создании контейнера и освобождают её при выходе переменной контейнера из области видимости.</p>
+<p>В большинстве других языков за освобождение памяти отвечает сборщик мусора, который время от времени проверяет, может ли объект ещё быть использован. Если оказывается, что на него больше не ссылается никакая переменная и никакой другой объект, то этот объект уничтожается.</p>
+<p>Но сборка мусора — трудоёмкая операция, поэтому некоторые языки откладывают её до тех пор, пока свободное пространство не подойдёт к концу. Например, программы на Java (если их специально не ограничить при запуске) часто сталкиваются с проблемой высокого потребления памяти из-за хранения множества старых и уже неиспользуемых объектов.</p>
+<h2 id="Массивы-постоянного-размера"><a class="header" href="#Массивы-постоянного-размера">Массивы постоянного размера</a></h2>
+<p>Выше мы разобрали, как простые и составные типы данных хранятся в оперативной памяти. Теперь перейдём к структурам данных. Структура данных — способ организации информации в памяти, который позволяет проводить с ней определённый набор операций. Например, быстро искать или изменять данные.</p>
+<p>Массив — одна из базовых структур данных. Дальше мы посмотрим, какие возможности бывают у разных типов массивов и как они могут быть реализованы.</p>
+<p>Самый простой тип массивов имеет фиксированный размер и может хранить элементы одного и того же типа. Например, если мы создадим массив из десяти целых чисел, в него нельзя будет добавить ещё один элемент или записать объект неподходящего типа. Такие массивы ты можешь встретить, например, в языке C — <code>int numbers[10]</code>, или в С++ — <code>std::array&lt;int, 10&gt; numbers</code>.</p>
+<p>С массивами фиксированного размера можно выполнить только две операции:</p>
+<ul>
+<li>узнать значение элемента по индексу,</li>
+<li>перезаписать значение по индексу.</li>
+</ul>
+<p>Да, они не слишком функциональные, но зато очень эффективные. Каждая из операций выполняется за \(O(1)\).
+Чтобы понять, как массиву удаётся настолько быстро находить нужный элемент, разберёмся в его механике работы и посмотрим, как он хранит данные.</p>
+<h3 id="Как-устроен-массив"><a class="header" href="#Как-устроен-массив">Как устроен массив</a></h3>
+<p>Массив — набор однотипных данных, расположенных в памяти друг за другом. Поэтому он всегда занимает один непрерывный участок памяти. Точное местоположение этого участка операционная система сообщает программе в момент создания массива.</p>
+<p>В начале выделенного участка памяти находится нулевой элемент, сразу за ним — первый и далее по порядку. Они идут друг за другом, без пропусков. Зная положение элемента в памяти — его адрес, мы можем этот элемент прочитать или записать. Теперь посмотрим, как узнать адрес элемента.</p>
+<p>Пусть у нас есть массив <code>numbers</code> из 10 беззнаковых целых чисел. Адрес нулевого элемента нам известен — это 1000. Чтобы узнать положение следующего элемента, нам нужно прибавить к адресу начала размер элемента в байтах. Каждое число занимает по 4 байта, так что первый (нулевой) элемент займёт байты 1000, 1001, 1002, 1003. Значит, элемент с индексом 1 будет записан по адресу 1004.</p>
+<h2 id="Сложность-вставки-и-удаления-в-динамических-массивах"><a class="header" href="#Сложность-вставки-и-удаления-в-динамических-массивах">Сложность вставки и удаления в динамических массивах</a></h2>
+<p>Только что мы говорили о том, что такое массив и как он устроен. Теперь настало время познакомить тебя с динамическими массивами. Иногда их ещё называют «векторами», потому что в C++ они реализуются классом <code>std::vector</code>. В Python динамические массивы реализуются классом <code>list</code>, но пусть тебя не обманывает название — это не список, а именно массив.</p>
+<h3 id="Сложность-вставки-в-динамический-массив"><a class="header" href="#Сложность-вставки-в-динамический-массив">Сложность вставки в динамический массив</a></h3>
+<p>Бывают ситуации, когда невозможно сказать точно, какая длина массива может понадобиться. Поэтому так важно иметь возможность добавлять элементы в массив прямо во время выполнения программы.</p>
+<p>Нужно вставить элемент в произвольное место массива? Конечно, вставка в начало и в конец — частные случаи этой задачи. Вставка элемента в начало — худший случай. Сложность этой операции \(O(n)\). Добавление элемента в конец — лучший случай. И его сложность \(O(1)\).</p>
+<h3 id="Сложность-удаления-из-динамического-массива"><a class="header" href="#Сложность-удаления-из-динамического-массива">Сложность удаления из динамического массива</a></h3>
+<p>При удалении, как и при вставке в массив, требуется сдвинуть все элементы правее ячейки, в которой происходит операция. При добавлении в массив элементы сдвигаются на один вправо. А при удалении — на один влево.</p>
+<h2 id="Реаллокация-в-динамических-массивах"><a class="header" href="#Реаллокация-в-динамических-массивах">Реаллокация в динамических массивах</a></h2>
+<p>Массив нельзя просто расширить — ведь за его пределами в памяти уже записаны другие данные. При расширении массива они перезапишутся, что может привести к ошибке выполнения программы.</p>
+<p>Поэтому, как правило, при расширении массива программе приходится произвести  «реаллокацию» — выделить новый участок памяти и скопировать туда старое содержимое.</p>
+<p>Выделение памяти — долгая операция, но копирование — это ещё большая проблема, ведь оно требует прохода по всем элементам, затратив \(O(n)\) операций. Как же мы тогда можем утверждать, что добавление в конец массива стоит \(O(1)\)?</p>
+<p>Напишем программу, которая добавляет в массив тысячу элементов — по одному за раз:</p>
+<pre><code class="language-python">values = []
+for i in range(1000):
+    values.append(i)
+</code></pre>
+<p>Операция <code>append()</code> может быть представлена как две операции: реаллокация и присваивание значения элементу массива. Для простоты мы не будем учитывать операции присваивания. Их число равно количеству добавляемых элементов; эта часть оптимизации не требует (и не может быть оптимизирована). А вот время, затрачиваемое на реаллокации, может существенно отличаться — в зависимости от выбранного подхода.</p>
+<p>Если бы рассматриваемой программе приходилось при каждом добавлении элемента производить реаллокацию, итоговая сложность алгоритма была бы квадратичной. Теперь попробуем сократить число реаллокаций.</p>
+<p>Во-первых, чтобы не приходилось на каждом шаге выделять дополнительную память, нужно держать запас свободного места в массиве. Например, если мы решим увеличить размер доступного массиву места сразу на 100 элементов, программа будет выделять память в 100 раз реже. Но программа всё ещё будет работать за \(O(n^2)\), хотя и с небольшой константой при квадратичном члене.</p>
+<p>Теперь у нас есть два разных размера массива: <code>size</code> (количество элементов) и <code>capacity</code> (ёмкость), причём <code>size</code> ≤ <code>capacity</code>.</p>
+<p>Во-вторых, чтобы сделать сложность алгоритма линейной, нужно увеличивать размер не на фиксированное количество элементов (арифметическая прогрессия), а в фиксированное число раз (геометрическая прогрессия).</p>
+<p>Пусть изначальная ёмкость массива равна 1, а при каждой реаллокации она удваивается. Тогда на первой реаллокации копируется 1 элемент, на второй — 2, на третьей — 4, затем — 8, 16, 32, 64, 128, 256, 512. После этих действий ёмкость массива равна 1024.</p>
+<p>Посчитаем, сколько операций копирования нам нужно будет произвести к моменту добавления 1000-го элемента. Общее число копирований: \(S = 1 + 2 + 4 + \cdots + 512 = 1024 - 1\).</p>
+<p>В общем случае, если нужно добавить \(n\) элементов (где \(2^k \lt n \le 2^{k+1}\), последнее копирование затронет \(2^k\) элементов. Напишем сумму такой геометрической прогрессии:
+\(S = \sum_{i=0}^k 2^i = 2^{k+1} - 1 = 2 \cdot 2^k - 1 \le 2\cdot n\).</p>
+<p>Итак, у нас получилось добиться того, что общее количество копирований при реаллокации будет линейно зависеть от числа элементов.</p>
+<h2 id="Связные-списки"><a class="header" href="#Связные-списки">Связные списки</a></h2>
+<p>Как ты помнишь, элементы массива в памяти компьютера расположены последовательно. Чтобы вставить или удалить элемент из начала массива, нужно \(O(n)\) операций. Потому что придётся передвинуть каждый последующий элемент.</p>
+<p>Хорошо бы иметь структуру данных, в которой при вставке или удалении элемента передвигать остальные было бы не нужно.
+Такая структура существует. Она называется «связный список» (англ. linked list). Во многих языках программирования реализована в стандартных типах, например, <code>std::list</code> в C++, <code>LinkedList</code> в Java.</p>
+<p><em>Важно помнить, что в языке Python list — динамический массив, хотя и обозначен словом «список».</em></p>
+<h3 id="Как-устроен-связный-список"><a class="header" href="#Как-устроен-связный-список">Как устроен связный список</a></h3>
+<p>В связном списке у каждого элемента, помимо его значения, есть ссылка на следующий элемент списка. За исключением последнего — он ссылается в никуда. В зависимости от языка программирования ссылка в никуда может представлять собой объект <code>None</code>, нулевой указатель или аналогичную сущность. Кроме того, у связного списка принято определять точку старта — её называют «головой списка».</p>
+<h3 id="Достоинства-и-недостатки-связного-списка"><a class="header" href="#Достоинства-и-недостатки-связного-списка">Достоинства и недостатки связного списка</a></h3>
+<p>Их элементы расположены в памяти компьютера в произвольных местах, а не по порядку, как в массиве. Это бывает очень удобно, если элементов много и расположить их единым блоком не представляется возможным.</p>
+<p>Недостаток в том, что нельзя получить доступ к элементу за \(O(1)\) по индексу, так как элементы хранятся в памяти непоследовательно. Для этого нужно пройти по всем элементам, начиная с головы списка, пока не дойдём до нужного. Это займёт \(O(n)\) операций.</p>
+<p>Двигаться по односвязному списку можно только в одном направлении. Из этого недостатка следует ещё один: мы не можем быстро удалить элемент, так как не знаем, какой элемент на него ссылается. В худшем случае потребуется \(O(n)\) операций для поиска предыдущего. А вот вставить элемент после текущего мы можем быстро.</p>
+<h2 id="Структура-данных-стек"><a class="header" href="#Структура-данных-стек">Структура данных стек</a></h2>
+<p>Структура данных стек часто встречается в программировании и во многих вещах, связанных с компьютерами. Стек работает по принципу LIFO.</p>
+<p>Ты наверняка пользуешься возможностью браузеров, реализованной с применением стека. Речь идёт о кнопке «назад». Нажмёшь на неё один раз — вернёшься на предыдущую страницу, нажмёшь снова — попадёшь на страницу, где был до неё.</p>
+<p>Во многих текстовых редакторах можно отменять последние операции. Эта функция тоже реализована при помощи стека.</p>
+<p>Чтобы лучше понять, как устроен стек, представь себе стопку книг в коробке. Если тебе захочется почитать, ты сможешь взять только верхнюю книгу. А если она окажется неинтересной, что ж, можно будет отбросить её и попытать удачу, взяв ещё одну книгу сверху, и так далее. Из стека также можно взять только верхний — последний, положенный в стек, — элемент.</p>
+<h3 id="Интерфейс-стека"><a class="header" href="#Интерфейс-стека">Интерфейс стека</a></h3>
+<p>В отличие от массивов и связных списков, стек — <strong>это прежде всего удобный интерфейс для взаимодействия с данными, а не физическая особенность их хранения.</strong> Когда мы говорим про стек, мы подразумеваем структуру данных, которая реализует следующие методы:</p>
+<ul>
+<li><code>push(item)</code> — добавляет элемент на вершину стека;</li>
+<li><code>pop()</code> — возвращает элемент с вершины стека и удаляет его;</li>
+<li><code>size()</code> — возвращает размер стека (количество лежащих в нём элементов).</li>
+</ul>
+<p>Иногда стек реализует дополнительные операции:</p>
+<ul>
+<li><code>peek()</code> или <code>top()</code> — возвращает элемент с вершины стека, не удаляя его;</li>
+<li><code>isEmpty()</code> — определяет, пуст ли стек.</li>
+</ul>
+<p>В большинстве случаев стек удобно реализовывать на массиве. Но бывают ситуации, когда стек должен хранить очень много элементов, а выделить единый блок памяти для этого невозможно. Тогда для реализации лучше воспользоваться связным списком.</p>
+<h3 id="Реализация-стека"><a class="header" href="#Реализация-стека">Реализация стека</a></h3>
+<p>Посмотри, как реализуется стек на основе массива. В конструкторе для экземпляра класса создаётся пустой массив. Далее при вызове методов <code>push()</code> и <code>pop()</code> этот массив будет меняться:</p>
+<pre><code class="language-python">class Stack:
+     def __init__(self):
+         self.items = []
+
+     def push(self, item):
+         self.items.append(item)
+
+     def pop(self):
+         return self.items.pop()
+
+     def peek(self):
+         return self.items[-1]
+
+     def size(self):
+         return len(self.items)
+</code></pre>
+<pre><code class="language-python">stack = Stack()
+stack.push('apple')
+stack.push('banana')
+stack.push('orange')
+</code></pre>
+<pre><code class="language-python">stack.pop()
+</code></pre>
+<h2 id="Структуры-данных-очередь-и-дек"><a class="header" href="#Структуры-данных-очередь-и-дек">Структуры данных: очередь и дек</a></h2>
+<p>Со стеком ты уже познакомился и знаешь, как он устроен. Ещё одна важная структура данных — «очередь». В отличие от стека, который работает по принципу LIFO, очередь основана на концепции FIFO. То есть первым извлекают элемент, который добавили раньше всех.</p>
+<p>В повседневной жизни мы все сталкиваемся с очередями:</p>
+<ul>
+<li>Кассир в магазине обслуживает покупателей по одному: пока кто-то оплачивает свои продукты, остальным приходится стоять в очереди и ждать. И, конечно, тебя обслужат не раньше, чем всех тех людей, которые встали в очередь до твоего прихода.</li>
+<li>Если мы звоним на горячую линию и все операторы заняты, нам тоже приходится ждать в очереди.</li>
+</ul>
+<p>Подобные сценарии часто встречаются и в мире компьютеров. При их моделировании удобно применять структуру данных очередь.</p>
+<h3 id="Интерфейс-очереди"><a class="header" href="#Интерфейс-очереди">Интерфейс очереди</a></h3>
+<p>Как и стек, очередь — <strong>интерфейс общения с данными.</strong> Он гарантирует наличие определённых методов, но не даёт никаких обещаний по способу хранения этих данных. То есть «под капотом» может находиться всё что угодно.
+При том, что интерфейс не накладывает ограничений на внутреннее устройство, очередь принято реализовывать таким образом, чтобы операции вставки и удаления элемента выполнялись за \(O(1)\).</p>
+<p>Когда мы говорим про очередь, мы ожидаем, что у структуры будут следующие методы:</p>
+<ul>
+<li><code>push(item)</code> — добавляет элемент в конец очереди;</li>
+<li><code>pop()</code> — берёт элемент из начала очереди и удаляет его;</li>
+<li><code>peek()</code> — берёт элемент из начала очереди без удаления;</li>
+<li><code>size()</code> — возвращает количество элементов в очереди.</li>
+</ul>
+<h3 id="Дек-очередь-с-двумя-концами"><a class="header" href="#Дек-очередь-с-двумя-концами">Дек: очередь с двумя концами</a></h3>
+<p>Очередь пускает элементы только в одну сторону: вошёл в хвост, вышел из головы. Но в обработке данных сплошь и рядом нужны обе стороны сразу. <strong>Дек</strong> (deque, от double-ended queue — двусторонняя очередь) снимает это ограничение: добавлять и удалять можно с любого конца, и обе операции выполняются за \(O(1)\).</p>
+<p>Житейская аналогия — колода карт в руках у игрока. Карту можно взять сверху или снизу, подложить сверху или снизу, а вот вытянуть из середины, не разворошив колоду, не получится. Дек ведёт себя ровно так же.</p>
+<p>Интерфейс дека объединяет стек и очередь:</p>
+<ul>
+<li><code>append(item)</code> — добавить элемент в конец;</li>
+<li><code>appendleft(item)</code> — добавить в начало;</li>
+<li><code>pop()</code> — взять элемент с конца и удалить;</li>
+<li><code>popleft()</code> — взять с начала и удалить.</li>
+</ul>
+<p>Отсюда видно, что дек — обобщение обеих разобранных структур. Работаешь только с одним концом — получаешь стек. Кладёшь в один конец, забираешь из другого — получаешь очередь. Поэтому в Python отдельного класса для очереди нет: её роль исполняет дек.</p>
+<p>В стандартной библиотеке дек живёт в модуле <code>collections</code>:</p>
+<pre><code class="language-python">from collections import deque
+
+buf = deque()
+buf.append(1)          # [1]
+buf.append(2)          # [1, 2]
+buf.appendleft(0)      # [0, 1, 2]
+
+print(buf.popleft())   # 0, забрали из начала
+print(buf.pop())       # 2, забрали с конца
+print(buf)             # deque([1])
+</code></pre>
+<h3 id="Зачем-дек-если-есть-список"><a class="header" href="#Зачем-дек-если-есть-список">Зачем дек, если есть список</a></h3>
+<p>Список в Python умеет и <code>insert(0, x)</code>, и <code>pop(0)</code>. Разница в том, во что эти операции обходятся. Список — динамический массив, его элементы лежат в памяти подряд; чтобы вставить элемент в начало, нужно сдвинуть <strong>все</strong> остальные на одну позицию вправо. Это \(O(n)\) на каждую вставку. Дек устроен как связанные между собой блоки, и добавление к любому его концу не трогает остальные элементы вовсе.</p>
+<p>Разница видна на замере (Apple M4). Заполняем структуру с начала:</p>
+<pre><code>      N |    list |   deque | отношение
+   1000 |    0.2 мс |  0.02 мс |     13x
+  10000 |   13.2 мс |  0.12 мс |    110x
+ 100000 | 1365.4 мс |  1.37 мс |    999x
+</code></pre>
+<p>Обрати внимание не на сами числа, а на последний столбец: <strong>отношение растёт вместе с \(N\)</strong>. Это и есть подпись разной алгоритмической сложности. Если бы дек просто был «написан эффективнее», выигрыш держался бы постоянным — скажем, всегда в десять раз. А здесь на тысяче элементов разница тринадцатикратная, на ста тысячах — тысячекратная, потому что время списка растёт как \(O(n^2)\), а дека — как \(O(n)\).</p>
+<p>Теперь задача из обработки эксперимента. Пусть с детектора идёт поток отсчётов, и нужно на каждом шаге держать скользящее окно из последних тысячи значений — например, чтобы считать по нему бегущее среднее. На списке это выглядит так:</p>
+<pre><code class="language-python">buf = []
+for x in data:
+    buf.append(x)
+    if len(buf) &gt; 1000:
+        buf.pop(0)         # удаление из начала — O(n)
+</code></pre>
+<p>А на деке ограничение длины встроено прямо в конструктор: при переполнении он сам выбрасывает элемент с противоположного конца.</p>
+<pre><code class="language-python">buf = deque(maxlen=1000)
+for x in data:
+    buf.append(x)          # старое значение уходит само, O(1)
+</code></pre>
+<p>На потоке из 200 000 отсчётов первый вариант отработал за 21 мс, второй — за 2 мс. Ровно тот порядок, о котором шла речь в начале главы, и получен он не оптимизацией кода, а выбором подходящей структуры данных.</p>
+<p>За всё приходится платить, и дек платит доступом по индексу. У списка элементы лежат подряд, поэтому <code>lst[50000]</code> вычисляется арифметикой по адресу за \(O(1)\). У дека до середины приходится добираться по блокам, и это \(O(n)\): в том же замере обращение к середине заняло 0.005 мкс у списка против 0.525 мкс у дека — почти в сто раз дольше.</p>
+<p>Отсюда простое правило выбора. Нужен произвольный доступ по индексу — бери список. Нужны быстрые операции с обоими концами, а по середине ты только пробегаешь целиком — бери дек. А если ты ловишь себя на <code>insert(0, x)</code> или <code>pop(0)</code> внутри цикла, считай это сигналом: почти наверняка тебе нужен дек.</p>
+<h2 id="Стек-вызовов"><a class="header" href="#Стек-вызовов">Стек вызовов</a></h2>
+<p>Код любой сложной программы разделён на множество функций. Поэтому работа всей системы описывается как взаимодействие небольших блоков кода. Базовые функции объединяются в сложные, а те — в ещё более сложные. В результате вся программа может быть представлена как одна сложносоставная функция, которая вызывает множество простых.</p>
+<h3 id="Как-устроен-стек-вызовов"><a class="header" href="#Как-устроен-стек-вызовов">Как устроен стек вызовов</a></h3>
+<p>Допустим, мы написали программу на С++. Первой вызывается функция <code>main()</code>. В ней вызывается функция <code>A</code>. Она вызывает функцию <code>B</code>, которая, в свою очередь, вызывает <code>C</code>.</p>
+<p>Так выглядит стек вызовов этой программы:</p>
+<pre><code class="language-text">        вершина стека
+   ┌──────────────┐
+   │      C       │  ← выполняется сейчас
+   ├──────────────┤
+   │      B       │  вызвала C
+   ├──────────────┤
+   │      A       │  вызвала B
+   ├──────────────┤
+   │    main()    │  вызвала A
+   └──────────────┘
+         дно
+</code></pre>
+<p>После возврата из функции управление должно вернуться туда, откуда эту функцию вызвали. Для этого при вызове функции в стеке вызовов сохраняется адрес той инструкции программы, которая будет выполнена после возврата из функции.</p>
+<p>Для примера рассмотрим функцию, которая приветствует пользователя по имени и выдаёт ему гороскоп на сегодняшний день. Для простоты предположим, что пользователь пришёл на сайт, где всем выдают один и тот же гороскоп.</p>
+<pre><code class="language-python">def say_hello(name):
+    print(f"Привет, {name}")
+    print_horoscope(name.upper())
+    print(f"Пока, {name}, хорошего дня!")
+
+def print_horoscope(name):
+    print(f"{name}! Сегодня подходящий день для прогулок в парке и изучения рекурсии")
+
+say_hello('Гоша')
+</code></pre>
+<p>Обрати внимание, что в разных частях программы переменная name может хранить разные значения. Например, при входе в функцию <code>say_hello()</code> в переменной name будет записано 'Гоша'. А если мы вызовем <code>print_horoscope()</code>, там появится 'ГОША'. Но, когда мы перейдём обратно в <code>say_hello()</code>, значение вновь вернётся к первоначальному 'Гоша'.</p>
+<p>Чтобы добиться такого поведения, программа хранит все локальные переменные на том же стеке. Можно представить это так: на вершине стека находится структура, в которой записаны локальные переменные и аргументы функции, а также адрес возврата. Проследим, как меняется содержимое стека в нашем примере.</p>
+<h3 id="Работа-стека-шаг-за-шагом"><a class="header" href="#Работа-стека-шаг-за-шагом">Работа стека: шаг за шагом</a></h3>
+<p>Первая команда, которая будет выполнена при старте программы, — вызов функции <code>say_hello()</code>. Под этот вызов на стеке выделяется блок памяти.</p>
+<pre><code class="language-text">   ┌────────────────────┐
+   │  say_hello()       │  ← выделен блок под вызов
+   └────────────────────┘
+</code></pre>
+<p>В выделенный блок памяти записывается адрес возврата. Он нужен для того, чтобы определить, куда передать управление после завершения работы функции. Как мы уже говорили, этот адрес соответствует инструкции, следующей сразу за местом вызова функции.</p>
+<p>Также в стек помещаются переданные в функцию аргументы. С этих параметров начинается формирование набора локальных переменных функции. В нашем случае есть один аргумент <code>name = 'Гоша'</code>, а другие локальные переменные отсутствуют.</p>
+<pre><code class="language-text">   ┌────────────────────┐
+   │  say_hello()       │
+   │    адрес возврата  │
+   │    name = 'Гоша'   │
+   └────────────────────┘
+</code></pre>
+<p>Затем выполняется первая инструкция в функции <code>say_hello()</code>, которая выводит сообщение: «Привет, Гоша».
+Далее происходит вызов метода <code>upper()</code>, который вернёт вызвавшей его функции строку 'ГОША', написанную большими буквами. Эта строка станет параметром функции <code>print_horoscope()</code>.</p>
+<p>Вызовы функции <code>print()</code> и метода <code>upper()</code> мы для краткости на картинке не показываем, хотя они, конечно же, тоже кладутся на стек при вызове и снимаются с него после завершения выполнения.</p>
+<p>Когда вызывается функция <code>print_horoscope()</code> с параметром 'ГОША', под этот вызов выделяется новый блок памяти, куда записываются значения переданных функции параметров и новый адрес возврата, а также выделяется место для других локальных переменных. Блок памяти для функции <code>print_horoscope()</code> помещается поверх блока, отведённого под <code>say_hello()</code>. Помнишь стопку книг в коробке, с которой мы начинали разговор о стеке? Вот она, перед тобой! Только вместо книг — блоки памяти.</p>
+<pre><code class="language-text">   ┌────────────────────┐
+   │  print_horoscope() │  ← новый блок лёг сверху
+   │    адрес возврата  │
+   │    name = 'ГОША'   │
+   ├────────────────────┤
+   │  say_hello()       │
+   │    адрес возврата  │
+   │    name = 'Гоша'   │
+   └────────────────────┘
+</code></pre>
+<p>Затем исполнится первая инструкция в функции <code>print_horoscope()</code>. Выведется сообщение: «ГОША! Сегодня подходящий день для прогулок в парке и изучения рекурсии!».</p>
+<p>В <code>print_horoscope()</code> больше нет инструкций. Настал момент возвращения управления. В блоке памяти функции <code>print_horoscope()</code>, лежащем на стеке, записан адрес возврата, поэтому программе известно, какая инструкция должна исполниться следующей. Блок, отведённый под <code>print_horoscope()</code>, больше не нужен, и теперь извлекается из стека. Значение переменной name восстанавливается.</p>
+<pre><code class="language-text">   ┌────────────────────┐
+   │  say_hello()       │  ← верхний блок снят,
+   │    адрес возврата  │    name снова 'Гоша'
+   │    name = 'Гоша'   │
+   └────────────────────┘
+</code></pre>
+<p>Затем исполняется инструкция из <code>say_hello()</code>, следующая за вызовом функции <code>print_horoscope()</code>. Эта инструкция — вывод сообщения: «Пока, Гоша, хорошего дня!»</p>
+<p>Так как это последняя из инструкций в <code>say_hello()</code>, происходит возврат из функции. Блок памяти, выделенный под неё, освобождается.</p>
+<pre><code class="language-text">   ┌────────────────────┐
+   │                    │  ← стек пуст
+   └────────────────────┘
+</code></pre>
+<p>Теперь ты знаешь, как интерпретатор (или компилятор) языка программирования вызывает функции.</p>
+<h2 id="Рекурсия-Переполнение-стека-вызовов"><a class="header" href="#Рекурсия-Переполнение-стека-вызовов">Рекурсия. Переполнение стека вызовов</a></h2>
+<p>Теперь поговорим о функциях, которые вызывают сами себя, но с изменёнными значениями аргументов. Такие функции называются «рекурсивными». И они тоже используют стек вызовов.</p>
+<h3 id="Факториал"><a class="header" href="#Факториал">Факториал</a></h3>
+<p>Посмотрим на примере, в каких случаях могут понадобиться такие функции.</p>
+<p>Факториал натурального числа можно вычислить как произведение всех натуральных чисел от 1 до n:
+\(n! = 1 \cdot 2 \cdot ... \cdot (n-1) \cdot n\)</p>
+<h3 id="Рекурсия-и-стек-вызовов"><a class="header" href="#Рекурсия-и-стек-вызовов">Рекурсия и стек вызовов</a></h3>
+<p>Теперь напишем код рекурсивной функции вычисления факториала:</p>
+<pre><code class="language-python">def factorial(n):
+    if n == 1 or n == 0:
+        return 1
+    return n * factorial(n - 1)
+</code></pre>
+<p>Проанализируем, что происходит при вызове функции <code>factorial(3)</code>.</p>
+<pre><code class="language-text">   Погружение:                    Возврат:
+   ┌──────────────┐               ┌──────────────┐
+   │ factorial(1) │ вернёт 1      │ 1            │
+   ├──────────────┤               ├──────────────┤
+   │ factorial(2) │ ждёт          │ 2 * 1 = 2    │
+   ├──────────────┤               ├──────────────┤
+   │ factorial(3) │ ждёт          │ 3 * 2 = 6    │
+   └──────────────┘               └──────────────┘
+</code></pre>
+<p>Пока рекурсия погружается вглубь, стек растёт: каждый вызов ждёт результата следующего. Как только достигнут базовый случай, стек начинает разбираться в обратном порядке, и каждый уровень домножает полученное значение на своё <code>n</code>.</p>
+<p>При каждом вызове функции на стеке создаётся новый набор локальных переменных. Таким образом, переменная n в каждом вызове оказывается новая. Благодаря этому переменные с одним и тем же именем даже в одной и той же функции не конфликтуют между собой. Невозможно обратиться к переменной n, которая относится к другому уровню рекурсии. Ни узнать, ни поменять её значение не получится.</p>
+<p>Однако, чтобы хранить локальные переменные и адрес возврата на каждом уровне рекурсии, потребуется \(O(d)\) памяти на стеке, где d — глубина рекурсии. При вычислении факториала \(n!\) глубина рекурсии равна n, поэтому этот метод расходует \(O(n)\) памяти на стеке.</p>
+<p>А что будет, если эта память закончится, а рекурсивные вызовы продолжатся?</p>
+<p>Стек вызовов переполнится и программа аварийно завершит работу.</p>
+<p>Объём памяти, выделяемой под стек, ограничен очень небольшим объёмом — гораздо меньшим, чем общий объём оперативной памяти. Рекурсию нельзя делать больше, чем на несколько десятков тысяч вызовов в глубину, потому что при использовании слишком глубокой рекурсии стек переполнится (англ. stack overflow) и программа завершит работу аварийно с ошибкой. Программы на одних языках при этом выдадут исключение “Stack Overflow”, другие же завершатся с ошибкой “Segmentation Fault”.</p>
+<pre><code class="language-python">factorial(10_000)
+</code></pre>
+<h3 id="Что-делать-чтобы-стек-не-переполнялся"><a class="header" href="#Что-делать-чтобы-стек-не-переполнялся">Что делать, чтобы стек не переполнялся</a></h3>
+<p>Есть несколько способов избежать переполнения стека:</p>
+<ul>
+<li>В некоторых случаях можно вовсе избавиться от рекурсии, заменив её на обыкновенный цикл. Например, вычисление факториала легко переписать следующим образом:</li>
+</ul>
+<pre><code class="language-python">def factorial(n):
+    accumulator = 1
+    i = n
+    while i &gt; 1:
+        accumulator *= i
+        i -= 1
+    return accumulator
+</code></pre>
+<ul>
+<li>Другой способ заключается в том, чтобы написать свой собственный стек, эмулирующий стек вызовов, но лишённый ограничений встроенного.</li>
+</ul>
+<p><em>Объёмом памяти, который выделяется под стек вызовов, можно управлять.
+В некоторых языках это можно делать прямо в процессе работы программы. Например, в Python можно применить метод <code>setrecursionlimit()</code> модуля <code>sys</code>. Передаваемый в функцию параметр <code>limit</code> — задаёт максимальную глубину рекурсии. Наибольшее возможное значение зависит от платформы и всё равно существенно ограничено. Можно узнать текущее значение этой величины, вызвав метод <code>getrecursionlimit()</code>.
+В других языках программирования, таких как Java и JavaScript, размер стека вызовов можно задать настройками виртуальной машины при запуске программы, но в процессе работы программы он остаётся неизменным.
+Кроме того, размер стека вызовов иногда может быть изменён на уровне операционной системы.</em></p>
+<pre><code class="language-python">sys.getrecursionlimit()
+</code></pre>
+<h2 id="Практика"><a class="header" href="#Практика">Практика</a></h2>
+<h3 id="Наивное-решение-get"><a class="header" href="#Наивное-решение-get">Наивное решение. GET</a></h3>
+<pre><code class="language-python">@app.route('/', methods=['GET'])
+def paginated_get():
+    page = int(request.args.get('page', '0'))
+    first = page * PAGE_SIZE
+    last = first + PAGE_SIZE
+    result = []
+    with open(FILE_PATH, 'r') as f:
+        for i, line in enumerate(f.readlines()[first:last]):
+            result.append( {'id': first + i, 'data': line.strip()})
+    return {"result": result}
+</code></pre>
+<h3 id="Наивное-решение-post"><a class="header" href="#Наивное-решение-post">Наивное решение. POST</a></h3>
+<pre><code class="language-python">@app.route('/', methods=['POST'])
+def post():
+    data = request.json['data']
+    with open(FILE_PATH, 'a') as f:
+        f.write('\n' + data)
+    return {}, 201
+</code></pre>
+<h3 id="Наивное-решение-put"><a class="header" href="#Наивное-решение-put">Наивное решение. PUT</a></h3>
+<pre><code class="language-python">@app.route('/&lt;int:data_id&gt;', methods=['PUT'])
+def put(data_id):
+    data = request.json['data']
+    with open(FILE_PATH, 'r') as f:
+        new_data = f.readlines()
+        new_data[data_id] = data + '\n'
+    with open(FILE_PATH, 'w') as f:
+        f.writelines(new_data)
+    return {}, 204
+</code></pre>
+<h3 id="Наивное-решение-delete"><a class="header" href="#Наивное-решение-delete">Наивное решение. DELETE</a></h3>
+<pre><code class="language-python">@app.route('/&lt;int:data_id&gt;', methods=['DELETE'])
+def delete(data_id):
+    with open(FILE_PATH, 'r') as f:
+        new_data = f.readlines()
+    del new_data[data_id]
+    with open(FILE_PATH, 'w') as f:
+        f.writelines(new_data)
+    return {}, 204
+</code></pre>
+<h3 id="Фиксированный-get"><a class="header" href="#Фиксированный-get">Фиксированный. GET</a></h3>
+<pre><code class="language-python">@app.route('/', methods=['GET'])
+def paginated_get():
+    page = int(request.args.get('page', '0'))
+    first = page * PAGE_SIZE
+    result = []
+    with open(FILE_PATH, 'rb') as f:
+        f.seek(first * ELEMENT_SIZE)
+        data = f.read(PAGE_SIZE * ELEMENT_SIZE)
+        for i, n in enumerate(range(PAGE_SIZE)):
+            result.append(
+                {
+                    "id": first + i,
+                    "data": (
+                        data[n * ELEMENT_SIZE: (n + 1) * ELEMENT_SIZE].
+                        strip(FILL_CHAR).decode('utf-8')
+                    )
+                }
+            )
+    return {"result": result}
+</code></pre>
+<h3 id="Фиксированный-post"><a class="header" href="#Фиксированный-post">Фиксированный. POST</a></h3>
+<pre><code class="language-python">def post():
+    data = str(request.json['data'])
+    with open(FILE_PATH, 'a+b') as f:
+        f.write(data.encode('utf-8').ljust(ELEMENT_SIZE, FILL_CHAR))
+    return {}, 201
+</code></pre>
+<h3 id="Фиксированный-put"><a class="header" href="#Фиксированный-put">Фиксированный. PUT</a></h3>
+<pre><code class="language-python">@app.route('/&lt;int:data_id&gt;', methods=['PUT'])
+def put(data_id):
+    data = request.json['data']
+    with open(FILE_PATH, 'r+b') as f:
+        f.seek(data_id * ELEMENT_SIZE)
+        f.write(data.encode('utf-8').ljust(ELEMENT_SIZE, FILL_CHAR))
+    return {}, 204
+</code></pre>
+<h3 id="Фиксированный-delete"><a class="header" href="#Фиксированный-delete">Фиксированный. DELETE</a></h3>
+<pre><code class="language-python">@app.route('/&lt;int:data_id&gt;', methods=['DELETE'])
+def delete(data_id):
+    with open(FILE_PATH, 'r+b') as f:
+        point = data_id * ELEMENT_SIZE
+        f.seek(point)
+        while True:
+            f.seek(point + ELEMENT_SIZE)
+            complex_data = f.read(ELEMENT_SIZE)
+            f.seek(point)
+            if len(complex_data):
+                f.write(complex_data)
+                point += ELEMENT_SIZE
+            else:
+                f.truncate()
+                break
+    return {}, 204
+</code></pre>
+<h3 id="database-get"><a class="header" href="#database-get">Database. GET</a></h3>
+<pre><code class="language-python">@app.route('/', methods=['GET'])
+def paginated_get():
+    page = int(request.args.get('page', '0'))
+    with closing(psycopg2.connect(dbname=dbname, host=host)) as conn:
+        with conn.cursor() as cursor:
+            cursor.execute(
+                'SELECT "id", "todo" FROM "todos" ORDER BY "id" OFFSET %s LIMIT %s;',
+                (page * PAGE_SIZE, (page + 1) * PAGE_SIZE)
+            )
+            return {
+                "result": [ {"id": row[0], "data": row[1]} for row in cursor]
+            }
+</code></pre>
+<h3 id="database-post"><a class="header" href="#database-post">Database. POST</a></h3>
+<pre><code class="language-python">@app.route('/', methods=['POST'])
+def post():
+    data = str(request.json['data'])
+    with closing(psycopg2.connect(dbname=dbname, host=host)) as conn:
+        with conn.cursor() as cursor:
+            cursor.execute(
+                'INSERT INTO "todos" ("todo") VALUES (%s) RETURNING "id";',
+                (data,)
+            )
+            conn.commit()
+            return {"id": cursor.fetchone()[0]}, 201
+</code></pre>
+<h3 id="database-put"><a class="header" href="#database-put">Database. PUT</a></h3>
+<pre><code class="language-python">@app.route('/&lt;int:data_id&gt;', methods=['PUT'])
+def put(data_id):
+    data = request.json['data']
+    with closing(psycopg2.connect(dbname=dbname, host=host)) as conn:
+        with conn.cursor() as cursor:
+            cursor.execute(
+                'UPDATE "todos" SET "todo" = %s WHERE "id" = %s;',
+                (data, data_id)
+            )
+            conn.commit()
+            return {}, 204
+</code></pre>
+<h3 id="database-delete"><a class="header" href="#database-delete">Database. DELETE</a></h3>
+<pre><code class="language-python">@app.route('/&lt;int:data_id&gt;', methods=['DELETE'])
+def delete(data_id):
+    with closing(psycopg2.connect(dbname=dbname, host=host)) as conn:
+        with conn.cursor() as cursor:
+            cursor.execute(
+                'DELETE FROM "todos" WHERE "id" = %s;',
+                (data_id,)
+            )
+            conn.commit()
+            return {}, 204
+</code></pre>
+<h3 id="cache-get"><a class="header" href="#cache-get">Cache. GET</a></h3>
+<pre><code class="language-python">@app.route('/', methods=['GET'])
+def paginated_get():
+    page = int(request.args.get('page', '0'))
+                                
+    redis_client = redis.StrictRedis(**redis_creds)
+    cached_page = redis_client.get(page)
+                                
+    if cached_page:
+        return cached_page
+                                
+    with closing(psycopg2.connect(**postgres_creds)) as conn:
+        with conn.cursor() as cursor:
+            cursor.execute(
+                'SELECT "id", "todo" FROM "todos" ORDER BY "id" OFFSET %s LIMIT %s;',
+                (page * PAGE_SIZE, (page + 1) * PAGE_SIZE)
+            )
+            result = json.dumps({
+                "result": [{"id": row[0], "data": row[1]} for row in cursor]
+            })
+            redis_client.set(page, result, ex=ttl)
+            return result
+</code></pre>
+<h2 id="Резюме"><a class="header" href="#Резюме">Резюме</a></h2>
+<p>Пройденное можно уложить в одну таблицу — она пригодится, когда придётся выбирать структуру под конкретную задачу:</p>
+<div class="table-wrapper"><table><thead><tr><th>Структура</th><th>Доступ по индексу</th><th>Вставка в конец</th><th>Вставка в начало</th><th>Поиск</th></tr></thead><tbody>
+<tr><td>Массив постоянного размера</td><td>\(O(1)\)</td><td>—</td><td>—</td><td>\(O(n)\)</td></tr>
+<tr><td>Динамический массив (<code>list</code>)</td><td>\(O(1)\)</td><td>\(O(1)^*\)</td><td>\(O(n)\)</td><td>\(O(n)\)</td></tr>
+<tr><td>Связный список</td><td>\(O(n)\)</td><td>\(O(1)\)</td><td>\(O(1)\)</td><td>\(O(n)\)</td></tr>
+<tr><td>Дек (<code>deque</code>)</td><td>\(O(n)\)</td><td>\(O(1)\)</td><td>\(O(1)\)</td><td>\(O(n)\)</td></tr>
+</tbody></table>
+</div>
+<p>\(^*\) амортизированно: изредка список перевыделяет память и копирует элементы.</p>
+<p>Главное, что стоит унести из этой главы: у каждой структуры есть операции, которые она делает быстро, и операции, за которые расплачивается. Универсальной структуры не существует — есть подходящая под задачу. Если в твоём коде элементы постоянно добавляются и снимаются с обоих концов, а ты используешь список, то платишь \(O(n)\) там, где мог бы платить \(O(1)\).</p>
+<p>Ни одна из рассмотренных структур не умеет быстро искать по значению — все дают \(O(n)\). Как обойти это ограничение, разбирается в следующих главах: о хеш-таблицах и о деревьях поиска.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../cs/basic-algos.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../cs/recurs-and-sorts.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../cs/basic-algos.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../cs/recurs-and-sorts.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

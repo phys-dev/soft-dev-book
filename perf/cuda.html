@@ -1,0 +1,481 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>CUDA и вычисления на GPU - Разработка и применение программного обеспечения в физических исследованиях</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../intro/intro.html">О книге</a></li><li class="chapter-item expanded affix "><a href="../intro/about-me.html">О себе</a></li><li class="chapter-item expanded affix "><li class="part-title">Ищем помощников</li><li class="chapter-item expanded "><a href="../ai/intro.html"><strong aria-hidden="true">1.</strong> ИИ для разработки</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ai/context.html"><strong aria-hidden="true">1.1.</strong> Контекст и скорость изменений</a></li><li class="chapter-item expanded "><a href="../ai/develop.html"><strong aria-hidden="true">1.2.</strong> ИИ и разработчик</a></li><li class="chapter-item expanded "><a href="../ai/basic.html"><strong aria-hidden="true">1.3.</strong> Технические основы</a></li><li class="chapter-item expanded "><a href="../ai/instruments.html"><strong aria-hidden="true">1.4.</strong> Инструментарий</a></li><li class="chapter-item expanded "><a href="../ai/copilot.html"><strong aria-hidden="true">1.5.</strong> GitHub Copilot</a></li><li class="chapter-item expanded "><a href="../ai/qa.html"><strong aria-hidden="true">1.6.</strong> Вопросы и ответы</a></li></ol></li><li class="chapter-item expanded "><a href="../dev/python/intro.html"><strong aria-hidden="true">2.</strong> Экспресс-курс Python</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../dev/python/basics.html"><strong aria-hidden="true">2.1.</strong> Основы Python</a></li><li class="chapter-item expanded "><a href="../dev/python/numpy.html"><strong aria-hidden="true">2.2.</strong> NumPy</a></li><li class="chapter-item expanded "><a href="../dev/python/scipy.html"><strong aria-hidden="true">2.3.</strong> SciPy</a></li><li class="chapter-item expanded "><a href="../dev/python/matplotlib.html"><strong aria-hidden="true">2.4.</strong> Matplotlib</a></li><li class="chapter-item expanded "><a href="../dev/python/holo.html"><strong aria-hidden="true">2.5.</strong> HoloViews</a></li><li class="chapter-item expanded "><a href="../dev/python/requirements.html"><strong aria-hidden="true">2.6.</strong> Требования к коду</a></li></ol></li><li class="chapter-item expanded "><a href="../dev/git.html"><strong aria-hidden="true">3.</strong> Git</a></li><li class="chapter-item expanded "><a href="../dev/docker.html"><strong aria-hidden="true">4.</strong> Docker</a></li><li class="chapter-item expanded affix "><li class="part-title">Загружаем Linux</li><li class="chapter-item expanded "><a href="../linux/intro.html"><strong aria-hidden="true">5.</strong> Основы Linux</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../linux/booting.html"><strong aria-hidden="true">5.1.</strong> Процесс загрузки</a></li><li class="chapter-item expanded "><a href="../linux/filesystems.html"><strong aria-hidden="true">5.2.</strong> Файловые системы</a></li><li class="chapter-item expanded "><a href="../linux/tools.html"><strong aria-hidden="true">5.3.</strong> Инструменты</a></li></ol></li><li class="chapter-item expanded "><a href="../linux/install-arch-linux.html"><strong aria-hidden="true">6.</strong> Установка Arch Linux</a></li><li class="chapter-item expanded "><a href="../linux/structure.html"><strong aria-hidden="true">7.</strong> Внутреннее устройство Linux</a></li><li class="chapter-item expanded affix "><li class="part-title">Разбираемся в алгоритмах</li><li class="chapter-item expanded "><a href="../cs/intro.html"><strong aria-hidden="true">8.</strong> Общие знания</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../cs/basic-algos.html"><strong aria-hidden="true">8.1.</strong> Введение в алгоритмы</a></li><li class="chapter-item expanded "><a href="../cs/basic-structures.html"><strong aria-hidden="true">8.2.</strong> Основные структуры данных</a></li><li class="chapter-item expanded "><a href="../cs/recurs-and-sorts.html"><strong aria-hidden="true">8.3.</strong> Рекурсия и сортировки</a></li><li class="chapter-item expanded "><a href="../cs/hash-funcs.html"><strong aria-hidden="true">8.4.</strong> Хеш-функции</a></li><li class="chapter-item expanded "><a href="../cs/trees.html"><strong aria-hidden="true">8.5.</strong> Деревья</a></li><li class="chapter-item expanded "><a href="../cs/graphs.html"><strong aria-hidden="true">8.6.</strong> Графы</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Считаем численно</li><li class="chapter-item expanded "><a href="../compute/intro.html"><strong aria-hidden="true">9.</strong> Введение в вычислительную физику</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../compute/basic-concepts.html"><strong aria-hidden="true">9.1.</strong> Сходимость, аппроксимация и устойчивость</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Погружаемся в Python</li><li class="chapter-item expanded "><a href="../dev/python/init.html"><strong aria-hidden="true">10.</strong> Начало</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../dev/python/objects.html"><strong aria-hidden="true">10.1.</strong> Объекты и память</a></li><li class="chapter-item expanded "><a href="../dev/python/collections.html"><strong aria-hidden="true">10.2.</strong> Коллекции</a></li><li class="chapter-item expanded "><a href="../dev/python/o-notation.html"><strong aria-hidden="true">10.3.</strong> Асимптотическая сложность</a></li></ol></li><li class="chapter-item expanded "><a href="../dev/python/functions.html"><strong aria-hidden="true">11.</strong> Функции</a></li><li class="chapter-item expanded "><a href="../dev/python/decorators.html"><strong aria-hidden="true">12.</strong> Декораторы и functools</a></li><li class="chapter-item expanded "><a href="../dev/python/classes.html"><strong aria-hidden="true">13.</strong> Классы</a></li><li class="chapter-item expanded "><a href="../dev/python/async.html"><strong aria-hidden="true">14.</strong> Итераторы, генераторы и корутины</a></li><li class="chapter-item expanded affix "><li class="part-title">Изучаем хорошие практики</li><li class="chapter-item expanded "><a href="../dev/life.html"><strong aria-hidden="true">15.</strong> Жизненный цикл ПО</a></li><li class="chapter-item expanded "><a href="../dev/app.html"><strong aria-hidden="true">16.</strong> От скрипта к приложению</a></li><li class="chapter-item expanded "><a href="../dev/web.html"><strong aria-hidden="true">17.</strong> Основы WEB</a></li><li class="chapter-item expanded "><a href="../dev/bd.html"><strong aria-hidden="true">18.</strong> Базы данных</a></li><li class="chapter-item expanded affix "><li class="part-title">Обрабатываем данные</li><li class="chapter-item expanded "><a href="../dev/python/numpy-and-pandas.html"><strong aria-hidden="true">19.</strong> NumPy и pandas</a></li><li class="chapter-item expanded "><a href="../dev/python/visualization/practice.html"><strong aria-hidden="true">20.</strong> Визуализация данных</a></li><li class="chapter-item expanded "><a href="../ds/intro.html"><strong aria-hidden="true">21.</strong> Машинное обучение</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ds/basic.html"><strong aria-hidden="true">21.1.</strong> Основные понятия</a></li><li class="chapter-item expanded "><a href="../ds/ml.html"><strong aria-hidden="true">21.2.</strong> Классические алгоритмы</a></li><li class="chapter-item expanded "><a href="../ds/nn.html"><strong aria-hidden="true">21.3.</strong> Нейронные сети</a></li><li class="chapter-item expanded "><a href="../ds/tools.html"><strong aria-hidden="true">21.4.</strong> Инструменты: scikit-learn</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Ускоряем код</li><li class="chapter-item expanded "><a href="../perf/intro.html"><strong aria-hidden="true">22.</strong> С чего начинать оптимизацию</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../dev/python/optimization.html"><strong aria-hidden="true">22.1.</strong> Почему Python не очень быстрый</a></li><li class="chapter-item expanded "><a href="../perf/perf.html"><strong aria-hidden="true">22.2.</strong> Скорость выполнения программ</a></li><li class="chapter-item expanded "><a href="../perf/gil.html"><strong aria-hidden="true">22.3.</strong> Многопоточность и GIL</a></li><li class="chapter-item expanded "><a href="../perf/async.html"><strong aria-hidden="true">22.4.</strong> Асинхронность</a></li><li class="chapter-item expanded "><a href="../perf/cuda.html" class="active"><strong aria-hidden="true">22.5.</strong> CUDA и вычисления на GPU</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Учимся у других</li><li class="chapter-item expanded "><a href="../examples/intro.html"><strong aria-hidden="true">23.</strong> Коды и скрипты</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../examples/kenv.html"><strong aria-hidden="true">23.1.</strong> Уравнение огибающей Капчинского-Владимирского для пучка заряженных частиц</a></li><li class="chapter-item expanded "><a href="../examples/envelope-optimize.html"><strong aria-hidden="true">23.2.</strong> Оптимизация огибающей пучка заряженных частиц с помощью генетического алгоритма</a></li><li class="chapter-item expanded "><a href="../examples/redpic.html"><strong aria-hidden="true">23.3.</strong> Релятивистская разностная схема для расчёта динамики частиц</a></li><li class="chapter-item expanded "><a href="../examples/orbit-correction.html"><strong aria-hidden="true">23.4.</strong> Коррекция равновесной орбиты с применением матрицы отклика и нейронных сетей</a></li><li class="chapter-item expanded "><a href="../examples/cadquery/layout.html"><strong aria-hidden="true">23.5.</strong> Схема ускорителя заряженных частиц в CadQuery</a></li><li class="chapter-item expanded "><a href="../examples/async-api.html"><strong aria-hidden="true">23.6.</strong> Асинхронное API для кинотеатра</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Работаем самостоятельно</li><li class="chapter-item expanded "><a href="../practicum/review-code-task.html"><strong aria-hidden="true">24.</strong> Ищем ошибки в чужом коде</a></li><li class="chapter-item expanded "><a href="../practicum/markov-chain-task.html"><strong aria-hidden="true">25.</strong> Делаем свою LLM</a></li><li class="chapter-item expanded "><a href="../practicum/booting-linux-task.html"><strong aria-hidden="true">26.</strong> Установка Linux</a></li><li class="chapter-item expanded "><a href="../practicum/linux-tools-task.html"><strong aria-hidden="true">27.</strong> Набор упражнений для работы в Linux</a></li><li class="chapter-item expanded "><a href="../practicum/linux-structure-task.html"><strong aria-hidden="true">28.</strong> Маленькая задачка c Linux</a></li><li class="chapter-item expanded "><a href="../practicum/python-algo-task.html"><strong aria-hidden="true">29.</strong> Пишем эффективный код</a></li><li class="chapter-item expanded "><a href="../practicum/kitty-startup-task.html"><strong aria-hidden="true">30.</strong> Деплой стартапа</a></li><li class="chapter-item expanded "><a href="../practicum/final-project-requirements.html"><strong aria-hidden="true">31.</strong> Итоговый проект</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded affix "><a href="../resume/intro.html">Заключение</a></li><li class="chapter-item expanded affix "><a href="../resume/literature.html">Литература и статьи</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Разработка и применение программного обеспечения в физических исследованиях</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/phys-dev/soft-dev-book/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="cuda-и-вычисления-на-gpu"><a class="header" href="#cuda-и-вычисления-на-gpu">CUDA и вычисления на GPU</a></h1>
+<p>В главе про профилирование мы разгоняли умножение матриц на CPU: переставляли циклы, компилировали код через Numba и Cython, а в конце просто вызвали NumPy и получили микросекунды вместо десятков миллисекунд. В главе про GIL выяснилось, что потоки в Python упираются в глобальную блокировку, а процессов у тебя столько, сколько ядер — то есть штук восемь-шестнадцать. Это потолок CPU.</p>
+<p>А теперь посмотри на видеокарту. У современного GPU тысячи ядер, а пиковая производительность — десятки терафлопс против единиц у процессора. Если твоя задача — выполнить одну и ту же операцию над миллионами чисел (а в физике это почти всегда так), GPU даст ускорение в 10–100 раз. Эта глава о том, как забрать это ускорение, не выходя из Python.</p>
+<h2 id="Зачем-физику-видеокарта"><a class="header" href="#Зачем-физику-видеокарта">Зачем физику видеокарта</a></h2>
+<p>GPU придумали для игр: нужно было независимо посчитать цвет каждого из миллионов пикселей 60 раз в секунду. Быстро выяснилось, что «одна и та же формула для миллионов независимых элементов» — это не только про пиксели:</p>
+<ul>
+<li><strong>Моделирование частиц.</strong> Метод частиц в ячейках (PIC), молекулярная динамика, трекинг пучка в ускорителе — миллионы частиц, и каждая на каждом шаге обновляется по одним и тем же уравнениям движения.</li>
+<li><strong>Сеточные задачи.</strong> Уравнения теплопроводности, Пуассона, Максвелла, Навье–Стокса на разностных сетках: значение в каждом узле пересчитывается по одному шаблону.</li>
+<li><strong>Обработка данных детекторов.</strong> Реконструкция треков, фильтрация изображений, томография — конвейеры однотипных операций над большими массивами. Триггерные фермы на LHC давно считают на GPU.</li>
+<li><strong>Монте-Карло.</strong> Транспорт излучения, генерация событий: миллионы независимых историй.</li>
+<li><strong>Нейросети.</strong> Обучение — по сути миллиарды умножений матриц; без GPU глубокое обучение просто не случилось бы.</li>
+</ul>
+<p>Общее у всех этих задач одно: <strong>массовый параллелизм данных</strong>. Много элементов, над каждым — одинаковая и относительно простая работа, элементы почти не зависят друг от друга. Именно под такой профиль GPU и заточен.</p>
+<h2 id="Чем-gpu-отличается-от-cpu"><a class="header" href="#Чем-gpu-отличается-от-cpu">Чем GPU отличается от CPU</a></h2>
+<p>CPU оптимизирован под <strong>латентность</strong>: выполнить одну цепочку инструкций как можно быстрее. Ради этого ядро CPU обвешано сложной машинерией — предсказателем переходов, внеочередным исполнением, огромными кешами. GPU оптимизирован под <strong>пропускную способность</strong>: выполнить как можно больше работы в секунду, пусть каждая отдельная операция и займёт больше времени. Ядра у него простые, зато их тысячи.</p>
+<div class="table-wrapper"><table><thead><tr><th></th><th>CPU</th><th>GPU</th></tr></thead><tbody>
+<tr><td>Ядер</td><td>4–64 сложных</td><td>тысячи простых (RTX 4090 — 16 384)</td></tr>
+<tr><td>Частота</td><td>3–5 ГГц</td><td>1–2.5 ГГц</td></tr>
+<tr><td>Логика ядра</td><td>предсказание переходов, внеочередное исполнение</td><td>максимально простая</td></tr>
+<tr><td>Скрытие задержек памяти</td><td>большие кеши</td><td>тысячи нитей: пока одни ждут память, считают другие</td></tr>
+<tr><td>Полоса памяти</td><td>~50–100 ГБ/с (DDR5)</td><td>сотни ГБ/с — единицы ТБ/с (GDDR6X, HBM)</td></tr>
+<tr><td>Оптимизирован под</td><td>латентность одной задачи</td><td>суммарную пропускную способность</td></tr>
+<tr><td>Идеальная нагрузка</td><td>ветвистая, последовательная</td><td>однотипная над большими массивами</td></tr>
+</tbody></table>
+</div>
+<h3 id="simt-и-warp"><a class="header" href="#simt-и-warp">SIMT и warp</a></h3>
+<p>Ядра GPU не полностью независимы. Нити (threads) исполняются группами по 32 штуки — такая группа называется <strong>warp</strong>. Все нити warp'а в каждый момент выполняют одну и ту же инструкцию, но над разными данными. Эта модель называется SIMT — Single Instruction, Multiple Threads: один поток команд, много потоков данных.</p>
+<p>Отсюда важное следствие. Если внутри warp'а код ветвится (<code>if</code>), и часть нитей пошла по одной ветке, а часть по другой, GPU выполнит <strong>обе ветки по очереди</strong>, выключая «чужие» нити. Это называется дивергенцией warp'а: ветвистый код на GPU не ускоряется, а деградирует. Хорошая GPU-программа — это когда 32 соседние нити дружно делают одно и то же.</p>
+<h3 id="Иерархия-памяти"><a class="header" href="#Иерархия-памяти">Иерархия памяти</a></h3>
+<p>Память GPU устроена ступеньками, и разница между ступеньками — порядки:</p>
+<ul>
+<li><strong>Регистры</strong> — свои у каждой нити, доступ за ~1 такт. Локальные переменные ядра живут здесь.</li>
+<li><strong>Разделяемая память (shared memory)</strong> — общая для блока нитей, порядка 100 КБ на мультипроцессор, доступ за ~10–30 тактов. Это управляемый вручную кеш: сюда загружают кусок данных, который блок будет использовать многократно.</li>
+<li><strong>Глобальная память</strong> — те самые гигабайты «памяти видеокарты». Видна всем нитям, полоса огромная (сотни ГБ/с), но латентность — сотни тактов.</li>
+</ul>
+<p>GPU прячет латентность глобальной памяти не кешами, как CPU, а количеством нитей: пока один warp ждёт данные, мультипроцессор исполняет другие. Поэтому нитей нужно запускать сильно больше, чем физических ядер — десятки тысяч и миллионы, это нормально.</p>
+<h2 id="Модель-cuda"><a class="header" href="#Модель-cuda">Модель CUDA</a></h2>
+<p>CUDA — платформа NVIDIA для вычислений общего назначения на GPU. Терминология из неё расползлась по всем инструментам, поэтому выучим её один раз.</p>
+<ul>
+<li><strong>Host</strong> — CPU и оперативная память. <strong>Device</strong> — GPU и его память. Это два разных мира со своими адресными пространствами; данные между ними надо явно копировать.</li>
+<li><strong>Ядро (kernel)</strong> — функция, которую host запускает на device. Она исполняется одновременно тысячами нитей: каждая нить выполняет один и тот же код, но обрабатывает свой элемент данных.</li>
+<li>Нити организованы в двухуровневую иерархию: <strong>сетка (grid) → блоки (blocks) → нити (threads)</strong>.</li>
+</ul>
+<pre><code class="language-text">Grid (сетка — весь запуск ядра)
+├── Block 0 ── [нить 0][нить 1] ... [нить 255]
+├── Block 1 ── [нить 0][нить 1] ... [нить 255]
+├── Block 2 ── [нить 0][нить 1] ... [нить 255]
+└── ...
+
+глобальный индекс нити = blockIdx.x * blockDim.x + threadIdx.x
+</code></pre>
+<p>Зачем два уровня? Блок целиком попадает на один мультипроцессор: его нити могут общаться через разделяемую память и синхронизироваться между собой. Блоки же друг о друге ничего не знают, и планировщик раскидывает их по мультипроцессорам как угодно — именно поэтому одна и та же программа масштабируется и на ноутбучную видеокарту с 20 мультипроцессорами, и на серверную со 130.</p>
+<p>Внутри ядра нить первым делом выясняет, кто она такая. У неё есть номер блока <code>blockIdx</code>, размер блока <code>blockDim</code> и номер внутри блока <code>threadIdx</code>. Глобальный индекс собирается из них:</p>
+<pre><code class="language-text">i = blockIdx.x * blockDim.x + threadIdx.x
+</code></pre>
+<p>Например, нить номер 5 в блоке номер 3 при блоках по 256 нитей получит <code>i = 3 * 256 + 5 = 773</code> и будет обрабатывать 773-й элемент массива. Цикл <code>for i in range(n)</code> из CPU-кода на GPU исчезает: вместо него запускается <code>n</code> нитей, и каждая делает одну итерацию.</p>
+<h2 id="Главное-правило-данные-должны-жить-на-gpu"><a class="header" href="#Главное-правило-данные-должны-жить-на-gpu">Главное правило: данные должны жить на GPU</a></h2>
+<p>У GPU своя память, и соединена она с host'ом через шину PCIe с пропускной способностью порядка 10–30 ГБ/с. Сравни с полосой памяти самого GPU — около терабайта в секунду. Копирование массива host → device часто стоит дороже, чем вычисления над ним: перегнать гигабайтный массив через PCIe — десятки миллисекунд, а перемножить матрицы такого размера GPU успеет быстрее.</p>
+<p>Отсюда антипаттерн номер один:</p>
+<pre><code class="language-text">плохо:  [CPU: данные] → GPU → шаг → [CPU] → GPU → шаг → [CPU] → ...
+хорошо: [CPU: данные] → GPU → шаг → шаг → шаг → ... → [CPU: результат]
+</code></pre>
+<p>Правильная схема любой GPU-программы: скопировать входные данные на устройство <strong>один раз</strong>, выполнить там всю цепочку вычислений (все шаги по времени, все итерации), и забрать назад только результат — а лучше только диагностику: энергию, спектр, картинку. Если в цикле по шагам у тебя мелькает копирование туда-обратно — ускорения не будет.</p>
+<h2 id="cupy-numpy-на-видеокарте"><a class="header" href="#cupy-numpy-на-видеокарте">CuPy: NumPy на видеокарте</a></h2>
+<p>Самый короткий путь к GPU из Python — <a href="https://cupy.dev/">CuPy</a>. Это реализация интерфейса NumPy поверх CUDA: те же <code>ndarray</code>, <code>sum</code>, <code>dot</code>, <code>fft</code>, <code>linalg</code>, только массивы лежат в памяти видеокарты и все операции выполняет GPU.</p>
+<pre><code class="language-python">import cupy as cp
+
+x = cp.arange(10**7, dtype=cp.float32)   # массив рождается сразу в памяти GPU
+y = cp.sin(x) ** 2 + cp.cos(x) ** 2      # считает GPU, host только раздаёт команды
+s = y.sum()                              # редукция тоже на GPU, результат — 0-мерный массив
+
+y_host = cp.asnumpy(y)                   # явное копирование device → host (в NumPy-массив)
+x_gpu = cp.asarray(y_host)               # и обратно, host → device
+</code></pre>
+<p>Если ты умеешь писать векторизованный NumPy-код (а после главы про профилирование — умеешь), ты уже умеешь программировать GPU: в большинстве скриптов достаточно заменить <code>import numpy as np</code> на <code>import cupy as cp</code>.</p>
+<p>Проверим на нашем старом знакомом — умножении матриц:</p>
+<pre><code class="language-python">import numpy as np
+import cupy as cp
+from time import perf_counter
+
+n = 4096
+A = np.random.rand(n, n).astype(np.float32)
+B = np.random.rand(n, n).astype(np.float32)
+
+# --- CPU ---
+t0 = perf_counter()
+C = A @ B
+t_cpu = perf_counter() - t0
+
+# --- GPU ---
+A_gpu = cp.asarray(A)                  # копируем данные на видеокарту один раз
+B_gpu = cp.asarray(B)
+
+C_gpu = A_gpu @ B_gpu                  # прогрев: первый вызов компилирует ядра
+cp.cuda.Stream.null.synchronize()
+
+t0 = perf_counter()
+C_gpu = A_gpu @ B_gpu
+cp.cuda.Stream.null.synchronize()      # дожидаемся, пока GPU реально досчитает
+t_gpu = perf_counter() - t0
+
+print(f"CPU: {t_cpu:.3f} c, GPU: {t_gpu:.4f} c, ускорение x{t_cpu / t_gpu:.0f}")
+</code></pre>
+<p>На бесплатной T4 в Colab это даёт ускорение в один-два порядка относительно NumPy — при том что NumPy сам по себе уже близок к пределу CPU.</p>
+<p>Два обязательных замечания про такие замеры:</p>
+<ul>
+<li><strong>Запуск ядер асинхронный.</strong> Вызов <code>A_gpu @ B_gpu</code> лишь ставит работу в очередь GPU и возвращается немедленно. Если замерить время без <code>cp.cuda.Stream.null.synchronize()</code>, получатся фантастические микросекунды — время постановки в очередь, а не вычислений. Синхронизация происходит и неявно — при копировании результата на host или вызове <code>float(s)</code>, поэтому «обычный» код работает корректно; но в бенчмарках синхронизируй явно.</li>
+<li><strong>Первый вызов — прогрев.</strong> При первом обращении CuPy компилирует ядра под твою видеокарту, это заметные доли секунды. Замеряй со второго раза (то же самое ты уже видел у Numba).</li>
+</ul>
+<p>Бонус для библиотечного кода: функция <code>cp.get_array_module(x)</code> возвращает <code>numpy</code> или <code>cupy</code> в зависимости от того, где лежит массив <code>x</code>. Так пишут функции, которые прозрачно работают и на CPU, и на GPU.</p>
+<h2 id="numba-cuda-пишем-ядро-сами"><a class="header" href="#numba-cuda-пишем-ядро-сами">Numba CUDA: пишем ядро сами</a></h2>
+<p>CuPy покрывает всё, что выражается операциями над целыми массивами. Но иногда алгоритм в такие операции не укладывается: нестандартная поэлементная логика, свой обход данных. В главе про профилирование мы в такой ситуации вешали <code>@numba.jit</code> на функцию с циклами, и Numba компилировала её для CPU. У Numba есть и второй бэкенд: <code>@cuda.jit</code> компилирует Python-функцию в CUDA-ядро.</p>
+<p>Канонический пример — сложение векторов:</p>
+<pre><code class="language-python">import numpy as np
+from numba import cuda
+
+@cuda.jit
+def add_kernel(a, b, out):
+    i = cuda.grid(1)              # глобальный индекс нити в одномерной сетке
+    if i &lt; out.size:              # нитей запущено чуть больше, чем элементов
+        out[i] = a[i] + b[i]      # каждая нить обрабатывает ровно один элемент
+
+n = 10_000_000
+a = np.random.rand(n).astype(np.float32)
+b = np.random.rand(n).astype(np.float32)
+
+# явно переносим данные на device и заводим там массив под результат
+d_a = cuda.to_device(a)
+d_b = cuda.to_device(b)
+d_out = cuda.device_array_like(d_a)
+
+# конфигурация запуска: сколько нитей в блоке и сколько блоков в сетке
+threads_per_block = 256
+blocks_per_grid = (n + threads_per_block - 1) // threads_per_block  # округление вверх
+
+add_kernel[blocks_per_grid, threads_per_block](d_a, d_b, d_out)
+cuda.synchronize()                # дожидаемся завершения (запуск, как всегда, асинхронный)
+
+out = d_out.copy_to_host()        # забираем результат на CPU
+</code></pre>
+<p>Разберём по шагам:</p>
+<ul>
+<li><strong>Тело ядра</strong> — код <em>одной</em> нити. Циклов по элементам нет: параллелизм создаётся тем, что этих нитей запустятся миллионы. <code>cuda.grid(1)</code> — сокращение для <code>cuda.blockIdx.x * cuda.blockDim.x + cuda.threadIdx.x</code>, той самой формулы глобального индекса.</li>
+<li><strong>Проверка <code>if i &lt; out.size</code></strong> обязательна. Число нитей кратно размеру блока: для <code>n = 10^7</code> при блоках по 256 запустится 39 063 блока, то есть 10 000 128 нитей — на 128 больше, чем элементов. Лишние нити без проверки полезли бы за границу массива.</li>
+<li><strong><code>threads_per_block</code></strong> обычно берут 128–512 (максимум 1024, лучше кратно 32 — размеру warp'а). Точное значение — вопрос тонкой настройки, для начала 256 — хороший выбор.</li>
+<li><strong><code>blocks_per_grid</code></strong> вычисляется из размера задачи: классическая формула округления вверх <code>(n + tpb - 1) // tpb</code>.</li>
+<li><strong>Конфигурация в квадратных скобках</strong> <code>kernel[blocks, threads](...)</code> — так Numba передаёт CUDA, сколько нитей запустить.</li>
+<li><strong>Ядро ничего не возвращает</strong> — оно может только писать в переданные ему массивы, поэтому <code>d_out</code> создаём заранее.</li>
+</ul>
+<p>Если передать в ядро обычные NumPy-массивы, Numba скопирует их на GPU и обратно сама — удобно для проб, но в цикле по шагам это тот самый антипаттерн с копированием. Явные <code>cuda.to_device</code> / <code>copy_to_host</code> держат трафик под контролем. Кстати, ядра Numba умеют принимать и массивы CuPy — инструменты дружат между собой.</p>
+<p>Внутри <code>@cuda.jit</code>-функции доступно ограниченное подмножество Python: числа, арифметика, циклы, условия, обращение к массивам, математика из <code>math</code>. Никаких списков, словарей и создания массивов — как и в <code>nopython</code>-режиме обычной Numba, только строже.</p>
+<p>Сетки и блоки бывают не только одномерными. Для матриц, изображений с детекторов и разностных сеток удобны двумерные: нить получает сразу пару индексов и обрабатывает один узел сетки. Вот, например, ядро, считающее дискретный лапласиан — сердце уравнений теплопроводности и Пуассона:</p>
+<pre><code class="language-python">@cuda.jit
+def laplace_kernel(u, out):
+    i, j = cuda.grid(2)                   # у нити теперь два индекса: строка и столбец
+    if 0 &lt; i &lt; u.shape[0] - 1 and 0 &lt; j &lt; u.shape[1] - 1:   # только внутренние узлы
+        out[i, j] = (u[i + 1, j] + u[i - 1, j] +
+                     u[i, j + 1] + u[i, j - 1] - 4 * u[i, j])
+
+threads_2d = (16, 16)                     # блок 16x16 = 256 нитей
+blocks_2d = ((nx + 15) // 16, (ny + 15) // 16)   # покрываем сетку nx на ny узлов
+laplace_kernel[blocks_2d, threads_2d](d_u, d_lap)
+</code></pre>
+<p>Каждая нить читает пять соседних узлов и пишет один, а дальше GPU сам исполняет это для всех миллионов узлов сетки. Явная разностная схема для двумерной теплопроводности отсюда в одном шаге: <code>u += alpha * dt / h**2 * lap</code>.</p>
+<h2 id="Пример-из-физики-дрейф-частиц-в-скрещенных-полях"><a class="header" href="#Пример-из-физики-дрейф-частиц-в-скрещенных-полях">Пример из физики: дрейф частиц в скрещенных полях</a></h2>
+<p>Соберём всё вместе на настоящей задаче. Возьмём облако из пяти миллионов электронов в скрещенных полях \( \vec{E} = (E_0, 0, 0) \) и \( \vec{B} = (0, 0, B_0) \) и проинтегрируем их движение схемой Бориса — стандартным методом всей вычислительной физики плазмы (её родственницу ты уже видел в примере REDPIC). Теория обещает, что помимо ларморовского вращения облако как целое дрейфует поперёк обоих полей со скоростью \( E_0 / B_0 \), не зависящей ни от заряда, ни от массы.</p>
+<pre><code class="language-python">import cupy as cp   # замени на "import numpy as cp" — и тот же код посчитает CPU
+
+# --- параметры задачи (СИ) ---
+q, m = -1.602e-19, 9.109e-31          # заряд и масса электрона
+E0, B0 = 1e3, 1e-2                    # поля: В/м и Тл
+dt, n_steps = 1e-11, 2000             # шаг 10 пс, всего 20 нс (~5 ларморовских периодов)
+N = 5_000_000                         # пять миллионов частиц
+
+# --- начальное состояние: облако ~1 мм с тепловым разбросом скоростей ---
+# все массивы создаются сразу в памяти GPU и живут там до конца расчёта
+rng = cp.random.default_rng(42)
+x = rng.standard_normal(N, dtype=cp.float32) * 1e-3    # м
+y = rng.standard_normal(N, dtype=cp.float32) * 1e-3
+vx = rng.standard_normal(N, dtype=cp.float32) * 1e5    # м/с
+vy = rng.standard_normal(N, dtype=cp.float32) * 1e5
+
+# --- константы схемы Бориса: обычные числа, считаются один раз на CPU ---
+h = q * dt / (2 * m)                  # q·dt/2m
+t = h * B0                            # tan(θ/2) поворота в магнитном поле за шаг
+s = 2 * t / (1 + t * t)
+
+for step in range(n_steps):
+    vx += h * E0                      # полшага разгона электрическим полем
+    px = vx + vy * t                  # поворот скорости вокруг B:
+    py = vy - vx * t                  #   промежуточный вектор v'
+    vx, vy = vx + py * s, vy - px * s #   точный поворот на угол ω_c·dt
+    vx += h * E0                      # ещё полшага разгона
+    x += vx * dt                      # сдвигаем частицы
+    y += vy * dt
+
+# --- диагностика: на host уходят только два числа, не массивы ---
+v_drift = float(y.mean()) / (n_steps * dt)   # float() неявно синхронизирует GPU
+energy = float(0.5 * m * (vx**2 + vy**2).mean())
+print(f"скорость дрейфа: {v_drift:.3e} м/с (теория: {-E0 / B0:.3e})")
+</code></pre>
+<p>Обрати внимание на структуру:</p>
+<ul>
+<li><strong>Данные рождаются на GPU</strong> (<code>cp.random</code>) и не покидают его все 2000 шагов. За пределы устройства уходят два числа диагностики — и только в этот момент host дожидается GPU.</li>
+<li><strong>Физика — несколько строк массивных операций.</strong> Каждая строка цикла — это одно-два CUDA-ядра, которые CuPy запускает над пятью миллионами элементов. Сам цикл по шагам остаётся на CPU, и это нормально: 2000 итераций цикла — копейки, дорогая работа внутри.</li>
+<li><strong>Тот же код работает на CPU.</strong> Поменяй первую строку — получишь NumPy-версию для отладки на ноутбуке без видеокарты. На GPU она побежит в десятки раз быстрее.</li>
+<li><strong>float32.</strong> Для такой задачи одинарной точности достаточно, а на игровых и облачных картах она в разы быстрее двойной (об этом ниже).</li>
+</ul>
+<p>Дальше эту заготовку можно развивать: неоднородные поля (поле зависит от координаты частицы — по-прежнему поэлементные операции), потери и рождение частиц (маски), самосогласованное поле (гистограмма зарядов + Пуассон через <code>cp.fft</code>). Всё это остаётся в рамках CuPy.</p>
+<h2 id="Когда-gpu-не-поможет"><a class="header" href="#Когда-gpu-не-поможет">Когда GPU не поможет</a></h2>
+<p>GPU — не волшебная кнопка «быстрее». Есть честный список ситуаций, где он бесполезен или вреден:</p>
+<ul>
+<li><strong>Маленькие данные.</strong> Запуск ядра стоит ~5–10 микросекунд, копирование через PCIe — ещё дороже. Если работы меньше, чем на миллисекунду, накладные расходы съедят всё. Складывать массивы из тысячи элементов на GPU бессмысленно — NumPy сделает это быстрее.</li>
+<li><strong>Ветвистая логика.</strong> Из-за дивергенции warp'ов код, где каждый элемент обрабатывается по-своему (деревья решений, парсинг, сложные <code>if</code>-каскады), параллелится плохо.</li>
+<li><strong>Последовательные зависимости.</strong> Если шаг <code>i+1</code> нельзя начать без результата шага <code>i</code>, а внутри шага работы мало, параллелить нечего. Одна частица на миллиард шагов — задача для CPU и Numba. Но заметь: миллион <em>независимых</em> траекторий по миллиарду шагов — снова идеальная задача для GPU; в физике спасение часто в том, чтобы параллелить по ансамблю или по параметрам, а не по времени.</li>
+<li><strong>Двойная точность на игровых картах.</strong> GeForce считает float64 в 32–64 раза медленнее float32 — блоки FP64 там почти отсутствуют. Полноценный FP64 (половина от FP32) есть только у вычислительных карт вроде A100/H100. Если твоей задаче — небесной механике, длинному интегрированию, плохо обусловленной алгебре — нужна двойная точность, замерь её отдельно, иначе тебя ждёт разочарование.</li>
+<li><strong>Задачи про ожидание, а не про счёт.</strong> Если программа ждёт сеть или диск — тебе в главу про асинхронность, GPU тут ни при чём.</li>
+</ul>
+<p>Практическое правило: прежде чем переписывать на GPU, профилируй (глава про профилирование в помощь) и прикинь арифметическую интенсивность — сколько операций приходится на каждый байт данных. Умножение матриц — отлично, поэлементное сложение — уже упирается в память, а не в вычислители.</p>
+<h2 id="Как-попробовать-без-своей-видеокарты"><a class="header" href="#Как-попробовать-без-своей-видеокарты">Как попробовать без своей видеокарты</a></h2>
+<p>Ничего покупать не нужно — бесплатный GPU выдают в <a href="https://colab.research.google.com/">Google Colab</a>:</p>
+<ol>
+<li>Создай новый блокнот (это обычный Jupyter в облаке).</li>
+<li>Меню <strong>Среда выполнения → Сменить среду выполнения</strong> (Runtime → Change runtime type) → выбери <strong>T4 GPU</strong> → сохрани.</li>
+<li>Проверь, что карта на месте:</li>
+</ol>
+<pre><code class="language-python">!nvidia-smi
+</code></pre>
+<p>Команда покажет модель GPU (обычно Tesla T4 c 16 ГБ памяти), версию драйвера и загрузку. CuPy, Numba и PyTorch в Colab уже установлены — все примеры этой главы запускаются там без единого <code>pip install</code>. Лимиты бесплатного тарифа: сессия живёт несколько часов, при простое отключается — для учёбы и прототипов более чем достаточно. Похожий бесплатный GPU дают Kaggle Notebooks, а для серьёзных расчётов у твоего института, скорее всего, найдётся кластер с вычислительными картами — спроси научрука.</p>
+<h2 id="Экосистема-не-cuda-единой"><a class="header" href="#Экосистема-не-cuda-единой">Экосистема: не CUDA единой</a></h2>
+<p>Писать ядра руками нужно реже, чем кажется: вокруг CUDA вырос целый слой «GPU для людей». <a href="https://pytorch.org/">PyTorch</a> и <a href="https://docs.jax.dev/">JAX</a> по сути дают NumPy на видеокарте плюс автоматическое дифференцирование и JIT-компиляцию. Физики массово используют их не только для нейросетей, но и как удобный вычислительный бэкенд: перенос тензора на карту умещается в одно <code>.to("cuda")</code>, а <code>jax.jit</code> и <code>jax.vmap</code> компилируют и векторизуют целые модели. Библиотеки <a href="https://rapids.ai/">RAPIDS</a> (cuDF, cuML) переносят на GPU pandas и scikit-learn, что выручает, когда узкое место не физика, а обработка таблиц с данными. Под капотом у всех этих инструментов работают те же ядра, сетки и блоки, так что понимание модели CUDA останется с тобой в любом из них. Ну а если однажды упрёшься в пределы Python, тебя ждёт CUDA C++, и концепции там ровно те же.</p>
+<h2 id="Итог-лестница-ускорения"><a class="header" href="#Итог-лестница-ускорения">Итог: лестница ускорения</a></h2>
+<p>Этой главой раздел про ускорение программ заканчивается, так что соберём всю лестницу целиком. Когда код медленный, поднимайся по ступенькам сверху вниз и останавливайся, как только стало достаточно быстро:</p>
+<ol>
+<li><strong>Профилируй.</strong> Пока <code>line_profiler</code> не показал, где уходит время, любая оптимизация — гадание.</li>
+<li><strong>Проверь алгоритм.</strong> Никакое железо не спасёт \( O(n^2) \) там, где есть \( O(n \log n) \).</li>
+<li><strong>Векторизуй.</strong> NumPy вместо циклов — обычно первый и самый дешёвый порядок ускорения.</li>
+<li><strong>Компилируй.</strong> Numba или Cython — для логики, которая в массивные операции не укладывается.</li>
+<li><strong>Распараллель на CPU.</strong> Процессы для счёта (GIL!), асинхронность — если узкое место ожидание, а не вычисления.</li>
+<li><strong>Переноси на GPU.</strong> Много однотипной работы над большими массивами — CuPy; своя поэлементная логика — Numba CUDA. Помни два правила: данные живут на GPU, а замеры делаются с синхронизацией.</li>
+</ol>
+<p>Красивая симметрия напоследок: тот же векторизованный стиль мышления, который в начале раздела ускорял код на CPU, здесь почти без изменений пересаживается на видеокарту. Учишься один раз — ускоряешься везде.</p>
+<h2 id="Полезные-ссылки"><a class="header" href="#Полезные-ссылки">Полезные ссылки</a></h2>
+<ul>
+<li><a href="https://docs.nvidia.com/cuda/cuda-c-programming-guide/">CUDA C++ Programming Guide</a> — первоисточник: модель исполнения, иерархия памяти, все детали.</li>
+<li><a href="https://docs.cupy.dev/">Документация CuPy</a> — включая таблицу соответствия функций NumPy ↔ CuPy и советы по производительности.</li>
+<li><a href="https://numba.readthedocs.io/en/stable/cuda/index.html">Numba for CUDA GPUs</a> — справочник по <code>@cuda.jit</code>: ядра, разделяемая память, атомарные операции.</li>
+<li><a href="https://www.nvidia.com/en-us/training/">NVIDIA Deep Learning Institute</a> — курс «Fundamentals of Accelerated Computing with CUDA Python» как раз про Numba и CuPy.</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../perf/async.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../examples/intro.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../perf/async.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../examples/intro.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

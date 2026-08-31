@@ -1,0 +1,656 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Многопоточность и GIL - Разработка и применение программного обеспечения в физических исследованиях</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../intro/intro.html">О книге</a></li><li class="chapter-item expanded affix "><a href="../intro/about-me.html">О себе</a></li><li class="chapter-item expanded affix "><li class="part-title">Ищем помощников</li><li class="chapter-item expanded "><a href="../ai/intro.html"><strong aria-hidden="true">1.</strong> ИИ для разработки</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ai/context.html"><strong aria-hidden="true">1.1.</strong> Контекст и скорость изменений</a></li><li class="chapter-item expanded "><a href="../ai/develop.html"><strong aria-hidden="true">1.2.</strong> ИИ и разработчик</a></li><li class="chapter-item expanded "><a href="../ai/basic.html"><strong aria-hidden="true">1.3.</strong> Технические основы</a></li><li class="chapter-item expanded "><a href="../ai/instruments.html"><strong aria-hidden="true">1.4.</strong> Инструментарий</a></li><li class="chapter-item expanded "><a href="../ai/copilot.html"><strong aria-hidden="true">1.5.</strong> GitHub Copilot</a></li><li class="chapter-item expanded "><a href="../ai/qa.html"><strong aria-hidden="true">1.6.</strong> Вопросы и ответы</a></li></ol></li><li class="chapter-item expanded "><a href="../dev/python/intro.html"><strong aria-hidden="true">2.</strong> Экспресс-курс Python</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../dev/python/basics.html"><strong aria-hidden="true">2.1.</strong> Основы Python</a></li><li class="chapter-item expanded "><a href="../dev/python/numpy.html"><strong aria-hidden="true">2.2.</strong> NumPy</a></li><li class="chapter-item expanded "><a href="../dev/python/scipy.html"><strong aria-hidden="true">2.3.</strong> SciPy</a></li><li class="chapter-item expanded "><a href="../dev/python/matplotlib.html"><strong aria-hidden="true">2.4.</strong> Matplotlib</a></li><li class="chapter-item expanded "><a href="../dev/python/holo.html"><strong aria-hidden="true">2.5.</strong> HoloViews</a></li><li class="chapter-item expanded "><a href="../dev/python/requirements.html"><strong aria-hidden="true">2.6.</strong> Требования к коду</a></li></ol></li><li class="chapter-item expanded "><a href="../dev/git.html"><strong aria-hidden="true">3.</strong> Git</a></li><li class="chapter-item expanded "><a href="../dev/docker.html"><strong aria-hidden="true">4.</strong> Docker</a></li><li class="chapter-item expanded affix "><li class="part-title">Загружаем Linux</li><li class="chapter-item expanded "><a href="../linux/intro.html"><strong aria-hidden="true">5.</strong> Основы Linux</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../linux/booting.html"><strong aria-hidden="true">5.1.</strong> Процесс загрузки</a></li><li class="chapter-item expanded "><a href="../linux/filesystems.html"><strong aria-hidden="true">5.2.</strong> Файловые системы</a></li><li class="chapter-item expanded "><a href="../linux/tools.html"><strong aria-hidden="true">5.3.</strong> Инструменты</a></li></ol></li><li class="chapter-item expanded "><a href="../linux/install-arch-linux.html"><strong aria-hidden="true">6.</strong> Установка Arch Linux</a></li><li class="chapter-item expanded "><a href="../linux/structure.html"><strong aria-hidden="true">7.</strong> Внутреннее устройство Linux</a></li><li class="chapter-item expanded affix "><li class="part-title">Разбираемся в алгоритмах</li><li class="chapter-item expanded "><a href="../cs/intro.html"><strong aria-hidden="true">8.</strong> Общие знания</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../cs/basic-algos.html"><strong aria-hidden="true">8.1.</strong> Введение в алгоритмы</a></li><li class="chapter-item expanded "><a href="../cs/basic-structures.html"><strong aria-hidden="true">8.2.</strong> Основные структуры данных</a></li><li class="chapter-item expanded "><a href="../cs/recurs-and-sorts.html"><strong aria-hidden="true">8.3.</strong> Рекурсия и сортировки</a></li><li class="chapter-item expanded "><a href="../cs/hash-funcs.html"><strong aria-hidden="true">8.4.</strong> Хеш-функции</a></li><li class="chapter-item expanded "><a href="../cs/trees.html"><strong aria-hidden="true">8.5.</strong> Деревья</a></li><li class="chapter-item expanded "><a href="../cs/graphs.html"><strong aria-hidden="true">8.6.</strong> Графы</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Считаем численно</li><li class="chapter-item expanded "><a href="../compute/intro.html"><strong aria-hidden="true">9.</strong> Введение в вычислительную физику</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../compute/basic-concepts.html"><strong aria-hidden="true">9.1.</strong> Сходимость, аппроксимация и устойчивость</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Погружаемся в Python</li><li class="chapter-item expanded "><a href="../dev/python/init.html"><strong aria-hidden="true">10.</strong> Начало</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../dev/python/objects.html"><strong aria-hidden="true">10.1.</strong> Объекты и память</a></li><li class="chapter-item expanded "><a href="../dev/python/collections.html"><strong aria-hidden="true">10.2.</strong> Коллекции</a></li><li class="chapter-item expanded "><a href="../dev/python/o-notation.html"><strong aria-hidden="true">10.3.</strong> Асимптотическая сложность</a></li></ol></li><li class="chapter-item expanded "><a href="../dev/python/functions.html"><strong aria-hidden="true">11.</strong> Функции</a></li><li class="chapter-item expanded "><a href="../dev/python/decorators.html"><strong aria-hidden="true">12.</strong> Декораторы и functools</a></li><li class="chapter-item expanded "><a href="../dev/python/classes.html"><strong aria-hidden="true">13.</strong> Классы</a></li><li class="chapter-item expanded "><a href="../dev/python/async.html"><strong aria-hidden="true">14.</strong> Итераторы, генераторы и корутины</a></li><li class="chapter-item expanded affix "><li class="part-title">Изучаем хорошие практики</li><li class="chapter-item expanded "><a href="../dev/life.html"><strong aria-hidden="true">15.</strong> Жизненный цикл ПО</a></li><li class="chapter-item expanded "><a href="../dev/app.html"><strong aria-hidden="true">16.</strong> От скрипта к приложению</a></li><li class="chapter-item expanded "><a href="../dev/web.html"><strong aria-hidden="true">17.</strong> Основы WEB</a></li><li class="chapter-item expanded "><a href="../dev/bd.html"><strong aria-hidden="true">18.</strong> Базы данных</a></li><li class="chapter-item expanded affix "><li class="part-title">Обрабатываем данные</li><li class="chapter-item expanded "><a href="../dev/python/numpy-and-pandas.html"><strong aria-hidden="true">19.</strong> NumPy и pandas</a></li><li class="chapter-item expanded "><a href="../dev/python/visualization/practice.html"><strong aria-hidden="true">20.</strong> Визуализация данных</a></li><li class="chapter-item expanded "><a href="../ds/intro.html"><strong aria-hidden="true">21.</strong> Машинное обучение</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ds/basic.html"><strong aria-hidden="true">21.1.</strong> Основные понятия</a></li><li class="chapter-item expanded "><a href="../ds/ml.html"><strong aria-hidden="true">21.2.</strong> Классические алгоритмы</a></li><li class="chapter-item expanded "><a href="../ds/nn.html"><strong aria-hidden="true">21.3.</strong> Нейронные сети</a></li><li class="chapter-item expanded "><a href="../ds/tools.html"><strong aria-hidden="true">21.4.</strong> Инструменты: scikit-learn</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Ускоряем код</li><li class="chapter-item expanded "><a href="../perf/intro.html"><strong aria-hidden="true">22.</strong> С чего начинать оптимизацию</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../dev/python/optimization.html"><strong aria-hidden="true">22.1.</strong> Почему Python не очень быстрый</a></li><li class="chapter-item expanded "><a href="../perf/perf.html"><strong aria-hidden="true">22.2.</strong> Скорость выполнения программ</a></li><li class="chapter-item expanded "><a href="../perf/gil.html" class="active"><strong aria-hidden="true">22.3.</strong> Многопоточность и GIL</a></li><li class="chapter-item expanded "><a href="../perf/async.html"><strong aria-hidden="true">22.4.</strong> Асинхронность</a></li><li class="chapter-item expanded "><a href="../perf/cuda.html"><strong aria-hidden="true">22.5.</strong> CUDA и вычисления на GPU</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Учимся у других</li><li class="chapter-item expanded "><a href="../examples/intro.html"><strong aria-hidden="true">23.</strong> Коды и скрипты</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../examples/kenv.html"><strong aria-hidden="true">23.1.</strong> Уравнение огибающей Капчинского-Владимирского для пучка заряженных частиц</a></li><li class="chapter-item expanded "><a href="../examples/envelope-optimize.html"><strong aria-hidden="true">23.2.</strong> Оптимизация огибающей пучка заряженных частиц с помощью генетического алгоритма</a></li><li class="chapter-item expanded "><a href="../examples/redpic.html"><strong aria-hidden="true">23.3.</strong> Релятивистская разностная схема для расчёта динамики частиц</a></li><li class="chapter-item expanded "><a href="../examples/orbit-correction.html"><strong aria-hidden="true">23.4.</strong> Коррекция равновесной орбиты с применением матрицы отклика и нейронных сетей</a></li><li class="chapter-item expanded "><a href="../examples/cadquery/layout.html"><strong aria-hidden="true">23.5.</strong> Схема ускорителя заряженных частиц в CadQuery</a></li><li class="chapter-item expanded "><a href="../examples/async-api.html"><strong aria-hidden="true">23.6.</strong> Асинхронное API для кинотеатра</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Работаем самостоятельно</li><li class="chapter-item expanded "><a href="../practicum/review-code-task.html"><strong aria-hidden="true">24.</strong> Ищем ошибки в чужом коде</a></li><li class="chapter-item expanded "><a href="../practicum/markov-chain-task.html"><strong aria-hidden="true">25.</strong> Делаем свою LLM</a></li><li class="chapter-item expanded "><a href="../practicum/booting-linux-task.html"><strong aria-hidden="true">26.</strong> Установка Linux</a></li><li class="chapter-item expanded "><a href="../practicum/linux-tools-task.html"><strong aria-hidden="true">27.</strong> Набор упражнений для работы в Linux</a></li><li class="chapter-item expanded "><a href="../practicum/linux-structure-task.html"><strong aria-hidden="true">28.</strong> Маленькая задачка c Linux</a></li><li class="chapter-item expanded "><a href="../practicum/python-algo-task.html"><strong aria-hidden="true">29.</strong> Пишем эффективный код</a></li><li class="chapter-item expanded "><a href="../practicum/kitty-startup-task.html"><strong aria-hidden="true">30.</strong> Деплой стартапа</a></li><li class="chapter-item expanded "><a href="../practicum/final-project-requirements.html"><strong aria-hidden="true">31.</strong> Итоговый проект</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded affix "><a href="../resume/intro.html">Заключение</a></li><li class="chapter-item expanded affix "><a href="../resume/literature.html">Литература и статьи</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Разработка и применение программного обеспечения в физических исследованиях</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/phys-dev/soft-dev-book/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="Многопоточность-и-gil"><a class="header" href="#Многопоточность-и-gil">Многопоточность и GIL</a></h1>
+<h2 id="Необходимый-минимум-процессы-и-потоки"><a class="header" href="#Необходимый-минимум-процессы-и-потоки">Необходимый минимум: процессы и потоки</a></h2>
+<h3 id="Процесс"><a class="header" href="#Процесс">Процесс</a></h3>
+<p><strong>Процесс</strong> — запущенная программа. Операционная система выделяет каждому процессу собственное, изолированное от остальных состояние:</p>
+<ul>
+<li>виртуальное адресное пространство — своя память, в которую другие процессы заглянуть не могут;</li>
+<li>указатель на исполняемую инструкцию;</li>
+<li>стек вызовов;</li>
+<li>системные ресурсы, например открытые файловые дескрипторы.</li>
+</ul>
+<p>Если нужно выполнять несколько задач одновременно, их можно раздать разным процессам. Изоляция здесь и достоинство, и недостаток: процессы не мешают друг другу, но и обмениваться данными им сложно — общей памяти у них нет.</p>
+<h3 id="Поток"><a class="header" href="#Поток">Поток</a></h3>
+<p><strong>Поток</strong> исполняется независимо от других потоков, как и процесс, но живёт <em>внутри</em> процесса и делит с ним адресное пространство и системные ресурсы. Отсюда главное различие: двум потокам одного процесса ничего не стоит работать с общими данными — они просто видят одни и те же объекты.</p>
+<p>Это удобно ровно до тех пор, пока два потока не полезут в одни данные одновременно. Тогда начинаются гонки, о которых мы поговорим чуть ниже.</p>
+<p>Порядком исполнения и процессов, и потоков распоряжается операционная система: она поочерёдно выдаёт каждому по нескольку тактов процессора.</p>
+<h2 id="Модуль-threading"><a class="header" href="#Модуль-threading">Модуль <code>threading</code></a></h2>
+<p>Поток в Python — это самый обычный системный поток: его исполнением управляет операционная система, а не интерпретатор. Создать поток можно классом <code>Thread</code> из модуля стандартной библиотеки <code>threading</code>.</p>
+<pre><code class="language-python">import time
+from threading import Thread
+
+def countdown(n):
+    for i in range(n):
+        print(n - i - 1, "left")
+        time.sleep(1)
+</code></pre>
+<pre><code class="language-python">t = Thread(target=countdown, args=(3,))
+</code></pre>
+<pre><code class="language-python">t.start()
+</code></pre>
+<pre><code>2 left
+</code></pre>
+<p>Альтернативный способ создать поток — наследование:</p>
+<pre><code class="language-python">class CountdownThread(Thread):
+    def __init__(self, n):
+        super().__init__()
+        self.n = n
+        
+    def run(self): # вызывается методом start
+        for i in range(self.n):
+            print(self.n - i - 1, "left")
+            time.sleep(1)
+</code></pre>
+<pre><code class="language-python">t = CountdownThread(3)
+</code></pre>
+<pre><code class="language-python">t.start()
+</code></pre>
+<pre><code>2 left
+</code></pre>
+<p>Недостаток этого подхода в том, что он ограничивает переиспользование кода: функциональность класса <code>CountdownThread</code> можно использовать только в отдельном потоке.</p>
+<ul>
+<li>При создании потока можно указать имя. По умолчанию это <strong>'Thread-N'</strong>:</li>
+</ul>
+<pre><code class="language-python">Thread().name
+</code></pre>
+<pre><code>'Thread-6'
+</code></pre>
+<pre><code class="language-python">Thread(name="NumberCruncher").name
+</code></pre>
+<pre><code>'NumberCruncher'
+</code></pre>
+<ul>
+<li>У каждого активного потока есть идентификатор — неотрицательное число, уникальное среди всех активных потоков.</li>
+</ul>
+<pre><code class="language-python">t = Thread()
+t.start()
+t.ident
+</code></pre>
+<pre><code>123145519448064
+</code></pre>
+<ul>
+<li>Метод <code>join</code> позволяет дождаться завершения потока.
+<ul>
+<li>Исполнение вызывающего потока приостановится, пока поток t не завершится.</li>
+<li>Повторные вызовы метода <code>join</code> не имеют эффекта.</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-python">t = Thread(target=time.sleep, args=(5, )) 
+t.start()
+t.join() # блокирует на 5 секунд
+t.join() # выполняется мгновенно
+</code></pre>
+<pre><code>1 left
+1 left
+0 left
+0 left
+</code></pre>
+<ul>
+<li>Проверить, работает ли поток, можно с помощью метода <code>is_alive</code>:</li>
+</ul>
+<pre><code class="language-python">t = Thread(target=time.sleep, args=(5, )) 
+t.start()
+</code></pre>
+<pre><code class="language-python">t.is_alive() # False через 5 секунд
+</code></pre>
+<pre><code>True
+</code></pre>
+<ul>
+<li>
+<p>Демон — поток, созданный с аргументом <code>daemon=True</code>:</p>
+</li>
+<li>
+<p>Отличие потока-демона от обычного потока в том, что потоки-демоны <strong>автоматически</strong> уничтожаются при выходе из интерпретатора.</p>
+</li>
+</ul>
+<pre><code class="language-python">t = Thread(target=time.sleep, args=(5,), daemon=True)
+t.start()
+</code></pre>
+<pre><code class="language-python">t.daemon
+</code></pre>
+<pre><code>True
+</code></pre>
+<ul>
+<li>В Python нет встроенного механизма завершения потоков — это не случайность, а осознанное решение разработчиков языка.</li>
+<li>Корректное завершение потока часто связано с освобождением ресурсов, например:
+<ul>
+<li>поток может работать с файлом, дескриптор которого нужно закрыть,</li>
+<li>или захватить примитив синхронизации.</li>
+</ul>
+</li>
+<li>Для завершения потока обычно используют флаг:</li>
+</ul>
+<pre><code class="language-python">class Task:
+    def __init__(self):
+        self._running = True
+    
+    def terminate(self):
+        self._running = False
+    
+    def run(self, n):
+        while self._running:
+            ...
+</code></pre>
+<p>Набор примитивов синхронизации в модуле <code>threading</code> стандартный:</p>
+<ul>
+<li><code>Lock</code> — обычный мьютекс, используется для организации эксклюзивного доступа к разделяемому состоянию.</li>
+<li><code>RLock</code> — рекурсивный мьютекс, который разрешает потоку, владеющему мьютексом, захватывать его больше одного раза.</li>
+<li><code>Semaphore</code> — вариация мьютекса, которую можно захватить не более фиксированного числа раз.</li>
+<li><code>BoundedSemaphore</code> — семафор, который следит за тем, чтобы его захватывали и освобождали одинаковое число раз.</li>
+</ul>
+<p>Все примитивы синхронизации реализуют единый интерфейс:</p>
+<ul>
+<li>метод <code>acquire</code> захватывает примитив синхронизации,</li>
+<li>а метод <code>release</code> освобождает его.</li>
+</ul>
+<pre><code class="language-python">class SharedCounter:
+    def __init__(self, value):
+        self._value = value
+        self._lock = Lock()
+    
+    def increment(self, delta=1):
+        self._lock.acquire()
+        self._value += delta
+        self._lock.release()
+    
+    def get(self):
+        return self._value
+</code></pre>
+<h2 id="Модуль-queue"><a class="header" href="#Модуль-queue">Модуль <code>queue</code></a></h2>
+<p>Модуль <code>queue</code> реализует несколько потокобезопасных очередей:</p>
+<ul>
+<li><code>Queue</code> — очередь FIFO,</li>
+<li><code>LifoQueue</code> — очередь LIFO, то есть стек,</li>
+<li><code>PriorityQueue</code> — очередь элементов — пар (priority, item).</li>
+<li>Никаких особых изысков в реализации очередей нет: все изменяющие состояние методы работают «внутри» мьютекса.</li>
+<li>Класс <code>Queue</code> использует в качестве контейнера <code>deque</code>, а классы <code>LifoQueue</code> и <code>PriorityQueue</code> — список.</li>
+</ul>
+<pre><code class="language-python">def worker(q):
+    while True:
+        item = q.get() # блокирующе ждёт следующий
+        do_something(item) # элемент
+        q.task_done() # уведомляет очередь о выполнении
+        
+def master(q):
+    for item in source():
+        q.put(item)
+        
+        # блокирующе ждёт, пока все элементы
+        # очереди не будут обработаны
+        q.join()
+</code></pre>
+<h2 id="Модуль-futures"><a class="header" href="#Модуль-futures">Модуль <code>futures</code></a></h2>
+<ul>
+<li>Модуль <code>concurrent.futures</code> содержит абстрактный класс <code>Executor</code> и его реализацию в виде пула потоков — <code>ThreadPoolExecutor</code>.</li>
+<li>Интерфейс исполнителя состоит всего из трёх методов:</li>
+</ul>
+<pre><code class="language-python">from concurrent.futures import *
+</code></pre>
+<pre><code class="language-python">executor = ThreadPoolExecutor(max_workers=4)
+</code></pre>
+<pre><code class="language-python">executor.submit(print, "Hello, world!")
+</code></pre>
+<pre><code>Hello, world!
+
+
+
+
+&lt;Future at 0x1043b1d90 state=running&gt;
+</code></pre>
+<pre><code class="language-python">list(executor.map(print, ["Knock?", "Knock!"]))
+</code></pre>
+<pre><code>Knock?
+Knock!
+
+
+
+
+
+[None, None]
+</code></pre>
+<pre><code class="language-python">executor.shutdown()
+</code></pre>
+<ul>
+<li>Исполнители поддерживают протокол менеджеров контекста:</li>
+</ul>
+<pre><code class="language-python">with ThreadPoolExecutor(max_workers=4) as executor:
+    ...
+</code></pre>
+<ul>
+<li>Метод <code>Executor.submit</code> возвращает экземпляр класса <code>Future</code>, который инкапсулирует асинхронное вычисление.</li>
+</ul>
+<p>Что можно сделать с <code>Future</code>?</p>
+<pre><code class="language-python">with ThreadPoolExecutor(max_workers=4) as executor:
+    f = executor.submit(sorted, [4, 3, 1, 2])
+</code></pre>
+<ul>
+<li>Спросить о статусе вычисления:</li>
+</ul>
+<pre><code class="language-python">f.running(), f.done(), f.cancelled()
+</code></pre>
+<pre><code>(False, True, False)
+</code></pre>
+<ul>
+<li>Блокирующе дождаться результата вычисления:</li>
+</ul>
+<pre><code class="language-python">print(f.result())
+</code></pre>
+<pre><code>[1, 2, 3, 4]
+</code></pre>
+<pre><code class="language-python">print(f.exception())
+</code></pre>
+<pre><code>None
+</code></pre>
+<ul>
+<li>Добавить функцию, которая будет вызвана после завершения вычисления:</li>
+</ul>
+<pre><code class="language-python">f.add_done_callback(print)
+</code></pre>
+<pre><code>&lt;Future at 0x1043b7f10 state=finished returned list&gt;
+</code></pre>
+<h2 id="Пример-с-модулем-futures-integrate"><a class="header" href="#Пример-с-модулем-futures-integrate">Пример с модулем <code>futures</code>: <code>integrate</code></a></h2>
+<pre><code class="language-python">import math
+
+def integrate(f, a, b, *, n_iter=1000):
+    acc = 0
+    step = (b - a) / n_iter
+    for i in range(n_iter):
+        acc += f(a + i * step) * step
+    return acc
+</code></pre>
+<pre><code class="language-python">integrate(math.cos, 0, math.pi / 2)
+</code></pre>
+<pre><code>1.0007851925466296
+</code></pre>
+<pre><code class="language-python">from functools import partial
+
+def integrate_async(f, a, b, *, n_jobs, n_iter=1000):
+    executor = ThreadPoolExecutor(max_workers=n_jobs)
+    spawn = partial(executor.submit, integrate, f,
+                    n_iter=n_iter // n_jobs)
+    step = (b-a)/n_jobs
+    fs=[spawn(a+i*step,a+(i+1)*step)
+        for i in range(n_jobs)]
+    return sum(f.result() for f in as_completed(fs))
+</code></pre>
+<pre><code class="language-python">integrate_async(math.cos, 0, math.pi / 2, n_jobs=2)
+</code></pre>
+<pre><code>1.0007851925466305
+</code></pre>
+<h2 id="Параллелизм-и-конкурентность"><a class="header" href="#Параллелизм-и-конкурентность">Параллелизм и конкурентность</a></h2>
+<p>Сравни производительность последовательной и параллельной версий функции <code>integrate</code> с помощью «магической» команды <code>timeit</code>:</p>
+<pre><code class="language-python">%%timeit -n100
+integrate(math.cos, 0, math.pi / 2, n_iter=10**6)
+</code></pre>
+<pre><code>154 ms ± 2.28 ms per loop (mean ± std. dev. of 7 runs, 100 loops each)
+</code></pre>
+<pre><code class="language-python">%%timeit -n100
+integrate_async(math.cos, 0, math.pi / 2, n_iter=10**6, n_jobs=2)
+</code></pre>
+<pre><code>142 ms ± 2.11 ms per loop (mean ± std. dev. of 7 runs, 100 loops each)
+</code></pre>
+<h3 id="Вот-он-gil"><a class="header" href="#Вот-он-gil">Вот он, GIL</a></h3>
+<p>Результат обескураживает: два потока вместо одного дали выигрыш в проценты вместо ожидаемого ускорения вдвое. Причина — <strong>GIL</strong> (global interpreter lock, глобальная блокировка интерпретатора).</p>
+<p>GIL — мьютекс, гарантирующий, что в каждый момент времени байт-код исполняет только один поток. Появился он не по недосмотру: внутреннее состояние интерпретатора (в первую очередь счётчики ссылок у каждого объекта) не защищено от одновременного доступа, и глобальная блокировка — самый простой способ не дать двум потокам испортить его одновременно. Плата за простоту — ровно то, что мы наблюдали в замере.</p>
+<p>Отсюда следствие, которое стоит запомнить накрепко: <strong>потоки в Python не ускоряют вычисления.</strong> Сколько бы их ни было, байт-код по-прежнему исполняется по очереди, а к вычислениям добавляются накладные расходы на переключение — иногда многопоточная версия оказывается даже медленнее однопоточной.</p>
+<h3 id="Так-плох-ли-gil"><a class="header" href="#Так-плох-ли-gil">Так плох ли GIL?</a></h3>
+<p>Ответ зависит от того, чем занята программа.</p>
+<p>Если она <strong>считает</strong>, GIL — прямое препятствие, и потоки бесполезны. Обойти его можно двумя путями: уйти в отдельные процессы, у каждого из которых свой интерпретатор со своим GIL (об этом ниже), или спуститься в скомпилированный код, который умеет GIL отпускать.</p>
+<p>Если же программа <strong>ждёт</strong> — читает файл, тянет данные по сети, опрашивает прибор, — картина меняется полностью. На время ожидания поток отпускает GIL, и остальные спокойно работают. Для такой нагрузки потоки прекрасно подходят, и никакого проигрыша от блокировки нет.</p>
+<p>Заметь, что и NumPy на длинных операциях отпускает GIL: пока перемножаются большие матрицы, интерпретатор свободен. Поэтому многопоточность в связке с NumPy работает лучше, чем можно ожидать.</p>
+<h3 id="c-и-cython-как-отпустить-gil"><a class="header" href="#c-и-cython-как-отпустить-gil">C и Cython: как отпустить GIL</a></h3>
+<pre><code class="language-python">%load_ext Cython
+</code></pre>
+<pre><code class="language-cython">%%cython
+
+from libc.math cimport cos
+
+def integrate(f, double a, double b, long n_iter):
+    cdef double acc = 0
+    cdef double step=(b-a)/n_iter
+    cdef long i
+    with nogil:
+        for i in range(n_iter):
+            acc += cos(a + i * step) * step
+    return acc
+</code></pre>
+<pre><code class="language-python">%%timeit -n100
+integrate_async(math.cos, 0, math.pi / 2, n_iter=10**6, n_jobs=2)
+</code></pre>
+<pre><code>5.88 ms ± 126 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+</code></pre>
+<h2 id="Модуль-multiprocessing"><a class="header" href="#Модуль-multiprocessing">Модуль <code>multiprocessing</code></a></h2>
+<h3 id="Процессы--ещё-одно-лекарство-от-gil"><a class="header" href="#Процессы--ещё-одно-лекарство-от-gil">Процессы — ещё одно лекарство от GIL</a></h3>
+<ul>
+<li>Вместо потоков можно использовать процессы.</li>
+<li>У каждого процесса будет свой GIL, но он не помешает им работать параллельно.</li>
+<li>За работу с процессами в Python отвечает модуль <code>multiprocessing</code>:</li>
+</ul>
+<pre><code class="language-python">import multiprocessing as mp
+</code></pre>
+<pre><code class="language-python">p = mp.Process(target=countdown, args=(5, ))
+</code></pre>
+<pre><code class="language-python">p.start()
+</code></pre>
+<pre><code>4 left
+3 left
+2 left
+1 left
+0 left
+</code></pre>
+<ul>
+<li>В модуле реализованы основные примитивы синхронизации: мьютексы, семафоры, условные переменные.</li>
+<li>Для организации взаимодействия между процессами можно использовать <code>Pipe</code> — основанное на сокетах соединение между двумя процессами:</li>
+</ul>
+<pre><code class="language-python">def ponger(conn):
+    conn.send("pong")
+</code></pre>
+<pre><code class="language-python">parent_conn, child_conn = mp.Pipe()
+p = mp.Process(target=ponger, args=(child_conn, ))
+</code></pre>
+<pre><code class="language-python">p.start()
+</code></pre>
+<pre><code class="language-python">parent_conn.recv()
+</code></pre>
+<pre><code>'pong'
+</code></pre>
+<pre><code class="language-python">p.join()
+</code></pre>
+<h2 id="Процессы-и-производительность"><a class="header" href="#Процессы-и-производительность">Процессы и производительность</a></h2>
+<p>Реализация функции <code>integrate_async</code> на основе пула потоков работала долго, попробуем использовать пул процессов:</p>
+<pre><code class="language-python">from concurrent.futures import ProcessPoolExecutor
+</code></pre>
+<pre><code class="language-python">def integrate_async(f, a, b, *, n_jobs, n_iter=1000):
+    executor = ProcessPoolExecutor(max_workers=n_jobs)
+    spawn = partial(executor.submit, integrate, f,
+                    n_iter=n_iter // n_jobs)
+
+    step = (b - a) / n_jobs
+    fs=[spawn(a + i * step, a + (i + 1) * step)
+        for i in range(n_jobs)]
+    
+    return sum(f.result() for f in as_completed(fs))
+</code></pre>
+<pre><code class="language-python">%%timeit -n100
+integrate_async(math.cos, 0, math.pi / 2, n_iter=10**6, n_jobs=2)
+</code></pre>
+<pre><code>16.6 ms ± 144 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+</code></pre>
+<h2 id="Пакет-joblib"><a class="header" href="#Пакет-joblib">Пакет <code>joblib</code></a></h2>
+<p>Пакет <code>joblib</code> реализует параллельный аналог цикла <code>for</code>, который удобен для параллельного выполнения независимых задач.</p>
+<pre><code class="language-python">from joblib import Parallel, delayed
+
+def integrate_async(f, a, b, *, n_jobs, n_iter=1000, backend=None):
+    step = (b - a) / n_jobs
+    with Parallel(n_jobs=n_jobs, backend=backend) as parallel:
+        fs = (delayed(integrate)(f, a + i * step,
+                                 a + (i + 1) * step, 
+                                 n_iter=n_iter // n_jobs)
+              for i in range(n_jobs))
+    return sum(parallel(fs))
+</code></pre>
+<pre><code class="language-python">%%timeit -n100
+integrate_async(math.cos, 0, math.pi / 2, n_iter=10**6, n_jobs=2, backend="threading")
+</code></pre>
+<pre><code>104 ms ± 280 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+</code></pre>
+<pre><code class="language-python">%%timeit -n100
+integrate_async(math.cos, 0, math.pi / 2, n_iter=10**6, n_jobs=2, backend="multiprocessing")
+</code></pre>
+<pre><code>290 ms ± 1.13 ms per loop (mean ± std. dev. of 7 runs, 100 loops each)
+</code></pre>
+<h2 id="Резюме"><a class="header" href="#Резюме">Резюме</a></h2>
+<p>Всё содержание главы укладывается в один вопрос, который стоит задавать себе перед выбором инструмента: <strong>программа считает или ждёт?</strong></p>
+<p>Если ждёт — сети, диска, прибора, ответа пользователя, — бери потоки. GIL на время ожидания отпускается, потоки дёшевы, и десятки одновременных ожиданий обходятся почти бесплатно. Если ждать предстоит тысячами — переходи к асинхронности из следующей главы.</p>
+<p>Если считает — потоки не помогут никогда, сколько бы их ни было. Здесь работают три пути: вынести расчёт в отдельные процессы через <code>multiprocessing</code>, где у каждого свой интерпретатор и свой GIL; спуститься в скомпилированный код на Cython или C, который умеет GIL отпускать; или, что чаще всего проще всего, поручить расчёт NumPy, который делает это за тебя.</p>
+<p>И общее правило, которое сэкономит много времени: прежде чем распараллеливать, <strong>замерь</strong>. Довольно часто выясняется, что узкое место не там, где казалось, и одна правка алгоритма даёт больше, чем любое количество потоков.</p>
+<h2 id="jit-компилятор-numba"><a class="header" href="#jit-компилятор-numba">JIT-компилятор <code>numba</code></a></h2>
+<pre><code class="language-python">import math
+from numba import jit, prange
+
+@jit(nopython=True, parallel=True, fastmath=True, cache=True)
+def integrate(a, b, *, n_iter=1000):
+    acc = 0
+    step = (b - a) / n_iter
+    for i in prange(n_iter):
+        acc += math.cos(a + i * step) * step
+    return acc
+</code></pre>
+<pre><code class="language-python">%%timeit -n100
+integrate(0, math.pi / 2, n_iter=10**6)
+</code></pre>
+<pre><code>5.11 ms ± 983 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+</code></pre>
+<p>Профит.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../perf/perf.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../perf/async.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../perf/perf.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../perf/async.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

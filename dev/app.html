@@ -1,0 +1,567 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>От скрипта к приложению - Разработка и применение программного обеспечения в физических исследованиях</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../intro/intro.html">О книге</a></li><li class="chapter-item expanded affix "><a href="../intro/about-me.html">О себе</a></li><li class="chapter-item expanded affix "><li class="part-title">Ищем помощников</li><li class="chapter-item expanded "><a href="../ai/intro.html"><strong aria-hidden="true">1.</strong> ИИ для разработки</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ai/context.html"><strong aria-hidden="true">1.1.</strong> Контекст и скорость изменений</a></li><li class="chapter-item expanded "><a href="../ai/develop.html"><strong aria-hidden="true">1.2.</strong> ИИ и разработчик</a></li><li class="chapter-item expanded "><a href="../ai/basic.html"><strong aria-hidden="true">1.3.</strong> Технические основы</a></li><li class="chapter-item expanded "><a href="../ai/instruments.html"><strong aria-hidden="true">1.4.</strong> Инструментарий</a></li><li class="chapter-item expanded "><a href="../ai/copilot.html"><strong aria-hidden="true">1.5.</strong> GitHub Copilot</a></li><li class="chapter-item expanded "><a href="../ai/qa.html"><strong aria-hidden="true">1.6.</strong> Вопросы и ответы</a></li></ol></li><li class="chapter-item expanded "><a href="../dev/python/intro.html"><strong aria-hidden="true">2.</strong> Экспресс-курс Python</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../dev/python/basics.html"><strong aria-hidden="true">2.1.</strong> Основы Python</a></li><li class="chapter-item expanded "><a href="../dev/python/numpy.html"><strong aria-hidden="true">2.2.</strong> NumPy</a></li><li class="chapter-item expanded "><a href="../dev/python/scipy.html"><strong aria-hidden="true">2.3.</strong> SciPy</a></li><li class="chapter-item expanded "><a href="../dev/python/matplotlib.html"><strong aria-hidden="true">2.4.</strong> Matplotlib</a></li><li class="chapter-item expanded "><a href="../dev/python/holo.html"><strong aria-hidden="true">2.5.</strong> HoloViews</a></li><li class="chapter-item expanded "><a href="../dev/python/requirements.html"><strong aria-hidden="true">2.6.</strong> Требования к коду</a></li></ol></li><li class="chapter-item expanded "><a href="../dev/git.html"><strong aria-hidden="true">3.</strong> Git</a></li><li class="chapter-item expanded "><a href="../dev/docker.html"><strong aria-hidden="true">4.</strong> Docker</a></li><li class="chapter-item expanded affix "><li class="part-title">Загружаем Linux</li><li class="chapter-item expanded "><a href="../linux/intro.html"><strong aria-hidden="true">5.</strong> Основы Linux</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../linux/booting.html"><strong aria-hidden="true">5.1.</strong> Процесс загрузки</a></li><li class="chapter-item expanded "><a href="../linux/filesystems.html"><strong aria-hidden="true">5.2.</strong> Файловые системы</a></li><li class="chapter-item expanded "><a href="../linux/tools.html"><strong aria-hidden="true">5.3.</strong> Инструменты</a></li></ol></li><li class="chapter-item expanded "><a href="../linux/install-arch-linux.html"><strong aria-hidden="true">6.</strong> Установка Arch Linux</a></li><li class="chapter-item expanded "><a href="../linux/structure.html"><strong aria-hidden="true">7.</strong> Внутреннее устройство Linux</a></li><li class="chapter-item expanded affix "><li class="part-title">Разбираемся в алгоритмах</li><li class="chapter-item expanded "><a href="../cs/intro.html"><strong aria-hidden="true">8.</strong> Общие знания</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../cs/basic-algos.html"><strong aria-hidden="true">8.1.</strong> Введение в алгоритмы</a></li><li class="chapter-item expanded "><a href="../cs/basic-structures.html"><strong aria-hidden="true">8.2.</strong> Основные структуры данных</a></li><li class="chapter-item expanded "><a href="../cs/recurs-and-sorts.html"><strong aria-hidden="true">8.3.</strong> Рекурсия и сортировки</a></li><li class="chapter-item expanded "><a href="../cs/hash-funcs.html"><strong aria-hidden="true">8.4.</strong> Хеш-функции</a></li><li class="chapter-item expanded "><a href="../cs/trees.html"><strong aria-hidden="true">8.5.</strong> Деревья</a></li><li class="chapter-item expanded "><a href="../cs/graphs.html"><strong aria-hidden="true">8.6.</strong> Графы</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Считаем численно</li><li class="chapter-item expanded "><a href="../compute/intro.html"><strong aria-hidden="true">9.</strong> Введение в вычислительную физику</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../compute/basic-concepts.html"><strong aria-hidden="true">9.1.</strong> Сходимость, аппроксимация и устойчивость</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Погружаемся в Python</li><li class="chapter-item expanded "><a href="../dev/python/init.html"><strong aria-hidden="true">10.</strong> Начало</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../dev/python/objects.html"><strong aria-hidden="true">10.1.</strong> Объекты и память</a></li><li class="chapter-item expanded "><a href="../dev/python/collections.html"><strong aria-hidden="true">10.2.</strong> Коллекции</a></li><li class="chapter-item expanded "><a href="../dev/python/o-notation.html"><strong aria-hidden="true">10.3.</strong> Асимптотическая сложность</a></li></ol></li><li class="chapter-item expanded "><a href="../dev/python/functions.html"><strong aria-hidden="true">11.</strong> Функции</a></li><li class="chapter-item expanded "><a href="../dev/python/decorators.html"><strong aria-hidden="true">12.</strong> Декораторы и functools</a></li><li class="chapter-item expanded "><a href="../dev/python/classes.html"><strong aria-hidden="true">13.</strong> Классы</a></li><li class="chapter-item expanded "><a href="../dev/python/async.html"><strong aria-hidden="true">14.</strong> Итераторы, генераторы и корутины</a></li><li class="chapter-item expanded affix "><li class="part-title">Изучаем хорошие практики</li><li class="chapter-item expanded "><a href="../dev/life.html"><strong aria-hidden="true">15.</strong> Жизненный цикл ПО</a></li><li class="chapter-item expanded "><a href="../dev/app.html" class="active"><strong aria-hidden="true">16.</strong> От скрипта к приложению</a></li><li class="chapter-item expanded "><a href="../dev/web.html"><strong aria-hidden="true">17.</strong> Основы WEB</a></li><li class="chapter-item expanded "><a href="../dev/bd.html"><strong aria-hidden="true">18.</strong> Базы данных</a></li><li class="chapter-item expanded affix "><li class="part-title">Обрабатываем данные</li><li class="chapter-item expanded "><a href="../dev/python/numpy-and-pandas.html"><strong aria-hidden="true">19.</strong> NumPy и pandas</a></li><li class="chapter-item expanded "><a href="../dev/python/visualization/practice.html"><strong aria-hidden="true">20.</strong> Визуализация данных</a></li><li class="chapter-item expanded "><a href="../ds/intro.html"><strong aria-hidden="true">21.</strong> Машинное обучение</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ds/basic.html"><strong aria-hidden="true">21.1.</strong> Основные понятия</a></li><li class="chapter-item expanded "><a href="../ds/ml.html"><strong aria-hidden="true">21.2.</strong> Классические алгоритмы</a></li><li class="chapter-item expanded "><a href="../ds/nn.html"><strong aria-hidden="true">21.3.</strong> Нейронные сети</a></li><li class="chapter-item expanded "><a href="../ds/tools.html"><strong aria-hidden="true">21.4.</strong> Инструменты: scikit-learn</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Ускоряем код</li><li class="chapter-item expanded "><a href="../perf/intro.html"><strong aria-hidden="true">22.</strong> С чего начинать оптимизацию</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../dev/python/optimization.html"><strong aria-hidden="true">22.1.</strong> Почему Python не очень быстрый</a></li><li class="chapter-item expanded "><a href="../perf/perf.html"><strong aria-hidden="true">22.2.</strong> Скорость выполнения программ</a></li><li class="chapter-item expanded "><a href="../perf/gil.html"><strong aria-hidden="true">22.3.</strong> Многопоточность и GIL</a></li><li class="chapter-item expanded "><a href="../perf/async.html"><strong aria-hidden="true">22.4.</strong> Асинхронность</a></li><li class="chapter-item expanded "><a href="../perf/cuda.html"><strong aria-hidden="true">22.5.</strong> CUDA и вычисления на GPU</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Учимся у других</li><li class="chapter-item expanded "><a href="../examples/intro.html"><strong aria-hidden="true">23.</strong> Коды и скрипты</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../examples/kenv.html"><strong aria-hidden="true">23.1.</strong> Уравнение огибающей Капчинского-Владимирского для пучка заряженных частиц</a></li><li class="chapter-item expanded "><a href="../examples/envelope-optimize.html"><strong aria-hidden="true">23.2.</strong> Оптимизация огибающей пучка заряженных частиц с помощью генетического алгоритма</a></li><li class="chapter-item expanded "><a href="../examples/redpic.html"><strong aria-hidden="true">23.3.</strong> Релятивистская разностная схема для расчёта динамики частиц</a></li><li class="chapter-item expanded "><a href="../examples/orbit-correction.html"><strong aria-hidden="true">23.4.</strong> Коррекция равновесной орбиты с применением матрицы отклика и нейронных сетей</a></li><li class="chapter-item expanded "><a href="../examples/cadquery/layout.html"><strong aria-hidden="true">23.5.</strong> Схема ускорителя заряженных частиц в CadQuery</a></li><li class="chapter-item expanded "><a href="../examples/async-api.html"><strong aria-hidden="true">23.6.</strong> Асинхронное API для кинотеатра</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Работаем самостоятельно</li><li class="chapter-item expanded "><a href="../practicum/review-code-task.html"><strong aria-hidden="true">24.</strong> Ищем ошибки в чужом коде</a></li><li class="chapter-item expanded "><a href="../practicum/markov-chain-task.html"><strong aria-hidden="true">25.</strong> Делаем свою LLM</a></li><li class="chapter-item expanded "><a href="../practicum/booting-linux-task.html"><strong aria-hidden="true">26.</strong> Установка Linux</a></li><li class="chapter-item expanded "><a href="../practicum/linux-tools-task.html"><strong aria-hidden="true">27.</strong> Набор упражнений для работы в Linux</a></li><li class="chapter-item expanded "><a href="../practicum/linux-structure-task.html"><strong aria-hidden="true">28.</strong> Маленькая задачка c Linux</a></li><li class="chapter-item expanded "><a href="../practicum/python-algo-task.html"><strong aria-hidden="true">29.</strong> Пишем эффективный код</a></li><li class="chapter-item expanded "><a href="../practicum/kitty-startup-task.html"><strong aria-hidden="true">30.</strong> Деплой стартапа</a></li><li class="chapter-item expanded "><a href="../practicum/final-project-requirements.html"><strong aria-hidden="true">31.</strong> Итоговый проект</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded affix "><a href="../resume/intro.html">Заключение</a></li><li class="chapter-item expanded affix "><a href="../resume/literature.html">Литература и статьи</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Разработка и применение программного обеспечения в физических исследованиях</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/phys-dev/soft-dev-book/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="От-скрипта-к-приложению"><a class="header" href="#От-скрипта-к-приложению">От скрипта к приложению</a></h1>
+<p>Почти любой код в лаборатории рождается одинаково. Вечером перед семинаром ты пишешь <code>analysis.py</code> на пятьдесят строк: загрузить осциллограммы, вычесть базовую линию, найти пик, нарисовать график. Скрипт работает, график попадает в отчёт, все довольны.</p>
+<p>Дальше события развиваются по знакомому сценарию:</p>
+<ul>
+<li>через полгода в скрипте 800 строк: добавились калибровка, три формата входных файлов и ветка <code>if experiment == "march":</code>;</li>
+<li>рядом лежат <code>analysis_new.py</code>, <code>analysis_final.py</code> и <code>analysis_final_v2_REAL.py</code>, и никто не помнит, чем они отличаются;</li>
+<li>пути к данным (<code>/home/vasya/data/2026-03-12/</code>) и параметры установки зашиты в код: перед каждым запуском ты правишь исходник;</li>
+<li>на другой машине скрипт не запускается: «а какая у тебя версия numpy?»;</li>
+<li>приходит новый студент, и ты полчаса объясняешь, какие строки закомментировать, чтобы «просто посчитать спектр».</li>
+</ul>
+<p>Одноразовый скрипт — нормальный жанр, стыдиться его не нужно. Проблемы начинаются, когда одноразовый код незаметно становится многоразовым: им пользуется вся группа, на его результатах строятся статьи, а устроен он по-прежнему как черновик.</p>
+<p>Разница между скриптом и приложением — не в количестве строк, а в свойствах:</p>
+<ul>
+<li>приложение ставится на чистую машину одной-двумя командами;</li>
+<li>его запускают, не открывая исходники в редакторе;</li>
+<li>оно внятно сообщает об ошибках и ведёт журнал работы;</li>
+<li>его можно менять, не боясь незаметно сломать физику, — есть тесты;</li>
+<li>в нём разберётся другой человек. Или ты сам через полгода — это тот же случай.</li>
+</ul>
+<p>В главе про <a href="./life.html">жизненный цикл ПО</a> мы смотрели на разработку с высоты птичьего полёта. Здесь спустимся на землю и пройдём путь целиком на сквозном примере: превратим скрипт обработки осциллограмм в пакет <code>beamtool</code>, которым сможет пользоваться вся группа.</p>
+<h2 id="Структура-проекта"><a class="header" href="#Структура-проекта">Структура проекта</a></h2>
+<p>Начнём с механики. Любой файл <code>.py</code> — <em>модуль</em>, его можно импортировать. Каталог с файлом <code>__init__.py</code> — <em>пакет</em>: набор модулей с общим именем. Как только код перестаёт помещаться в один файл, разложи его по модулям по смыслу: чтение данных отдельно, формулы отдельно, графики отдельно. Правило простое: один модуль — одна зона ответственности.</p>
+<p>Типовая структура проекта выглядит так:</p>
+<pre><code class="language-text">beamtool/                  # корень git-репозитория
+├── pyproject.toml         # метаданные проекта и зависимости
+├── README.md              # что это, как поставить, как запустить
+├── .gitignore
+├── configs/
+│   └── default.toml       # параметры обработки по умолчанию
+├── src/
+│   └── beamtool/          # сам пакет
+│       ├── __init__.py
+│       ├── io.py          # чтение и запись данных
+│       ├── physics.py     # формулы и численные методы
+│       ├── plotting.py    # вся работа с matplotlib
+│       └── cli.py         # интерфейс командной строки
+└── tests/
+    ├── test_io.py
+    └── test_physics.py
+</code></pre>
+<p>Это так называемый <em>src-layout</em>: пакет спрятан в каталоге <code>src/</code>. Есть и плоский вариант (flat layout), где <code>beamtool/</code> лежит прямо в корне репозитория. Для маленьких проектов он тоже годится. Преимущество src-layout в том, что пакет нельзя случайно импортировать прямо из рабочего каталога, минуя установку: тесты проверяют ровно то, что получит пользователь.</p>
+<p>Отдельный вопрос — где живут данные. Сырые данные экспериментов в репозиторий не кладут: git плохо переносит гигабайты бинарников, а история изменений для них бессмысленна. Данные лежат на сервере или дисках группы, в репозитории — путь к ним в конфиге и маленькие файлы-образцы для тестов (<code>tests/data/</code>). Каталоги <code>data/</code>, <code>.venv/</code>, <code>__pycache__/</code> и файлы <code>*.log</code> добавь в <code>.gitignore</code> сразу, не дожидаясь первого случайного коммита на два гигабайта.</p>
+<h2 id="Виртуальные-окружения-и-зависимости"><a class="header" href="#Виртуальные-окружения-и-зависимости">Виртуальные окружения и зависимости</a></h2>
+<p>Системный Python — общая кухня: в ней готовят все программы машины, и обновление библиотеки для одного проекта ломает другой. Поэтому у каждого проекта должно быть своё <em>виртуальное окружение</em> — изолированный набор пакетов:</p>
+<pre><code class="language-bash">cd beamtool
+python -m venv .venv
+source .venv/bin/activate    # в Windows: .venv\Scripts\activate
+pip install numpy matplotlib
+</code></pre>
+<p>Окружение — расходный материал: сломалось или запуталось — удаляешь каталог <code>.venv</code> и создаёшь заново за минуту. Но это работает, только если список зависимостей хранится в репозитории, а не в твоей голове. Записать его можно двумя способами.</p>
+<p>Классический — файл <code>requirements.txt</code>, простой список для <code>pip install -r requirements.txt</code>:</p>
+<pre><code class="language-text">numpy==2.1.3
+matplotlib==3.9.2
+</code></pre>
+<p>Современный — секция <code>dependencies</code> в <code>pyproject.toml</code>, едином файле с метаданными проекта (мы разберём его в разделе про упаковку). Для нового проекта выбирай <code>pyproject.toml</code>; <code>requirements.txt</code> останется тебе как точный слепок окружения.</p>
+<p>Обрати внимание на закрепление версий. Здесь есть два режима. В библиотеке, которую ставят другие, версии ограничивают мягко (<code>numpy&gt;=2.0</code>), чтобы не конфликтовать с чужими зависимостями. В приложении для обработки данных важнее воспроизводимость: команда <code>pip freeze &gt; requirements.txt</code> фиксирует всё окружение до последней цифры, и через год ты сможешь пересоздать его и повторить расчёт для статьи. Обновление той же scipy иногда меняет численные результаты в последних знаках — для науки это не мелочь, а повод зафиксировать версии.</p>
+<p>Вместо связки venv + pip можно взять современный менеджер проектов: <a href="https://python-poetry.org/">poetry</a> или <a href="https://docs.astral.sh/uv/">uv</a>. Они делают то же самое — окружение, зависимости, lock-файл с точными версиями, но одной командой и с автоматическим разрешением конфликтов; uv к тому же написан на Rust и работает на порядок быстрее pip. Начни с venv и pip, чтобы понимать механику, а на менеджеры перейдёшь, когда почувствуешь, какую рутину они убирают.</p>
+<h2 id="Точки-входа"><a class="header" href="#Точки-входа">Точки входа</a></h2>
+<p>Модуль должен переживать импорт без побочных эффектов: при <code>import beamtool.cli</code> ничего не должно считаться, рисоваться и писаться на диск. Поэтому исполняемый код закрывается стандартной конструкцией:</p>
+<pre><code class="language-python">if __name__ == "__main__":
+    main()
+</code></pre>
+<p>Переменная <code>__name__</code> равна <code>"__main__"</code> только тогда, когда файл запущен как программа, а не импортирован. Это уже было в наших требованиях к коду; теперь сделаем следующий шаг — нормальный интерфейс командной строки, чтобы параметры передавались аргументами, а не правкой исходника. В стандартной библиотеке для этого есть модуль <code>argparse</code>:</p>
+<pre><code class="language-python">"""Интерфейс командной строки beamtool."""
+
+import argparse
+from pathlib import Path
+
+import numpy as np
+
+
+def parse_args() -&gt; argparse.Namespace:
+    """Разбирает аргументы командной строки."""
+    parser = argparse.ArgumentParser(
+        prog="beamtool",
+        description="Обработка осциллограмм: базовая линия, пик, заряд.",
+    )
+    parser.add_argument(
+        "--input", type=Path, required=True,
+        help="входной CSV-файл с колонками time, voltage",
+    )
+    parser.add_argument(
+        "--output", type=Path, required=True,
+        help="файл для записи результатов",
+    )
+    parser.add_argument(
+        "--plot", action="store_true",
+        help="показать график после обработки",
+    )
+    return parser.parse_args()
+
+
+def main() -&gt; None:
+    """Точка входа приложения."""
+    args = parse_args()
+    time, voltage = np.loadtxt(args.input, delimiter=",", unpack=True)
+
+    # Базовая линия — среднее по первым точкам до прихода сигнала.
+    baseline = voltage[:100].mean()
+    signal = voltage - baseline
+    peak_index = int(np.argmax(signal))
+    area = float(np.trapezoid(signal, time))
+
+    np.savetxt(
+        args.output,
+        [[time[peak_index], signal[peak_index], area]],
+        delimiter=",",
+        header="peak_time,peak_voltage,area",
+    )
+
+    if args.plot:
+        # Ленивый импорт: без --plot matplotlib даже не загружается,
+        # и скрипт работает на сервере без дисплея.
+        from beamtool.plotting import show_signal
+        show_signal(time, signal, peak_index)
+
+
+if __name__ == "__main__":
+    main()
+</code></pre>
+<p>Запуск теперь выглядит так: <code>python -m beamtool.cli --input shot_042.csv --output results.csv --plot</code>. Бесплатным приложением идёт <code>--help</code>: argparse сам генерирует справку, проверяет обязательные аргументы и приводит типы. Пользователю больше не нужно открывать код, а значит, он не сможет его случайно сломать.</p>
+<p>Для разросшихся интерфейсов с подкомандами (как <code>git commit</code>, <code>git push</code>) есть сторонние библиотеки <a href="https://click.palletsprojects.com/">click</a> и <a href="https://typer.tiangolo.com/">typer</a> — они делают то же самое декораторами и аннотациями типов. Но argparse из стандартной библиотеки хватает надолго, и он всегда под рукой.</p>
+<h2 id="Конфигурация"><a class="header" href="#Конфигурация">Конфигурация</a></h2>
+<p>Магические числа и пути в коде — главный источник хаоса в лабораторных скриптах. Порог дискриминатора, частота дискретизации АЦП, путь к данным — всё это меняется от запуска к запуску, и если оно зашито в исходник, каждый запуск требует правки кода. История в git превращается в мусор из «поменял порог обратно», а воспроизводимость умирает: никто не помнит, с какими параметрами был получен график в статье.</p>
+<p>Правило разделения: код отвечает на вопрос «как считать», конфигурация — «что и с какими параметрами». Параметры выносятся в конфиг-файл; удобный формат — TOML, который читается стандартной библиотекой (Python 3.11+):</p>
+<pre><code class="language-toml"># configs/default.toml
+
+[detector]
+sampling_rate_hz = 2.5e9   # частота дискретизации АЦП
+impedance_ohm = 50.0
+
+[analysis]
+baseline_points = 100      # точек на оценку базовой линии
+peak_threshold_v = 0.05    # порог отбора событий
+</code></pre>
+<pre><code class="language-python">import tomllib
+
+with open("configs/default.toml", "rb") as f:
+    config = tomllib.load(f)
+
+threshold = config["analysis"]["peak_threshold_v"]
+</code></pre>
+<p>YAML — то же самое по духу (нужен пакет <code>pyyaml</code>); выбери один формат и держись его. Конфиг лежит в репозитории, и его версия в git — история твоих параметров обработки: видно, кто, когда и какой порог поменял.</p>
+<p>Для того, что зависит от конкретной машины или должно оставаться секретным, используют переменные окружения:</p>
+<pre><code class="language-python">import os
+
+data_dir = os.environ.get("BEAMTOOL_DATA_DIR", "/data/beam")
+</code></pre>
+<p>Пароли и токены (например, доступ к базе данных группы — о ней в следующей главе) не попадают ни в код, ни в git никогда: только переменные окружения или локальный файл <code>.env</code>, добавленный в <code>.gitignore</code>. Итоговый приоритет источников обычно такой: значения по умолчанию → конфиг-файл → переменные окружения → аргументы командной строки; каждый следующий уровень перекрывает предыдущий.</p>
+<h2 id="Логирование-вместо-print"><a class="header" href="#Логирование-вместо-print">Логирование вместо print</a></h2>
+<p><code>print</code> хорош для отладки на две минуты. Дальше начинаются проблемы: отладочный вывод нельзя отключить, не вырезая его из кода; у сообщений нет времени и важности; всё уходит в консоль и исчезает вместе с ней. А когда ночная обработка падает на 3742-м файле из 5000, тебе нужен журнал: что происходило, с какими файлами и когда.</p>
+<p>Всё это умеет стандартный модуль <code>logging</code>. У сообщений есть пять уровней (<code>DEBUG</code>, <code>INFO</code>, <code>WARNING</code>, <code>ERROR</code>, <code>CRITICAL</code>) и глобальный порог, который решает, что показывать. Настройка с выводом одновременно в консоль и в файл:</p>
+<pre><code class="language-python">import logging
+
+logger = logging.getLogger(__name__)
+
+
+def setup_logging(logfile: str = "beamtool.log") -&gt; None:
+    """Включает вывод логов в консоль и в файл одновременно."""
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s %(levelname)-8s %(name)s: %(message)s",
+        handlers=[
+            logging.StreamHandler(),
+            logging.FileHandler(logfile, encoding="utf-8"),
+        ],
+    )
+</code></pre>
+<p>Использование в коде:</p>
+<pre><code class="language-python">logger.info("Загружен файл %s: %d точек", path, n_points)
+logger.warning("Пик ниже порога %.3f В, файл пропущен", threshold)
+logger.error("Не удалось разобрать файл %s", path, exc_info=True)
+</code></pre>
+<p>Три детали. <code>getLogger(__name__)</code> в каждом модуле даёт по именованному логгеру — в журнале видно, какой модуль пишет. Флаг <code>--verbose</code> в CLI может опускать порог до <code>DEBUG</code>, не трогая код: отладочные сообщения пишутся всегда, а показываются по требованию. А <code>exc_info=True</code> добавляет к сообщению полный traceback — утром ты увидишь не только «файл пропущен», но и почему.</p>
+<h2 id="Обработка-ошибок"><a class="header" href="#Обработка-ошибок">Обработка ошибок</a></h2>
+<p>Главный принцип научного кода — <em>fail fast</em>: обнаружил некорректные данные — падай сразу и громко. Альтернатива страшнее падения: тихий NaN проползает через все стадии обработки и превращается в правдоподобный, но неверный график. Упавшую программу чинят; красивую кривую с ошибкой отправляют в статью.</p>
+<p>Python сообщает об ошибках исключениями, и ты можешь определять свои — обычные классы, наследники <code>Exception</code>:</p>
+<pre><code class="language-python">import numpy as np
+
+
+class BeamtoolError(Exception):
+    """Базовый класс ошибок beamtool."""
+
+
+class InvalidSignalError(BeamtoolError):
+    """Сигнал не пригоден для обработки."""
+
+
+def find_peak(signal: np.ndarray) -&gt; int:
+    """Возвращает индекс максимума сигнала."""
+    if signal.size == 0:
+        raise InvalidSignalError("пустой сигнал")
+    if not np.all(np.isfinite(signal)):
+        raise InvalidSignalError("в сигнале есть NaN или inf")
+    return int(np.argmax(signal))
+</code></pre>
+<p>Зачем свои классы? Они отделяют <em>ожидаемые</em> ошибки от багов. На верхнем уровне, в <code>main()</code>, ты ловишь <code>except BeamtoolError</code> — кривой файл в пачке из тысячи это штатная ситуация: записать в журнал и перейти к следующему. А <code>KeyError</code> или <code>TypeError</code> — баг в твоём коде; он должен пролететь наружу с полным traceback, чтобы его починили, а не спрятали.</p>
+<p>Худшее, что можно сделать с исключением, — проглотить его:</p>
+<pre><code class="language-python"># Так делать нельзя: ошибка исчезает бесследно,
+# а в результатах молча появляется дыра.
+try:
+    result = process(path)
+except Exception:
+    pass
+</code></pre>
+<p>Правило: лови исключение только там, где знаешь, что с ним делать. Во всех остальных местах — не лови вовсе.</p>
+<h2 id="Тесты"><a class="header" href="#Тесты">Тесты</a></h2>
+<p>Научному коду тесты нужны даже больше, чем сайтам и мессенджерам. Главный риск здесь — не «программа упала», а «программа выдала правдоподобное, но неверное число». Особенно коварны рефакторинги формул: ты «слегка упростил» выражение, потерял двойку в знаменателе, и все результаты уехали, а код по-прежнему работает без единой ошибки. Тесты фиксируют поведение: любое изменение, сдвинувшее численный результат, всплывает немедленно. Это и есть защита от регрессий.</p>
+<p>Стандарт де-факто — <a href="https://docs.pytest.org/">pytest</a>: тесты лежат в <code>tests/test_*.py</code>, называются <code>test_*</code> и состоят из обычных <code>assert</code>. Возьмём функцию из <code>beamtool</code>:</p>
+<pre><code class="language-python"># src/beamtool/physics.py
+
+ELECTRON_REST_ENERGY_MEV = 0.511
+
+
+def lorentz_gamma(kinetic_energy_mev: float) -&gt; float:
+    """Возвращает лоренц-фактор по кинетической энергии электрона."""
+    if kinetic_energy_mev &lt; 0:
+        raise ValueError("кинетическая энергия отрицательна")
+    return 1.0 + kinetic_energy_mev / ELECTRON_REST_ENERGY_MEV
+</code></pre>
+<p>И тесты к ней:</p>
+<pre><code class="language-python"># tests/test_physics.py
+
+import pytest
+
+from beamtool.physics import lorentz_gamma
+
+
+def test_gamma_at_rest():
+    # Покоящийся электрон: гамма-фактор равен единице.
+    assert lorentz_gamma(0.0) == pytest.approx(1.0)
+
+
+def test_gamma_one_mev():
+    assert lorentz_gamma(1.0) == pytest.approx(2.9569, abs=1e-4)
+
+
+def test_negative_energy_rejected():
+    with pytest.raises(ValueError):
+        lorentz_gamma(-1.0)
+</code></pre>
+<p>Команда <code>pytest</code> в корне проекта сама найдёт и прогонит все тесты. Обрати внимание на <code>pytest.approx</code>: сравнивать float через <code>==</code> нельзя из-за ошибок округления, а <code>approx</code> сравнивает с допуском — абсолютным (<code>abs=</code>) или относительным (<code>rel=</code>).</p>
+<p>Что тестировать в первую очередь: функции-формулы на входах с известным ответом (аналитические пределы, симметрии, законы сохранения), парсеры форматов данных на файлах-образцах из <code>tests/data/</code>, граничные случаи (пустой сигнал, один отсчёт, отрицательная энергия). Отличный приём для численных методов — прогнать решатель на упрощённой задаче, у которой есть аналитическое решение, и сравнить. Написал тест один раз — и каждый следующий рефакторинг проверяется бесплатно.</p>
+<h2 id="Типизация"><a class="header" href="#Типизация">Типизация</a></h2>
+<p>Аннотации типов ты уже видел во всех примерах выше:</p>
+<pre><code class="language-python">def rebin(spectrum: np.ndarray, factor: int = 2) -&gt; np.ndarray:
+    """Огрубляет спектр, суммируя соседние каналы."""
+    n_bins = spectrum.size // factor * factor
+    return spectrum[:n_bins].reshape(-1, factor).sum(axis=1)
+</code></pre>
+<p>Во время выполнения Python их не проверяет — машиночитаемая документация. Но её понимают инструменты: редактор подсказывает атрибуты и ловит опечатки, а статический анализатор <a href="https://mypy.readthedocs.io/">mypy</a> командой <code>mypy src/</code> находит несостыковки до запуска: сюда передали <code>str</code> вместо <code>Path</code>, там функция может вернуть <code>None</code>, а вызывающий код об этом не знает. Для расчёта, который идёт три часа, поймать такую ошибку за секунду до запуска — большая экономия жизни. Аннотируй хотя бы публичные функции пакета и добавь mypy в CI рядом с линтерами.</p>
+<h2 id="Документация"><a class="header" href="#Документация">Документация</a></h2>
+<p>Минимальный набор документации у тебя уже почти есть. Docstring у каждой публичной функции — что делает, что принимает, что возвращает и в каких единицах (перепутанные мэВ и МэВ не поймает ни один тайпчекер). README в корне репозитория отвечает на три вопроса: что это за проект, как его поставить, как запустить — с одним работающим примером команды; это первое, что увидит коллега, и часто единственное, что он прочитает. Когда проект вырастает, из docstring'ов и markdown-файлов собирают сайт документации — <a href="https://www.mkdocs.org/">mkdocs</a> или <a href="https://www.sphinx-doc.org/">sphinx</a>; документация при этом живёт в том же репозитории и обновляется вместе с кодом, а не в отдельном вордовском файле на сетевом диске.</p>
+<h2 id="Упаковка-и-распространение"><a class="header" href="#Упаковка-и-распространение">Упаковка и распространение</a></h2>
+<p>Осталось собрать всё воедино. Центральный файл современного Python-проекта — <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project]
+name = "beamtool"
+version = "0.1.0"
+description = "Обработка осциллограмм с датчиков пучка"
+requires-python = "&gt;=3.11"
+dependencies = [
+    "numpy&gt;=2.0",
+    "matplotlib&gt;=3.9",
+]
+
+[project.scripts]
+beamtool = "beamtool.cli:main"
+
+[build-system]
+requires = ["setuptools&gt;=68"]
+build-backend = "setuptools.build_meta"
+</code></pre>
+<p>Теперь проект можно установить в окружение в режиме разработки:</p>
+<pre><code class="language-bash">pip install -e .
+</code></pre>
+<p>Флаг <code>-e</code> (editable) ставит пакет «ссылкой» на рабочий каталог: правки в коде видны сразу, без переустановки. После установки заработают импорты <code>from beamtool.physics import ...</code> из любого места — в том числе из тестов. А секция <code>[project.scripts]</code> создаёт в окружении настоящую консольную команду: функция <code>main()</code> из <code>cli.py</code> теперь вызывается просто как <code>beamtool --input shot_042.csv --output results.csv</code>.</p>
+<p>Распространение — по нарастающей. Коллегам из группы достаточно git-репозитория: <code>pip install git+https://github.com/mygroup/beamtool</code> ставит пакет прямо оттуда со всеми зависимостями. Команда <code>python -m build</code> собирает из проекта wheel-файл в <code>dist/</code> — его можно приложить к релизу на GitHub или передать на машину без интернета. Публикация на <a href="https://pypi.org/">PyPI</a> через <code>twine upload</code> (или <code>uv publish</code>) — финальная ступень, когда инструментом хотят пользоваться незнакомые тебе люди; для внутренних инструментов группы она не обязательна.</p>
+<h2 id="Когда-приложение-вырастает-в-систему"><a class="header" href="#Когда-приложение-вырастает-в-систему">Когда приложение вырастает в систему</a></h2>
+<p>Всё, что описано выше, — про один инструмент, который делает одну вещь. Рано или поздно появляется задача, которую одним инструментом не закрыть: провести эксперимент целиком. Выставить токи магнитов, дождаться стабилизации, снять показания с десятка датчиков, посчитать результат, решить, куда двигаться дальше, повторить, и всё это сотни раз подряд, ночью, без человека у пульта.</p>
+<p>Такую программу уже нельзя писать «плоско». Разберём, как устроена библиотека SCAUT, которая занимается оркестрацией экспериментов на линейном ускорителе инжектора ЦКП «СКИФ» — то есть согласованным управлением всеми компонентами установки, от магнитов до детекторов.</p>
+<p>Ключевая идея — <strong>разделение на слои</strong>, где каждый слой знает только о соседнем:</p>
+<pre><code>Интерфейс эксперимента   что именно сканируем и в каких пределах
+        │
+Управление сканированием планировщик точек, обработчики событий, обработка аварий
+        │
+Абстракция оборудования  «мотор» и «датчик» — независимо от того, что за железо
+        │
+Коммуникация             EPICS, Tango, OPC UA — или расчётная модель вместо железа
+        │
+Данные                   сериализация, метаданные эксперимента, хранилище
+        │
+Анализ                   визуализация, статистика, постобработка
+</code></pre>
+<p>Разберём, что даёт каждая граница.</p>
+<p><strong>Абстракция оборудования</strong> — самая ценная из них. Верхние слои оперируют понятиями «мотор» (нечто, чему можно задать значение) и «датчик» (нечто, у чего можно спросить значение). Что стоит за мотором — источник питания квадруполя, шаговый двигатель экрана или регулятор фазы СВЧ — процедуре сканирования безразлично. Добавление нового прибора не требует правок в логике эксперимента: пишется новый адаптер, и всё.</p>
+<p><strong>Слой коммуникации</strong> отделяет протокол от смысла. Ускорительные комплексы управляются разными системами — EPICS, Tango, OPC UA, — и код эксперимента не должен об этом знать. Но интереснее другое: на место реального железа можно подставить <strong>расчётную модель</strong>. Тот же самый сценарий эксперимента, без единой правки, прогоняется сначала на модели пучка, а потом на установке. Ошибка в логике сканирования обнаруживается на модели, где она стоит ноль, а не в смену, где она стоит пучкового времени всей группы.</p>
+<p><strong>Слой данных</strong> отвечает за то, чтобы результат пережил эксперимент. Кроме собственно измерений сохраняются метаданные: когда, кем, при каких настройках, какой версией кода. Без этого через полгода из архива нельзя будет извлечь ничего, кроме массива чисел неизвестного происхождения.</p>
+<p>Процедура сканирования при этом всегда проходит одни и те же шесть этапов:</p>
+<ol>
+<li><strong>Инициализация</strong> — проверить, что нужное оборудование на связи, выставить начальные параметры.</li>
+<li><strong>Планирование</strong> — построить последовательность точек в пространстве параметров.</li>
+<li><strong>Выполнение</strong> — на каждом шаге выставить параметры и снять данные.</li>
+<li><strong>Обработка событий</strong> — вызвать пользовательские функции анализа.</li>
+<li><strong>Сериализация</strong> — сохранить результаты и метаданные.</li>
+<li><strong>Завершение</strong> — освободить ресурсы, сформировать отчёт.</li>
+</ol>
+<p>Первый и последний пункты выглядят формальностью ровно до первого ночного прогона, который упал на середине. Если инициализация не проверила связь с прибором, эксперимент честно отработает четыре часа и запишет нули. Если завершение не освободило ресурсы, следующий запуск не сможет подключиться к оборудованию, потому что предыдущий процесс всё ещё держит соединение.</p>
+<p>Запоминать здесь стоит не конкретную архитектуру, а принцип, который за ней стоит: <strong>границы проводят там, где ожидаются изменения</strong>. Оборудование на установке меняется, поэтому нужен слой его абстракции. Протоколы управления в разных лабораториях разные, отсюда отдельный слой коммуникации. Чаще всего меняется способ анализа данных, и потому анализ отделён от сбора: его можно переписывать, не трогая ничего остального. А вот слой, за которым ничего никогда не меняется, только мешает, и вводить его «на будущее» не нужно.</p>
+<h2 id="Чек-лист-скрипт-стал-приложением"><a class="header" href="#Чек-лист-скрипт-стал-приложением">Чек-лист: скрипт стал приложением</a></h2>
+<p>Проверь свой проект по списку:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Код разложен по модулям со смыслом: ввод-вывод, физика, графика, CLI.</li>
+<li><input disabled="" type="checkbox"/>
+Проект ставится на чистую машину командами <code>git clone</code> и <code>pip install -e .</code>.</li>
+<li><input disabled="" type="checkbox"/>
+Зависимости с версиями записаны в <code>pyproject.toml</code>, точный слепок окружения можно получить и восстановить.</li>
+<li><input disabled="" type="checkbox"/>
+Запуск не требует открывать исходники: все параметры передаются через аргументы CLI и конфиг-файл.</li>
+<li><input disabled="" type="checkbox"/>
+Пути, калибровки и пороги живут в конфиге, а не в коде; секретов в репозитории нет.</li>
+<li><input disabled="" type="checkbox"/>
+Вместо <code>print</code> — <code>logging</code>: после ночного прогона остаётся журнал с временем и уровнями.</li>
+<li><input disabled="" type="checkbox"/>
+Некорректные данные вызывают внятную ошибку сразу, а не тихий NaN в результатах.</li>
+<li><input disabled="" type="checkbox"/>
+Ключевые формулы покрыты тестами; <code>pytest</code> проходит перед каждым коммитом.</li>
+<li><input disabled="" type="checkbox"/>
+Публичные функции аннотированы типами и снабжены docstring; <code>mypy</code> молчит.</li>
+<li><input disabled="" type="checkbox"/>
+README отвечает на вопросы «что это», «как поставить», «как запустить».</li>
+<li><input disabled="" type="checkbox"/>
+Файл <code>analysis_final_v2_REAL.py</code> удалён: версии живут в git, а не в именах файлов.</li>
+</ul>
+<p>Не пытайся сделать всё это в первый же вечер. Структура, окружение и git нужны сразу — они почти ничего не стоят. Конфиг, логирование и CLI появляются, когда скрипт запускают чаще раза в неделю. Тесты — как только результатам начинают доверять другие люди. Превращение скрипта в приложение — не событие, а привычка: каждый раз, когда ты вытаскиваешь константу в конфиг или превращаешь баг в тест, код группы становится немного надёжнее. А когда твоему инструменту понадобятся веб-интерфейс для всей группы и хранилище результатов — об этом следующие главы.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../dev/life.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../dev/web.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../dev/life.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../dev/web.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

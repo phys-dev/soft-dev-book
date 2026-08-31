@@ -1,0 +1,479 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Рекурсия и сортировки - Разработка и применение программного обеспечения в физических исследованиях</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../intro/intro.html">О книге</a></li><li class="chapter-item expanded affix "><a href="../intro/about-me.html">О себе</a></li><li class="chapter-item expanded affix "><li class="part-title">Ищем помощников</li><li class="chapter-item expanded "><a href="../ai/intro.html"><strong aria-hidden="true">1.</strong> ИИ для разработки</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ai/context.html"><strong aria-hidden="true">1.1.</strong> Контекст и скорость изменений</a></li><li class="chapter-item expanded "><a href="../ai/develop.html"><strong aria-hidden="true">1.2.</strong> ИИ и разработчик</a></li><li class="chapter-item expanded "><a href="../ai/basic.html"><strong aria-hidden="true">1.3.</strong> Технические основы</a></li><li class="chapter-item expanded "><a href="../ai/instruments.html"><strong aria-hidden="true">1.4.</strong> Инструментарий</a></li><li class="chapter-item expanded "><a href="../ai/copilot.html"><strong aria-hidden="true">1.5.</strong> GitHub Copilot</a></li><li class="chapter-item expanded "><a href="../ai/qa.html"><strong aria-hidden="true">1.6.</strong> Вопросы и ответы</a></li></ol></li><li class="chapter-item expanded "><a href="../dev/python/intro.html"><strong aria-hidden="true">2.</strong> Экспресс-курс Python</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../dev/python/basics.html"><strong aria-hidden="true">2.1.</strong> Основы Python</a></li><li class="chapter-item expanded "><a href="../dev/python/numpy.html"><strong aria-hidden="true">2.2.</strong> NumPy</a></li><li class="chapter-item expanded "><a href="../dev/python/scipy.html"><strong aria-hidden="true">2.3.</strong> SciPy</a></li><li class="chapter-item expanded "><a href="../dev/python/matplotlib.html"><strong aria-hidden="true">2.4.</strong> Matplotlib</a></li><li class="chapter-item expanded "><a href="../dev/python/holo.html"><strong aria-hidden="true">2.5.</strong> HoloViews</a></li><li class="chapter-item expanded "><a href="../dev/python/requirements.html"><strong aria-hidden="true">2.6.</strong> Требования к коду</a></li></ol></li><li class="chapter-item expanded "><a href="../dev/git.html"><strong aria-hidden="true">3.</strong> Git</a></li><li class="chapter-item expanded "><a href="../dev/docker.html"><strong aria-hidden="true">4.</strong> Docker</a></li><li class="chapter-item expanded affix "><li class="part-title">Загружаем Linux</li><li class="chapter-item expanded "><a href="../linux/intro.html"><strong aria-hidden="true">5.</strong> Основы Linux</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../linux/booting.html"><strong aria-hidden="true">5.1.</strong> Процесс загрузки</a></li><li class="chapter-item expanded "><a href="../linux/filesystems.html"><strong aria-hidden="true">5.2.</strong> Файловые системы</a></li><li class="chapter-item expanded "><a href="../linux/tools.html"><strong aria-hidden="true">5.3.</strong> Инструменты</a></li></ol></li><li class="chapter-item expanded "><a href="../linux/install-arch-linux.html"><strong aria-hidden="true">6.</strong> Установка Arch Linux</a></li><li class="chapter-item expanded "><a href="../linux/structure.html"><strong aria-hidden="true">7.</strong> Внутреннее устройство Linux</a></li><li class="chapter-item expanded affix "><li class="part-title">Разбираемся в алгоритмах</li><li class="chapter-item expanded "><a href="../cs/intro.html"><strong aria-hidden="true">8.</strong> Общие знания</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../cs/basic-algos.html"><strong aria-hidden="true">8.1.</strong> Введение в алгоритмы</a></li><li class="chapter-item expanded "><a href="../cs/basic-structures.html"><strong aria-hidden="true">8.2.</strong> Основные структуры данных</a></li><li class="chapter-item expanded "><a href="../cs/recurs-and-sorts.html" class="active"><strong aria-hidden="true">8.3.</strong> Рекурсия и сортировки</a></li><li class="chapter-item expanded "><a href="../cs/hash-funcs.html"><strong aria-hidden="true">8.4.</strong> Хеш-функции</a></li><li class="chapter-item expanded "><a href="../cs/trees.html"><strong aria-hidden="true">8.5.</strong> Деревья</a></li><li class="chapter-item expanded "><a href="../cs/graphs.html"><strong aria-hidden="true">8.6.</strong> Графы</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Считаем численно</li><li class="chapter-item expanded "><a href="../compute/intro.html"><strong aria-hidden="true">9.</strong> Введение в вычислительную физику</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../compute/basic-concepts.html"><strong aria-hidden="true">9.1.</strong> Сходимость, аппроксимация и устойчивость</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Погружаемся в Python</li><li class="chapter-item expanded "><a href="../dev/python/init.html"><strong aria-hidden="true">10.</strong> Начало</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../dev/python/objects.html"><strong aria-hidden="true">10.1.</strong> Объекты и память</a></li><li class="chapter-item expanded "><a href="../dev/python/collections.html"><strong aria-hidden="true">10.2.</strong> Коллекции</a></li><li class="chapter-item expanded "><a href="../dev/python/o-notation.html"><strong aria-hidden="true">10.3.</strong> Асимптотическая сложность</a></li></ol></li><li class="chapter-item expanded "><a href="../dev/python/functions.html"><strong aria-hidden="true">11.</strong> Функции</a></li><li class="chapter-item expanded "><a href="../dev/python/decorators.html"><strong aria-hidden="true">12.</strong> Декораторы и functools</a></li><li class="chapter-item expanded "><a href="../dev/python/classes.html"><strong aria-hidden="true">13.</strong> Классы</a></li><li class="chapter-item expanded "><a href="../dev/python/async.html"><strong aria-hidden="true">14.</strong> Итераторы, генераторы и корутины</a></li><li class="chapter-item expanded affix "><li class="part-title">Изучаем хорошие практики</li><li class="chapter-item expanded "><a href="../dev/life.html"><strong aria-hidden="true">15.</strong> Жизненный цикл ПО</a></li><li class="chapter-item expanded "><a href="../dev/app.html"><strong aria-hidden="true">16.</strong> От скрипта к приложению</a></li><li class="chapter-item expanded "><a href="../dev/web.html"><strong aria-hidden="true">17.</strong> Основы WEB</a></li><li class="chapter-item expanded "><a href="../dev/bd.html"><strong aria-hidden="true">18.</strong> Базы данных</a></li><li class="chapter-item expanded affix "><li class="part-title">Обрабатываем данные</li><li class="chapter-item expanded "><a href="../dev/python/numpy-and-pandas.html"><strong aria-hidden="true">19.</strong> NumPy и pandas</a></li><li class="chapter-item expanded "><a href="../dev/python/visualization/practice.html"><strong aria-hidden="true">20.</strong> Визуализация данных</a></li><li class="chapter-item expanded "><a href="../ds/intro.html"><strong aria-hidden="true">21.</strong> Машинное обучение</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ds/basic.html"><strong aria-hidden="true">21.1.</strong> Основные понятия</a></li><li class="chapter-item expanded "><a href="../ds/ml.html"><strong aria-hidden="true">21.2.</strong> Классические алгоритмы</a></li><li class="chapter-item expanded "><a href="../ds/nn.html"><strong aria-hidden="true">21.3.</strong> Нейронные сети</a></li><li class="chapter-item expanded "><a href="../ds/tools.html"><strong aria-hidden="true">21.4.</strong> Инструменты: scikit-learn</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Ускоряем код</li><li class="chapter-item expanded "><a href="../perf/intro.html"><strong aria-hidden="true">22.</strong> С чего начинать оптимизацию</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../dev/python/optimization.html"><strong aria-hidden="true">22.1.</strong> Почему Python не очень быстрый</a></li><li class="chapter-item expanded "><a href="../perf/perf.html"><strong aria-hidden="true">22.2.</strong> Скорость выполнения программ</a></li><li class="chapter-item expanded "><a href="../perf/gil.html"><strong aria-hidden="true">22.3.</strong> Многопоточность и GIL</a></li><li class="chapter-item expanded "><a href="../perf/async.html"><strong aria-hidden="true">22.4.</strong> Асинхронность</a></li><li class="chapter-item expanded "><a href="../perf/cuda.html"><strong aria-hidden="true">22.5.</strong> CUDA и вычисления на GPU</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Учимся у других</li><li class="chapter-item expanded "><a href="../examples/intro.html"><strong aria-hidden="true">23.</strong> Коды и скрипты</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../examples/kenv.html"><strong aria-hidden="true">23.1.</strong> Уравнение огибающей Капчинского-Владимирского для пучка заряженных частиц</a></li><li class="chapter-item expanded "><a href="../examples/envelope-optimize.html"><strong aria-hidden="true">23.2.</strong> Оптимизация огибающей пучка заряженных частиц с помощью генетического алгоритма</a></li><li class="chapter-item expanded "><a href="../examples/redpic.html"><strong aria-hidden="true">23.3.</strong> Релятивистская разностная схема для расчёта динамики частиц</a></li><li class="chapter-item expanded "><a href="../examples/orbit-correction.html"><strong aria-hidden="true">23.4.</strong> Коррекция равновесной орбиты с применением матрицы отклика и нейронных сетей</a></li><li class="chapter-item expanded "><a href="../examples/cadquery/layout.html"><strong aria-hidden="true">23.5.</strong> Схема ускорителя заряженных частиц в CadQuery</a></li><li class="chapter-item expanded "><a href="../examples/async-api.html"><strong aria-hidden="true">23.6.</strong> Асинхронное API для кинотеатра</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Работаем самостоятельно</li><li class="chapter-item expanded "><a href="../practicum/review-code-task.html"><strong aria-hidden="true">24.</strong> Ищем ошибки в чужом коде</a></li><li class="chapter-item expanded "><a href="../practicum/markov-chain-task.html"><strong aria-hidden="true">25.</strong> Делаем свою LLM</a></li><li class="chapter-item expanded "><a href="../practicum/booting-linux-task.html"><strong aria-hidden="true">26.</strong> Установка Linux</a></li><li class="chapter-item expanded "><a href="../practicum/linux-tools-task.html"><strong aria-hidden="true">27.</strong> Набор упражнений для работы в Linux</a></li><li class="chapter-item expanded "><a href="../practicum/linux-structure-task.html"><strong aria-hidden="true">28.</strong> Маленькая задачка c Linux</a></li><li class="chapter-item expanded "><a href="../practicum/python-algo-task.html"><strong aria-hidden="true">29.</strong> Пишем эффективный код</a></li><li class="chapter-item expanded "><a href="../practicum/kitty-startup-task.html"><strong aria-hidden="true">30.</strong> Деплой стартапа</a></li><li class="chapter-item expanded "><a href="../practicum/final-project-requirements.html"><strong aria-hidden="true">31.</strong> Итоговый проект</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded affix "><a href="../resume/intro.html">Заключение</a></li><li class="chapter-item expanded affix "><a href="../resume/literature.html">Литература и статьи</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Разработка и применение программного обеспечения в физических исследованиях</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/phys-dev/soft-dev-book/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="Рекурсия-и-сортировки"><a class="header" href="#Рекурсия-и-сортировки">Рекурсия и сортировки</a></h1>
+<h2 id="Введение-Примеры-задач-на-рекурсию"><a class="header" href="#Введение-Примеры-задач-на-рекурсию">Введение. Примеры задач на рекурсию</a></h2>
+<p>Представь, что хочешь найти файл <code>Kormen.pdf</code> у себя в папке <code>C:\books\</code>. Как это сделать без использования автоматического поиска? Рассмотрим два варианта.</p>
+<p>Вот схема первого варианта решения этой задачи:</p>
+<pre><code class="language-text">   Обходим папки списком, вручную запоминая, куда ещё не заходили:
+
+   очередь: [C:\books]
+   → зашли в C:\books, нашли подпапки: algo, physics
+   очередь: [algo, physics]
+   → зашли в algo, нашли подпапку: sorting
+   очередь: [physics, sorting]
+   → зашли в physics … и так далее, пока очередь не опустеет
+</code></pre>
+<p>Вот схема рекурсивного решения:</p>
+<pre><code class="language-text">   найти(C:\books)
+   ├── найти(algo)
+   │   └── найти(sorting) ──▶ Kormen.pdf найден!
+   ├── найти(physics)
+   └── найти(math)
+</code></pre>
+<p>На каждом уровне погружения рекурсия добавляет блок в стек вызовов. Найдя нужный файл, функция останавливает рекурсию и начинает по цепочке — от одного уровня к другому — возвращать результат вызвавшей её программе.</p>
+<p><em>Кстати, если говорить о скорости, то рекурсия не ускоряет работу программы, а наоборот, может её замедлить. Более того, алгоритмы, реализованные с применением циклов, часто исполняются быстрее. Зато рекурсия экономит время программиста, потому что код получается компактный и понятный, в нём труднее сделать ошибку. А ещё в такой код проще вносить изменения.</em></p>
+<h2 id="Рекурсивный-и-базовый-случаи"><a class="header" href="#Рекурсивный-и-базовый-случаи">Рекурсивный и базовый случаи</a></h2>
+<p>Теперь мы расскажем о том, как правильно создавать рекурсию и что делать, если написанный тобой рекурсивный алгоритм уходит в бесконечный цикл.</p>
+<p>Любая корректно работающая рекурсия состоит из двух обязательных частей:</p>
+<ul>
+<li><strong>рекурсивного случая</strong>, благодаря которому начинается прямой ход рекурсии и происходит её углубление;</li>
+<li>и <strong>базового случая</strong>, который в нужный момент останавливает это углубление и запускает обратный ход рекурсии.</li>
+</ul>
+<p>Давай поговорим о них подробнее.</p>
+<h3 id="Рекурсивный-случай"><a class="header" href="#Рекурсивный-случай">Рекурсивный случай</a></h3>
+<pre><code>функция stairs_builder(n):
+    построить 1 ступеньку
+    print("Осталось построить {n} ступеней.")
+    stairs_builder(n - 1)
+</code></pre>
+<p>Когда функция вызывает саму себя с изменёнными параметрами: <code>stairs_builder(n - 1)</code> — это и есть рекурсивный случай. И всё же, если мы запустим эту программу, компьютер зависнет.</p>
+<p>Потому что наша рекурсия уйдёт в бесконечный цикл. На каждом следующем уровне рекурсии число ʜeпостроенных ступеней <code>n</code> уменьшается на 1. Но после <code>n = 0</code> функция не остановит работу, а вызовется со значением −1, потом с −2 и так далее. Если бы у компьютера были неограниченные ресурсы, твоя лестница строилась бы вечно и имела бесконечное количество ступеней.</p>
+<h3 id="Базовый-случай"><a class="header" href="#Базовый-случай">Базовый случай</a></h3>
+<p>При написании любой рекурсивной функции нужно указывать базовый случай —  условие, при котором цепочка рекурсивных вызовов останавливается. При этом важно уметь определять, что именно должно происходить в базовом случае.</p>
+<p>Чтобы функция <code>stairs_builder()</code> работала корректно, рекурсия должна остановиться в тот момент, когда будет построено нужное количество ступеней. То есть когда счётчик <code>n = 0</code>. Это и будет базовый случай!</p>
+<pre><code>функция stairs_builder(n):
+  if n == 0:
+    return
+  построить 1 ступеньку
+  print("Осталось построить {n} ступеней.")
+  stairs_builder(n - 1)
+</code></pre>
+<h3 id="Как-правильно-создать-рекурсию"><a class="header" href="#Как-правильно-создать-рекурсию">Как правильно создать рекурсию?</a></h3>
+<p>Чтобы решить задачу рекурсивным методом, нужно определить базовый и рекурсивный случаи.</p>
+<p>Рекурсивный случай сводит задачу для большого набора данных к задаче с меньшим набором данных. Или для большого значения аргумента к задаче с меньшим значением аргумента.</p>
+<p>А базовый случай определяет ситуацию, при которой рекурсию нужно остановить. Результат выполнения функции для базового случая следует вычислить явно, не прибегая к рекурсивным вызовам.</p>
+<p>Ошибка, которую часто допускают, применяя рекурсию, — зацикливание. Обычно это происходит, если забыть указать базовый случай. Другая частая причина ухода в бесконечный цикл — неверное изменение параметров в рекурсивном случае.</p>
+<p>Например, если функция в какой-то ситуации вызывает саму себя, но значение параметра при этом не меняется. Тогда даже если базовый случай, который должен был бы прервать рекурсию, определён, функция может до него не дойти. При написании рекурсии мы должны убедиться, что для любого набора параметров функция рано или поздно сведётся к одному из базовых случаев.</p>
+<p><em>В большинстве случаев программа, упавшая в кроличью нору бесконечной рекурсии, не будет работать вечно, а завершится с ошибкой переполнения стека вызовов или с ошибкой сегментации (англ. segmentation fault). Это происходит из-за ограниченности ресурсов компьютера, ведь каждый рекурсивный вызов расходует память на стеке.Как именно программа себя  поведёт — зависит и от самого алгоритма, и от используемого компилятора. Подробнее об этом можно почитать в статье про <a href="https://ru.wikipedia.org/wiki/%D0%A5%D0%B2%D0%BE%D1%81%D1%82%D0%BE%D0%B2%D0%B0%D1%8F_%D1%80%D0%B5%D0%BA%D1%83%D1%80%D1%81%D0%B8%D1%8F">оптимизацию хвостовой рекурсии</a> (англ. tail call optimization).</em></p>
+<h2 id="Разбор-задач-Рекурсивный-перебор-вариантов"><a class="header" href="#Разбор-задач-Рекурсивный-перебор-вариантов">Разбор задач. Рекурсивный перебор вариантов</a></h2>
+<p>Рекурсию часто применяют для генерации объектов. Например, числовых или скобочных последовательностей.</p>
+<h3 id="Генерация-последовательностей-из-0-и-1"><a class="header" href="#Генерация-последовательностей-из-0-и-1">Генерация последовательностей из 0 и 1</a></h3>
+<p>Рассмотрим пример генерации всех возможных последовательностей длины n из нулей и единиц.</p>
+<p>Функция принимает в качестве параметра число <code>n</code> и строку <code>prefix</code>. Вызываем функцию с параметром <code>n</code> и значением <code>prefix</code>, равным пустой строке. Далее будем добавлять в эту строку 0 и 1. В каждом рекурсивном вызове <code>n</code> означает, сколько ещё символов нужно добавить в строку. Рекурсия останавливается, когда <code>n = 0</code>, то есть символы добавлять больше не требуется. Это базовый случай рекурсии.</p>
+<p>В рекурсивном случае функция вызывает себя дважды, но с разными параметрами. В первый раз она добавляет в строку <code>prefix</code> цифру 0, а во второй раз — 1. При этом значение n каждый раз уменьшается на 1, а <code>prefix</code> удлиняется на один символ. Таким образом, рекурсия уходит на <code>n</code> уровней в глубину.</p>
+<p><em>Решение этой задачи удобно представлять в виде бинарного дерева. Начинаем с пустой строки. Если идём влево, добавляем 0, если вправо — 1. Если пройти от корня по всем веткам, получим все возможные последовательности из 0 и 1 длины 3.</em></p>
+<pre><code class="language-text">                    «»
+              ┌─────┴─────┐
+             0             1
+          ┌──┴──┐       ┌──┴──┐
+         00     01     10     11
+        ┌─┴─┐  ┌─┴─┐  ┌─┴─┐  ┌─┴─┐
+      000 001 010 011 100 101 110 111
+</code></pre>
+<p><em>Рекурсия часто используется для перебора вариантов. Например, у нас есть n различных предметов. Каждый из предметов может быть взят или отложен в сторону. Тогда есть \(2^n\) вариантов того, как взять набор предметов. Пронумеруем предметы числами от 1 до \(n\). Каждый предмет может быть взят (обозначим цифрой 1) или отложен в сторону (обозначим как 0). Так мы фактически свели задачу перебора вариантов к задаче генерации последовательностей из нулей и единиц.</em></p>
+<pre><code class="language-python">def generate(n, prefix):
+    if n == 0:
+        print(prefix)
+        return
+    generate(n - 1, prefix + '0')
+    generate(n - 1, prefix + '1')
+</code></pre>
+<pre><code class="language-python">generate(3, '')
+</code></pre>
+<pre><code>000
+001
+010
+011
+100
+101
+110
+111
+</code></pre>
+<h2 id="Алгоритмы-сортировки-Знакомство"><a class="header" href="#Алгоритмы-сортировки-Знакомство">Алгоритмы сортировки. Знакомство</a></h2>
+<p>Выше мы говорили о том, как с помощью рекурсии реализовывать двоичный поиск по отсортированному массиву, быстро возводить число в степень и перебирать всевозможные комбинации элементов. Теперь настало время познакомить тебя с алгоритмами сортировок, с помощью которых можно наводить порядок в самых разных типах данных.</p>
+<h3 id="Сортировки-среди-нас"><a class="header" href="#Сортировки-среди-нас">Сортировки среди нас</a></h3>
+<p>Упорядоченность данных очень важна в повседневной жизни.</p>
+<p>Например, в твоём смартфоне контакты отсортированы по алфавиту. А расписание автобусов составляется по времени их отправления. Поисковая система выдаёт ранжированный список ответов — по степени их релевантности запросу.</p>
+<h3 id="Роль-сортировок-в-решении-задач"><a class="header" href="#Роль-сортировок-в-решении-задач">Роль сортировок в решении задач</a></h3>
+<p>Во многих задачах работать с отсортированными данными удобнее, чем с неупорядоченными. Например:</p>
+<ul>
+<li>найти элемент в массиве быстрее чем за \(O(n)\), воспользовавшись бинарным поиском, получится только на отсортированных данных;</li>
+<li>составить таблицу «10 лучших студентов курса» будет удобнее, если список студентов отсортирован не в алфавитном порядке, а по среднему баллу.</li>
+</ul>
+<p>Нередко именно сортировка становится бутылочным горлышком и замедляет решение задачи. Поэтому важно знать, каким образом в каждом отдельном случае можно отсортировать массив наиболее эффективно.</p>
+<p><em>Лучшей сортировки в общем случае не существует. Для разных типов входных данных и разных ограничений будет эффективнее использовать разные алгоритмы сортировки.</em></p>
+<h2 id="Выбор-алгоритма-сортировки"><a class="header" href="#Выбор-алгоритма-сортировки">Выбор алгоритма сортировки</a></h2>
+<p>Рассмотрим два алгоритма сортировки:</p>
+<ul>
+<li>один работает быстро, но требует \(O(n)\) дополнительной памяти;</li>
+<li>другой алгоритм медленнее, но ему нужно лишь \(O(1)\) дополнительной памяти.</li>
+</ul>
+<p>Представь: в компании стоят старые серверы, свободной памяти на них почти не осталось. На одном из них лежат все данные об удовлетворённости жизнью в разных городах страны. Для ежемесячного отчёта необходимо отсортировать данные и предоставить названия 100 городов с самыми довольными жителями. Отчёт надо сдать через неделю.</p>
+<p><em>Лучше выбрать более медленный алгоритм, но эффективный по памяти.</em></p>
+<p>А теперь другая ситуация: команде поручили сделать стенд, на котором отображаются данные об удовлетворённости жителей страны в реальном времени. Под эту задачу был куплен новый мощный сервер. Каждую секунду на вход программы поступает обновлённый массив с текущими значениями индекса удовлетворённости по всем городам. Алгоритм должен составить «Топ-5 самых довольных городов» и обновлять этот список в режиме реального времени.</p>
+<p><em>Лучше выбрать более быстрый алгоритм, но требующий больше памяти.</em></p>
+<p>Таким образом, при решении задачи важно верно оценить имеющиеся ресурсы. В этом тебе могут помочь следующие вопросы:</p>
+<ul>
+<li>Как быстро необходим ответ? Если результат сортировки нужен не срочно, то можно реализовать менее быстрый алгоритм, зато не использовать дополнительную память.</li>
+<li>С каким объёмом данных будет работать алгоритм? Если у тебя в массиве всего 1000 элементов, то любой алгоритм сортировки упорядочит их так быстро, что ты и не заметишь. Если же у тебя в наличии 5 000 000 элементов, разница может быть уже существенной.</li>
+<li>Сколько памяти доступно? Если тебе хватит свободного места на то, чтобы записать массив второй раз, можно упростить себе задачу и собирать отсортированный массив в дополнительной памяти, а не переставлять элементы в исходном массиве.</li>
+</ul>
+<h3 id="Устойчивость-сортировок"><a class="header" href="#Устойчивость-сортировок">Устойчивость сортировок</a></h3>
+<p>Если после применения сортировки первоначальный порядок элементов с равным значением сравниваемого признака сохраняется, такая сортировка называется устойчивой (англ. stable sort). В противном случае, если элементы с равным значением поменялись местами, — неустойчивой.</p>
+<h2 id="Сортировка-по-ключу"><a class="header" href="#Сортировка-по-ключу">Сортировка по ключу</a></h2>
+<p>Признак, по которому элементы сравниваются, называют <strong>«ключом сортировки»</strong>. Мы уже сортировали элементы по ключу, когда нам требовалось упорядочить города по их индексу удовлетворённости.</p>
+<p>Итак, с точки зрения алгоритма сортировки меняется только один этап — операция сравнения элементов.</p>
+<p>Обычно функция сортировки принимает в качестве вспомогательного аргумента функцию, описывающую, в каком порядке идут элементы. Есть два распространённых способа это сделать:</p>
+<ul>
+<li>В одном варианте алгоритму сортировки передаётся в качестве параметра функция одного аргумента <code>key(object)</code>. Эта функция будет применена к каждому сравниваемому объекту, чтобы получить значение ключа для этого элемента. Все объекты попарно будут сравниваться между собой по этому ключу.</li>
+<li>В другом варианте в алгоритм сортировки передаётся функция с двумя аргументами less(object_1, object_2), которая сравнивает два объекта и возвращает true, если первый объект должен быть расположен раньше второго, и false в противном случае. Такую функцию называют «компаратор» (англ. compare, «сравнивать»).</li>
+</ul>
+<p>Сравнение элементов при помощи компаратора позволяет более гибко задавать порядок элементов, чем сравнение по ключу. Например, сортировку по любому ключу легко переписать в виде сортировки с таким компаратором:</p>
+<pre><code>функция less(object_1, object_2):
+    return key(object_1) &lt; key(object_2)
+</code></pre>
+<p>А вот, например, сконструировать индекс по компаратору не всегда возможно. И, как мы ещё увидим, не все компараторы работают корректно. Поэтому обычно намного проще использовать функцию вычисления ключа сортировки.</p>
+<p><em>Обязательно изучи документацию функции сортировки твоего любимого языка, чтобы научиться передавать в алгоритм сортировки компаратор либо функцию вычисления ключа.</em></p>
+<h2 id="Сортировка-слиянием"><a class="header" href="#Сортировка-слиянием">Сортировка слиянием</a></h2>
+<p>Cортировка, которая работает всего за \(O(n \log n)\). Она называется сортировка слиянием (англ. merge sort).</p>
+<h3 id="Принцип-работы-сортировки-слиянием"><a class="header" href="#Принцип-работы-сортировки-слиянием">Принцип работы сортировки слиянием</a></h3>
+<p>Cоставные части алгоритма сортировки слиянием:</p>
+<ul>
+<li>Массив разбивается на две части примерно одинакового размера.</li>
+<li>Если в каком-то из получившихся подмассивов больше одного элемента, то для него рекурсивно запускается сортировка по этому же алгоритму, начиная с пункта 1.</li>
+<li>Два упорядоченных массива соединяются в один.</li>
+</ul>
+<p>Условие остановки рекурсии — массив из одного элемента. Он не нуждается в сортировке, поэтому это базовый случай.</p>
+<pre><code class="language-text">   Разбиение:                        Слияние:
+        [5 2 9 1]                      [1 2 5 9]
+        ┌────┴────┐                    ┌────┴────┐
+      [5 2]     [9 1]                [2 5]     [1 9]
+      ┌─┴─┐     ┌─┴─┐                ┌─┴─┐     ┌─┴─┐
+     [5] [2]   [9] [1]              [5] [2]   [9] [1]
+</code></pre>
+<p><em>Дерево алгоритма сортировки слиянием: массив разбивается на части примерно равной длины. Каждая часть рекурсивно сортируется. После этого отсортированные части объединяются в единый массив</em></p>
+<h3 id="Сложность-алгоритма"><a class="header" href="#Сложность-алгоритма">Сложность алгоритма</a></h3>
+<p>Сортировка слиянием даже в худшем случае работает за \(O(n \log n)\). Давай разберёмся почему.</p>
+<p>На каждом шаге прямого хода рекурсии массив разбивается на две примерно равные по размеру части. Разбиение продолжается до тех пор, пока длина массива не станет равной 1. Таким образом, каждый элемент массива будет задействован примерно в \(\log_2 n\) вызовах рекурсивной функции.</p>
+<p><em>Иначе можно сказать, что глубина рекурсии составляет \(O(\log_2n)\). Глубиной рекурсии называют максимальную глубину стека вызовов, которая достигается во время рекурсии.</em></p>
+<p>На каждом шаге обратного хода рекурсии выполняется операция слияния двух отсортированных массивов. Как мы уже выяснили, для этого потребуется \(O(n)\) операций, ведь на каждом уровне рекурсии нужно обработать \(n\) чисел.</p>
+<p>Таким образом, общая сложность этого алгоритма \(O(n \cdot \log_2 n)\).</p>
+<h3 id="Пространственная-сложность-алгоритма"><a class="header" href="#Пространственная-сложность-алгоритма">Пространственная сложность алгоритма</a></h3>
+<p>На каждом уровне рекурсии для проведения операций слияния требуется выделить \(O(n)\) дополнительной памяти — в неё будут копироваться элементы объединяемых блоков в правильном порядке. Если выделять такое количество памяти на каждом уровне рекурсии, суммарно придётся затратить \(O(n\log{n})\) дополнительной памяти.</p>
+<p>Но вспомогательный массив требуется лишь временно. После объединения блоков мы можем перенести элементы из вспомогательного массива обратно в исходный, освободив выделенную память. Таким образом, в каждый момент времени будет использоваться вспомогательное пространство лишь для одного, текущего уровня рекурсии. Значит, нам будет достаточно использовать лишь \(O(n)\) дополнительной памяти.</p>
+<h3 id="Устойчивость-алгоритма"><a class="header" href="#Устойчивость-алгоритма">Устойчивость алгоритма</a></h3>
+<p>Сортировка слиянием является устойчивой сортировкой. В случае равенства элементов в двух отсортированных массивах, приоритет отдаётся элементу, который находился в левой половине массива. Так происходит на каждом уровне сортировки вплоть до объединения двух массивов длины в один. Таким образом, равные элементы в отсортированном массиве будут расположены друг относительно друга так же, как и в исходном.</p>
+<h2 id="Быстрая-сортировка"><a class="header" href="#Быстрая-сортировка">Быстрая сортировка</a></h2>
+<p>Теперь рассмотрим ещё один популярный алгоритм сортировки, который называется быстрой сортировкой (англ. quick sort) и использует стратегию «разделяй и властвуй».</p>
+<p>Встроенные функции сортировки во многих языках программирования используют модификации именно алгоритма быстрой сортировки, поскольку на практике она нередко работает даже быстрее сортировки слиянием. Автор этого алгоритма  — Чарльз Хоар. Поэтому в честь него quick sort иногда называют сортировкой Хоара.</p>
+<h3 id="Принцип-работы-алгоритма"><a class="header" href="#Принцип-работы-алгоритма">Принцип работы алгоритма</a></h3>
+<p>Алгоритм быстрой сортировки использует стратегию «разделяй и властвуй». Любой такой алгоритм состоит из трёх шагов:</p>
+<ul>
+<li>разделение данных на части меньшего размера;</li>
+<li>рекурсивный вызов алгоритма для этих частей;</li>
+<li>объединение результатов.</li>
+</ul>
+<p>В алгоритме merge sort у нас был очень простой шаг разделения и нетривиальный шаг объединения данных. В алгоритме быстрой сортировки всё будет наоборот: мы сначала хитрым способом разделим данные на части, зато объединение произойдёт очень просто, нам достаточно будет дописать один отсортированный массив после другого.</p>
+<ul>
+<li>Возьмём исходный массив:</li>
+</ul>
+<pre><code class="language-text">   [7  2  9  4  3  8  1]
+</code></pre>
+<ul>
+<li>Выберем какое-нибудь число — пусть это будет 4. Все элементы, меньшие его, переложим в один массив, все большие или равные — в другой. Тогда элементы слева будут меньше элементов справа:</li>
+</ul>
+<pre><code class="language-text">   [2  3  1]   4   [7  9  8]
+    меньше   опора   больше
+</code></pre>
+<ul>
+<li>Отсортируем каждую из частей рекурсивно.</li>
+<li>Склеим левую часть с правой.</li>
+</ul>
+<p>Готово! Получился отсортированный массив:</p>
+<pre><code class="language-text">   [1  2  3]   4   [7  8  9]   ──▶   [1  2  3  4  7  8  9]
+</code></pre>
+<p>У этого алгоритма очень простая идея. Но есть несколько моментов, которые в алгоритме придётся прояснить. Мы должны выбрать какое-нибудь число. А какое именно число мы выбираем?</p>
+<h3 id="Выбор-опорного-элемента"><a class="header" href="#Выбор-опорного-элемента">Выбор опорного элемента</a></h3>
+<p>Если мы выберем слишком большое число, то мы получим очень несбалансированное разбиение. Например, если мы выберем максимальный элемент, то получим два пустых массива и один массив с одним элементом. В этом случае мы получим очень неэффективный алгоритм, который будет работать за \(O(n^2)\). Поэтому мы должны выбирать опорный элемент так, чтобы получить сбалансированное разбиение. Например, можно выбирать средний элемент. Но это не всегда работает. Например, если массив отсортирован, то мы получим сбалансированное разбиение, но неэффективный алгоритм. Поэтому мы будем выбирать случайный элемент. Это позволит нам получить сбалансированное разбиение и эффективный алгоритм. Но в этом случае мы не сможем гарантировать, что алгоритм будет работать за \(O(n log n)\). В худшем случае он будет работать за \(O(n^2)\). Но в среднем он будет работать за \(O(n log n)\).</p>
+<h3 id="Сложность-быстрой-сортировки"><a class="header" href="#Сложность-быстрой-сортировки">Сложность быстрой сортировки</a></h3>
+<p>... и почему она нестабильна</p>
+<h2 id="Сортировка-подсчётом"><a class="header" href="#Сортировка-подсчётом">Сортировка подсчётом</a></h2>
+<p>В начале спринта мы разобрали алгоритм, который в худшем случае имеет квадратичную сложность — сортировка вставками. Потом поговорили о быстрой сортировке, которая на практике работает быстрее и имеет сложность в среднем \(O(n \log n)\), но в худшем случае работает за \(O(n^2)\). А ещё разобрали сортировку слиянием, сложность которой даже в худшем случае — \(O(n \log n)\).</p>
+<p>Можно ли решить задачу сортировки быстрее чем за \(O(n \log n)\)? - Можно, но лишь для узкого класса задач.</p>
+<h3 id="Принцип-работы-алгоритма-1"><a class="header" href="#Принцип-работы-алгоритма-1">Принцип работы алгоритма</a></h3>
+<p>Рассмотрим, как работает алгоритм сортировки подсчётом. Допустим, дан массив чисел:</p>
+<pre><code class="language-python">nums = [5, 7, 1, 0, 1, 5, 11, 1]
+</code></pre>
+<p>Нужно отсортировать его по неубыванию. При этом мы знаем, что числа в нём обозначают номера месяцев. То есть значения в массиве находятся в диапазоне от 0 до 11.</p>
+<p>Заведём массив из 12 элементов, заполненный нулями.</p>
+<pre><code class="language-python">months = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+</code></pre>
+<p>Теперь пройдёмся по массиву <code>nums</code> и увеличим на 1 соответствующий элемент в массиве <code>months</code>:</p>
+<pre><code class="language-python">months[5] += 1
+months[7] += 1
+months[1] += 1
+months[0] += 1
+months[1] += 1
+months[5] += 1
+months[11] += 1
+months[1] += 1
+</code></pre>
+<p>Получим:</p>
+<pre><code class="language-python">months = [1, 3, 0, 0, 0, 2, 0, 1, 0, 0, 0, 1]
+</code></pre>
+<p>Теперь пройдёмся по массиву <code>months</code> и добавим в массив <code>nums</code> столько элементов, сколько встречается в <code>months</code>:</p>
+<pre><code class="language-python">nums = []
+for i in range(len(months)):
+    for j in range(months[i]):
+        nums.append(i)
+</code></pre>
+<p>Получим:</p>
+<pre><code class="language-python">nums = [0, 1, 1, 1, 5, 5, 7, 11]
+</code></pre>
+<p>Так работает алгоритм сортировки подсчётом.
+Закрепим знания кодом. Этот код будет работать, если значения элементов массива лежат в полуинтервале от 0 до k:</p>
+<pre><code class="language-python">def counting_sort(nums, k):
+    # Создаём массив из k элементов, заполненный нулями
+    counts = [0] * k
+    # Проходим по массиву nums и увеличиваем соответствующий элемент в массиве counts
+    for num in nums:
+        counts[num] += 1
+    # Проходим по массиву counts и добавляем в массив nums столько элементов, сколько встречается в counts
+    nums = []
+    for i in range(len(counts)):
+        for j in range(counts[i]):
+            nums.append(i)
+    return nums
+</code></pre>
+<p><em>Алгоритм сортировки подсчётом использует \(O(k)\) дополнительной памяти, где \(k\) — мощность множества значений (количество различных значений, которые могут встретиться в массиве). Эта память используется для хранения вспомогательного массива.
+Чтобы создать вспомогательный массив, нужно знать диапазон возможных значений. В примере нам понадобился дополнительный массив всего из 12 элементов.</em></p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../cs/basic-structures.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../cs/hash-funcs.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../cs/basic-structures.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../cs/hash-funcs.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

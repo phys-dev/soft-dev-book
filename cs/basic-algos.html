@@ -1,0 +1,574 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Введение в алгоритмы - Разработка и применение программного обеспечения в физических исследованиях</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../intro/intro.html">О книге</a></li><li class="chapter-item expanded affix "><a href="../intro/about-me.html">О себе</a></li><li class="chapter-item expanded affix "><li class="part-title">Ищем помощников</li><li class="chapter-item expanded "><a href="../ai/intro.html"><strong aria-hidden="true">1.</strong> ИИ для разработки</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ai/context.html"><strong aria-hidden="true">1.1.</strong> Контекст и скорость изменений</a></li><li class="chapter-item expanded "><a href="../ai/develop.html"><strong aria-hidden="true">1.2.</strong> ИИ и разработчик</a></li><li class="chapter-item expanded "><a href="../ai/basic.html"><strong aria-hidden="true">1.3.</strong> Технические основы</a></li><li class="chapter-item expanded "><a href="../ai/instruments.html"><strong aria-hidden="true">1.4.</strong> Инструментарий</a></li><li class="chapter-item expanded "><a href="../ai/copilot.html"><strong aria-hidden="true">1.5.</strong> GitHub Copilot</a></li><li class="chapter-item expanded "><a href="../ai/qa.html"><strong aria-hidden="true">1.6.</strong> Вопросы и ответы</a></li></ol></li><li class="chapter-item expanded "><a href="../dev/python/intro.html"><strong aria-hidden="true">2.</strong> Экспресс-курс Python</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../dev/python/basics.html"><strong aria-hidden="true">2.1.</strong> Основы Python</a></li><li class="chapter-item expanded "><a href="../dev/python/numpy.html"><strong aria-hidden="true">2.2.</strong> NumPy</a></li><li class="chapter-item expanded "><a href="../dev/python/scipy.html"><strong aria-hidden="true">2.3.</strong> SciPy</a></li><li class="chapter-item expanded "><a href="../dev/python/matplotlib.html"><strong aria-hidden="true">2.4.</strong> Matplotlib</a></li><li class="chapter-item expanded "><a href="../dev/python/holo.html"><strong aria-hidden="true">2.5.</strong> HoloViews</a></li><li class="chapter-item expanded "><a href="../dev/python/requirements.html"><strong aria-hidden="true">2.6.</strong> Требования к коду</a></li></ol></li><li class="chapter-item expanded "><a href="../dev/git.html"><strong aria-hidden="true">3.</strong> Git</a></li><li class="chapter-item expanded "><a href="../dev/docker.html"><strong aria-hidden="true">4.</strong> Docker</a></li><li class="chapter-item expanded affix "><li class="part-title">Загружаем Linux</li><li class="chapter-item expanded "><a href="../linux/intro.html"><strong aria-hidden="true">5.</strong> Основы Linux</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../linux/booting.html"><strong aria-hidden="true">5.1.</strong> Процесс загрузки</a></li><li class="chapter-item expanded "><a href="../linux/filesystems.html"><strong aria-hidden="true">5.2.</strong> Файловые системы</a></li><li class="chapter-item expanded "><a href="../linux/tools.html"><strong aria-hidden="true">5.3.</strong> Инструменты</a></li></ol></li><li class="chapter-item expanded "><a href="../linux/install-arch-linux.html"><strong aria-hidden="true">6.</strong> Установка Arch Linux</a></li><li class="chapter-item expanded "><a href="../linux/structure.html"><strong aria-hidden="true">7.</strong> Внутреннее устройство Linux</a></li><li class="chapter-item expanded affix "><li class="part-title">Разбираемся в алгоритмах</li><li class="chapter-item expanded "><a href="../cs/intro.html"><strong aria-hidden="true">8.</strong> Общие знания</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../cs/basic-algos.html" class="active"><strong aria-hidden="true">8.1.</strong> Введение в алгоритмы</a></li><li class="chapter-item expanded "><a href="../cs/basic-structures.html"><strong aria-hidden="true">8.2.</strong> Основные структуры данных</a></li><li class="chapter-item expanded "><a href="../cs/recurs-and-sorts.html"><strong aria-hidden="true">8.3.</strong> Рекурсия и сортировки</a></li><li class="chapter-item expanded "><a href="../cs/hash-funcs.html"><strong aria-hidden="true">8.4.</strong> Хеш-функции</a></li><li class="chapter-item expanded "><a href="../cs/trees.html"><strong aria-hidden="true">8.5.</strong> Деревья</a></li><li class="chapter-item expanded "><a href="../cs/graphs.html"><strong aria-hidden="true">8.6.</strong> Графы</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Считаем численно</li><li class="chapter-item expanded "><a href="../compute/intro.html"><strong aria-hidden="true">9.</strong> Введение в вычислительную физику</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../compute/basic-concepts.html"><strong aria-hidden="true">9.1.</strong> Сходимость, аппроксимация и устойчивость</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Погружаемся в Python</li><li class="chapter-item expanded "><a href="../dev/python/init.html"><strong aria-hidden="true">10.</strong> Начало</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../dev/python/objects.html"><strong aria-hidden="true">10.1.</strong> Объекты и память</a></li><li class="chapter-item expanded "><a href="../dev/python/collections.html"><strong aria-hidden="true">10.2.</strong> Коллекции</a></li><li class="chapter-item expanded "><a href="../dev/python/o-notation.html"><strong aria-hidden="true">10.3.</strong> Асимптотическая сложность</a></li></ol></li><li class="chapter-item expanded "><a href="../dev/python/functions.html"><strong aria-hidden="true">11.</strong> Функции</a></li><li class="chapter-item expanded "><a href="../dev/python/decorators.html"><strong aria-hidden="true">12.</strong> Декораторы и functools</a></li><li class="chapter-item expanded "><a href="../dev/python/classes.html"><strong aria-hidden="true">13.</strong> Классы</a></li><li class="chapter-item expanded "><a href="../dev/python/async.html"><strong aria-hidden="true">14.</strong> Итераторы, генераторы и корутины</a></li><li class="chapter-item expanded affix "><li class="part-title">Изучаем хорошие практики</li><li class="chapter-item expanded "><a href="../dev/life.html"><strong aria-hidden="true">15.</strong> Жизненный цикл ПО</a></li><li class="chapter-item expanded "><a href="../dev/app.html"><strong aria-hidden="true">16.</strong> От скрипта к приложению</a></li><li class="chapter-item expanded "><a href="../dev/web.html"><strong aria-hidden="true">17.</strong> Основы WEB</a></li><li class="chapter-item expanded "><a href="../dev/bd.html"><strong aria-hidden="true">18.</strong> Базы данных</a></li><li class="chapter-item expanded affix "><li class="part-title">Обрабатываем данные</li><li class="chapter-item expanded "><a href="../dev/python/numpy-and-pandas.html"><strong aria-hidden="true">19.</strong> NumPy и pandas</a></li><li class="chapter-item expanded "><a href="../dev/python/visualization/practice.html"><strong aria-hidden="true">20.</strong> Визуализация данных</a></li><li class="chapter-item expanded "><a href="../ds/intro.html"><strong aria-hidden="true">21.</strong> Машинное обучение</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ds/basic.html"><strong aria-hidden="true">21.1.</strong> Основные понятия</a></li><li class="chapter-item expanded "><a href="../ds/ml.html"><strong aria-hidden="true">21.2.</strong> Классические алгоритмы</a></li><li class="chapter-item expanded "><a href="../ds/nn.html"><strong aria-hidden="true">21.3.</strong> Нейронные сети</a></li><li class="chapter-item expanded "><a href="../ds/tools.html"><strong aria-hidden="true">21.4.</strong> Инструменты: scikit-learn</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Ускоряем код</li><li class="chapter-item expanded "><a href="../perf/intro.html"><strong aria-hidden="true">22.</strong> С чего начинать оптимизацию</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../dev/python/optimization.html"><strong aria-hidden="true">22.1.</strong> Почему Python не очень быстрый</a></li><li class="chapter-item expanded "><a href="../perf/perf.html"><strong aria-hidden="true">22.2.</strong> Скорость выполнения программ</a></li><li class="chapter-item expanded "><a href="../perf/gil.html"><strong aria-hidden="true">22.3.</strong> Многопоточность и GIL</a></li><li class="chapter-item expanded "><a href="../perf/async.html"><strong aria-hidden="true">22.4.</strong> Асинхронность</a></li><li class="chapter-item expanded "><a href="../perf/cuda.html"><strong aria-hidden="true">22.5.</strong> CUDA и вычисления на GPU</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Учимся у других</li><li class="chapter-item expanded "><a href="../examples/intro.html"><strong aria-hidden="true">23.</strong> Коды и скрипты</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../examples/kenv.html"><strong aria-hidden="true">23.1.</strong> Уравнение огибающей Капчинского-Владимирского для пучка заряженных частиц</a></li><li class="chapter-item expanded "><a href="../examples/envelope-optimize.html"><strong aria-hidden="true">23.2.</strong> Оптимизация огибающей пучка заряженных частиц с помощью генетического алгоритма</a></li><li class="chapter-item expanded "><a href="../examples/redpic.html"><strong aria-hidden="true">23.3.</strong> Релятивистская разностная схема для расчёта динамики частиц</a></li><li class="chapter-item expanded "><a href="../examples/orbit-correction.html"><strong aria-hidden="true">23.4.</strong> Коррекция равновесной орбиты с применением матрицы отклика и нейронных сетей</a></li><li class="chapter-item expanded "><a href="../examples/cadquery/layout.html"><strong aria-hidden="true">23.5.</strong> Схема ускорителя заряженных частиц в CadQuery</a></li><li class="chapter-item expanded "><a href="../examples/async-api.html"><strong aria-hidden="true">23.6.</strong> Асинхронное API для кинотеатра</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Работаем самостоятельно</li><li class="chapter-item expanded "><a href="../practicum/review-code-task.html"><strong aria-hidden="true">24.</strong> Ищем ошибки в чужом коде</a></li><li class="chapter-item expanded "><a href="../practicum/markov-chain-task.html"><strong aria-hidden="true">25.</strong> Делаем свою LLM</a></li><li class="chapter-item expanded "><a href="../practicum/booting-linux-task.html"><strong aria-hidden="true">26.</strong> Установка Linux</a></li><li class="chapter-item expanded "><a href="../practicum/linux-tools-task.html"><strong aria-hidden="true">27.</strong> Набор упражнений для работы в Linux</a></li><li class="chapter-item expanded "><a href="../practicum/linux-structure-task.html"><strong aria-hidden="true">28.</strong> Маленькая задачка c Linux</a></li><li class="chapter-item expanded "><a href="../practicum/python-algo-task.html"><strong aria-hidden="true">29.</strong> Пишем эффективный код</a></li><li class="chapter-item expanded "><a href="../practicum/kitty-startup-task.html"><strong aria-hidden="true">30.</strong> Деплой стартапа</a></li><li class="chapter-item expanded "><a href="../practicum/final-project-requirements.html"><strong aria-hidden="true">31.</strong> Итоговый проект</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded affix "><a href="../resume/intro.html">Заключение</a></li><li class="chapter-item expanded affix "><a href="../resume/literature.html">Литература и статьи</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Разработка и применение программного обеспечения в физических исследованиях</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/phys-dev/soft-dev-book/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="Введение-в-алгоритмы"><a class="header" href="#Введение-в-алгоритмы">Введение в алгоритмы</a></h1>
+<p>Одна из основных задач при работе с алгоритмами — оценка эффективности программы и поиск наиболее экономичного подхода. Самое простое и поверхностное решение этой задачи — написать программу и замерить время её выполнения. Программа тормозит? Изменить программу, оптимизировав решение.</p>
+<h2 id="Линейный-поиск"><a class="header" href="#Линейный-поиск">Линейный поиск</a></h2>
+<p>Дан массив целых чисел длины \(N\). Нужно найти в нём заданное число \(x\) и вернуть его индекс. Если \(x\) в массиве не встречается — вернуть <code>-1</code>.</p>
+<pre><code class="language-python">def find_element(numbers, x):
+    for i in range(len(numbers)):
+        if numbers[i] == x:
+            return i
+    return -1
+</code></pre>
+<p>Можем сказать, что скорость работы алгоритма в худшем случае пропорциональна размеру массива. На математическом языке ещё говорят: <strong>«Вычислительная сложность алгоритма линейно зависит от размера входных данных».</strong></p>
+<p>Разберём эту фразу:
+<strong>Вычислительная сложность алгоритма.</strong> Обычно под этой фразой понимают количество элементарных операций, которые будут совершены.
+<strong>Размер входных данных.</strong> Входные данные — то, что алгоритм получает на вход. В нашей задаче это массив <code>numbers</code> и переменная <code>x</code>. Размер входных данных примерно равен <code>N</code>.
+<strong>Линейная зависимость.</strong> Описывается формулой \(y = kx+b\).</p>
+<h2 id="Бинарный-поиск"><a class="header" href="#Бинарный-поиск">Бинарный поиск</a></h2>
+<p>Есть и другой способ решить задачу поиска элемента в массиве. Если элементы в массиве упорядочены по возрастанию, то найти нужный можно гораздо быстрее.</p>
+<p>Допустим, мы хотим применить этот алгоритм к словарю из 100 страниц. Объём рассматриваемой части книги будет каждый раз уменьшаться вдвое до тех пор, пока не останется всего одна страница. Делить словарь из 100 страниц пополам мы можем максимум 7 раз. Получается, чтобы найти нужное слово, нам достаточно будет просмотреть не более 7 страниц.</p>
+<p>Рассмотренный алгоритм называется <em>бинарным поиском.</em> Ещё его называют: <em>двоичный поиск, метод деления пополам, дихотомия.</em> Скорость его работы имеет логарифмическую зависимость от размера входных данных.</p>
+<pre><code class="language-python">def binary_search(arr, x):
+    mid, low, high = 0, 0, len(arr) - 1
+
+    while low &lt;= high:
+        mid = (high + low) // 2
+
+        if arr[mid] &lt; x:
+            low = mid + 1
+        elif arr[mid] &gt; x:
+            high = mid - 1
+        else:
+            return mid
+
+    return -1
+</code></pre>
+<h2 id="Линейный-vs-Бинарный-поиск"><a class="header" href="#Линейный-vs-Бинарный-поиск">Линейный vs Бинарный поиск</a></h2>
+<p>Запустим линейный и бинарный поиск на одинаковых данных и посмотрим, как меняется время работы в зависимости от размера массива, в котором производится поиск:</p>
+<p>Будем искать элемент, стоящий в самом конце, — худший случай для линейного поиска:</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: right">Размер массива</th><th style="text-align: right">Линейный поиск</th><th style="text-align: right">Бинарный поиск</th></tr></thead><tbody>
+<tr><td style="text-align: right">10</td><td style="text-align: right">0.2 мкс</td><td style="text-align: right">0.14 мкс</td></tr>
+<tr><td style="text-align: right">100</td><td style="text-align: right">0.9 мкс</td><td style="text-align: right">0.23 мкс</td></tr>
+<tr><td style="text-align: right">1 000</td><td style="text-align: right">11.2 мкс</td><td style="text-align: right">0.37 мкс</td></tr>
+<tr><td style="text-align: right">10 000</td><td style="text-align: right">122.1 мкс</td><td style="text-align: right">0.50 мкс</td></tr>
+<tr><td style="text-align: right">100 000</td><td style="text-align: right">1281.6 мкс</td><td style="text-align: right">0.59 мкс</td></tr>
+<tr><td style="text-align: right">1 000 000</td><td style="text-align: right">12340.3 мкс</td><td style="text-align: right">0.69 мкс</td></tr>
+</tbody></table>
+</div>
+<p>Разница видна невооружённым глазом. При увеличении массива в 10 раз линейный поиск замедляется тоже примерно в 10 раз: 11 мкс, 122 мкс, 1.3 мс, 12 мс. Бинарный поиск за те же пять порядков роста массива стал медленнее меньше чем вдвое: 0.14 мкс против 0.69 мкс.</p>
+<p>Так и выглядит разница между \(O(n)\) и \(O(\log n)\) на практике. На миллионе элементов бинарный поиск быстрее линейного почти в двадцать тысяч раз, и чем больше данных, тем этот разрыв больше.</p>
+<p>Замерить это ты можешь сам:</p>
+<pre><code class="language-python">from timeit import timeit
+
+setup = f"from __main__ import find_element, binary_search; arr = list(range({n})); x = {n} - 1"
+print(timeit("find_element(arr, x)", setup=setup, number=1000) / 1000)
+print(timeit("binary_search(arr, x)", setup=setup, number=1000) / 1000)
+</code></pre>
+<h2 id="Сложность-алгоритма-О-нотация"><a class="header" href="#Сложность-алгоритма-О-нотация">Сложность алгоритма. О-нотация</a></h2>
+<p>В О-нотации не учитываются константы и коэффициенты. То есть если в алгоритме совершается \(5\cdot n+3\) операций, его сложность будет \(O(n)\). В асимптотической оценке не учитываются значения констант при \(n\). Нельзя сказать, что константы совсем уж не важны, но они не могут принципиально изменить применимость алгоритма на практике.</p>
+<p>Кроме линейной и логарифмической, при оценке времени работы алгоритмов часто встречаются ещё такие зависимости:</p>
+<ul>
+<li>Квадратичная зависимость — \(O(n^2)\).</li>
+<li>Кубическая зависимость — \(O(n^3)\).</li>
+<li>Экспоненциальная зависимость — \(O(2^n)\).</li>
+<li>Константная зависимость — \(O(1)\). Бывает и так, что время работы алгоритма не зависит от размера входных данных, и в любом случае выполняется константное количество операций.</li>
+</ul>
+<h2 id="Как-оценивать-время-исполнения"><a class="header" href="#Как-оценивать-время-исполнения">Как оценивать время исполнения</a></h2>
+<p>Теперь нужно понять, как быстро работает компьютер. Современный процессор выполняет около 2.5 миллиардов действий (их называют «инструкциями») в секунду. Или «тактовая частота процессора = 2.5 ГГц».</p>
+<p>Если говорить немного точнее, за секунду проходит 2.5 миллиарда тактов. Как метроном задаёт ритм музыки, так же специальный генератор тактовой частоты задаёт ритм, в котором работают процессор и микросхемы компьютера. В первом приближении можно считать, что один такт соответствует одной инструкции.</p>
+<p>Предположим, что обработка каждой итерации цикла занимает один такт процессора. Возьмём \(10^9\) итераций, тогда:</p>
+<p>$$
+t = \frac{10^9 [итер] \cdot 1 [\frac{такт}{итер}]}{2.5 \cdot 10^9 [\frac{такт}{с}]} = 0.4 [с]
+$$</p>
+<p>Количество инструкций в программе может немного отличаться в зависимости от процессора или от использованного компилятора. Бывают команды, которым требуется несколько тактов, а другие инструкции, наоборот, справляются за доли такта.</p>
+<p>Получается, даже если бы мы хотели узнать константы в оценке временной сложности алгоритма, мы бы не смогли это сделать — слишком много нюансов пришлось бы учесть. Это ещё одна причина, почему мы пользуемся О-нотацией и опускаем константы. Но это не значит, что нельзя уменьшить константу, сократив число действий.</p>
+<p>Чтобы оценить, во сколько раз мы ошиблись в действительности, измерим, сколько секунд займёт цикл, который миллиард раз не делает ничего.</p>
+<pre><code class="language-python"># Python
+import time
+
+time_start = time.time()
+i = 0
+while i &lt; 1000000000:
+    # Do nothing
+    i += 1
+
+time_finish = time.time()
+time_span = time_finish - time_start
+print(time_span, 'seconds')
+</code></pre>
+<pre><code>97.01491403579712 seconds
+</code></pre>
+<pre><code class="language-cpp">// CPP
+#include &lt;chrono&gt;
+#include &lt;iostream&gt;
+
+int main() {
+    using namespace std::chrono;
+    auto time_start = high_resolution_clock::now();
+    int i = 0;
+    while (i &lt; 1000000000) {
+        // Do nothing
+        ++i;
+    }
+    auto time_finish = high_resolution_clock::now();
+    auto time_span = duration_cast&lt;duration&lt;double&gt;&gt;(time_finish - time_start);
+
+    std::cout &lt;&lt; time_span.count() &lt;&lt; " seconds\n";
+  return 0;
+}
+</code></pre>
+<p>Каждая итерация цикла состоит из трёх действий: прибавить единицу, проверить условие и переместиться обратно к началу цикла. Три миллиарда команд должны занимать приблизительно 1 секунду. Программа на C++ работает почти столько же времени. А вот аналогичная программа на Python выполняется около 100 секунд, то есть в сто раз медленнее. Так происходит, поскольку код на языках низкого уровня почти один к одному транслируется в инструкции процессору.</p>
+<h2 id="Пространственная-сложность-алгоритма"><a class="header" href="#Пространственная-сложность-алгоритма">Пространственная сложность алгоритма</a></h2>
+<p>Поговорили про понятие вычислительной (или временнóй) сложности, которое определяет, насколько эффективно алгоритм использует процессорное время.
+Ещё одна важная характеристика — объём оперативной памяти. Программы, которым не хватает памяти, будут зависать и мешать работе других программ. А во многих случаях и вовсе не смогут доделать свою работу до конца.</p>
+<p><em>Если программе не хватает оперативной памяти, она пытается использовать файл подкачки, или swap-раздел (от англ. swap — «подкачивать»), расположенный во внешней памяти (на жёстком диске или на SSD-диске). При недостатке оперативной памяти программа начинает перекладывать данные из небольшой, но быстрой оперативной памяти на большой, но медленный диск. И по мере необходимости возвращать требуемые данные с диска в память. Это очень медленный процесс. Именно из-за него программы, вышедшие за пределы оперативной памяти, начинают тратить много процессорного времени и зависать, даже если у них небольшая временна́я сложность. И, что ещё хуже, они могут вытеснять из памяти другие программы, которые в таком случае тоже зависают. Если запущенные на компьютере программы заняли не только всю оперативную память, но и файл подкачки, то какая-то из программ завершится аварийно.</em></p>
+<p>Каждый объект в программе занимает некоторый объём памяти, а для хранения всех объектов может потребоваться немало пространства. Особенное внимание, конечно, следует уделять массивам, строкам и прочим контейнерам, ведь их размер не строго фиксирован и зависит от входных данных.
+Пространственной сложностью алгоритма называется зависимость объёма потребляемой памяти от входных данных. Как и в случае с временной сложностью, нас в первую очередь интересует не точный объём памяти, а асимптотика, то есть скорость роста без учёта констант и коэффициентов.</p>
+<h2 id="Взаимосвязь-пространственной-и-временной-сложности-алгоритма"><a class="header" href="#Взаимосвязь-пространственной-и-временной-сложности-алгоритма">Взаимосвязь пространственной и временной сложности алгоритма</a></h2>
+<p>Типичная ситуация: мы сохранили вспомогательную информацию, чтобы тратить меньше времени, то есть «обменяли» память на скорость. При решении задач тебе порой придётся делать непростой выбор: либо сохранять больше данных, чтобы уменьшить объём вычислений; либо считать медленнее, но сэкономить память.
+Следует помнить о том, что слишком большой расход памяти может привести к тому, что программа завершится с ошибкой. Или её производительность ухудшится из-за использования файла подкачки.</p>
+<h2 id="Как-тестировать-свою-программу"><a class="header" href="#Как-тестировать-свою-программу">Как тестировать свою программу</a></h2>
+<p>Код, разделённый на функции, удобно тестировать. Для тестирования отдельных функций пишут юнит-тесты.</p>
+<p>Краевые случаи:</p>
+<div class="table-wrapper"><table><thead><tr><th>тип теста</th><th>строки</th><th>числа</th><th>набор данных/массивы</th></tr></thead><tbody>
+<tr><td>самый маленький тест</td><td>пустая строка</td><td>0 или минимальное отрицательное число для задачи</td><td>пустой набор данных</td></tr>
+<tr><td>самый большой тест</td><td>самая длинная строка по условию</td><td>самое большое положительное число для задачи</td><td>набор данных максимального размера</td></tr>
+<tr><td>особые случаи</td><td>строки со строчными и заглавными буквами<br/> строки с кириллицей и латиницей</td><td>положительное/отрицательное число<br/> ноль<br/>четное/нечет число<br/> вещественное число</td><td>набор с одинаковыми элементами<br/> отсортированные наборы<br/>неотсортированные наборы</td></tr>
+</tbody></table>
+</div>
+<h2 id="Задача"><a class="header" href="#Задача">Задача</a></h2>
+<p><em>Дана строка (UTF-8). Найти самый часто встречающийся в ней символ.</em></p>
+<h3 id="Решение-1"><a class="header" href="#Решение-1">Решение 1</a></h3>
+<p>Переберем все позиции и для каждой позиции в строке еще раз переберем все позиции и в случае совпадения прибавим к счетчику единицу. Найдём максимальное значение счетчика.</p>
+<pre><code class="language-python">s = 'ababa'
+ans = ''
+anscnt = 0
+for i in range(len(s)):
+    nowcnt = 0
+    for j in range(len(s)):
+        if s[i] == s[j]:
+            nowcnt += 1
+    if nowcnt &gt; anscnt:
+        ans = s[i]
+        anscnt = nowcnt
+print(ans)
+</code></pre>
+<pre><code>a
+</code></pre>
+<h3 id="Решение-2"><a class="header" href="#Решение-2">Решение 2</a></h3>
+<p>Переберем все символы, встречающиеся в строке, а затем переберем все позиции и в случае совпадения прибавим к счетчику единицу. Найдём максимальное значение счетчика.</p>
+<pre><code class="language-python">s = 'ababa'
+ans = ''
+anscnt = 0
+for now in set(s):
+    nowcnt = 0
+    for j in range(len(s)):
+        if now == s[j]:
+            nowcnt += 1
+    if nowcnt &gt; anscnt:
+        ans = now
+        anscnt = nowcnt
+print(ans)
+</code></pre>
+<pre><code>a
+</code></pre>
+<h3 id="Решение-3"><a class="header" href="#Решение-3">Решение 3</a></h3>
+<p>Заведём словарь, где ключом является символ, а значением — сколько раз он встретился. Если символ встретился впервые — создаём элемент словаря с ключом, совпадающем с этим символом и значением ноль. Прибавляем к элементу словаря с ключом, совпадающем с этим символом, единицу.</p>
+<pre><code class="language-python">s = 'ababa'
+ans = ''
+anscnt = 0
+symcnt = {}
+for now in s:
+    if now not in symcnt:
+        symcnt[now] = 0
+    symcnt[now] += 1
+    if symcnt[now] &gt; anscnt:
+        ans = now
+        anscnt = symcnt[now]
+print(ans)
+</code></pre>
+<pre><code>a
+</code></pre>
+<h3 id="Сравнение-сложности"><a class="header" href="#Сравнение-сложности">Сравнение сложности</a></h3>
+<p>N — длина строки, К - кол-во различных символов</p>
+<div class="table-wrapper"><table><thead><tr><th>Решение</th><th>Время</th><th>Память</th></tr></thead><tbody>
+<tr><td>1</td><td>О(N^2)</td><td>О(N)</td></tr>
+<tr><td>2</td><td>О(NK)</td><td>O(N+K) = O(N)</td></tr>
+<tr><td>3</td><td>O(N)</td><td>O(K)</td></tr>
+</tbody></table>
+</div>
+<h2 id="Зачем-программисту-алгоритмы"><a class="header" href="#Зачем-программисту-алгоритмы">Зачем программисту алгоритмы</a></h2>
+<ul>
+<li>Знание алгоритмов помогает эффективному решению задач</li>
+<li>Дополнительная готовность к собеседованию</li>
+<li>Общая когнитивная тренировка</li>
+</ul>
+<h2 id="Свойства-алгоритмов"><a class="header" href="#Свойства-алгоритмов">Свойства алгоритмов</a></h2>
+<ul>
+<li>Дискретность</li>
+<li>Детерминированность</li>
+<li>"Понятность"</li>
+<li>Завершаемость</li>
+<li>Массовость</li>
+<li>Результативность</li>
+</ul>
+<h2 id="Лайфхаки-Оценка-сложности"><a class="header" href="#Лайфхаки-Оценка-сложности">Лайфхаки. Оценка сложности</a></h2>
+<ul>
+<li>Видишь цикл — сложность линейная</li>
+<li>Видишь вложенный цикл — сложность полиномиальная, степень — глубина вложенности</li>
+<li>Видишь деление пополам — сложность логарифмическая</li>
+<li>Видишь полный перебор — сложность экспоненциальная</li>
+</ul>
+<h2 id="Есть-ли-неразрешенные-алгоритмические-проблемы"><a class="header" href="#Есть-ли-неразрешенные-алгоритмические-проблемы">Есть ли неразрешенные алгоритмические проблемы</a></h2>
+<h3 id="Проблема-останова"><a class="header" href="#Проблема-останова">Проблема останова</a></h3>
+<ul>
+<li>Допустим, что у нас есть алгоритма \(A\) и входные данные \(N\). Нужен такой алгоритм, который скажет, остановится ли \(A\) на входных данных \(N\).</li>
+<li>Доказательство: от противного с подачей этого алгоритма на вход самому себе</li>
+</ul>
+<h2 id="Ресурсы"><a class="header" href="#Ресурсы">Ресурсы</a></h2>
+<ul>
+<li>https://tproger.ru/digest/competitive-programming-practice/</li>
+<li>Введение в анализ сложности: https://habr.com/ru/post/196560/</li>
+<li>Гейл Макдауэлл «Карьера программиста»</li>
+</ul>
+<h2 id="Бонус-Задача-Поиск-простых-чисел"><a class="header" href="#Бонус-Задача-Поиск-простых-чисел">Бонус. Задача. Поиск простых чисел</a></h2>
+<pre><code class="language-python">def is_prime(n):
+    if n == 1:
+        return False
+    i = 2
+    while i &lt; n:
+        if n % i == 0:
+            return False
+        i = i + 1
+    return True
+</code></pre>
+<p>Можно решить эту задачу быстрее. Проверять числа, которые больше чем \(\sqrt n\), необязательно.</p>
+<pre><code class="language-python">def is_prime(n):
+    if n == 1:
+        return False
+    i = 2
+    while i * i &lt;= n:
+        if n % i == 0:
+            return False
+        i = i + 1
+    return True
+</code></pre>
+<p>C помощью функции <code>is_prime(n)</code> можно найти все простые числа, не больше числа \(n\).
+Для этого заведём пустой массив <code>smaller_primes</code>. Будем проверять все числа, меньшие или равные \(n\), на простоту. Если число простое, добавим его в массив <code>smaller_primes</code>. В конце работы алгоритма в этом массиве будет содержаться ответ.</p>
+<pre><code class="language-python">def get_smaller_primes(n):
+    smaller_primes = []
+    for num in range(2, n + 1):
+        if is_prime(num):
+            smaller_primes.append(num)
+    return smaller_primes
+</code></pre>
+<p>Но этот метод не оптимальный — его не стоит применять на практике. Есть более оптимальный метод — решето Эратосфена.</p>
+<p>Алгоритм такой:</p>
+<ul>
+<li>Выписываем все целые числа от 0 до \(n\). Сразу помечаем, что числа 0 и 1 не являются простыми (записываем на соответствующих этим числам позициях <code>False</code>).</li>
+<li>Заводим переменную \(\mathrm{num}\), равную первому не рассмотренному простому числу. Изначально она равна 2.</li>
+<li>Помечаем в списке числа от \(2 \cdot \mathrm{num}\) до \(n\) с шагом, равным \(\mathrm{num}\), составными. Например, для 2 пометим значением <code>c</code> чётные числа — 4, 6, 8 и так далее.</li>
+<li>Теперь в \(\mathrm{num}\) присваиваем следующее простое число, то есть следующее не рассмотренное число в списке. Для этого достаточно увеличивать \(\mathrm{num}\) с шагом 1, пропуская числа, отмеченные как составные. На первом найденном простом числе следует остановиться.</li>
+<li>Повторяем два предыдущих шага, пока это возможно.
+Код функции, реализующий решето Эратосфена:</li>
+</ul>
+<pre><code class="language-python">def eratosthenes(n):
+    numbers = list(range(n + 1))
+    numbers[0] = numbers[1] = False
+    for num in range(2, n):
+        if numbers[num]:
+            for j in range(2 * num, n + 1, num):
+                numbers[j] = False
+    return numbers
+</code></pre>
+<pre><code class="language-python">eratosthenes(9)
+</code></pre>
+<pre><code>[False, False, 2, 3, False, 5, False, 7, False, False]
+</code></pre>
+<p>Простые числа остались на своём месте. Там, где были составные числа, стоит False.
+Алгоритм можно оптимизировать. Для каждого простого числа pp начнём отмечать числа, начиная с \(p^2\), как составные. Ведь все составные числа, которые меньше его, будут уже рассмотрены.
+Получится такой код:</p>
+<pre><code class="language-python">def eratosthenes_effective(n):
+    numbers = list(range(n + 1))
+    numbers[0] = numbers[1] = False
+    for num in range(2, n):
+        if numbers[num]:
+            for j in range(num * num, n + 1, num):
+                numbers[j] = False
+    return numbers
+</code></pre>
+<p>Рассмотрим подробно пример работы алгоритма для \(n = 15\).</p>
+<pre><code class="language-text">0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 # Запишем числа от 0 до 15
+
+False False 2 3 4 5 6 7 8 9 10 11 12 13 14 15 # Отметим, что 0 и 1 не простые
+
+num = 2 # Пометим все числа, кратные 2, начиная с 4, значением False
+
+False False 2 3 False 5 False 7 False 9 False 11 False 13 False 15
+
+num = 3 # Пометим все числа, кратные 3, начиная с 9, значением False
+
+False False 2 3 False 5 False 7 False False False 11 False 13 False False
+
+num = 5 # Алгоритм можно завершить, так как num**2 больше 15.
+              # Все числа, кратные 5 и меньшие 15, уже рассмотрены.
+</code></pre>
+<p>Решето Эратосфена работает за \(O(n \log(\log n))\). Чтобы это доказать, нужно знать некоторые сложные факты из теории чисел.</p>
+<p>Существует метод решения задачи нахождения всех простых чисел, не превосходящих \(n\), которому требуется \(O(n)\) операций. Он называется линейное решето. Этот метод помечает каждое число как составное только один раз.</p>
+<p>Как и прежде, мы будем перебирать числа в порядке увеличения. Только в отличие от классического решета Эратосфена, составные числа не вычёркиваются. Вместо этого для каждого числа \(x\) мы запишем наименьший простой делитель \(p\). В программе мы будем записывать этот делитель в ячейку массива \(\mathrm{lp}[x]\) (от англ. least prime).
+Если число простое, его наименьший простой делитель — оно само. Если число составное, его наименьший простой делитель \(p\) уже встречался раньше. Более того, нам встречалось и число \(i\), такое, что \(x = i \cdot p\). На шаге \(i\) мы должны пометить число \(x\) как составное и указать его наименьший простой делитель.
+Каждое число будет помечено только один раз, на шаге \(i = x/p\). Число \(i\) может быть взято только одним способом, потому что у любого числа существует только один наименьший простой делитель \(p\).</p>
+<p>Алгоритм такой:</p>
+<ul>
+<li>Для каждого числа <code>i</code> будем хранить <code>lp[i]</code> — минимальный простой делитель числа <code>i</code>. Заведём массив <code>lp</code> длины <code>n + 1</code>. А также массив <code>primes</code>, в который будем добавлять найденные простые числа.</li>
+<li>Перебираем <code>i</code> по возрастанию.</li>
+<li>Если <code>lp[i] = 0</code>, можно сделать вывод, что число i простое, и добавить его в массив primes.</li>
+<li>Рассматриваем все простые числа p, которые не больше <code>lp[i]</code>. Обновляем <code>lp[p * i] = p</code>.</li>
+</ul>
+<pre><code class="language-python">def get_least_primes_linear(n):
+    lp = [0] * (n + 1)
+    primes = []
+    for i in range(2, n + 1):
+        if lp[i] == 0:
+            lp[i] = i
+            primes.append(i)
+        for p in primes:
+            x = p * i
+            if (p &gt; lp[i]) or (x &gt; n):
+                break
+            lp[x] = p
+    return primes, lp
+</code></pre>
+<pre><code class="language-python">get_least_primes_linear(8)
+</code></pre>
+<pre><code>([2, 3, 5, 7], [0, 0, 2, 3, 2, 5, 2, 7, 2])
+</code></pre>
+<h2 id="Резюме"><a class="header" href="#Резюме">Резюме</a></h2>
+<ul>
+<li><strong>Алгоритм</strong> — конечная последовательность точных инструкций; свойства, которые от него требуют, — детерминированность, результативность, массовость и завершаемость.</li>
+<li><strong>O-нотация</strong> описывает, как растёт время работы с ростом объёма данных, отбрасывая константы. Отбрасывать их можно потому, что константы всё равно зависят от процессора, компилятора и погоды на Марсе, а характер роста — не зависит.</li>
+<li>Разница между \(O(n)\) и \(O(\log n)\) на миллионе элементов — это разница между «двенадцать миллисекунд» и «меньше микросекунды». На больших данных выбор алгоритма решает больше, чем любая микрооптимизация.</li>
+<li>Пространственная сложность оценивается так же, и между временем и памятью почти всегда приходится выбирать.</li>
+<li>Прежде чем оптимизировать — <strong>измерь</strong>. Оценка сложности говорит, чего ждать, но реальное время меряется секундомером.</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../cs/intro.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../cs/basic-structures.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../cs/intro.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../cs/basic-structures.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

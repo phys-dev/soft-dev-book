@@ -1,0 +1,594 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Скорость выполнения программ - Разработка и применение программного обеспечения в физических исследованиях</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../intro/intro.html">О книге</a></li><li class="chapter-item expanded affix "><a href="../intro/about-me.html">О себе</a></li><li class="chapter-item expanded affix "><li class="part-title">Ищем помощников</li><li class="chapter-item expanded "><a href="../ai/intro.html"><strong aria-hidden="true">1.</strong> ИИ для разработки</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ai/context.html"><strong aria-hidden="true">1.1.</strong> Контекст и скорость изменений</a></li><li class="chapter-item expanded "><a href="../ai/develop.html"><strong aria-hidden="true">1.2.</strong> ИИ и разработчик</a></li><li class="chapter-item expanded "><a href="../ai/basic.html"><strong aria-hidden="true">1.3.</strong> Технические основы</a></li><li class="chapter-item expanded "><a href="../ai/instruments.html"><strong aria-hidden="true">1.4.</strong> Инструментарий</a></li><li class="chapter-item expanded "><a href="../ai/copilot.html"><strong aria-hidden="true">1.5.</strong> GitHub Copilot</a></li><li class="chapter-item expanded "><a href="../ai/qa.html"><strong aria-hidden="true">1.6.</strong> Вопросы и ответы</a></li></ol></li><li class="chapter-item expanded "><a href="../dev/python/intro.html"><strong aria-hidden="true">2.</strong> Экспресс-курс Python</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../dev/python/basics.html"><strong aria-hidden="true">2.1.</strong> Основы Python</a></li><li class="chapter-item expanded "><a href="../dev/python/numpy.html"><strong aria-hidden="true">2.2.</strong> NumPy</a></li><li class="chapter-item expanded "><a href="../dev/python/scipy.html"><strong aria-hidden="true">2.3.</strong> SciPy</a></li><li class="chapter-item expanded "><a href="../dev/python/matplotlib.html"><strong aria-hidden="true">2.4.</strong> Matplotlib</a></li><li class="chapter-item expanded "><a href="../dev/python/holo.html"><strong aria-hidden="true">2.5.</strong> HoloViews</a></li><li class="chapter-item expanded "><a href="../dev/python/requirements.html"><strong aria-hidden="true">2.6.</strong> Требования к коду</a></li></ol></li><li class="chapter-item expanded "><a href="../dev/git.html"><strong aria-hidden="true">3.</strong> Git</a></li><li class="chapter-item expanded "><a href="../dev/docker.html"><strong aria-hidden="true">4.</strong> Docker</a></li><li class="chapter-item expanded affix "><li class="part-title">Загружаем Linux</li><li class="chapter-item expanded "><a href="../linux/intro.html"><strong aria-hidden="true">5.</strong> Основы Linux</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../linux/booting.html"><strong aria-hidden="true">5.1.</strong> Процесс загрузки</a></li><li class="chapter-item expanded "><a href="../linux/filesystems.html"><strong aria-hidden="true">5.2.</strong> Файловые системы</a></li><li class="chapter-item expanded "><a href="../linux/tools.html"><strong aria-hidden="true">5.3.</strong> Инструменты</a></li></ol></li><li class="chapter-item expanded "><a href="../linux/install-arch-linux.html"><strong aria-hidden="true">6.</strong> Установка Arch Linux</a></li><li class="chapter-item expanded "><a href="../linux/structure.html"><strong aria-hidden="true">7.</strong> Внутреннее устройство Linux</a></li><li class="chapter-item expanded affix "><li class="part-title">Разбираемся в алгоритмах</li><li class="chapter-item expanded "><a href="../cs/intro.html"><strong aria-hidden="true">8.</strong> Общие знания</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../cs/basic-algos.html"><strong aria-hidden="true">8.1.</strong> Введение в алгоритмы</a></li><li class="chapter-item expanded "><a href="../cs/basic-structures.html"><strong aria-hidden="true">8.2.</strong> Основные структуры данных</a></li><li class="chapter-item expanded "><a href="../cs/recurs-and-sorts.html"><strong aria-hidden="true">8.3.</strong> Рекурсия и сортировки</a></li><li class="chapter-item expanded "><a href="../cs/hash-funcs.html"><strong aria-hidden="true">8.4.</strong> Хеш-функции</a></li><li class="chapter-item expanded "><a href="../cs/trees.html"><strong aria-hidden="true">8.5.</strong> Деревья</a></li><li class="chapter-item expanded "><a href="../cs/graphs.html"><strong aria-hidden="true">8.6.</strong> Графы</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Считаем численно</li><li class="chapter-item expanded "><a href="../compute/intro.html"><strong aria-hidden="true">9.</strong> Введение в вычислительную физику</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../compute/basic-concepts.html"><strong aria-hidden="true">9.1.</strong> Сходимость, аппроксимация и устойчивость</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Погружаемся в Python</li><li class="chapter-item expanded "><a href="../dev/python/init.html"><strong aria-hidden="true">10.</strong> Начало</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../dev/python/objects.html"><strong aria-hidden="true">10.1.</strong> Объекты и память</a></li><li class="chapter-item expanded "><a href="../dev/python/collections.html"><strong aria-hidden="true">10.2.</strong> Коллекции</a></li><li class="chapter-item expanded "><a href="../dev/python/o-notation.html"><strong aria-hidden="true">10.3.</strong> Асимптотическая сложность</a></li></ol></li><li class="chapter-item expanded "><a href="../dev/python/functions.html"><strong aria-hidden="true">11.</strong> Функции</a></li><li class="chapter-item expanded "><a href="../dev/python/decorators.html"><strong aria-hidden="true">12.</strong> Декораторы и functools</a></li><li class="chapter-item expanded "><a href="../dev/python/classes.html"><strong aria-hidden="true">13.</strong> Классы</a></li><li class="chapter-item expanded "><a href="../dev/python/async.html"><strong aria-hidden="true">14.</strong> Итераторы, генераторы и корутины</a></li><li class="chapter-item expanded affix "><li class="part-title">Изучаем хорошие практики</li><li class="chapter-item expanded "><a href="../dev/life.html"><strong aria-hidden="true">15.</strong> Жизненный цикл ПО</a></li><li class="chapter-item expanded "><a href="../dev/app.html"><strong aria-hidden="true">16.</strong> От скрипта к приложению</a></li><li class="chapter-item expanded "><a href="../dev/web.html"><strong aria-hidden="true">17.</strong> Основы WEB</a></li><li class="chapter-item expanded "><a href="../dev/bd.html"><strong aria-hidden="true">18.</strong> Базы данных</a></li><li class="chapter-item expanded affix "><li class="part-title">Обрабатываем данные</li><li class="chapter-item expanded "><a href="../dev/python/numpy-and-pandas.html"><strong aria-hidden="true">19.</strong> NumPy и pandas</a></li><li class="chapter-item expanded "><a href="../dev/python/visualization/practice.html"><strong aria-hidden="true">20.</strong> Визуализация данных</a></li><li class="chapter-item expanded "><a href="../ds/intro.html"><strong aria-hidden="true">21.</strong> Машинное обучение</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ds/basic.html"><strong aria-hidden="true">21.1.</strong> Основные понятия</a></li><li class="chapter-item expanded "><a href="../ds/ml.html"><strong aria-hidden="true">21.2.</strong> Классические алгоритмы</a></li><li class="chapter-item expanded "><a href="../ds/nn.html"><strong aria-hidden="true">21.3.</strong> Нейронные сети</a></li><li class="chapter-item expanded "><a href="../ds/tools.html"><strong aria-hidden="true">21.4.</strong> Инструменты: scikit-learn</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Ускоряем код</li><li class="chapter-item expanded "><a href="../perf/intro.html"><strong aria-hidden="true">22.</strong> С чего начинать оптимизацию</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../dev/python/optimization.html"><strong aria-hidden="true">22.1.</strong> Почему Python не очень быстрый</a></li><li class="chapter-item expanded "><a href="../perf/perf.html" class="active"><strong aria-hidden="true">22.2.</strong> Скорость выполнения программ</a></li><li class="chapter-item expanded "><a href="../perf/gil.html"><strong aria-hidden="true">22.3.</strong> Многопоточность и GIL</a></li><li class="chapter-item expanded "><a href="../perf/async.html"><strong aria-hidden="true">22.4.</strong> Асинхронность</a></li><li class="chapter-item expanded "><a href="../perf/cuda.html"><strong aria-hidden="true">22.5.</strong> CUDA и вычисления на GPU</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Учимся у других</li><li class="chapter-item expanded "><a href="../examples/intro.html"><strong aria-hidden="true">23.</strong> Коды и скрипты</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../examples/kenv.html"><strong aria-hidden="true">23.1.</strong> Уравнение огибающей Капчинского-Владимирского для пучка заряженных частиц</a></li><li class="chapter-item expanded "><a href="../examples/envelope-optimize.html"><strong aria-hidden="true">23.2.</strong> Оптимизация огибающей пучка заряженных частиц с помощью генетического алгоритма</a></li><li class="chapter-item expanded "><a href="../examples/redpic.html"><strong aria-hidden="true">23.3.</strong> Релятивистская разностная схема для расчёта динамики частиц</a></li><li class="chapter-item expanded "><a href="../examples/orbit-correction.html"><strong aria-hidden="true">23.4.</strong> Коррекция равновесной орбиты с применением матрицы отклика и нейронных сетей</a></li><li class="chapter-item expanded "><a href="../examples/cadquery/layout.html"><strong aria-hidden="true">23.5.</strong> Схема ускорителя заряженных частиц в CadQuery</a></li><li class="chapter-item expanded "><a href="../examples/async-api.html"><strong aria-hidden="true">23.6.</strong> Асинхронное API для кинотеатра</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Работаем самостоятельно</li><li class="chapter-item expanded "><a href="../practicum/review-code-task.html"><strong aria-hidden="true">24.</strong> Ищем ошибки в чужом коде</a></li><li class="chapter-item expanded "><a href="../practicum/markov-chain-task.html"><strong aria-hidden="true">25.</strong> Делаем свою LLM</a></li><li class="chapter-item expanded "><a href="../practicum/booting-linux-task.html"><strong aria-hidden="true">26.</strong> Установка Linux</a></li><li class="chapter-item expanded "><a href="../practicum/linux-tools-task.html"><strong aria-hidden="true">27.</strong> Набор упражнений для работы в Linux</a></li><li class="chapter-item expanded "><a href="../practicum/linux-structure-task.html"><strong aria-hidden="true">28.</strong> Маленькая задачка c Linux</a></li><li class="chapter-item expanded "><a href="../practicum/python-algo-task.html"><strong aria-hidden="true">29.</strong> Пишем эффективный код</a></li><li class="chapter-item expanded "><a href="../practicum/kitty-startup-task.html"><strong aria-hidden="true">30.</strong> Деплой стартапа</a></li><li class="chapter-item expanded "><a href="../practicum/final-project-requirements.html"><strong aria-hidden="true">31.</strong> Итоговый проект</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded affix "><a href="../resume/intro.html">Заключение</a></li><li class="chapter-item expanded affix "><a href="../resume/literature.html">Литература и статьи</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Разработка и применение программного обеспечения в физических исследованиях</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/phys-dev/soft-dev-book/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="Скорость-выполнения-программ"><a class="header" href="#Скорость-выполнения-программ">Скорость выполнения программ</a></h1>
+<p>Разговор об ускорении легко превратить в набор разрозненных советов. Мы пойдём другим путём: возьмём одну задачу и будем разгонять её шаг за шагом, каждый раз замеряя результат.</p>
+<p>Задача — умножение матриц. Выбрана она не случайно: это самая обычная операция линейной алгебры, которая встречается в любом физическом расчёте, и одновременно удобный полигон, где видны все типичные приёмы оптимизации.</p>
+<p>Начнём с наивной реализации на чистом Python, измерим её, найдём профилировщиком узкое место, а дальше последовательно применим четыре подхода: перестановку циклов, компиляцию через Numba, компиляцию через Cython и, наконец, готовую библиотеку. Забегая вперёд: разница между первой и последней версией составит несколько порядков.</p>
+<h2 id="Класс-matrix"><a class="header" href="#Класс-matrix">Класс <code>Matrix</code></a></h2>
+<p>Для опытов понадобится сама матрица. Опишем её как список списков, добавив пару удобных конструкторов:</p>
+<pre><code class="language-python">import random
+
+class Matrix(list):
+    @classmethod
+    def zeros(cls, shape):
+        n_rows, n_cols = shape
+        return cls([[0] * n_cols for i in range(n_rows)])
+
+    @classmethod
+    def random(cls, shape):
+        M, (n_rows, n_cols) = cls(), shape
+        for i in range(n_rows):
+            M.append([random.randint(-255, 255)
+                      for j in range(n_cols)])
+        return M
+
+    def transpose(self):
+        n_rows, n_cols = self.shape
+        return self.__class__(zip(*self))
+
+    @property
+    def shape(self):
+        return ((0, 0) if not self else
+                (len(self), len(self[0])))
+</code></pre>
+<pre><code class="language-python">def matrix_product(X, Y):
+    """Вычисляет матричное произведение X и Y.
+
+    &gt;&gt;&gt; X = Matrix([[1], [2], [3]])
+    &gt;&gt;&gt; Y = Matrix([[4, 5, 6]])
+    &gt;&gt;&gt; matrix_product(X, Y)
+    [[4, 5, 6], [8, 10, 12], [12, 15, 18]]
+    &gt;&gt;&gt; matrix_product(Y, X)
+    [[32]]
+    """
+    n_xrows, n_xcols = X.shape
+    n_yrows, n_ycols = Y.shape
+    # верим, что с размерностями всё хорошо
+    Z = Matrix.zeros((n_xrows, n_ycols))
+    for i in range(n_xrows):
+        for j in range(n_xcols):
+            for k in range(n_ycols):
+                Z[i][k] += X[i][j] * Y[j][k]
+    return Z
+</code></pre>
+<pre><code class="language-python">%doctest_mode
+</code></pre>
+<pre><code>Exception reporting mode: Plain
+Doctest mode is: ON
+</code></pre>
+<pre><code class="language-python">&gt;&gt;&gt; X = Matrix([[1], [2], [3]])
+&gt;&gt;&gt; Y = Matrix([[4, 5, 6]])
+&gt;&gt;&gt; matrix_product(X, Y)
+[[4, 5, 6], [8, 10, 12], [12, 15, 18]]
+&gt;&gt;&gt; matrix_product(Y, X)
+
+[[32]]
+</code></pre>
+<pre><code>[[32]]
+</code></pre>
+<pre><code class="language-python">%doctest_mode
+</code></pre>
+<pre><code>Exception reporting mode: Context
+Doctest mode is: OFF
+</code></pre>
+<h2 id="Измерение-времени-выполнения"><a class="header" href="#Измерение-времени-выполнения">Измерение времени выполнения</a></h2>
+<p>Вроде бы всё работает, но насколько быстро? Проверь с помощью магической команды <code>timeit</code>.</p>
+<pre><code class="language-python">%%timeit shape = 64, 64; X = Matrix.random(shape); Y = Matrix.random(shape)
+matrix_product(X, Y)
+</code></pre>
+<pre><code>86.6 ms ± 1.52 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
+</code></pre>
+<p>Итого: умножение двух матриц 64x64 занимает почти 0.1 секунды. Почему так медленно?!</p>
+<p>Определим вспомогательную функцию <code>bench</code>, которая генерирует случайные матрицы указанного размера, а затем <code>n_iter</code> раз перемножает их в цикле.</p>
+<pre><code class="language-python">def bench(shape=(64, 64), n_iter=16):
+    X = Matrix.random(shape)
+    Y = Matrix.random(shape)
+    for iter in range(n_iter):
+        matrix_product(X, Y)    
+</code></pre>
+<p>Попробуем присмотреться к происходящему повнимательнее с помощью модуля <code>line_profiler</code>.</p>
+<pre><code class="language-python">#!pip install line_profiler
+</code></pre>
+<pre><code class="language-python">%load_ext line_profiler
+%lprun -f matrix_product bench()
+</code></pre>
+<p>Обрати внимание: операция <code>list.__getitem__</code> не бесплатна. Поменяем местами циклы <code>for</code> так, чтобы код делал меньше обращений по индексу.</p>
+<pre><code class="language-python">def matrix_product(X, Y):
+    n_xrows, n_xcols = X.shape
+    n_yrows, n_ycols = Y.shape
+    Z = Matrix.zeros((n_xrows, n_ycols))
+    for i in range(n_xrows):
+        Xi = X[i]
+        for k in range(n_ycols):
+            acc = 0
+            for j in range(n_xcols):
+                acc += Xi[j] * Y[j][k]
+            Z[i][k] = acc
+    return Z
+</code></pre>
+<pre><code class="language-python">%lprun -f matrix_product bench()
+</code></pre>
+<p>На 2 секунды быстрее, но всё ещё слишком медленно: больше 30% времени уходит исключительно на итерацию! Исправим это.</p>
+<pre><code class="language-python">def matrix_product(X, Y):
+    n_xrows, n_xcols = X.shape
+    n_yrows, n_ycols = Y.shape
+    Z = Matrix.zeros((n_xrows, n_ycols))
+    for i in range(n_xrows):
+        Xi, Zi = X[i], Z[i]
+        for k in range(n_ycols):
+            Zi[k] = sum(Xi[j] * Y[j][k] for j in range(n_xcols))
+    return Z
+</code></pre>
+<pre><code class="language-python">%lprun -f matrix_product bench()
+</code></pre>
+<p>Функция <code>matrix_product</code> заметно похорошела. Но, кажется, это ещё не предел. Попробуем ещё раз убрать лишние обращения по индексу из самого внутреннего цикла.</p>
+<pre><code class="language-python">def matrix_product(X, Y):
+    n_xrows, n_xcols = X.shape
+    n_yrows, n_ycols = Y.shape
+    Z = Matrix.zeros((n_xrows, n_ycols))
+    Yt = Y.transpose()  # &lt;--
+    for i, (Xi, Zi) in enumerate(zip(X, Z)):
+        for k, Ytk in enumerate(Yt):
+            Zi[k] = sum(Xi[j] * Ytk[j] for j in range(n_xcols))
+    return Z
+</code></pre>
+<h2 id="numba"><a class="header" href="#numba">Numba</a></h2>
+<p>Numba не умеет работать со встроенными списками. Перепишем функцию <code>matrix_product</code> с использованием ndarray.</p>
+<pre><code class="language-python">import numba
+import numpy as np
+
+
+@numba.jit
+def jit_matrix_product(X, Y):
+    n_xrows, n_xcols = X.shape
+    n_yrows, n_ycols = Y.shape
+    Z = np.zeros((n_xrows, n_ycols), dtype=X.dtype)
+    for i in range(n_xrows):
+        for k in range(n_ycols):
+            for j in range(n_xcols):
+                Z[i, k] += X[i, j] * Y[j, k]
+    return Z
+</code></pre>
+<p>Посмотрим, что получилось.</p>
+<pre><code class="language-python">shape = 64, 64
+X = np.random.randint(-255, 255, shape)
+Y = np.random.randint(-255, 255, shape)
+
+%timeit -n100 jit_matrix_product(X, Y)
+</code></pre>
+<pre><code>The slowest run took 21.46 times longer than the fastest. This could mean that an intermediate result is being cached.
+495 µs ± 900 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+</code></pre>
+<h2 id="Настоящая-задача-пространственный-заряд"><a class="header" href="#Настоящая-задача-пространственный-заряд">Настоящая задача: пространственный заряд</a></h2>
+<p>Умножение матриц — учебный пример; посмотрим, что Numba даёт на реальной вычислительной задаче. В коде REDPIC, о котором рассказано в <a href="../examples/redpic.html">отдельной главе</a>, пучок представлен ансамблем макрочастиц, и самая дорогая функция расчёта — суммирование кулоновских сил, которые частицы действуют друг на друга. Это и есть эффект пространственного заряда, из-за которого сильноточный пучок расталкивает сам себя:</p>
+<p>$$
+\vec{F}<em>i = \sum</em>{j \ne i} \frac{\vec{r}_i - \vec{r}_j}{|\vec{r}_i - \vec{r}_j|^3}.
+$$</p>
+<p>Каждая частица взаимодействует с каждой, поэтому вычислительная сложность — \(O(N^2)\), где \(N\) — число частиц. Никакой алгоритмической хитрости здесь нет, зато цикл идеально ложится и на JIT-компиляцию, и на распараллеливание: слагаемые для разных \(i\) считаются независимо.</p>
+<pre><code class="language-python">import numpy as np
+from numba import njit, prange
+
+def space_charge(x, y, z, Fx, Fy, Fz):
+    for i in range(len(x)):
+        for j in range(len(x)):
+            if i != j:
+                r3 = ((x[j]-x[i])**2 + (y[j]-y[i])**2 + (z[j]-z[i])**2)**1.5
+                Fx[i] += (x[i]-x[j]) / r3
+                Fy[i] += (y[i]-y[j]) / r3
+                Fz[i] += (z[i]-z[j]) / r3
+</code></pre>
+<p>Чтобы получить параллельную версию, достаточно заменить внешний <code>range</code> на <code>prange</code> — так Numba узнаёт, какой именно цикл можно раздать по ядрам:</p>
+<pre><code class="language-python">def space_charge_par(x, y, z, Fx, Fy, Fz):
+    for i in prange(len(x)):       # &lt;-- единственное отличие
+        for j in range(len(x)):
+            ...
+
+jit_version = njit(space_charge)                      # JIT
+par_version = njit(parallel=True)(space_charge_par)   # JIT + ядра CPU
+</code></pre>
+<p>Обрати внимание на форму записи: <code>njit(func)</code> вместо <code>@njit</code> над определением. Так удобнее, когда одну и ту же функцию нужно померить в нескольких режимах — исходник остаётся один, обёрток несколько.</p>
+<p>Результаты замера (Apple M4, 10 ядер; первый вызов каждой скомпилированной версии сделан заранее, чтобы в измерение не попало время компиляции):</p>
+<pre><code>      N | чистый Python |     @njit | @njit parallel | ускорение
+   256 |       53.0 мс |   0.40 мс |        0.20 мс |   131x /   271x
+   512 |      219.0 мс |   1.67 мс |        0.48 мс |   131x /   454x
+  1024 |      865.7 мс |   6.88 мс |        1.68 мс |   126x /   514x
+  2048 |     3503.4 мс |  28.19 мс |        6.69 мс |   124x /   524x
+  4096 |    14076.2 мс | 114.68 мс |       24.80 мс |   123x /   567x
+</code></pre>
+<p>Из этой таблицы стоит вычитать три вещи.</p>
+<p>Квадратичность видна прямо в числах: при каждом удвоении \(N\) время растёт вчетверо, что и означает \(O(N^2)\) без всяких асимптотических рассуждений. Заметь, что JIT-компиляция сложность не меняет. Она сокращает время в сто с лишним раз, но кривая остаётся квадратичной; ускорить константы и улучшить асимптотику — вещи разные, и первое не заменяет второго.</p>
+<p>Дальше, один декоратор даёт больше сотни раз. Это не опечатка: примерно настолько интерпретатор Python проигрывает машинному коду на арифметике в тесном цикле. Причём переписывать пришлось ровно ноль строк, функция как была на Python, так и осталась.</p>
+<p>А вот параллелизм добавляет ещё в 4–5 раз, но не в 10, хотя ядер именно десять. Часть из них производительные, часть энергоэффективные; к этому добавляются накладные расходы на раздачу работы, которые на маленьких \(N\) съедают почти весь выигрыш: при \(N = 256\) параллельная версия обгоняет последовательную лишь вдвое. Линейного масштабирования по числу ядер на практике почти не бывает, и планировать расчёт нужно исходя из этого.</p>
+<p>С точки зрения физики, а не программирования, важно вот что. Расчёт с 4096 макрочастицами на чистом Python занимает 14 секунд на один вызов функции, а в моделировании таких вызовов десятки тысяч, по одному на каждый шаг интегрирования. Разница между 14 секундами и 25 миллисекундами превращается в разницу между «расчёт не сходится за ночь» и «расчёт готов к обеду». Она и делает возможным численное моделирование динамики пучка на обычном сервере, без суперкомпьютера.</p>
+<h2 id="cython"><a class="header" href="#cython">Cython</a></h2>
+<pre><code class="language-python">%load_ext cython
+</code></pre>
+<pre><code class="language-python">%%capture
+%%cython -a
+import random
+
+class Matrix(list):
+    @classmethod
+    def zeros(cls, shape):
+        n_rows, n_cols = shape
+        return cls([[0] * n_cols for i in range(n_rows)])
+
+    @classmethod
+    def random(cls, shape):
+        M, (n_rows, n_cols) = cls(), shape
+        for i in range(n_rows):
+            M.append([random.randint(-255, 255)
+                      for j in range(n_cols)])
+        return M
+
+    def transpose(self):
+        n_rows, n_cols = self.shape
+        return self.__class__(zip(*self))
+
+    @property
+    def shape(self):
+        return ((0, 0) if not self else
+                (int(len(self)), int(len(self[0]))))
+
+    
+def cy_matrix_product(X, Y):
+    n_xrows, n_xcols = X.shape
+    n_yrows, n_ycols = Y.shape
+    Z = Matrix.zeros((n_xrows, n_ycols))
+    Yt = Y.transpose()
+    for i, Xi in enumerate(X):
+        for k, Ytk in enumerate(Yt):
+            Z[i][k] = sum(Xi[j] * Ytk[j] for j in range(n_xcols))
+    return Z
+</code></pre>
+<pre><code class="language-python">X = Matrix.random(shape)
+Y = Matrix.random(shape)
+</code></pre>
+<pre><code class="language-python">%timeit -n100 cy_matrix_product(X, Y)
+</code></pre>
+<pre><code>21.4 ms ± 1.36 ms per loop (mean ± std. dev. of 7 runs, 100 loops each)
+</code></pre>
+<p>Проблема в том, что Cython не умеет эффективно оптимизировать работу со списками, в которых могут лежать элементы разных типов, поэтому перепишем <code>matrix_product</code> с использованием <em>ndarray</em>.</p>
+<pre><code class="language-python">X = np.random.randint(-255, 255, size=shape)
+Y = np.random.randint(-255, 255, size=shape)
+</code></pre>
+<pre><code class="language-python">%%capture
+%%cython -a
+import numpy as np
+
+def cy_matrix_product(X, Y):
+    n_xrows, n_xcols = X.shape
+    n_yrows, n_ycols = Y.shape
+    Z = np.zeros((n_xrows, n_ycols), dtype=X.dtype)
+    for i in range(n_xrows):
+        for k in range(n_ycols):
+            for j in range(n_xcols):
+                Z[i, k] += X[i, j] * Y[j, k]
+    return Z
+</code></pre>
+<pre><code class="language-python">%timeit -n100 cy_matrix_product(X, Y)
+</code></pre>
+<pre><code>176 ms ± 4.65 ms per loop (mean ± std. dev. of 7 runs, 100 loops each)
+</code></pre>
+<p>Как же так! Стало только хуже: большая часть кода по-прежнему использует вызовы Python. Избавимся от них, аннотировав код типами.</p>
+<pre><code class="language-python">%%capture
+%%cython -a
+import numpy as np
+cimport numpy as np
+
+def cy_matrix_product(np.ndarray X, np.ndarray Y):
+    cdef int n_xrows = X.shape[0]
+    cdef int n_xcols = X.shape[1]
+    cdef int n_yrows = Y.shape[0]
+    cdef int n_ycols = Y.shape[1]
+    cdef np.ndarray Z
+    Z = np.zeros((n_xrows, n_ycols), dtype=X.dtype)
+    for i in range(n_xrows):
+        for k in range(n_ycols):
+            for j in range(n_xcols):
+                Z[i, k] += X[i, j] * Y[j, k]
+    return Z
+</code></pre>
+<pre><code class="language-python">%timeit -n100 cy_matrix_product(X, Y)
+</code></pre>
+<pre><code>173 ms ± 4 ms per loop (mean ± std. dev. of 7 runs, 100 loops each)
+</code></pre>
+<p>К сожалению, аннотации типов не изменили время работы, потому что тело вложенного цикла Cython так и не смог оптимизировать. Время для фаталити: укажем тип элементов в <em>ndarray</em>.</p>
+<pre><code class="language-python">%%capture
+%%cython -a
+import numpy as np
+cimport numpy as np
+
+def cy_matrix_product(np.ndarray[np.int64_t, ndim=2] X,
+                      np.ndarray[np.int64_t, ndim=2] Y):
+    cdef int n_xrows = X.shape[0]
+    cdef int n_xcols = X.shape[1]
+    cdef int n_yrows = Y.shape[0]
+    cdef int n_ycols = Y.shape[1]
+    cdef np.ndarray[np.int64_t, ndim=2] Z = \
+        np.zeros((n_xrows, n_ycols), dtype=np.int64)
+    for i in range(n_xrows):
+        for k in range(n_ycols):
+            for j in range(n_xcols):
+                Z[i, k] += X[i, j] * Y[j, k]
+    return Z
+</code></pre>
+<pre><code class="language-python">%timeit -n100 cy_matrix_product(X, Y)
+</code></pre>
+<pre><code>541 µs ± 5.14 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+</code></pre>
+<p>Попробуем пойти дальше и отключить проверки выхода за границы массива и переполнения целочисленных типов.</p>
+<pre><code class="language-python">%%capture
+%%cython -a
+import numpy as np
+
+cimport cython
+cimport numpy as np
+
+@cython.boundscheck(False)
+@cython.overflowcheck(False)
+def cy_matrix_product(np.ndarray[np.int64_t, ndim=2] X, 
+                      np.ndarray[np.int64_t, ndim=2] Y):
+    cdef int n_xrows = X.shape[0]
+    cdef int n_xcols = X.shape[1]
+    cdef int n_yrows = Y.shape[0]
+    cdef int n_ycols = Y.shape[1]
+    cdef np.ndarray[np.int64_t, ndim=2] Z = \
+        np.zeros((n_xrows, n_ycols), dtype=np.int64)
+    for i in range(n_xrows):        
+        for k in range(n_ycols):
+            for j in range(n_xcols):
+                Z[i, k] += X[i, j] * Y[j, k]
+    return Z
+</code></pre>
+<pre><code class="language-python">%timeit -n100 cy_matrix_product(X, Y)
+</code></pre>
+<pre><code>226 µs ± 2.84 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+</code></pre>
+<h2 id="numpy"><a class="header" href="#numpy">Numpy</a></h2>
+<pre><code class="language-python">import numpy as np
+
+X = np.random.randint(-255, 255, shape)
+Y = np.random.randint(-255, 255, shape)
+</code></pre>
+<pre><code class="language-python">%timeit -n100 X.dot(Y)
+</code></pre>
+<pre><code>151 µs ± 4.01 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+</code></pre>
+<pre><code class="language-python">%timeit -n100 X@Y
+</code></pre>
+<pre><code>215 µs ± 3.8 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+</code></pre>
+<p>Профит. Оператор <code>@</code> — это то же самое матричное умножение, что и <code>X.dot(Y)</code>, только записанное короче; разница в замерах здесь на уровне шума.</p>
+<p>Обрати внимание на масштаб: наивная реализация на чистом Python считала произведение матриц 64×64 около 0.1 секунды, NumPy справляется за сотни микросекунд — ускорение в сотни раз. И это без единой строчки на C с твоей стороны: под капотом NumPy вызывает BLAS — вылизанную десятилетиями библиотеку линейной алгебры, которая использует векторные инструкции процессора и оптимально работает с кешем.</p>
+<p>Отсюда главный вывод раздела: <strong>прежде чем компилировать Python, попробуй не писать циклы вообще</strong>. Numba и Cython нужны там, где задача принципиально не векторизуется; во всех остальных случаях правильно применённый NumPy обгонит их без всякой возни со сборкой и типами.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../dev/python/optimization.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../perf/gil.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../dev/python/optimization.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../perf/gil.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,390 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Хеш-функции - Разработка и применение программного обеспечения в физических исследованиях</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../intro/intro.html">О книге</a></li><li class="chapter-item expanded affix "><a href="../intro/about-me.html">О себе</a></li><li class="chapter-item expanded affix "><li class="part-title">Ищем помощников</li><li class="chapter-item expanded "><a href="../ai/intro.html"><strong aria-hidden="true">1.</strong> ИИ для разработки</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ai/context.html"><strong aria-hidden="true">1.1.</strong> Контекст и скорость изменений</a></li><li class="chapter-item expanded "><a href="../ai/develop.html"><strong aria-hidden="true">1.2.</strong> ИИ и разработчик</a></li><li class="chapter-item expanded "><a href="../ai/basic.html"><strong aria-hidden="true">1.3.</strong> Технические основы</a></li><li class="chapter-item expanded "><a href="../ai/instruments.html"><strong aria-hidden="true">1.4.</strong> Инструментарий</a></li><li class="chapter-item expanded "><a href="../ai/copilot.html"><strong aria-hidden="true">1.5.</strong> GitHub Copilot</a></li><li class="chapter-item expanded "><a href="../ai/qa.html"><strong aria-hidden="true">1.6.</strong> Вопросы и ответы</a></li></ol></li><li class="chapter-item expanded "><a href="../dev/python/intro.html"><strong aria-hidden="true">2.</strong> Экспресс-курс Python</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../dev/python/basics.html"><strong aria-hidden="true">2.1.</strong> Основы Python</a></li><li class="chapter-item expanded "><a href="../dev/python/numpy.html"><strong aria-hidden="true">2.2.</strong> NumPy</a></li><li class="chapter-item expanded "><a href="../dev/python/scipy.html"><strong aria-hidden="true">2.3.</strong> SciPy</a></li><li class="chapter-item expanded "><a href="../dev/python/matplotlib.html"><strong aria-hidden="true">2.4.</strong> Matplotlib</a></li><li class="chapter-item expanded "><a href="../dev/python/holo.html"><strong aria-hidden="true">2.5.</strong> HoloViews</a></li><li class="chapter-item expanded "><a href="../dev/python/requirements.html"><strong aria-hidden="true">2.6.</strong> Требования к коду</a></li></ol></li><li class="chapter-item expanded "><a href="../dev/git.html"><strong aria-hidden="true">3.</strong> Git</a></li><li class="chapter-item expanded "><a href="../dev/docker.html"><strong aria-hidden="true">4.</strong> Docker</a></li><li class="chapter-item expanded affix "><li class="part-title">Загружаем Linux</li><li class="chapter-item expanded "><a href="../linux/intro.html"><strong aria-hidden="true">5.</strong> Основы Linux</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../linux/booting.html"><strong aria-hidden="true">5.1.</strong> Процесс загрузки</a></li><li class="chapter-item expanded "><a href="../linux/filesystems.html"><strong aria-hidden="true">5.2.</strong> Файловые системы</a></li><li class="chapter-item expanded "><a href="../linux/tools.html"><strong aria-hidden="true">5.3.</strong> Инструменты</a></li></ol></li><li class="chapter-item expanded "><a href="../linux/install-arch-linux.html"><strong aria-hidden="true">6.</strong> Установка Arch Linux</a></li><li class="chapter-item expanded "><a href="../linux/structure.html"><strong aria-hidden="true">7.</strong> Внутреннее устройство Linux</a></li><li class="chapter-item expanded affix "><li class="part-title">Разбираемся в алгоритмах</li><li class="chapter-item expanded "><a href="../cs/intro.html"><strong aria-hidden="true">8.</strong> Общие знания</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../cs/basic-algos.html"><strong aria-hidden="true">8.1.</strong> Введение в алгоритмы</a></li><li class="chapter-item expanded "><a href="../cs/basic-structures.html"><strong aria-hidden="true">8.2.</strong> Основные структуры данных</a></li><li class="chapter-item expanded "><a href="../cs/recurs-and-sorts.html"><strong aria-hidden="true">8.3.</strong> Рекурсия и сортировки</a></li><li class="chapter-item expanded "><a href="../cs/hash-funcs.html" class="active"><strong aria-hidden="true">8.4.</strong> Хеш-функции</a></li><li class="chapter-item expanded "><a href="../cs/trees.html"><strong aria-hidden="true">8.5.</strong> Деревья</a></li><li class="chapter-item expanded "><a href="../cs/graphs.html"><strong aria-hidden="true">8.6.</strong> Графы</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Считаем численно</li><li class="chapter-item expanded "><a href="../compute/intro.html"><strong aria-hidden="true">9.</strong> Введение в вычислительную физику</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../compute/basic-concepts.html"><strong aria-hidden="true">9.1.</strong> Сходимость, аппроксимация и устойчивость</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Погружаемся в Python</li><li class="chapter-item expanded "><a href="../dev/python/init.html"><strong aria-hidden="true">10.</strong> Начало</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../dev/python/objects.html"><strong aria-hidden="true">10.1.</strong> Объекты и память</a></li><li class="chapter-item expanded "><a href="../dev/python/collections.html"><strong aria-hidden="true">10.2.</strong> Коллекции</a></li><li class="chapter-item expanded "><a href="../dev/python/o-notation.html"><strong aria-hidden="true">10.3.</strong> Асимптотическая сложность</a></li></ol></li><li class="chapter-item expanded "><a href="../dev/python/functions.html"><strong aria-hidden="true">11.</strong> Функции</a></li><li class="chapter-item expanded "><a href="../dev/python/decorators.html"><strong aria-hidden="true">12.</strong> Декораторы и functools</a></li><li class="chapter-item expanded "><a href="../dev/python/classes.html"><strong aria-hidden="true">13.</strong> Классы</a></li><li class="chapter-item expanded "><a href="../dev/python/async.html"><strong aria-hidden="true">14.</strong> Итераторы, генераторы и корутины</a></li><li class="chapter-item expanded affix "><li class="part-title">Изучаем хорошие практики</li><li class="chapter-item expanded "><a href="../dev/life.html"><strong aria-hidden="true">15.</strong> Жизненный цикл ПО</a></li><li class="chapter-item expanded "><a href="../dev/app.html"><strong aria-hidden="true">16.</strong> От скрипта к приложению</a></li><li class="chapter-item expanded "><a href="../dev/web.html"><strong aria-hidden="true">17.</strong> Основы WEB</a></li><li class="chapter-item expanded "><a href="../dev/bd.html"><strong aria-hidden="true">18.</strong> Базы данных</a></li><li class="chapter-item expanded affix "><li class="part-title">Обрабатываем данные</li><li class="chapter-item expanded "><a href="../dev/python/numpy-and-pandas.html"><strong aria-hidden="true">19.</strong> NumPy и pandas</a></li><li class="chapter-item expanded "><a href="../dev/python/visualization/practice.html"><strong aria-hidden="true">20.</strong> Визуализация данных</a></li><li class="chapter-item expanded "><a href="../ds/intro.html"><strong aria-hidden="true">21.</strong> Машинное обучение</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ds/basic.html"><strong aria-hidden="true">21.1.</strong> Основные понятия</a></li><li class="chapter-item expanded "><a href="../ds/ml.html"><strong aria-hidden="true">21.2.</strong> Классические алгоритмы</a></li><li class="chapter-item expanded "><a href="../ds/nn.html"><strong aria-hidden="true">21.3.</strong> Нейронные сети</a></li><li class="chapter-item expanded "><a href="../ds/tools.html"><strong aria-hidden="true">21.4.</strong> Инструменты: scikit-learn</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Ускоряем код</li><li class="chapter-item expanded "><a href="../perf/intro.html"><strong aria-hidden="true">22.</strong> С чего начинать оптимизацию</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../dev/python/optimization.html"><strong aria-hidden="true">22.1.</strong> Почему Python не очень быстрый</a></li><li class="chapter-item expanded "><a href="../perf/perf.html"><strong aria-hidden="true">22.2.</strong> Скорость выполнения программ</a></li><li class="chapter-item expanded "><a href="../perf/gil.html"><strong aria-hidden="true">22.3.</strong> Многопоточность и GIL</a></li><li class="chapter-item expanded "><a href="../perf/async.html"><strong aria-hidden="true">22.4.</strong> Асинхронность</a></li><li class="chapter-item expanded "><a href="../perf/cuda.html"><strong aria-hidden="true">22.5.</strong> CUDA и вычисления на GPU</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Учимся у других</li><li class="chapter-item expanded "><a href="../examples/intro.html"><strong aria-hidden="true">23.</strong> Коды и скрипты</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../examples/kenv.html"><strong aria-hidden="true">23.1.</strong> Уравнение огибающей Капчинского-Владимирского для пучка заряженных частиц</a></li><li class="chapter-item expanded "><a href="../examples/envelope-optimize.html"><strong aria-hidden="true">23.2.</strong> Оптимизация огибающей пучка заряженных частиц с помощью генетического алгоритма</a></li><li class="chapter-item expanded "><a href="../examples/redpic.html"><strong aria-hidden="true">23.3.</strong> Релятивистская разностная схема для расчёта динамики частиц</a></li><li class="chapter-item expanded "><a href="../examples/orbit-correction.html"><strong aria-hidden="true">23.4.</strong> Коррекция равновесной орбиты с применением матрицы отклика и нейронных сетей</a></li><li class="chapter-item expanded "><a href="../examples/cadquery/layout.html"><strong aria-hidden="true">23.5.</strong> Схема ускорителя заряженных частиц в CadQuery</a></li><li class="chapter-item expanded "><a href="../examples/async-api.html"><strong aria-hidden="true">23.6.</strong> Асинхронное API для кинотеатра</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Работаем самостоятельно</li><li class="chapter-item expanded "><a href="../practicum/review-code-task.html"><strong aria-hidden="true">24.</strong> Ищем ошибки в чужом коде</a></li><li class="chapter-item expanded "><a href="../practicum/markov-chain-task.html"><strong aria-hidden="true">25.</strong> Делаем свою LLM</a></li><li class="chapter-item expanded "><a href="../practicum/booting-linux-task.html"><strong aria-hidden="true">26.</strong> Установка Linux</a></li><li class="chapter-item expanded "><a href="../practicum/linux-tools-task.html"><strong aria-hidden="true">27.</strong> Набор упражнений для работы в Linux</a></li><li class="chapter-item expanded "><a href="../practicum/linux-structure-task.html"><strong aria-hidden="true">28.</strong> Маленькая задачка c Linux</a></li><li class="chapter-item expanded "><a href="../practicum/python-algo-task.html"><strong aria-hidden="true">29.</strong> Пишем эффективный код</a></li><li class="chapter-item expanded "><a href="../practicum/kitty-startup-task.html"><strong aria-hidden="true">30.</strong> Деплой стартапа</a></li><li class="chapter-item expanded "><a href="../practicum/final-project-requirements.html"><strong aria-hidden="true">31.</strong> Итоговый проект</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded affix "><a href="../resume/intro.html">Заключение</a></li><li class="chapter-item expanded affix "><a href="../resume/literature.html">Литература и статьи</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Разработка и применение программного обеспечения в физических исследованиях</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/phys-dev/soft-dev-book/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="Хеш-функции"><a class="header" href="#Хеш-функции">Хеш-функции</a></h1>
+<p>Массив хорош тем, что даёт мгновенный доступ по номеру. Но что делать, если искать нужно не по номеру, а по имени — по названию города, по идентификатору события в детекторе, по имени файла?</p>
+<p>Перебирать всё подряд слишком медленно. Ответ, который придумали для этой задачи, элегантен: научиться <strong>вычислять</strong> номер ячейки прямо из ключа. Этим и занимаются хеш-функции, и на них построены словари и множества, которыми ты пользуешься каждый день.</p>
+<p>В этой главе мы разберём, как ключ превращается в номер корзины, почему разные ключи иногда попадают в одну и ту же корзину и что с этим делать, а заодно поймём, откуда берётся та самая сложность \(O(1)\) у словаря.</p>
+<h2 id="Что-такое-отображение"><a class="header" href="#Что-такое-отображение">Что такое отображение</a></h2>
+<p>О массивах мы говорили в главе про структуры данных, и сейчас они нам очень пригодятся. Напомним, что в интерфейсе массива есть две основные операции:</p>
+<ul>
+<li><code>get(index: int) -&gt; value</code> — получить значение <code>value</code> из ячейки с индексом <code>index</code>;</li>
+<li><code>set(index: int, value: ValueType)</code> — записать значение <code>value</code> в ячейку с индексом <code>index</code>.</li>
+</ul>
+<p>Каждая из этих операций выполняется за \(O(1)\). Это очень быстро! Однако у массивов есть одно серьёзное ограничение: хотя в ячейках массива можно расположить объекты любого типа, индексы этих ячеек могут быть исключительно целыми числами.</p>
+<p>Но в программе часто возникает необходимость получить объект не по его порядковому номеру, то есть индексу ячейки в массиве, а по какому-то другому признаку, например по названию. Или, как говорят программисты, получить значение (англ. value) по ключу (англ. key).</p>
+<p>Давай представим, что у нас есть множество городов и множество стран. Одному городу может быть сопоставлена одна страна — та, в которой этот город находится.</p>
+<pre><code class="language-text">   города                страны
+   ──────                ──────
+   Новосибирск  ──┐
+   Москва       ──┼───▶  Россия
+   Казань       ──┘
+   Минск        ─────▶   Беларусь
+   Астана       ─────▶   Казахстан
+</code></pre>
+<p>Нужно написать такую программу-справочник, которая по городу будет узнавать страну, где тот расположен. А ещё нам пригодится функция добавления новой пары «город»: «страна», если справочник будет пополняться.</p>
+<p>В этой задаче город является ключом, а страна — значением. Каждому городу сопоставлена ровно одна страна ни больше ни меньше. А вот на страну может указывать любое количество городов.</p>
+<p>Такое сопоставление, когда каждому объекту первого множества (множество городов) соответствует ровно один объект второго множества (множество стран), называется «отображением» (англ. map).</p>
+<p><em>На самом деле отображение — другое название математического термина «функция», или «функциональная зависимость». Чаще всего функции отображают числа (расположенные на оси X) в другие числа (расположенные на оси Y). Для каждого числа из области определения функции можно выписать другое число — значение функции в этой точке.</em></p>
+<p>Массивы — это тоже частный случай отображения: они умеют сопоставлять целому числу любое значение. Например, массив <code>["яблоко", "груша", "яблоко"]</code> сопоставляет числам <code>0</code> и <code>2</code> строку <code>яблоко</code>, а числу <code>1</code> — строку <code>груша</code>.</p>
+<p>Чтобы работать с отображениями, нам требуется похожая на массив структура данных, которая умеет получать и сохранять значения:</p>
+<ul>
+<li><code>get(key: KeyType) -&gt; value</code> — получить значение <code>value</code> по ключу <code>key</code>;</li>
+<li><code>set(key: KeyType, value: ValueType)</code> — записать значение <code>value</code> по ключу <code>key</code>.</li>
+</ul>
+<p>Но вместо целочисленного индекса она должна допускать ключ произвольного типа.</p>
+<p>Интерфейс, описывающий две этих операции, называют <code>Map</code>. А любую структуру, которая реализует этот интерфейс, называют <strong>«ассоциативным массивом»</strong> (англ. associative array).</p>
+<h3 id="Ассоциативные-массивы"><a class="header" href="#Ассоциативные-массивы">Ассоциативные массивы</a></h3>
+<p>В большинстве языков программирования ассоциативные массивы встроены в язык.</p>
+<p>Чаще всего их называют так же, как интерфейс — <code>Map</code>, «отображение», или используют производные от слова «хеш-таблица»: <code>Hash</code>, <code>HashMap</code>, <code>HashTable</code> и даже просто <code>Table</code>. Эти названия подчёркивают, каким именно способом был реализован интерфейс отображения. Встречаются и другие наименования. Например, в Python ассоциативные массивы называют <em>«словарями»</em> (англ. dictionary).</p>
+<p>Есть два популярных способа реализовать или, как говорят программисты, имплементировать отображение. Первый способ, хеш-таблицы, мы рассмотрим в этом спринте. Другой способ основан на деревьях поиска. В некоторых языках встречаются сразу обе реализации. Например, в Java отображения имплементированы двумя отдельными классами: <code>HashMap</code> и <code>TreeMap</code>. В языке C++ им соответствуют классы <code>std::unordered_map</code> и <code>std::map</code>.</p>
+<p>Ассоциативный массив — настолько полезная структура, что во многих языках есть встроенный синтаксис для её создания. К примеру, в Python отображение реализовано типом <code>dict</code>.</p>
+<h3 id="Наивная-реализация-ассоциативного-массива"><a class="header" href="#Наивная-реализация-ассоциативного-массива">Наивная реализация ассоциативного массива</a></h3>
+<p>В этом спринте мы будем изучать универсальные и часто используемые ассоциативные массивы, а именно хеш-таблицы. Узнаем, как они устроены и как ими пользуются разработчики.</p>
+<p>Но сначала давай рассмотрим простейший способ реализации ассоциативного массива. Заведём обыкновенный массив или список, в котором записаны пары <code>(key, value)</code>.</p>
+<p>Если нужно получить элемент по ключу, достаточно пройти по всем элементам списка, выбрать пару с подходящим значением ключа и вернуть значение, записанное в этой паре. Если значение нужно записать, ищем пару с указанным ключом. Если находим, то изменяем её. А если такая пара не нашлась, создаём её и добавляем в конец массива.</p>
+<pre><code>структура Map:
+    pairs = []
+
+    метод get(key):
+        for pair in pairs:
+            if pair.key == key:  # пара с указанным ключом найдена
+                return pair.value
+        return None
+
+    метод set(key, value):
+        for pair in pairs:
+            if pair.key == key: # пара с указанным ключом найдена
+                # обновить значение в найденной паре
+                pair.value = value
+                return
+        # пара с заданным ключом не найдена
+        добавить пару (key, value) в pairs
+</code></pre>
+<p>У нас получилась очень медленная реализация: на поиск элемента в таком массиве в среднем требуется \(O(n)\) операций. Дальше мы поговорим о том, как реализовать отображение более эффективным способом — при помощи хеш-таблиц.</p>
+<h2 id="Что-такое-хеш-таблица-и-хеш-функция"><a class="header" href="#Что-такое-хеш-таблица-и-хеш-функция">Что такое хеш-таблица и хеш-функция</a></h2>
+<p>Хеш-таблица (англ. hash table)  — это один из способов реализовать ассоциативный массив, при котором все данные записываются и хранятся в виде пар <code>(key, value)</code> в ячейках обыкновенного массива. Эти ячейки называются корзинами (англ. bucket). Как и в любом массиве, ячейки-корзины пронумерованы. Индекс, или номер корзины, в которую отправляются данные, зависит от ключа. Можно завести специальную функцию, которая по ключу будет вычислять номер корзины.</p>
+<h3 id="Как-работают-хеш-функция-и-хеш-таблица"><a class="header" href="#Как-работают-хеш-функция-и-хеш-таблица">Как работают хеш-функция и хеш-таблица</a></h3>
+<p>Но как сделать такую функцию? Если у нас всего три ключа, мы можем написать несколько условных операторов, чтобы определить номер корзины. Но если ключей много, функция разрастётся и будет медленно работать.</p>
+<p>Эта проблема решается с помощью специальной техники, которая называется «хеширование». Для этого нам понадобится хеш-функция.</p>
+<p>Хеш-функция (англ. hash function) — функция, которая обеспечивает преобразование входных данных в целое число. Для разных типов объектов применяются разные хеш-функции. Результат вычисления хеш-функции называется «хешем» или «хеш-суммой» (англ. hash, hash code или digest).</p>
+<p>Представим, что у каждой буквы алфавита есть свой индекс, равный её порядковому номеру. Хеш-функция может возвращать значение, равное индексу первой буквы в названии ключа. Тогда, например, для яблока функция вернёт 33, для груши — 4, а для сливы — 19.</p>
+<pre><code class="language-text">   ключ      первая буква   хеш
+   ────      ────────────   ───
+   яблоко         я          33
+   груша          г           4
+   слива          с          19
+</code></pre>
+<p>Так как хеш — целое число, его можно использовать как номер корзины. Например, информация про груши хранится в корзине 4. Это значит, что когда нам нужно получить или обновить информацию про число груш, достаточно заглянуть в эту ячейку. При этом нам не требуется запоминать номера ячеек, ведь при помощи хеш-функции их всегда легко вычислить.</p>
+<pre><code class="language-text">   корзины
+   ┌────┬───────────────────┐
+   │  4 │ груша: 120 кг     │  ← сюда попадает «груша»
+   ├────┼───────────────────┤
+   │ 19 │ слива: 45 кг      │
+   ├────┼───────────────────┤
+   │ 33 │ яблоко: 300 кг    │
+   └────┴───────────────────┘
+</code></pre>
+<p>Другой пример хеш-функции: мы можем возвращать сумму всех номеров букв, входящих в название фрукта. Тогда для «яблоко» значение функции будет 92, для «груша» — 70, а для «слива» — 46.</p>
+<p>Многие хеш-функции выдают огромные числа: миллионы, миллиарды, а иногда и ещё больше. Поэтому хеш редко используется напрямую как номер ячейки. Чаще всего хеш — промежуточная стадия вычисления. Сначала по ключу мы определяем хеш, а затем по хешу — номер корзины.</p>
+<pre><code class="language-text">   ключ  ──[хеш-функция]──▶  хеш  ──[% M]──▶  номер корзины  ──▶  значение
+  «груша»                     70                   4              120 кг
+</code></pre>
+<p><em>Отображение из ключа в значение разделилось на три независимых отображения. 1. Сначала хеш-функция отображает ключ в число, то есть в хеш. 2. Затем этот хеш преобразуется в индекс корзины. 3. И, наконец, из массива корзин мы находим нужную корзину по её индексу. В ней-то и хранится значение, которое возвращается пользователю.</em></p>
+<h3 id="Что-такое-коллизии"><a class="header" href="#Что-такое-коллизии">Что такое коллизии</a></h3>
+<p>Ситуация, когда хеш-функция для разных входных данных выдаёт одно и то же значение, называется «коллизией».</p>
+<p>Например, и у «арбуза», и у «абрикоса» значение хеша будет равно 1. Получается, что оба ключа указывают на одну и ту же корзину хеш-таблицы.</p>
+<p>Коллизии могут случаться у всех без исключения хеш-функций, поэтому в реализации хеш-таблицы обязательно должна быть заложена логика их разрешения.</p>
+<h2 id="Выбор-размера-хеш-таблицы-и-вычисление-номера-корзины"><a class="header" href="#Выбор-размера-хеш-таблицы-и-вычисление-номера-корзины">Выбор размера хеш-таблицы и вычисление номера корзины</a></h2>
+<h3 id="Вычисление-номера-корзины-методом-деления"><a class="header" href="#Вычисление-номера-корзины-методом-деления">Вычисление номера корзины методом деления</a></h3>
+<p>Самый простой способ получить номер корзины \(\mathrm{bucket}(k)\) для целого ключа \(k\) — взять остаток от деления ключа \(k\) на число корзин \(M\). Остаток от деления обозначается \(k \bmod M\) и произносится «\(k\) по модулю \(M\)». В языках программирования остаток от деления вычисляется оператором <code>%</code>.</p>
+<p>Любое целое число \(k\) может быть представлено в форме \(k = j\cdot M + r\), где все числа — целые, а \(r \in[0,M)\). Число \(r\) и называется остатком от деления.</p>
+<p>Такое определение нам удобно, поскольку остатки от деления целого числа на \(M\) могут принимать целые значения в диапазоне от \(0\) до \((M-1)\), и это ровно те же числа, которые могут служить номерами корзин в хеш-таблице длины \(M\).</p>
+<p><em>Будь внимателен! В разных языках программирования остаток от деления по-разному работает с отрицательными числами (<a href="https://en.wikipedia.org/wiki/Modulo_operation">см. подробности</a>). Не всегда это происходит так же, как математическая операция взятия по модулю. Например, выражение \(-13 \bmod 5\) в одних языках даст \(2\), в других \(-3\). Если не учесть эти нюансы, можно получить отрицательный номер корзины.</em></p>
+<h3 id="Выбор-числа-корзин"><a class="header" href="#Выбор-числа-корзин">Выбор числа корзин</a></h3>
+<p>В качестве \(M\) нужно брать простое число. То есть такое, которое делится без остатка только на себя и на 1.</p>
+<p>Дело в том, что ключи могут быть неравномерно распределены не только в двоичной и десятичной системах счисления. Есть много других закономерностей, которым ключи могут подчиняться.</p>
+<p>Чем больше делителей у \(M\), тем чаще такие закономерности будут приводить к коллизиям. И наоборот, простое значение \(M\) уменьшает число коллизий, ведь у простого числа всего два делителя.</p>
+<p><em>Для любого числа корзин можно придумать такую киллер-последовательность из ключей, из-за которой случится много коллизий. Но если делителей у M много, велик шанс наткнуться на такую последовательность случайно. А когда M — большое простое число, это маловероятно.</em></p>
+<h3 id="Вычисление-номера-корзины-методом-умножения"><a class="header" href="#Вычисление-номера-корзины-методом-умножения">Вычисление номера корзины методом умножения</a></h3>
+<p>Ещё один популярный способ, применяемый для вычисления номера ячейки — метод умножения. Для вычисления нам снова потребуется целое число. На этот раз мы его сразу обозначим буквой \(h\), чтобы подчеркнуть, что это хеш ключа.
+Пусть количество корзин равно \(M\). Также зададим константу \(\alpha \in (0,1)\).</p>
+<p>Тогда \(\mathrm{bucket}(h) = \left [ M \cdot \left { h \cdot \alpha \right } \right ]\) , где \(\left [ x \right ]\) — обозначает целую часть числа \(x\), \(\left { x \right }\) — его дробную часть.</p>
+<p>Алгоритм построения хеш-функции с использованием метода умножения:</p>
+<ul>
+<li>Домножаем хеш ключа \(h\) на выбранную константу \(\alpha\).</li>
+<li>Берём от результата дробную часть. Получается некоторое значение из диапазона \([0,1)\). Важно, что эти значения для разных ключей будут равномерно рассеяны.</li>
+<li>Домножаем полученное значение на размер таблицы \(M\). Числа получаются распределёнными в диапазоне \([0, M)\)</li>
+<li>Берём от результата целую часть. С равными вероятностями получаются числа от \(0\) до \((M−1)\) — это и будут номера корзин. Корзины будут заполняться равномерно, это поможет нам уменьшить число коллизий.</li>
+</ul>
+<p>Дональд Кнут провёл исследования и выяснил, что хеш-функция получается хорошей, если в качестве \(\alpha\) брать число, обратное золотому сечению.
+$$
+\displaystyle \alpha = \phi^{-1} = \left ( \frac{\sqrt 5 -1}{2} \right ) = 0.6180339887...
+$$</p>
+<h2 id="Свойства-хеш-функций"><a class="header" href="#Свойства-хеш-функций">Свойства хеш-функций</a></h2>
+<p>Не любая функция подходит на роль хеш-функции. Как мы выяснили, нам нужна такая функция, которая принимает на вход данные и выдаёт число, соответствующее индексу корзины. Чтобы сформулировать основные свойства хеш-функций, давай вспомним, зачем эти функции нужны.</p>
+<p>При работе с разными объектами нам важно быстро находить подходящее место для них в хеш-таблице. Благодаря быстрому вычислению хеш-функции ключа мы можем эффективно обновлять информацию об объектах: искать их, добавлять или удалять.</p>
+<p>Например, пусть нам нужно выяснить стоимость товара в магазине. Если функция потратит на вычисление позиции элемента в таблице больше времени, чем мы затратим, если будем искать его последовательным перебором всех товаров, то смысла в применении такой функции нет.</p>
+<p>Функция, преобразующая ключ в индекс корзины в хеш-таблице, должна обладать такими свойствами:</p>
+<ul>
+<li><strong>Детерминизм.</strong> Для одного и того же ключа функция всегда должна возвращать одинаковое значение. Если в функции будет браться случайное значение, то повторное её применение может выдать новый индекс ячейки, а значит, мы не сможем получить искомые данные из хеш-таблицы. Хорошая функция при повторном вызове выполняет те же действия, что и при первичном. Например, взятие числа по модулю другого числа — детерминированная функция, так как результат всегда будет одинаковым.</li>
+<li><strong>Эффективность.</strong> Хеш-функция должна вычисляться достаточно быстро. Сложность операции поиска в хеш-таблице складывается из сложности вычисления хеша и сложности поиска данных по хешу. Важно, чтобы оба процесса выполнялись эффективно.</li>
+<li><strong>Ограниченность.</strong> Результат вычисления функции должен принадлежать определённому диапазону, который соответствует размеру хеш-таблицы. Поэтому обычно сначала вычисляют хеш-функцию, которая возвращает произвольное число. А потом этот результат берут по модулю \(M\) (размер хеш-таблицы). Таким образом, любой ключ будет находиться в интервале от \(0\) до \(M-1\), а значит, мы никогда не обратимся к индексу, который не соответствует ни одной из корзин.</li>
+<li><strong>Равномерность.</strong> Данные должны быть распределены по хеш-таблице равномерно. То есть каждое выходное значение — равновероятно. Равновероятно — это значит, что если мы запустим функцию для каждого элемента из большого списка разных объектов, то в результате получим примерно равное число ответов функции для каждого значения от \(0\) до \(M-1\). В противном случае в какие-то ячейки мы будем пытаться записать значение чаще, чем в другие. И это замедлит обращение к хеш-таблице. Пример неравномерной функции — получение среднесуточной температуры по городу и дате, так как большую часть времени температура держится на одном и том же уровне, а аномальные морозы или жара случаются редко.</li>
+</ul>
+<p>Мы рассмотрели 4 свойства функции, которые важны при реализации хеш-таблиц. Но хеширование используется и в других задачах. Например, для хранения паролей, проверки неизменности файла в процессе передачи, шифрования сообщений при передаче по сети. Для этих задач выделяют ещё несколько свойств, которые могут быть полезны хеш-функциям.</p>
+<ul>
+<li><strong>Лавинность.</strong> При незначительном изменении входных данных выходное значение должно меняться значительно. При хешировании паролей нелавинная функция проще взламывается. Если злоумышленник знает, что \(h(aa) = 22\), а \(h(bb) = 33\), то он может предположить такой \(password\), что \(h(password) = 44\). Перебрав небольшое число вариантов, злоумышленник сможет подобрать пароль по его хешу.</li>
+<li><strong>Необратимость.</strong> Невозможно восстановить ключ по значению функции. Например, при регистрации на сайте пользователь вводит свой пароль, к которому применяется хеш-функция. Полученный хеш записывается в базу данных — в ячейку, соответствующую данному пользователю. Каждый раз, когда пользователь вводит пароль, к нему применяется та же функция. Так как алгоритм получения хеша от строки пароля в обоих случаях одинаковый, новый хеш совпадёт с записью в базе данных, если пользователь ввёл свой исходный пароль. Даже если злоумышленник получит доступ к данным в базе, у него не должно быть возможности восстановить пароль.</li>
+</ul>
+<h2 id="Построение-хеш-функций-для-строк"><a class="header" href="#Построение-хеш-функций-для-строк">Построение хеш-функций для строк</a></h2>
+<p>Теперь давай рассмотрим, как вычисляются хеш-функций для строк.
+Для этого есть специальный алгоритм, который называется «полиномиальным хешированием» (от слова «полином» — многочлен). Хеш строки \(s\) вычисляется по формуле:
+$$
+h(s)=\left(s_{1} q^{n-1}+s_{2} q^{n-2}+\cdots+s_{n-1} q+s_{n}\right) \bmod R
+$$
+Где \(s_i\) —  код \(i\)-го символа (например, ASCII-код), \(n\) — длина строки, а \(R\) и \(q\) — выбранные константы.</p>
+<p>Все вычисления производятся по модулю некоторого большого числа \(R\), поскольку для длинных строк сумма в скобках может оказаться слишком большой. В большинстве языков программирования при этом произойдёт переполнение типа целых чисел. В языках, где реализована так называемая «длинная арифметика», переполнения не случится, но с ростом значений складываемых и перемножаемых чисел вычисления будут становиться всё медленнее и медленнее.</p>
+<p>Выбор числа \(R\) зависит от типа переменной, в которой хранятся хеши. Например, для беззнаковых 4-байтовых целых чисел удобно выбрать \(R=2^{32}\). Для 8-байтовых чисел можно взять \(R=2^{64}\).</p>
+<p>Если строки длинные, выбор величины \(q\) не так важен — в сумму будут входить значения \(q\) в достаточно больших степенях. Но ради универсальности лучше и в этом случае взять большое число. Число \(q\) должно быть не только большим, но и простым.</p>
+<p>Помни, мы говорили, что индекс корзины вычисляется взятием остатка от деления значения хеша на число корзин?
+Чем меньше общих делителей у \(q\), \(M\) и \(R\), тем реже будут возникать коллизии. В качестве \(R\) мы уже договорились использовать \(2^{32}\), поэтому любое нечётное число не будет иметь с \(R\) общих делителей.</p>
+<p>Число \(M\) будет меняться в зависимости от размера хеш-таблицы. При вычислении хеш-функции этот размер ещё не известен. Из-за этого мы не можем гарантировать, что параметр вычисления хеш-функции \(q\) и число корзин \(M\) будут взаимно простыми. Но выбор большого простого числа в качестве \(q\) делает вероятность наличия нетривиальных общих делителей очень небольшой, ведь у простого числа нет делителей, кроме самого этого числа и единицы. Как мы говорили, \(M\) обычно тоже делают простым, поэтому общие делители могут получиться, только когда \(M=q\).</p>
+<h2 id="Поисковый-индекс"><a class="header" href="#Поисковый-индекс">Поисковый индекс</a></h2>
+<p>Напомним основной принцип хеш-таблиц: если ты знаешь, куда был положен элемент, то искать его нужно там же. Это правило часто применяют для быстрого поиска по данным.</p>
+<p>Представь, что ты пишешь программу для чтения, и одной из её функций должен быть поиск по тексту. Пользователь вводит слово или строку, а программа находит и показывает их позиции в тексте.</p>
+<p>Можно реализовать эту программу с помощью хеш-таблицы, в которой ключами будут строки, а значениями — массивы позиций, где эта строка встречается.</p>
+<p>Отображение, которое каждому объекту ставит в соответствие его расположение, называют «поисковым индексом».</p>
+<p>Если пользователь введёт любую подстроку, хеш-таблица должна найти её позиции. Значит, нужно предварительно добавить туда все возможные подстроки. А если подстроки в хеш-таблице не оказалось, получается, и в тексте её нет.</p>
+<p>Этот способ позволит нам сразу получить нужную позицию — это, конечно,  хорошо. Но он очень неэффективный. Ведь подстрок в тексте может быть столько, сколько существует способов выбрать две границы: \(N\cdot(N-1)/ 2\), где \(N\) — длина текста. Значит, в хеш-таблицу нужно добавить \(O(N^2)\) пар <code>(key, value)</code>. Поскольку ключами являются подстроки, каждая такая пара займёт в среднем \(O(N)\) памяти. Получается, что всего при такой реализации придётся потратить \(O(N^3)\) памяти.</p>
+<p>Поэтому с большими текстами такая реализация не сработает.</p>
+<p>...</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../cs/recurs-and-sorts.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../cs/trees.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../cs/recurs-and-sorts.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../cs/trees.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

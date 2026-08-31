@@ -1,0 +1,608 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Графы - Разработка и применение программного обеспечения в физических исследованиях</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../intro/intro.html">О книге</a></li><li class="chapter-item expanded affix "><a href="../intro/about-me.html">О себе</a></li><li class="chapter-item expanded affix "><li class="part-title">Ищем помощников</li><li class="chapter-item expanded "><a href="../ai/intro.html"><strong aria-hidden="true">1.</strong> ИИ для разработки</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ai/context.html"><strong aria-hidden="true">1.1.</strong> Контекст и скорость изменений</a></li><li class="chapter-item expanded "><a href="../ai/develop.html"><strong aria-hidden="true">1.2.</strong> ИИ и разработчик</a></li><li class="chapter-item expanded "><a href="../ai/basic.html"><strong aria-hidden="true">1.3.</strong> Технические основы</a></li><li class="chapter-item expanded "><a href="../ai/instruments.html"><strong aria-hidden="true">1.4.</strong> Инструментарий</a></li><li class="chapter-item expanded "><a href="../ai/copilot.html"><strong aria-hidden="true">1.5.</strong> GitHub Copilot</a></li><li class="chapter-item expanded "><a href="../ai/qa.html"><strong aria-hidden="true">1.6.</strong> Вопросы и ответы</a></li></ol></li><li class="chapter-item expanded "><a href="../dev/python/intro.html"><strong aria-hidden="true">2.</strong> Экспресс-курс Python</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../dev/python/basics.html"><strong aria-hidden="true">2.1.</strong> Основы Python</a></li><li class="chapter-item expanded "><a href="../dev/python/numpy.html"><strong aria-hidden="true">2.2.</strong> NumPy</a></li><li class="chapter-item expanded "><a href="../dev/python/scipy.html"><strong aria-hidden="true">2.3.</strong> SciPy</a></li><li class="chapter-item expanded "><a href="../dev/python/matplotlib.html"><strong aria-hidden="true">2.4.</strong> Matplotlib</a></li><li class="chapter-item expanded "><a href="../dev/python/holo.html"><strong aria-hidden="true">2.5.</strong> HoloViews</a></li><li class="chapter-item expanded "><a href="../dev/python/requirements.html"><strong aria-hidden="true">2.6.</strong> Требования к коду</a></li></ol></li><li class="chapter-item expanded "><a href="../dev/git.html"><strong aria-hidden="true">3.</strong> Git</a></li><li class="chapter-item expanded "><a href="../dev/docker.html"><strong aria-hidden="true">4.</strong> Docker</a></li><li class="chapter-item expanded affix "><li class="part-title">Загружаем Linux</li><li class="chapter-item expanded "><a href="../linux/intro.html"><strong aria-hidden="true">5.</strong> Основы Linux</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../linux/booting.html"><strong aria-hidden="true">5.1.</strong> Процесс загрузки</a></li><li class="chapter-item expanded "><a href="../linux/filesystems.html"><strong aria-hidden="true">5.2.</strong> Файловые системы</a></li><li class="chapter-item expanded "><a href="../linux/tools.html"><strong aria-hidden="true">5.3.</strong> Инструменты</a></li></ol></li><li class="chapter-item expanded "><a href="../linux/install-arch-linux.html"><strong aria-hidden="true">6.</strong> Установка Arch Linux</a></li><li class="chapter-item expanded "><a href="../linux/structure.html"><strong aria-hidden="true">7.</strong> Внутреннее устройство Linux</a></li><li class="chapter-item expanded affix "><li class="part-title">Разбираемся в алгоритмах</li><li class="chapter-item expanded "><a href="../cs/intro.html"><strong aria-hidden="true">8.</strong> Общие знания</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../cs/basic-algos.html"><strong aria-hidden="true">8.1.</strong> Введение в алгоритмы</a></li><li class="chapter-item expanded "><a href="../cs/basic-structures.html"><strong aria-hidden="true">8.2.</strong> Основные структуры данных</a></li><li class="chapter-item expanded "><a href="../cs/recurs-and-sorts.html"><strong aria-hidden="true">8.3.</strong> Рекурсия и сортировки</a></li><li class="chapter-item expanded "><a href="../cs/hash-funcs.html"><strong aria-hidden="true">8.4.</strong> Хеш-функции</a></li><li class="chapter-item expanded "><a href="../cs/trees.html"><strong aria-hidden="true">8.5.</strong> Деревья</a></li><li class="chapter-item expanded "><a href="../cs/graphs.html" class="active"><strong aria-hidden="true">8.6.</strong> Графы</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Считаем численно</li><li class="chapter-item expanded "><a href="../compute/intro.html"><strong aria-hidden="true">9.</strong> Введение в вычислительную физику</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../compute/basic-concepts.html"><strong aria-hidden="true">9.1.</strong> Сходимость, аппроксимация и устойчивость</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Погружаемся в Python</li><li class="chapter-item expanded "><a href="../dev/python/init.html"><strong aria-hidden="true">10.</strong> Начало</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../dev/python/objects.html"><strong aria-hidden="true">10.1.</strong> Объекты и память</a></li><li class="chapter-item expanded "><a href="../dev/python/collections.html"><strong aria-hidden="true">10.2.</strong> Коллекции</a></li><li class="chapter-item expanded "><a href="../dev/python/o-notation.html"><strong aria-hidden="true">10.3.</strong> Асимптотическая сложность</a></li></ol></li><li class="chapter-item expanded "><a href="../dev/python/functions.html"><strong aria-hidden="true">11.</strong> Функции</a></li><li class="chapter-item expanded "><a href="../dev/python/decorators.html"><strong aria-hidden="true">12.</strong> Декораторы и functools</a></li><li class="chapter-item expanded "><a href="../dev/python/classes.html"><strong aria-hidden="true">13.</strong> Классы</a></li><li class="chapter-item expanded "><a href="../dev/python/async.html"><strong aria-hidden="true">14.</strong> Итераторы, генераторы и корутины</a></li><li class="chapter-item expanded affix "><li class="part-title">Изучаем хорошие практики</li><li class="chapter-item expanded "><a href="../dev/life.html"><strong aria-hidden="true">15.</strong> Жизненный цикл ПО</a></li><li class="chapter-item expanded "><a href="../dev/app.html"><strong aria-hidden="true">16.</strong> От скрипта к приложению</a></li><li class="chapter-item expanded "><a href="../dev/web.html"><strong aria-hidden="true">17.</strong> Основы WEB</a></li><li class="chapter-item expanded "><a href="../dev/bd.html"><strong aria-hidden="true">18.</strong> Базы данных</a></li><li class="chapter-item expanded affix "><li class="part-title">Обрабатываем данные</li><li class="chapter-item expanded "><a href="../dev/python/numpy-and-pandas.html"><strong aria-hidden="true">19.</strong> NumPy и pandas</a></li><li class="chapter-item expanded "><a href="../dev/python/visualization/practice.html"><strong aria-hidden="true">20.</strong> Визуализация данных</a></li><li class="chapter-item expanded "><a href="../ds/intro.html"><strong aria-hidden="true">21.</strong> Машинное обучение</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ds/basic.html"><strong aria-hidden="true">21.1.</strong> Основные понятия</a></li><li class="chapter-item expanded "><a href="../ds/ml.html"><strong aria-hidden="true">21.2.</strong> Классические алгоритмы</a></li><li class="chapter-item expanded "><a href="../ds/nn.html"><strong aria-hidden="true">21.3.</strong> Нейронные сети</a></li><li class="chapter-item expanded "><a href="../ds/tools.html"><strong aria-hidden="true">21.4.</strong> Инструменты: scikit-learn</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Ускоряем код</li><li class="chapter-item expanded "><a href="../perf/intro.html"><strong aria-hidden="true">22.</strong> С чего начинать оптимизацию</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../dev/python/optimization.html"><strong aria-hidden="true">22.1.</strong> Почему Python не очень быстрый</a></li><li class="chapter-item expanded "><a href="../perf/perf.html"><strong aria-hidden="true">22.2.</strong> Скорость выполнения программ</a></li><li class="chapter-item expanded "><a href="../perf/gil.html"><strong aria-hidden="true">22.3.</strong> Многопоточность и GIL</a></li><li class="chapter-item expanded "><a href="../perf/async.html"><strong aria-hidden="true">22.4.</strong> Асинхронность</a></li><li class="chapter-item expanded "><a href="../perf/cuda.html"><strong aria-hidden="true">22.5.</strong> CUDA и вычисления на GPU</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Учимся у других</li><li class="chapter-item expanded "><a href="../examples/intro.html"><strong aria-hidden="true">23.</strong> Коды и скрипты</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../examples/kenv.html"><strong aria-hidden="true">23.1.</strong> Уравнение огибающей Капчинского-Владимирского для пучка заряженных частиц</a></li><li class="chapter-item expanded "><a href="../examples/envelope-optimize.html"><strong aria-hidden="true">23.2.</strong> Оптимизация огибающей пучка заряженных частиц с помощью генетического алгоритма</a></li><li class="chapter-item expanded "><a href="../examples/redpic.html"><strong aria-hidden="true">23.3.</strong> Релятивистская разностная схема для расчёта динамики частиц</a></li><li class="chapter-item expanded "><a href="../examples/orbit-correction.html"><strong aria-hidden="true">23.4.</strong> Коррекция равновесной орбиты с применением матрицы отклика и нейронных сетей</a></li><li class="chapter-item expanded "><a href="../examples/cadquery/layout.html"><strong aria-hidden="true">23.5.</strong> Схема ускорителя заряженных частиц в CadQuery</a></li><li class="chapter-item expanded "><a href="../examples/async-api.html"><strong aria-hidden="true">23.6.</strong> Асинхронное API для кинотеатра</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Работаем самостоятельно</li><li class="chapter-item expanded "><a href="../practicum/review-code-task.html"><strong aria-hidden="true">24.</strong> Ищем ошибки в чужом коде</a></li><li class="chapter-item expanded "><a href="../practicum/markov-chain-task.html"><strong aria-hidden="true">25.</strong> Делаем свою LLM</a></li><li class="chapter-item expanded "><a href="../practicum/booting-linux-task.html"><strong aria-hidden="true">26.</strong> Установка Linux</a></li><li class="chapter-item expanded "><a href="../practicum/linux-tools-task.html"><strong aria-hidden="true">27.</strong> Набор упражнений для работы в Linux</a></li><li class="chapter-item expanded "><a href="../practicum/linux-structure-task.html"><strong aria-hidden="true">28.</strong> Маленькая задачка c Linux</a></li><li class="chapter-item expanded "><a href="../practicum/python-algo-task.html"><strong aria-hidden="true">29.</strong> Пишем эффективный код</a></li><li class="chapter-item expanded "><a href="../practicum/kitty-startup-task.html"><strong aria-hidden="true">30.</strong> Деплой стартапа</a></li><li class="chapter-item expanded "><a href="../practicum/final-project-requirements.html"><strong aria-hidden="true">31.</strong> Итоговый проект</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded affix "><a href="../resume/intro.html">Заключение</a></li><li class="chapter-item expanded affix "><a href="../resume/literature.html">Литература и статьи</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Разработка и применение программного обеспечения в физических исследованиях</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/phys-dev/soft-dev-book/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="Графы"><a class="header" href="#Графы">Графы</a></h1>
+<p>Дерево из предыдущей главы — очень удобная, но всё-таки частная структура: в нём у каждого узла ровно один родитель, а между любыми двумя узлами существует единственный путь. Реальные связи так устроены далеко не всегда.</p>
+<p>Города соединены дорогами, причём из каждого можно уехать несколькими маршрутами. Атомы в молекуле связаны в кольца. Узлы электрической цепи соединяются проводниками, образуя контуры. Компьютеры в сети связаны друг с другом множеством путей. Всё это описывается самой общей структурой — графом.</p>
+<p>Граф — это, пожалуй, главная структура данных в прикладной информатике: к задачам на графах сводится огромное количество практических задач, которые на первый взгляд не имеют к ним отношения.</p>
+<h2 id="Определения"><a class="header" href="#Определения">Определения</a></h2>
+<p><strong>Граф</strong> \( G = (V, E) \) — множество вершин \( V \) (англ. vertices) и множество рёбер \( E \) (англ. edges), каждое из которых соединяет пару вершин.</p>
+<p>Основные разновидности:</p>
+<ul>
+<li><strong>Неориентированный граф</strong> — рёбра не имеют направления: если из \( u \) можно попасть в \( v \), то и обратно тоже (дороги с двусторонним движением).</li>
+<li><strong>Ориентированный граф</strong> (орграф, англ. directed graph) — рёбра имеют направление, ребро \( (u, v) \) не означает существования ребра \( (v, u) \) (односторонние улицы, ссылки между веб-страницами, зависимости между задачами).</li>
+<li><strong>Взвешенный граф</strong> — каждому ребру приписано число: длина дороги, сопротивление проводника, пропускная способность канала, энергия связи.</li>
+</ul>
+<p>Ещё немного терминологии:</p>
+<ul>
+<li><strong>смежные вершины</strong> — соединённые ребром;</li>
+<li><strong>степень вершины</strong> — число инцидентных ей рёбер (в орграфе различают входящую и исходящую степени);</li>
+<li><strong>путь</strong> — последовательность вершин, в которой соседние соединены рёбрами;</li>
+<li><strong>цикл</strong> — путь, начинающийся и заканчивающийся в одной вершине;</li>
+<li><strong>связный граф</strong> — граф, в котором из любой вершины достижима любая другая;</li>
+<li><strong>компонента связности</strong> — максимальный связный кусок графа;</li>
+<li><strong>петля</strong> — ребро из вершины в саму себя; <strong>кратные рёбра</strong> — несколько рёбер между одной парой вершин.</li>
+</ul>
+<p>Отсюда видно место дерева в общей картине: <strong>дерево — связный неориентированный граф без циклов</strong>, у которого рёбер ровно на одно меньше, чем вершин. А граф без циклов, но не обязательно связный, называется лесом.</p>
+<h2 id="Как-хранить-граф"><a class="header" href="#Как-хранить-граф">Как хранить граф</a></h2>
+<p>От способа хранения зависит и объём памяти, и сложность операций. Есть два основных варианта.</p>
+<h3 id="Матрица-смежности"><a class="header" href="#Матрица-смежности">Матрица смежности</a></h3>
+<p>Квадратная таблица \( n \times n \), где на пересечении \( i \)-й строки и \( j \)-го столбца стоит единица (или вес ребра), если ребро из \( i \) в \( j \) есть, и ноль в противном случае. У неориентированного графа матрица симметрична.</p>
+<pre><code class="language-python">n = 5
+matrix = [[0] * n for _ in range(n)]  # граф без рёбер
+
+def add_edge_matrix(matrix, u, v, directed=False):
+    """Добавляет ребро в матрицу смежности (вершины нумеруются с нуля)."""
+    matrix[u][v] = 1
+    if not directed:
+        matrix[v][u] = 1
+</code></pre>
+<p>Проверка «есть ли ребро между \( u \) и \( v \)» выполняется мгновенно, за \( O(1) \). Но памяти нужно \( O(n^2) \) независимо от числа рёбер, а перебор всех соседей вершины требует \( O(n) \) — придётся просмотреть всю строку, даже если сосед всего один.</p>
+<h3 id="Список-смежности"><a class="header" href="#Список-смежности">Список смежности</a></h3>
+<p>Для каждой вершины хранится список её соседей.</p>
+<pre><code class="language-python">from collections import defaultdict
+
+graph = defaultdict(list)
+
+def add_edge_list(graph, u, v, directed=False):
+    """Добавляет ребро в список смежности."""
+    graph[u].append(v)
+    if not directed:
+        graph[v].append(u)
+</code></pre>
+<p>Памяти требуется \( O(n + m) \), где \( m \) — число рёбер, а перебор соседей вершины занимает время, пропорциональное их количеству. Плата — проверка наличия конкретного ребра за \( O(\deg v) \) вместо \( O(1) \).</p>
+<p><strong>Что выбирать?</strong> Практическое правило простое: если граф <strong>плотный</strong> (число рёбер сравнимо с \( n^2 \)) — матрица; если <strong>разреженный</strong> (рёбер порядка \( n \)) — список. Реальные графы почти всегда разреженные: у человека в социальной сети сотни друзей, а не миллионы; у атома в молекуле — единицы связей. Поэтому по умолчанию бери список смежности.</p>
+<div class="table-wrapper"><table><thead><tr><th>Операция</th><th>Матрица смежности</th><th>Список смежности</th></tr></thead><tbody>
+<tr><td>Память</td><td>\( O(n^2) \)</td><td>\( O(n + m) \)</td></tr>
+<tr><td>Проверить ребро \( (u,v) \)</td><td>\( O(1) \)</td><td>\( O(\deg u) \)</td></tr>
+<tr><td>Перебрать соседей \( u \)</td><td>\( O(n) \)</td><td>\( O(\deg u) \)</td></tr>
+<tr><td>Добавить ребро</td><td>\( O(1) \)</td><td>\( O(1) \)</td></tr>
+</tbody></table>
+</div>
+<p>Есть и третий способ — <strong>список рёбер</strong>: просто перечень пар вершин. Он неудобен для обходов, зато идеален для алгоритмов, которые перебирают рёбра целиком (например, алгоритм Краскала), и именно в таком виде граф обычно приходит на вход.</p>
+<h2 id="Обходы-графа"><a class="header" href="#Обходы-графа">Обходы графа</a></h2>
+<p>Обход — систематическое посещение всех вершин, достижимых из стартовой. У графа, в отличие от дерева, есть циклы, поэтому появляется обязательный элемент: <strong>множество посещённых вершин</strong>. Без него обход зациклится.</p>
+<h3 id="Поиск-в-глубину-dfs"><a class="header" href="#Поиск-в-глубину-dfs">Поиск в глубину (DFS)</a></h3>
+<p>Идея: из текущей вершины уходим как можно дальше вглубь, а когда идти больше некуда — возвращаемся и пробуем другое направление. Это тот же самый обход в глубину, что и у деревьев, только с проверкой на повторное посещение.</p>
+<pre><code class="language-python">def dfs_recursive(graph, vertex, visited=None):
+    """Рекурсивный обход в глубину. Возвращает вершины в порядке обхода."""
+    if visited is None:
+        visited = set()
+    visited.add(vertex)
+    order = [vertex]
+    for neighbour in sorted(graph[vertex]):
+        if neighbour not in visited:
+            order.extend(dfs_recursive(graph, neighbour, visited))
+    return order
+</code></pre>
+<p>Рекурсия хороша для чтения, но опасна на практике: глубина рекурсии в Python ограничена (по умолчанию около 1000), и на графе из ста тысяч вершин программа упадёт с <code>RecursionError</code>. Поэтому в боевых решениях DFS пишут итеративно, заменяя стек вызовов явным стеком:</p>
+<pre><code class="language-python">def dfs_iterative(graph, start):
+    """Итеративный обход в глубину через явный стек."""
+    visited = set()
+    order = []
+    stack = [start]
+    while stack:
+        vertex = stack.pop()
+        if vertex in visited:
+            continue
+        visited.add(vertex)
+        order.append(vertex)
+        # соседей кладём в обратном порядке, чтобы снимать по возрастанию
+        for neighbour in sorted(graph[vertex], reverse=True):
+            if neighbour not in visited:
+                stack.append(neighbour)
+    return order
+</code></pre>
+<p>Обрати внимание на важную деталь: проверка <code>if vertex in visited</code> стоит <strong>после</strong> снятия со стека, а не только перед добавлением. Одна и та же вершина может попасть в стек несколько раз через разных соседей, поэтому её нужно отсеивать в момент обработки.</p>
+<h3 id="Поиск-в-ширину-bfs"><a class="header" href="#Поиск-в-ширину-bfs">Поиск в ширину (BFS)</a></h3>
+<p>Идея: сначала посещаем всех соседей стартовой вершины, потом соседей соседей и так далее — расходимся кругами, как волна по воде. Отличие от DFS в одну строчку: вместо стека используется очередь.</p>
+<pre><code class="language-python">from collections import deque
+
+def bfs(graph, start):
+    """Обход в ширину. Возвращает вершины в порядке обхода."""
+    visited = {start}
+    order = []
+    queue = deque([start])
+    while queue:
+        vertex = queue.popleft()          # берём из начала очереди
+        order.append(vertex)
+        for neighbour in sorted(graph[vertex]):
+            if neighbour not in visited:
+                visited.add(neighbour)    # помечаем сразу при добавлении
+                queue.append(neighbour)
+    return order
+</code></pre>
+<p>Заметь: в BFS вершина помечается посещённой <strong>в момент добавления в очередь</strong>, иначе она успеет попасть туда несколько раз.</p>
+<p>Оба обхода работают за \( O(n + m) \) — каждая вершина и каждое ребро обрабатываются один раз. Выбор между ними определяется задачей:</p>
+<ul>
+<li><strong>BFS</strong> посещает вершины в порядке возрастания расстояния от старта, поэтому именно он находит <strong>кратчайшие пути в невзвешенном графе</strong>;</li>
+<li><strong>DFS</strong> естественно ложится на рекурсию и используется для поиска циклов, топологической сортировки, компонент связности и разбора структуры графа.</li>
+</ul>
+<h2 id="Кратчайшие-пути"><a class="header" href="#Кратчайшие-пути">Кратчайшие пути</a></h2>
+<p>В невзвешенном графе кратчайший путь ищет BFS: достаточно попутно запоминать расстояние и предка каждой вершины.</p>
+<pre><code class="language-python">def bfs_shortest_paths(graph, start):
+    """Расстояния (в рёбрах) и предки на кратчайших путях от start."""
+    dist = {start: 0}
+    parent = {start: None}
+    queue = deque([start])
+    while queue:
+        vertex = queue.popleft()
+        for neighbour in graph[vertex]:
+            if neighbour not in dist:
+                dist[neighbour] = dist[vertex] + 1
+                parent[neighbour] = vertex
+                queue.append(neighbour)
+    return dist, parent
+</code></pre>
+<p>Восстановить сам путь потом легко: идти от конечной вершины по ссылкам <code>parent</code> до старта и развернуть результат.</p>
+<p>Если рёбра <strong>взвешенные</strong>, BFS уже не годится: путь из трёх коротких рёбер может оказаться короче пути из одного длинного. Здесь работает <strong>алгоритм Дейкстры</strong>. Его идея — жадная: поддерживаем текущие оценки расстояний и на каждом шаге берём ещё не обработанную вершину с наименьшей оценкой (она уже не улучшится), после чего пробуем улучшить оценки её соседей — эта операция называется <em>релаксацией</em>.</p>
+<pre><code class="language-python">import heapq
+
+def dijkstra(graph, start):
+    """Кратчайшие расстояния во взвешенном графе с неотрицательными весами.
+
+    graph — список смежности вида {вершина: [(сосед, вес), ...]}.
+    """
+    dist = {start: 0}
+    heap = [(0, start)]           # приоритетная очередь (расстояние, вершина)
+    while heap:
+        d, vertex = heapq.heappop(heap)
+        if d &gt; dist.get(vertex, float("inf")):
+            continue              # устаревшая запись, вершина уже обработана
+        for neighbour, weight in graph[vertex]:
+            new_dist = d + weight
+            if new_dist &lt; dist.get(neighbour, float("inf")):
+                dist[neighbour] = new_dist
+                heapq.heappush(heap, (new_dist, neighbour))
+    return dist
+</code></pre>
+<p>Куча (см. главу про <a href="./trees.html">деревья</a>) даёт сложность \( O(m \log n) \). Важное ограничение: веса должны быть неотрицательными — на рёбрах с отрицательным весом жадность ломается, и нужен алгоритм Беллмана — Форда.</p>
+<h2 id="Топологическая-сортировка"><a class="header" href="#Топологическая-сортировка">Топологическая сортировка</a></h2>
+<p>Пусть ориентированный граф описывает зависимости: ребро \( u \to v \) означает «\( u \) должно быть выполнено раньше \( v \)». Компиляция модулей, порядок расчётных этапов в пайплайне обработки данных, установка пакетов — везде одна и та же задача: выстроить вершины в линию так, чтобы все рёбра шли слева направо. Это и есть топологическая сортировка, и возможна она тогда и только тогда, когда в графе нет циклов (иначе зависимости противоречивы).</p>
+<p>Простейший способ — DFS: вершина добавляется в результат после того, как обработаны все её потомки, а в конце список разворачивается.</p>
+<pre><code class="language-python">def topological_sort(graph, vertices):
+    """Топологическая сортировка ориентированного ациклического графа."""
+    visited = set()
+    order = []
+
+    def visit(vertex):
+        visited.add(vertex)
+        for neighbour in graph[vertex]:
+            if neighbour not in visited:
+                visit(neighbour)
+        order.append(vertex)      # добавляем на выходе из вершины
+
+    for vertex in vertices:
+        if vertex not in visited:
+            visit(vertex)
+    return order[::-1]            # разворачиваем
+</code></pre>
+<h2 id="Минимальное-остовное-дерево"><a class="header" href="#Минимальное-остовное-дерево">Минимальное остовное дерево</a></h2>
+<p><strong>Остовное дерево</strong> (англ. spanning tree) связного графа — подмножество рёбер, которое связывает все вершины и не содержит циклов, то есть дерево на всех \( n \) вершинах из \( n-1 \) ребра. Минимальное остовное дерево (MST) — то, у которого суммарный вес рёбер наименьший. Классическая постановка: соединить все дома оптоволокном, потратив минимум кабеля.</p>
+<p>Два классических алгоритма, оба жадные:</p>
+<ul>
+<li><strong>Алгоритм Прима</strong> растит дерево из одной вершины: на каждом шаге добавляется самое лёгкое ребро, ведущее из уже построенной части наружу. Удобно реализуется через кучу, сложность \( O(m \log n) \). По духу это Дейкстра, только вместо расстояния от старта минимизируется вес одного ребра.</li>
+<li><strong>Алгоритм Краскала</strong> идёт от рёбер: сортирует их все по весу и добавляет по очереди те, что не образуют цикл. Проверка «не образует ли цикл» делается структурой «система непересекающихся множеств» (DSU). Сложность \( O(m \log m) \).</li>
+</ul>
+<p>Полезное наблюдение: если в алгоритме Прима заменить «минимальное ребро» на «максимальное», получится <strong>максимальное</strong> остовное дерево — именно эта задача разбирается в конце главы.</p>
+<h2 id="Графы-в-физических-задачах"><a class="header" href="#Графы-в-физических-задачах">Графы в физических задачах</a></h2>
+<p>Графы в физике встречаются чаще, чем кажется на первый взгляд.</p>
+<ul>
+<li><strong>Электрические цепи.</strong> Схема — это буквально граф: узлы и ветви. Законы Кирхгофа записываются через матрицу инцидентности графа, а число независимых контурных уравнений равно \( m - n + 1 \) — количеству рёбер, не вошедших в остовное дерево. Остовное дерево цепи — не абстракция, а рабочий инструмент расчёта.</li>
+<li><strong>Модель Изинга и перколяция.</strong> Спины на решётке — вершины, взаимодействия соседей — рёбра. Алгоритмы кластерного обновления (Свендсена — Ванга, Вольфа) — поиск компонент связности; задача о перколяции — вопрос о существовании компоненты, соединяющей края решётки.</li>
+<li><strong>Молекулы и структуры.</strong> Атомы и химические связи образуют граф; поиск колец в молекуле — поиск циклов. На этом же представлении работают графовые нейронные сети, предсказывающие свойства веществ.</li>
+<li><strong>Марковские цепи и графы состояний.</strong> Состояния системы — вершины, переходы с вероятностями — взвешенные рёбра орграфа.</li>
+<li><strong>Трассировка и планирование.</strong> Разводка кабелей на установке, маршрут манипулятора, планирование эксперимента — задачи о кратчайшем пути или остовном дереве.</li>
+</ul>
+<p>Для практических расчётов не обязательно писать алгоритмы руками: есть библиотека <strong>NetworkX</strong>.</p>
+<pre><code class="language-python">import networkx as nx
+
+# граф-решётка 4 x 4 — например, узлы двумерной модели Изинга
+lattice = nx.grid_2d_graph(4, 4)
+
+print(nx.number_connected_components(lattice))       # компоненты связности
+print(nx.shortest_path(lattice, (0, 0), (3, 3)))     # кратчайший путь
+mst = nx.minimum_spanning_tree(lattice)              # остовное дерево
+</code></pre>
+<p>Впрочем, разбираться в том, как эти алгоритмы устроены внутри, всё равно необходимо: библиотека не подскажет, что твоя задача сводится к поиску компонент связности.</p>
+<h2 id="Разбор-задач"><a class="header" href="#Разбор-задач">Разбор задач</a></h2>
+<p>Разберём несколько базовых задач на графы. Как и в предыдущих главах, сначала попробуй решить сам — задачи собраны в <a href="https://contest.yandex.ru/contest/25069/problems/">тренажёре</a>.</p>
+<p>Во всех задачах вершины нумеруются с единицы, а граф подаётся на вход списком рёбер: в первой строке числа \( n \) и \( m \) (количество вершин и рёбер), далее \( m \) строк с парами вершин.</p>
+<h3 id="Задача-1-Построить-список-смежности"><a class="header" href="#Задача-1-Построить-список-смежности">Задача 1. Построить список смежности</a></h3>
+<p><strong>Условие.</strong> Дан ориентированный граф списком рёбер. Построй его список смежности: для каждой вершины \( i \) выведи число исходящих рёбер, а затем номера вершин, в которые они ведут, в порядке возрастания.</p>
+<p><strong>Идея решения.</strong> Прямая реализация определения. Заводим список списков и проходим по рёбрам, добавляя конец каждого ребра в список его начала. Сортировку делаем один раз в конце.</p>
+<pre><code class="language-python">n, m = map(int, input().split())
+graph = [[] for _ in range(n + 1)]        # вершины нумеруются с единицы
+
+for _ in range(m):
+    u, v = map(int, input().split())
+    graph[u].append(v)                    # граф ориентированный: только u -&gt; v
+
+for vertex in range(1, n + 1):
+    neighbours = sorted(graph[vertex])
+    print(len(neighbours), *neighbours)
+</code></pre>
+<p><strong>Сложность.</strong> По времени — \( O(n + m \log n) \): чтение рёбер стоит \( O(m) \), а сортировка всех списков смежности в сумме \( \sum_i d_i \log d_i \le m \log n \). По памяти — \( O(n + m) \).</p>
+<h3 id="Задача-2-Перевести-список-рёбер-в-матрицу-смежности"><a class="header" href="#Задача-2-Перевести-список-рёбер-в-матрицу-смежности">Задача 2. Перевести список рёбер в матрицу смежности</a></h3>
+<p><strong>Условие.</strong> Дан ориентированный граф списком рёбер. Выведи его матрицу смежности \( n \times n \): на пересечении \( i \)-й строки и \( j \)-го столбца стоит единица, если есть ребро из \( i \) в \( j \).</p>
+<p><strong>Идея решения.</strong> Заводим нулевую матрицу и расставляем единицы. Единственная тонкость — не создать матрицу через <code>[[0] * n] * n</code>: так получится \( n \) ссылок на <strong>один и тот же</strong> список, и запись в одну строку изменит все сразу. Это классическая ловушка, к устройству которой мы ещё вернёмся в главе про объекты и память.</p>
+<pre><code class="language-python">n, m = map(int, input().split())
+matrix = [[0] * n for _ in range(n)]      # именно так, а не [[0] * n] * n
+
+for _ in range(m):
+    u, v = map(int, input().split())
+    matrix[u - 1][v - 1] = 1              # переходим к нумерации с нуля
+
+for row in matrix:
+    print(*row)
+</code></pre>
+<p><strong>Сложность.</strong> По времени — \( O(n^2 + m) \) (вывод матрицы уже стоит \( O(n^2) \)), по памяти — \( O(n^2) \).</p>
+<h3 id="Задача-3-Обход-в-глубину"><a class="header" href="#Задача-3-Обход-в-глубину">Задача 3. Обход в глубину</a></h3>
+<p><strong>Условие.</strong> Задан неориентированный граф. Обойди с помощью DFS все вершины, достижимые из заданной вершины \( s \), и выведи их в порядке обхода. Соседи каждой вершины рассматриваются в порядке возрастания номеров.</p>
+<p><strong>Идея решения.</strong> Итеративный DFS со стеком (граф может содержать до \( 10^5 \) вершин, рекурсия не выдержит). Чтобы соседи обрабатывались по возрастанию, кладём их в стек в обратном порядке — снимается всегда последний положенный.</p>
+<pre><code class="language-python">n, m = map(int, input().split())
+graph = [[] for _ in range(n + 1)]
+
+for _ in range(m):
+    u, v = map(int, input().split())
+    graph[u].append(v)
+    graph[v].append(u)                    # граф неориентированный
+
+start = int(input())
+for neighbours in graph:
+    neighbours.sort(reverse=True)         # сортируем один раз заранее
+
+visited = [False] * (n + 1)
+stack, order = [start], []
+
+while stack:
+    vertex = stack.pop()
+    if visited[vertex]:                   # вершина могла попасть в стек дважды
+        continue
+    visited[vertex] = True
+    order.append(vertex)
+    for neighbour in graph[vertex]:
+        if not visited[neighbour]:
+            stack.append(neighbour)
+
+print(*order)
+</code></pre>
+<p><strong>Сложность.</strong> По времени — \( O(n + m) \) плюс сортировка списков смежности, по памяти — \( O(n + m) \).</p>
+<h3 id="Задача-4-Обход-в-ширину"><a class="header" href="#Задача-4-Обход-в-ширину">Задача 4. Обход в ширину</a></h3>
+<p><strong>Условие.</strong> Та же постановка, но обход выполняется в ширину.</p>
+<p><strong>Идея решения.</strong> Меняем стек на <code>deque</code> и снимаем элементы с начала. Соседей сортируем уже по возрастанию, и помечаем вершину посещённой при добавлении в очередь.</p>
+<pre><code class="language-python">from collections import deque
+
+n, m = map(int, input().split())
+graph = [[] for _ in range(n + 1)]
+
+for _ in range(m):
+    u, v = map(int, input().split())
+    graph[u].append(v)
+    graph[v].append(u)
+
+start = int(input())
+for neighbours in graph:
+    neighbours.sort()
+
+visited = [False] * (n + 1)
+visited[start] = True
+queue, order = deque([start]), []
+
+while queue:
+    vertex = queue.popleft()              # берём из начала очереди
+    order.append(vertex)
+    for neighbour in graph[vertex]:
+        if not visited[neighbour]:
+            visited[neighbour] = True     # помечаем сразу при добавлении
+            queue.append(neighbour)
+
+print(*order)
+</code></pre>
+<p><strong>Сложность.</strong> Та же, что у DFS: \( O(n + m) \) по времени и памяти. Обрати внимание, насколько мало отличается код двух принципиально разных обходов — вся разница в том, с какого конца мы берём вершины из контейнера.</p>
+<h3 id="Задача-5-Компоненты-связности"><a class="header" href="#Задача-5-Компоненты-связности">Задача 5. Компоненты связности</a></h3>
+<p><strong>Условие.</strong> Дан неориентированный граф. Найди его компоненты связности: выведи их количество, а затем вершины каждой компоненты по возрастанию. Компоненты упорядочены по номеру первой вершины.</p>
+<p><strong>Идея решения.</strong> Запускаем обход из каждой ещё не посещённой вершины: всё, что обход соберёт за один запуск, и есть одна компонента. Если перебирать стартовые вершины по возрастанию, компоненты автоматически получатся в нужном порядке.</p>
+<pre><code class="language-python">n, m = map(int, input().split())
+graph = [[] for _ in range(n + 1)]
+
+for _ in range(m):
+    u, v = map(int, input().split())
+    graph[u].append(v)
+    graph[v].append(u)
+
+visited = [False] * (n + 1)
+components = []
+
+for vertex in range(1, n + 1):
+    if visited[vertex]:
+        continue
+    component, stack = [], [vertex]       # новая компонента
+    while stack:
+        current = stack.pop()
+        if visited[current]:
+            continue
+        visited[current] = True
+        component.append(current)
+        stack.extend(graph[current])
+    components.append(sorted(component))
+
+print(len(components))
+for component in components:
+    print(*component)
+</code></pre>
+<p><strong>Сложность.</strong> По времени — \( O(n + m) \) плюс сортировка компонент, по памяти — \( O(n + m) \). Ключевая мысль: внешний цикл по вершинам не делает алгоритм квадратичным — каждая вершина обрабатывается ровно один раз, а внешний цикл лишь находит стартовые точки.</p>
+<h3 id="Задача-6-Самая-дорогая-сеть"><a class="header" href="#Задача-6-Самая-дорогая-сеть">Задача 6. Самая дорогая сеть</a></h3>
+<p><strong>Условие.</strong> Дан связный взвешенный неориентированный граф. Найди вес максимального остовного дерева — набора рёбер, который связывает все вершины и имеет наибольший суммарный вес. Если граф несвязен, дерева не существует.</p>
+<p><strong>Идея решения.</strong> Алгоритм Прима, только на каждом шаге выбирается не минимальное, а максимальное ребро. Модуль <code>heapq</code> реализует лишь min-heap, поэтому применим стандартный приём: кладём в кучу вес со знаком минус — тогда «минимальный» элемент кучи окажется максимальным по модулю.</p>
+<p>Начинаем с первой вершины и складываем в кучу все исходящие из неё рёбра. Затем на каждом шаге достаём самое тяжёлое ребро; если оно ведёт в новую вершину — добавляем её в остов, прибавляем вес к ответу и складываем в кучу её рёбра. Если после завершения цикла в остов вошли не все вершины, значит, граф несвязен.</p>
+<pre><code class="language-python">import heapq
+
+def add_vertex(vertex, graph, added, heap):
+    """Добавляет вершину в остов и кладёт её рёбра в кучу."""
+    added[vertex] = True
+    for neighbour, weight in graph[vertex]:
+        if not added[neighbour]:
+            heapq.heappush(heap, (-weight, neighbour))   # минус: нужен max-heap
+
+n, m = map(int, input().split())
+graph = [[] for _ in range(n + 1)]
+
+for _ in range(m):
+    u, v, weight = map(int, input().split())
+    graph[u].append((v, weight))
+    graph[v].append((u, weight))
+
+added = [False] * (n + 1)
+added[0] = True                           # нулевой вершины не существует
+heap, total = [], 0
+
+add_vertex(1, graph, added, heap)         # растим остов из первой вершины
+
+while not all(added) and heap:
+    weight, vertex = heapq.heappop(heap)
+    if not added[vertex]:                 # ребро внутрь остова пропускаем
+        total += -weight
+        add_vertex(vertex, graph, added, heap)
+
+print(total if all(added) else "Oops! I did it again")
+</code></pre>
+<p><strong>Сложность.</strong> По времени — \( O(m \log n) \): каждое ребро попадает в кучу не более одного раза, а операции с кучей стоят \( O(\log n) \). По памяти — \( O(n + m) \).</p>
+<h2 id="Резюме"><a class="header" href="#Резюме">Резюме</a></h2>
+<ul>
+<li>Граф — самая общая структура для описания связей; дерево и список — его частные случаи.</li>
+<li>Разреженные графы храни списком смежности (\( O(n+m) \) памяти), плотные — матрицей смежности (\( O(n^2) \), зато проверка ребра за \( O(1) \)).</li>
+<li>DFS и BFS отличаются только контейнером — стек против очереди — и оба работают за \( O(n + m) \).</li>
+<li>BFS находит кратчайшие пути в невзвешенном графе, Дейкстра — во взвешенном с неотрицательными весами за \( O(m \log n) \).</li>
+<li>Обязательно помечай посещённые вершины: в отличие от дерева, у графа есть циклы, и без пометок обход не завершится.</li>
+<li>Компоненты связности, топологическая сортировка и остовные деревья — три классических применения обходов, к которым сводится масса практических задач.</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../cs/trees.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../compute/intro.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../cs/trees.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../compute/intro.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,701 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Асинхронность - Разработка и применение программного обеспечения в физических исследованиях</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../intro/intro.html">О книге</a></li><li class="chapter-item expanded affix "><a href="../intro/about-me.html">О себе</a></li><li class="chapter-item expanded affix "><li class="part-title">Ищем помощников</li><li class="chapter-item expanded "><a href="../ai/intro.html"><strong aria-hidden="true">1.</strong> ИИ для разработки</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ai/context.html"><strong aria-hidden="true">1.1.</strong> Контекст и скорость изменений</a></li><li class="chapter-item expanded "><a href="../ai/develop.html"><strong aria-hidden="true">1.2.</strong> ИИ и разработчик</a></li><li class="chapter-item expanded "><a href="../ai/basic.html"><strong aria-hidden="true">1.3.</strong> Технические основы</a></li><li class="chapter-item expanded "><a href="../ai/instruments.html"><strong aria-hidden="true">1.4.</strong> Инструментарий</a></li><li class="chapter-item expanded "><a href="../ai/copilot.html"><strong aria-hidden="true">1.5.</strong> GitHub Copilot</a></li><li class="chapter-item expanded "><a href="../ai/qa.html"><strong aria-hidden="true">1.6.</strong> Вопросы и ответы</a></li></ol></li><li class="chapter-item expanded "><a href="../dev/python/intro.html"><strong aria-hidden="true">2.</strong> Экспресс-курс Python</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../dev/python/basics.html"><strong aria-hidden="true">2.1.</strong> Основы Python</a></li><li class="chapter-item expanded "><a href="../dev/python/numpy.html"><strong aria-hidden="true">2.2.</strong> NumPy</a></li><li class="chapter-item expanded "><a href="../dev/python/scipy.html"><strong aria-hidden="true">2.3.</strong> SciPy</a></li><li class="chapter-item expanded "><a href="../dev/python/matplotlib.html"><strong aria-hidden="true">2.4.</strong> Matplotlib</a></li><li class="chapter-item expanded "><a href="../dev/python/holo.html"><strong aria-hidden="true">2.5.</strong> HoloViews</a></li><li class="chapter-item expanded "><a href="../dev/python/requirements.html"><strong aria-hidden="true">2.6.</strong> Требования к коду</a></li></ol></li><li class="chapter-item expanded "><a href="../dev/git.html"><strong aria-hidden="true">3.</strong> Git</a></li><li class="chapter-item expanded "><a href="../dev/docker.html"><strong aria-hidden="true">4.</strong> Docker</a></li><li class="chapter-item expanded affix "><li class="part-title">Загружаем Linux</li><li class="chapter-item expanded "><a href="../linux/intro.html"><strong aria-hidden="true">5.</strong> Основы Linux</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../linux/booting.html"><strong aria-hidden="true">5.1.</strong> Процесс загрузки</a></li><li class="chapter-item expanded "><a href="../linux/filesystems.html"><strong aria-hidden="true">5.2.</strong> Файловые системы</a></li><li class="chapter-item expanded "><a href="../linux/tools.html"><strong aria-hidden="true">5.3.</strong> Инструменты</a></li></ol></li><li class="chapter-item expanded "><a href="../linux/install-arch-linux.html"><strong aria-hidden="true">6.</strong> Установка Arch Linux</a></li><li class="chapter-item expanded "><a href="../linux/structure.html"><strong aria-hidden="true">7.</strong> Внутреннее устройство Linux</a></li><li class="chapter-item expanded affix "><li class="part-title">Разбираемся в алгоритмах</li><li class="chapter-item expanded "><a href="../cs/intro.html"><strong aria-hidden="true">8.</strong> Общие знания</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../cs/basic-algos.html"><strong aria-hidden="true">8.1.</strong> Введение в алгоритмы</a></li><li class="chapter-item expanded "><a href="../cs/basic-structures.html"><strong aria-hidden="true">8.2.</strong> Основные структуры данных</a></li><li class="chapter-item expanded "><a href="../cs/recurs-and-sorts.html"><strong aria-hidden="true">8.3.</strong> Рекурсия и сортировки</a></li><li class="chapter-item expanded "><a href="../cs/hash-funcs.html"><strong aria-hidden="true">8.4.</strong> Хеш-функции</a></li><li class="chapter-item expanded "><a href="../cs/trees.html"><strong aria-hidden="true">8.5.</strong> Деревья</a></li><li class="chapter-item expanded "><a href="../cs/graphs.html"><strong aria-hidden="true">8.6.</strong> Графы</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Считаем численно</li><li class="chapter-item expanded "><a href="../compute/intro.html"><strong aria-hidden="true">9.</strong> Введение в вычислительную физику</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../compute/basic-concepts.html"><strong aria-hidden="true">9.1.</strong> Сходимость, аппроксимация и устойчивость</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Погружаемся в Python</li><li class="chapter-item expanded "><a href="../dev/python/init.html"><strong aria-hidden="true">10.</strong> Начало</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../dev/python/objects.html"><strong aria-hidden="true">10.1.</strong> Объекты и память</a></li><li class="chapter-item expanded "><a href="../dev/python/collections.html"><strong aria-hidden="true">10.2.</strong> Коллекции</a></li><li class="chapter-item expanded "><a href="../dev/python/o-notation.html"><strong aria-hidden="true">10.3.</strong> Асимптотическая сложность</a></li></ol></li><li class="chapter-item expanded "><a href="../dev/python/functions.html"><strong aria-hidden="true">11.</strong> Функции</a></li><li class="chapter-item expanded "><a href="../dev/python/decorators.html"><strong aria-hidden="true">12.</strong> Декораторы и functools</a></li><li class="chapter-item expanded "><a href="../dev/python/classes.html"><strong aria-hidden="true">13.</strong> Классы</a></li><li class="chapter-item expanded "><a href="../dev/python/async.html"><strong aria-hidden="true">14.</strong> Итераторы, генераторы и корутины</a></li><li class="chapter-item expanded affix "><li class="part-title">Изучаем хорошие практики</li><li class="chapter-item expanded "><a href="../dev/life.html"><strong aria-hidden="true">15.</strong> Жизненный цикл ПО</a></li><li class="chapter-item expanded "><a href="../dev/app.html"><strong aria-hidden="true">16.</strong> От скрипта к приложению</a></li><li class="chapter-item expanded "><a href="../dev/web.html"><strong aria-hidden="true">17.</strong> Основы WEB</a></li><li class="chapter-item expanded "><a href="../dev/bd.html"><strong aria-hidden="true">18.</strong> Базы данных</a></li><li class="chapter-item expanded affix "><li class="part-title">Обрабатываем данные</li><li class="chapter-item expanded "><a href="../dev/python/numpy-and-pandas.html"><strong aria-hidden="true">19.</strong> NumPy и pandas</a></li><li class="chapter-item expanded "><a href="../dev/python/visualization/practice.html"><strong aria-hidden="true">20.</strong> Визуализация данных</a></li><li class="chapter-item expanded "><a href="../ds/intro.html"><strong aria-hidden="true">21.</strong> Машинное обучение</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ds/basic.html"><strong aria-hidden="true">21.1.</strong> Основные понятия</a></li><li class="chapter-item expanded "><a href="../ds/ml.html"><strong aria-hidden="true">21.2.</strong> Классические алгоритмы</a></li><li class="chapter-item expanded "><a href="../ds/nn.html"><strong aria-hidden="true">21.3.</strong> Нейронные сети</a></li><li class="chapter-item expanded "><a href="../ds/tools.html"><strong aria-hidden="true">21.4.</strong> Инструменты: scikit-learn</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Ускоряем код</li><li class="chapter-item expanded "><a href="../perf/intro.html"><strong aria-hidden="true">22.</strong> С чего начинать оптимизацию</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../dev/python/optimization.html"><strong aria-hidden="true">22.1.</strong> Почему Python не очень быстрый</a></li><li class="chapter-item expanded "><a href="../perf/perf.html"><strong aria-hidden="true">22.2.</strong> Скорость выполнения программ</a></li><li class="chapter-item expanded "><a href="../perf/gil.html"><strong aria-hidden="true">22.3.</strong> Многопоточность и GIL</a></li><li class="chapter-item expanded "><a href="../perf/async.html" class="active"><strong aria-hidden="true">22.4.</strong> Асинхронность</a></li><li class="chapter-item expanded "><a href="../perf/cuda.html"><strong aria-hidden="true">22.5.</strong> CUDA и вычисления на GPU</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Учимся у других</li><li class="chapter-item expanded "><a href="../examples/intro.html"><strong aria-hidden="true">23.</strong> Коды и скрипты</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../examples/kenv.html"><strong aria-hidden="true">23.1.</strong> Уравнение огибающей Капчинского-Владимирского для пучка заряженных частиц</a></li><li class="chapter-item expanded "><a href="../examples/envelope-optimize.html"><strong aria-hidden="true">23.2.</strong> Оптимизация огибающей пучка заряженных частиц с помощью генетического алгоритма</a></li><li class="chapter-item expanded "><a href="../examples/redpic.html"><strong aria-hidden="true">23.3.</strong> Релятивистская разностная схема для расчёта динамики частиц</a></li><li class="chapter-item expanded "><a href="../examples/orbit-correction.html"><strong aria-hidden="true">23.4.</strong> Коррекция равновесной орбиты с применением матрицы отклика и нейронных сетей</a></li><li class="chapter-item expanded "><a href="../examples/cadquery/layout.html"><strong aria-hidden="true">23.5.</strong> Схема ускорителя заряженных частиц в CadQuery</a></li><li class="chapter-item expanded "><a href="../examples/async-api.html"><strong aria-hidden="true">23.6.</strong> Асинхронное API для кинотеатра</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Работаем самостоятельно</li><li class="chapter-item expanded "><a href="../practicum/review-code-task.html"><strong aria-hidden="true">24.</strong> Ищем ошибки в чужом коде</a></li><li class="chapter-item expanded "><a href="../practicum/markov-chain-task.html"><strong aria-hidden="true">25.</strong> Делаем свою LLM</a></li><li class="chapter-item expanded "><a href="../practicum/booting-linux-task.html"><strong aria-hidden="true">26.</strong> Установка Linux</a></li><li class="chapter-item expanded "><a href="../practicum/linux-tools-task.html"><strong aria-hidden="true">27.</strong> Набор упражнений для работы в Linux</a></li><li class="chapter-item expanded "><a href="../practicum/linux-structure-task.html"><strong aria-hidden="true">28.</strong> Маленькая задачка c Linux</a></li><li class="chapter-item expanded "><a href="../practicum/python-algo-task.html"><strong aria-hidden="true">29.</strong> Пишем эффективный код</a></li><li class="chapter-item expanded "><a href="../practicum/kitty-startup-task.html"><strong aria-hidden="true">30.</strong> Деплой стартапа</a></li><li class="chapter-item expanded "><a href="../practicum/final-project-requirements.html"><strong aria-hidden="true">31.</strong> Итоговый проект</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded affix "><a href="../resume/intro.html">Заключение</a></li><li class="chapter-item expanded affix "><a href="../resume/literature.html">Литература и статьи</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Разработка и применение программного обеспечения в физических исследованиях</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/phys-dev/soft-dev-book/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="Асинхронность"><a class="header" href="#Асинхронность">Асинхронность</a></h1>
+<p>Предыдущие главы раздела упирались в один и тот же потолок: сколько бы потоков ты ни запустил, GIL пропускает через интерпретатор только один из них, а процессов больше, чем ядер, не бывает.</p>
+<p>Но есть целый класс задач, где процессор вообще ни при чём. Программа, которая скачивает тысячу файлов или опрашивает сотню приборов по сети, почти всё время <strong>ждёт</strong>: запрос ушёл, ответ не пришёл, делать нечего. Держать под каждое такое ожидание отдельный поток — расточительно: поток стоит памяти и переключений, а занимается он бездельем.</p>
+<p>Асинхронность решает ровно эту задачу. Одному потоку поручают тысячу ожиданий сразу: пока один запрос ждёт ответа, выполняется другой. Механика, на которой это построено, — генераторы и корутины из главы <a href="../dev/python/async.html">«Итераторы, генераторы и корутины»</a>: функция, умеющая приостановиться и продолжить с того же места, — ровно то, что нужно планировщику.</p>
+<p>Дальше мы разберём, какие задачи вообще бывают, соберём цикл событий своими руками, чтобы увидеть его устройство изнутри, а затем перейдём к <code>asyncio</code> и фреймворкам, построенным на нём.</p>
+<h2 id="Работа-с-разными-типами-задач"><a class="header" href="#Работа-с-разными-типами-задач">Работа с разными типами задач</a></h2>
+<p>Раньше разработчики не сильно заостряли своё внимание на типе выполняемых задач внутри приложения — было не нужно для индустрии в целом. Все писали достаточно большие монолитные приложения, а проблемы с производительностью обычно решались на уровне горизонтального масштабирования: через потоки, процессы или даже через несколько приложений на разных виртуальных машинах.</p>
+<p>Сейчас использование только процессов и потоков не даёт нужной производительности. Рассмотрим три основных типа задач, с которыми сталкивается большинство разработчиков:</p>
+<ul>
+<li>
+<p><strong>CPU bound-задачи.</strong> Задачи, для которых необходимо интенсивное использование процессора. К ним относят использование сложных математических моделей, обучение нейронных сетей, рендеринг графики и вычисление хешей.</p>
+</li>
+<li>
+<p><strong>I/O bound-задачи (non-RAM I/O bound).</strong> Задачи, в которых основная часть работы приходится на ввод/вывод информации <em>I/O</em> или <em>input/output</em>. В основном такие задачи относятся к работе с файловой системой и с сетью.</p>
+</li>
+<li>
+<p><strong>Memory bound-задачи (RAM I/O bound).</strong> Задачи, в которых происходит интенсивная работа с оперативной памятью. Как правило, такие задачи появляются в сложных математических моделях. Из-за медленной работы с оперативной памятью всё больше моделей обрабатывают с помощью видеокарт, в которых работа с памятью устроена по-другому. Другой пример — обработка огромного объёма данных в <em>Map-Reduce</em>-системах, например, таких как <em>Spark</em>. Обработка будет идти быстрее, если оперативной памяти будет больше.</p>
+</li>
+</ul>
+<p>Подробнее об этом можно прочитать в англоязычных статьях: - <a href="https://stackoverflow.com/questions/868568/what-do-the-terms-cpu-bound-and-i-o-bound-mean">о значении терминов CPU bound и I/O bound</a>, - <a href="https://link.springer.com/chapter/10.1007/978-1-4842-4932-1_15">о производительности</a>.</p>
+<p>Из-за массового перехода на микросервисы количество сетевого взаимодействия между системами многократно возросло, как и нагрузка на базы данных. Проблемы работы с сетью или с доступом к БД относятся к I/O bound-задачам. То есть их основная работа — ожидание обработки запроса к внешней системе. Такой класс задач в монолитных системах решался пулом потоков — <a href="https://en.wikipedia.org/wiki/Thread_pool">thread pool</a>. Однако, его стало не хватать из-за достаточно интенсивной нагрузки на сеть между множеством сервисов.</p>
+<p>Классический метод решения I/O bound задач — добавление ресурсов к существующим системам. Однако, многие компании не могут позволить себе «заливать всё железом» — докупать новые железные серверы, вместо оптимизации кода. Например, Instagram может себе такое позволить, поэтому они до сих пор используют Django даже с учётом всей нагрузки.</p>
+<p>Перейдём к практике. Представь приложение, которое ходит на некий сайт-агрегатор, достаёт данные по фильмам и сохраняет в БД. Код будет выглядеть так (ссылка на сайт выдуманная):</p>
+<pre><code class="language-python">import requests
+
+def do_some_logic(data):
+    pass
+  
+def save_to_database(data):
+    pass
+
+data = requests.get('https://data.aggregator.com/films')
+processed_data = do_some_logic(data)
+save_to_database(data)
+</code></pre>
+<p>Этот код достаточно линейный. Если вместо загрузки фильмов в БД такой код будет выполнять отдачу данных о фильмах с этого же сайта, то при достаточной нагрузке приложение начнёт сильно проседать по скорости ответа клиентам. При этом бо́льшую часть времени код будет просто ждать запроса от клиента, делать запрос к сайту https://data.aggregator.com/films и отдавать данные. То есть в эти моменты интерпретатор не будет делать никаких полезных действий, а клиенты будут ждать.</p>
+<p>Схематично изобразить выполнение программы можно вот так:</p>
+<p><img src="1_1_AsyncAPI_1_1629286149.png" alt="1_1_AsyncAPI_1_1629286149.png" /></p>
+<p>Теперь определим тип задачи в каждой ячейке:</p>
+<p><img src="1.1_3_AsyncAPI_1_1629286157.png" alt="1.1_3_AsyncAPI_1_1629286157.png" /></p>
+<p>Интуитивно кажется, что время распределено между этими ячейками примерно поровну. Но если привести картинку в соответствие с реальностью, получим совсем другой результат:</p>
+<p><img src="1_2_AsyncAPI_2_1629286153.png" alt="1_2_AsyncAPI_2_1629286153.png" /></p>
+<p>То есть бо́льшую часть времени программа ждёт ввода/вывода, а меньшая часть времени отводится на выполнение полезной работы.
+Эту проблему можно решить, распараллелив код на процессы и потоки. Такой вариант поможет, но на короткое время — при таком подходе сильно увеличатся расходы ресурсов сервера. Плюс количество допустимых процессов и потоков ограничено. То есть либо закончится оперативная память под потоки, либо закончатся ядра под процессы. Вишенкой на торте становится <code>GIL</code>, который даёт работать только одному потоку в единицу времени. Это не позволяет эффективно использовать массовый параллелизм на потоках и добавляет свои накладные расходы, хоть и не очень заметные.</p>
+<p>Посмотрим, как применение потоков сказывается на выполнении программы:</p>
+<p><img src="S1.1_4_AsyncAPI_1_1629286161.png" alt="S1.1_4_AsyncAPI_1_1629286161.png" /></p>
+<p>Действительно, два потока почти в два раза лучше отрабатывают I/O bound задачи. Но к сожалению, при таком подходе очень просто ошибиться и столкнуться с проблемой <a href="https://ru.wikipedia.org/wiki/%D0%A1%D0%BE%D1%81%D1%82%D0%BE%D1%8F%D0%BD%D0%B8%D0%B5_%D0%B3%D0%BE%D0%BD%D0%BA%D0%B8">«состояния гонок»</a>. Можно попробовать вариант с корутинами, но его сложнее реализовать. И при таком способе не получится создать много потоков, так как они потребляют гораздо больше ОЗУ, чем корутины. Также написание многопоточного кода требует от разработчика большей внимательности, чем при написании линейного.</p>
+<p>Стоит внимательнее присмотреться к проблеме. Всё ещё бо́льшую часть времени интерпретатор не совершает активных действий, а только ждёт ответа от ОС, завершилась ли та или иная операция ввода/вывода. В целом процессы и потоки не сильно помогут, ведь интерпретатор будет по-прежнему простаивать на каждом из них. При этом появится много накладных расходов на переключение контекста между процессами или на потребление оперативной памяти потоками, что может только ухудшить положение.</p>
+<p>Все эти проблемы необходимо решать эффективно. С этим может помочь использование асинхронного кода.</p>
+<h2 id="event-loop"><a class="header" href="#event-loop">Event-loop</a></h2>
+<p>Итак, ты добрался до сердца асинхронных программ в Python — цикла событий. Чтобы понять, как он работает, обратимся к простой реализации, которую предложил Дэвид Бизли (David Beazley) <a href="http://www.dabeaz.com/coroutines/Coroutines.pdf">в 2009 году</a>. Она хороша тем, что не содержит сложных конструкций, которыми сейчас обросли популярные реализации цикла событий на Python. Эта часть будет построена на разборе кода и практик, которые применяются для разработки цикла событий на основе <a href="http://www.dabeaz.com/coroutines/pyos8.py">кода Бизли</a>, и как учитывать эти знания при разработке асинхронных приложений на Python. Код уже приведён к современной версии Python.</p>
+<p>Начнём с архитектуры цикла событий.</p>
+<p><img src="1_Event_Loop_1629282397.png" alt="1_Event_Loop_1629282397.png" /></p>
+<p>Рассмотрим блоки:</p>
+<ul>
+<li><strong>Планировщик (Scheduler)</strong>. Корень всей программы. Обрабатывает задачи в очереди задач и следит за их правильным переключением между собой.</li>
+<li><strong>Очередь задач (Task queue)</strong>. Здесь собираются новые задачи на исполнение.</li>
+<li><strong>Задача (Task)</strong>. Основной блок работы цикла событий. В задачах хранится информация о выполняемой корутине. Умеет обрабатывать цепочку вложенных корутин.</li>
+<li><strong>Корутина (Coroutine)</strong>. Исполняемый код, которым оперирует планировщик задач.</li>
+<li><strong>Системный вызов (SystemCall)</strong>. Блоки кода, которые расширяют функциональность планировщика.</li>
+<li><strong>Корутина для выполнения работы с I/O (I/O-tasks)</strong>. В планировщик добавляется специальная задача (Task) для обработки I/O-событий от ОС.</li>
+<li><strong>Селектор (Selector)</strong>. Он слушает события от ОС и передаёт работу корутинам, которые ждут обработки I/O-сообщений.</li>
+</ul>
+<p>Первым стоит рассмотреть работу планировщика. Его основные функции — приём и справедливая обработка списка задач.</p>
+<pre><code class="language-python">import logging
+from typing import Generator
+from queue import Queue
+
+
+class Scheduler:
+    def __init__(self):
+        self.ready = Queue()
+        self.task_map = {}
+
+    def add_task(self, coroutine: Generator) -&gt; int:
+        new_task = Task(coroutine)
+        self.task_map[new_task.tid] = new_task
+        self.schedule(new_task)
+        return new_task.tid
+
+    def exit(self, task: Task):
+        del self.task_map[task.tid]
+
+    def schedule(self, task: Task):
+        self.ready.put(task)
+
+    def _run_once(self):
+        task = self.ready.get()
+        try:
+            result = task.run()
+        except StopIteration:
+            self.exit(task)
+            return
+        self.schedule(task)
+
+    def event_loop(self):
+        while self.task_map:
+            self._run_once()
+</code></pre>
+<p>Вся работа происходит в функции <code>event_loop()</code>, которая просто достаёт задачи одну за другой. В функции <code>_run_once()</code> идёт обработка итерации цикла событий, в которой поочерёдно берутся и запускаются задачи для обработки. Если задача не завершилась, то она ставится заново в очередь задач <code>self.ready</code>. Выполненные задачи нужно убрать из планировщика функцией <code>exit()</code>.</p>
+<p>Для добавления задачи используй функцию <code>add_task()</code>. Она принимает корутину для выполнения и создаёт с ней задачу в планировщике. Чтобы поставить задачу напрямую в планировщик, необходимо вызвать функцию <code>schedule()</code>.</p>
+<p>Далее разберёмся с устройством задачи.</p>
+<pre><code class="language-python">import types
+from typing import Generator, Union
+
+class Task:
+    task_id = 0
+
+    def __init__(self, target: Generator):
+        Task.task_id += 1
+        self.tid = Task.task_id  # Task ID
+        self.target = target  # Target coroutine
+        self.sendval = None  # Value to send
+        self.stack = []  # Call stack
+
+    # Run a task until it hits the next yield statement
+    def run(self):
+        while True:
+            try:
+                result = self.target.send(self.sendval)
+
+                if isinstance(result, types.GeneratorType):
+                    self.stack.append(self.target)
+                    self.sendval = None
+                    self.target = result
+                else:
+                    if not self.stack:
+                        return
+                    self.sendval = result
+                    self.target = self.stack.pop()
+
+            except StopIteration:
+                if not self.stack:
+                    raise
+                self.sendval = None
+                self.target = self.stack.pop()
+</code></pre>
+<p>Сама по себе задача — обёртка над корутиной. У каждой задачи есть свой <code>id</code>, который учитывается в планировщике в словаре <code>task_map</code>. На его заполненность смотрит планировщик при выполнении задач.</p>
+<p>Другая особенность задач — возможность выполнения корутин методом <code>run()</code>. Давай посмотрим, как они выполняются в рамках задачи. Предположим, что есть корутина, которая вызывает другую корутину, а та — третью. Например, вот такой код:</p>
+<pre><code class="language-python">def double(x):
+    yield x * x
+
+def add(x, y):
+    yield from double(x + y)
+
+def main():
+    result = yield add(1, 2)
+    print(result)
+    yield
+</code></pre>
+<p>Код является небольшой модификацией <a href="http://www.dabeaz.com/coroutines/trampoline.py">кода Бизли</a> из его выступления. Теперь попробуем выполнить эту цепочку корутин в рамках <code>Task</code>.</p>
+<pre><code class="language-python">task = Task(main())
+task.run()
+</code></pre>
+<pre><code>9
+</code></pre>
+<p>Таким же образом будут выполняться и остальные корутины в рамках планировщика. Осталось только расширить планировщик для работы с I/O-операциями.</p>
+<p>В рамках планировщика добавляем специальную бесконечную задачу <code>io_task</code> перед стартом цикла событий. Эта функция имеет бесконечный цикл внутри и передаёт управление планировщику после вызова выполненных событий из селектора.</p>
+<pre><code class="language-python">import logging
+from typing import Generator, Union
+from queue import Queue
+from selectors import DefaultSelector, EVENT_READ, EVENT_WRITE
+
+
+logger = logging.getLogger(__name__)
+
+
+class Scheduler:
+    def __init__(self):
+        self.ready = Queue()
+        self.selector = DefaultSelector()
+        self.task_map = {}
+
+    def add_task(self, coroutine: Generator) -&gt; int:
+        new_task = Task(coroutine)
+        self.task_map[new_task.tid] = new_task
+        self.schedule(new_task)
+        return new_task.tid
+
+    def exit(self, task: Task):
+        logger.info('Task %d terminated', task.tid)
+        del self.task_map[task.tid]
+
+    # I/O waiting
+    def wait_for_read(self, task: Task, fd: int):
+        try:
+            key = self.selector.get_key(fd)
+        except KeyError:
+            self.selector.register(fd, EVENT_READ, (task, None))
+
+        else:
+            mask, (reader, writer) = key.events, key.data
+            self.selector.modify(fd, mask | EVENT_READ, (task, writer))
+
+    def wait_for_write(self, task: Task, fd: int):
+        try:
+            key = self.selector.get_key(fd)
+        except KeyError:
+            self.selector.register(fd, EVENT_WRITE, (None, task))
+
+        else:
+            mask, (reader, writer) = key.events, key.data
+            self.selector.modify(fd, mask | EVENT_WRITE, (reader, task))
+
+    def _remove_reader(self, fd: int):
+        try:
+            key = self.selector.get_key(fd)
+        except KeyError:
+            pass
+        else:
+            mask, (reader, writer) = key.events, key.data
+            mask &amp;= ~EVENT_READ
+            if not mask:
+                self.selector.unregister(fd)
+            else:
+                self.selector.modify(fd, mask, (None, writer))
+
+    def _remove_writer(self, fd: int):
+        try:
+            key = self.selector.get_key(fd)
+        except KeyError:
+            pass
+        else:
+            mask, (reader, writer) = key.events, key.data
+            mask &amp;= ~EVENT_WRITE
+            if not mask:
+                self.selector.unregister(fd)
+            else:
+                self.selector.modify(fd, mask, (reader, None))
+
+    def io_poll(self, timeout: Union[None, float]):
+        events = self.selector.select(timeout)
+        for key, mask in events:
+            fileobj, (reader, writer) = key.fileobj, key.data
+            if mask &amp; EVENT_READ and reader is not None:
+                self.schedule(reader)
+                self._remove_reader(fileobj)
+            if mask &amp; EVENT_WRITE and writer is not None:
+                self.schedule(writer)
+                self._remove_writer(fileobj)
+
+    def io_task(self) -&gt; Generator:
+        while True:
+            if self.ready.empty():
+                self.io_poll(None)
+            else:
+                self.io_poll(0)
+            yield
+
+    def schedule(self, task: Task):
+        self.ready.put(task)
+
+    def _run_once(self):
+        task = self.ready.get()
+        try:
+            result = task.run()
+        except StopIteration:
+            self.exit(task)
+            return
+        self.schedule(task)
+
+    def event_loop(self):
+        self.add_task(self.io_task())
+        while self.task_map:
+            self._run_once()
+</code></pre>
+<p>Код значительно разросся, но на самом деле ничего страшного не произошло. Рассмотрим изменения в порядке вызовов. В рамках планировщика добавляем специальную бесконечную задачу <code>io_task</code> перед стартом цикла событий. Эта функция имеет бесконечный цикл внутри и передаёт управление планировщику после вызова выполненных событий из селектора.</p>
+<p>Рассмотрим подробнее устройство <code>io_task</code>. Если очередь задач пустая, то timeout для ожидания событий из селектора ставится в режим «до тех пор, пока не будет новых событий». В остальных случаях ставим таймаут 0, чтобы получить все события от ОС сразу же. Такую особенность работы этого метода рассмотрим чуть позже.</p>
+<p>Если из селектора пришли новые события, то обрабатываем их и убираем из обработки файловые дескрипторы. Важный момент — хранение данных о задачах в селекторе. Одна и та же задача может ожидать чтения данных и пытаться записать новые данные. Именно поэтому в поле <code>data</code> хранится кортеж <code>(reader, writer)</code>.</p>
+<p>По сути, <code>event_loop</code> должен предоставлять интерфейс для работы с сокетами. Таких метода всего четыре:</p>
+<ul>
+<li><code>wait_for_read</code>,</li>
+<li><code>wait_for_write</code>,</li>
+<li><code>_remove_reader</code>,</li>
+<li><code>_remove_writer</code>.</li>
+</ul>
+<p>Эти методы позволяют работать с циклом событий, встроенным в ОС.</p>
+<p>Работа с I/O для цикла событий — «пристройка сбоку» для обработки сетевых запросов. То есть основное назначение цикла событий в Python — обработка функций корутин, которые могут никуда не ходить по сети, а работать только с файловой системой.</p>
+<p>Осталось разобраться с конструкцией <code>SystemCall</code>. Так как изначально цикл событий больше напоминает работу ОС, должен быть механизм прерываний, чтобы передать управление ОС. В асинхронном коде прерывание обеспечивается с помощью <code>yield</code>. После переключения контекста может вызываться системная функция для исполнения. Например, для создания новых задач можно использовать вот такой код:</p>
+<pre><code class="language-python">class SystemCall:
+    def handle(self, sched: Scheduler, task: Task):
+        pass
+
+
+class NewTask(SystemCall):
+    def __init__(self, target: Generator):
+        self.target = target
+
+    def handle(self, sched: Scheduler, task: Task):
+        tid = sched.add_task(self.target)
+        task.sendval = tid
+        sched.schedule(task)
+</code></pre>
+<p>В <code>Scheduler</code> достаточно добавить небольшой фрагмент кода:</p>
+<pre><code class="language-python">class Scheduler:
+    ...
+    def _run_once(self):
+        task = self.ready.get()
+        try:
+            result = task.run()
+            if isinstance(result, SystemCall):
+                result.handle(self, task)
+                return
+        except StopIteration:
+            self.exit(task)
+            return
+        self.schedule(task)
+</code></pre>
+<p>А в <code>Task</code> добавляем небольшое условие при выполнении корутин:</p>
+<pre><code class="language-python">import types
+from typing import Generator, Union
+
+class Task:
+    ...
+    def run(self):
+        while True:
+            try:
+                result = self.target.send(self.sendval)
+                if isinstance(result, SystemCall):
+                    return result
+                ...
+</code></pre>
+<p>Что всё это значит? Разберёмся на примере <code>NewTask</code>. Этот класс предоставляет интерфейс для создания новых задач в цикле событий. Такой интерфейс позволяет абстрагировать клиентский код. Это эмуляция защищённой среды ОС, когда последняя предоставляет безопасные методы для работы с ядром. Такие методы не дают клиентскому коду мешать другим программам в ОС. Таким же образом можно сделать <code>KillTask</code> или <code>WaitTask</code>.</p>
+<p>Осталась последняя проблема — блокирующие операции. Из-за них код не может асинхронно обрабатывать события и цикл событий ждёт выполнения на каждой функции. Есть вариант решения проблемы:</p>
+<ul>
+<li>Сделать неблокирующими сокеты через <code>socket.setblocking(False)</code>.</li>
+</ul>
+<h2 id="asyncio"><a class="header" href="#asyncio">Asyncio</a></h2>
+<p>Теперь у нас достаточно знаний, чтобы без труда освоить основную встроенную библиотеку для асинхронного программирования — <code>asyncio</code>.</p>
+<p>С версии Python 3.5 в язык добавили специальный синтаксис — async/await. Он позволяет использовать «нативные» корутины, которые теперь являются частью языка. Они разделяют генераторы от асинхронного кода, что позволяет создавать асинхронные генераторы и ускорять работу асинхронного кода.</p>
+<p>Посмотрим, как выглядит простая программа с использованием async/await.</p>
+<pre><code class="language-python">import random
+import asyncio
+
+
+async def func():
+    r = random.random()
+    await asyncio.sleep(r)
+    return r
+
+
+async def value():
+    result = await func()
+    print(result)
+
+
+if __name__ == '__main__':
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(value())
+    loop.close()
+</code></pre>
+<p>В целом изменений немного. Переменная <code>loop</code> — это не что иное, как планировщик задач. Он работает по схожим принципам с тем, что рассматривался ранее. Теперь все функции переключаются с помощью <code>await</code>.</p>
+<p>Познакомимся с основными функциями <code>asyncio</code>, которые часто встречаются на практике:</p>
+<ul>
+<li><code>gather</code> — выполняет список корутин одновременно и дожидается результата выполнения всех корутин.</li>
+<li><code>sleep</code> — заставляет корутину уснуть на определённое количество секунд.</li>
+<li><code>wait</code>/<code>wait_for</code> — удобные функции, чтобы дождаться выполнения уже запущенной корутины.</li>
+</ul>
+<p>Также стоит ознакомиться с основными функциями <code>event_loop</code>:</p>
+<ul>
+<li><code>get_event_loop</code> — получить новый объект <code>event_loop</code> или тот, что уже существует. При этом одновременно может существовать только один объект <code>event_loop</code>.</li>
+<li><code>run_until_complete</code>/<code>run</code> — удобные функции для запуска и проверки асинхронных функций.</li>
+<li><code>shutdown_asyncgens</code> — одна из самых недооценённых функций цикла событий, которая позволяет правильно завершить выполнение цикла событий и всех корутин.</li>
+<li><code>call_soon</code> — позволяет запланировать выполнение корутины, но не ждать её выполнения. Таким образом можно вечно ставить на выполнение одну и ту же функцию.</li>
+</ul>
+<p>Теперь стоит поговорить про ключевые различия между asyncio и предложенной реализацией цикла событий. Asyncio работает на функциях обратного вызова или колбэках (callback). Этот механизм запускает задачи «честнее», чем текущий планировщик. Каждая корутина по-честному ставится в очередь и исполняется. В простом планировщике переключения не произойдёт, пока вся цепочка корутин не выполнится, что блокирует выполнение остальных задач. Однако, у колбэков есть и свой недостаток — callback hell. Это состояние, когда после вызова каждой функции нужно вызвать ещё одну функцию и ещё одну функцию... Получаются интересные фрагменты кода:</p>
+<pre><code class="language-python">func1.add_callback(
+    func2.add_callback(
+                func3.add_callback(func4)
+        )
+) 
+</code></pre>
+<p>К счастью, этого удаётся избежать через синтаксис async/await.</p>
+<pre><code class="language-python">await func4()
+await func3()
+await func2()
+await func1() 
+</code></pre>
+<p>Такое поведение возможно благодаря введению класса <code>Future</code>. По сути, такие объекты спасают от колбэков и делают код более линейным. В современных версиях Python <code>Future</code>-объекты для нативных корутин не нужны.</p>
+<h2 id="Асинхронные-фреймворки"><a class="header" href="#Асинхронные-фреймворки">Асинхронные фреймворки</a></h2>
+<h3 id="twisted"><a class="header" href="#twisted">Twisted</a></h3>
+<p>Один из старейших асинхронных фреймворков с собственной реализацией event-loop.</p>
+<p><strong>Основные концепции:</strong></p>
+<ol>
+<li><strong>Protocol</strong> — описание получения и отправки данных</li>
+<li><strong>Factory</strong> — управление созданием объектов протокола</li>
+<li><strong>Reactor</strong> — собственная реализация event-loop</li>
+<li><strong>Deferred-объекты</strong> — цепочки обратных вызовов</li>
+</ol>
+<p><strong>Пример Deferred-объекта:</strong></p>
+<pre><code class="language-python">from twisted.internet import defer
+
+def toint(data):
+    return int(data)
+
+def increment_number(data):
+    return data + 1
+
+def print_result(data):
+    print(data)
+
+def handleFailure(f):
+    print("OOPS!")
+
+def get_deferred():
+    d = defer.Deferred()
+    return d.addCallbacks(toint, handleFailure)\
+           .addCallbacks(increment_number, handleFailure)\
+           .addCallback(print_result)
+</code></pre>
+<h3 id="aiohttp"><a class="header" href="#aiohttp">Aiohttp</a></h3>
+<p>Асинхронные HTTP-клиент и сервер, построенные поверх asyncio.</p>
+<p><strong>Пример приложения:</strong></p>
+<pre><code class="language-python">import aiohttp
+from aiohttp import web
+
+async def get_phrase():
+    async with aiohttp.ClientSession() as session:
+        async with session.get('https://fish-text.ru/get', 
+                             params={'type': 'title'}) as response:
+            result = await response.json(content_type='text/html; charset=utf-8')
+            return result.get('text')
+
+async def index_handler(request):
+    return web.Response(text=await get_phrase())
+
+async def response_signal(request, response):
+    response.text = response.text.upper()
+    return response
+
+async def make_app():
+    app = web.Application()
+    app.on_response_prepare.append(response_signal)
+    app.add_routes([web.get('/', index_handler)])
+    return app
+
+web.run_app(make_app())
+</code></pre>
+<h3 id="fastapi"><a class="header" href="#fastapi">FastAPI</a></h3>
+<p>Современный фреймворк для быстрой разработки API, построенный на Starlette и Pydantic.</p>
+<p><strong>Простой пример API:</strong></p>
+<pre><code class="language-python">from fastapi import FastAPI
+from pydantic import BaseModel, Field
+from typing import Optional
+
+app = FastAPI(title="Простые математические операции")
+
+class Add(BaseModel):
+    first_number: int = Field(title='Первое слагаемое')
+    second_number: Optional[int] = Field(title='Второе слагаемое')
+
+class Result(BaseModel):
+    result: int = Field(title='Результат')
+
+@app.post("/add", response_model=Result)
+async def create_item(item: Add):
+    return {
+        'result': item.first_number + (item.second_number or 1)
+    }
+</code></pre>
+<h2 id="Резюме"><a class="header" href="#Резюме">Резюме</a></h2>
+<p>Асинхронность — не универсальный ускоритель, а инструмент для задач, где программа ждёт. Для расчётов она бесполезна: одна корутина, занявшая процессор надолго, остановит весь цикл событий, потому что поток по-прежнему один.</p>
+<p>Ориентируйся так:</p>
+<ul>
+<li><strong>задача ждёт сеть, диск или прибор</strong> — асинхронность, выигрыш может быть в десятки раз;</li>
+<li><strong>задача считает</strong> — процессы (<code>multiprocessing</code>), векторизация NumPy или компиляция, о которых шла речь в предыдущих главах;</li>
+<li><strong>и то и другое</strong> — цикл событий для ожиданий плюс пул процессов для расчётов через <code>loop.run_in_executor</code>.</li>
+</ul>
+<p>И помни главное правило: <strong>в асинхронном коде не должно быть блокирующих вызовов</strong>. Одна забытая <code>time.sleep()</code> или синхронный запрос к базе останавливает не свою корутину, а всю программу целиком.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../perf/gil.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../perf/cuda.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../perf/gil.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../perf/cuda.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>
