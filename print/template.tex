@@ -1,4 +1,4 @@
-\documentclass[10pt,oneside]{book}
+\documentclass[12pt,oneside]{book}
 
 %% ---------------------------------------------------------------
 %% Оригинал-макет по техническим требованиям ИПЦ НГУ:
@@ -9,9 +9,11 @@
 %% выравнивание по ширине.
 %% ---------------------------------------------------------------
 
-\usepackage[paperwidth=148mm,paperheight=210mm,
-            top=17mm,left=17mm,right=17mm,bottom=20mm,
-            footskip=10mm,headsep=6mm]{geometry}
+%% А4 (60x84 1/8): страница 210x297 мм, полоса набора 170x257 мм,
+%% поля по 20 мм. Нижнее поле берём 20 мм плюс колонцифра в footskip.
+\usepackage[paperwidth=210mm,paperheight=297mm,
+            top=20mm,left=20mm,right=20mm,bottom=20mm,
+            footskip=12mm,headsep=6mm]{geometry}
 
 \usepackage{fontspec}
 \usepackage{polyglossia}
@@ -62,7 +64,7 @@
 
 %% --- набор -------------------------------------------------------
 \linespread{1.0}
-\setlength{\parindent}{5mm}
+\setlength{\parindent}{10mm}
 \setlength{\parskip}{0pt plus 1pt}
 \sloppy
 \hyphenpenalty=50
@@ -234,7 +236,7 @@ ISBN 978-5-4437-XXXX-X$if(volume)$ (ч.~$volume$)$endif$ & \phantom{\copyright{}
 \end{tabular}
 }
 \clearpage
-\setlength{\parindent}{5mm}
+\setlength{\parindent}{10mm}
 
 %% ================= ОГЛАВЛЕНИЕ =================
 \pagestyle{fancy}
