@@ -93,8 +93,10 @@ KEEP_TASKS = {"./cs/trees.md": 2, "./cs/graphs.md": 2}
 BRIEF = {"./practicum/"}
 
 # Пределы для листингов и распечаток
-CODE_LIMIT, CODE_LIMIT_NB = 14, 8
-OUTPUT_LIMIT, OUTPUT_LIMIT_NB = 6, 3
+# Порог сокращения вывода программ. Поднят так, чтобы проходили осмысленные
+# таблицы на десяток-полтора строк; режется только то, что и в блокноте
+# читать невозможно, вроде стострочной выгрузки координат элементов.
+OUTPUT_LIMIT, OUTPUT_LIMIT_NB = 25, 20
 
 
 def parse_summary():
@@ -521,31 +523,6 @@ def strip_manual_numbering(text):
     return "\n".join(out)
 
 
-def trim_listings(text, limit):
-    """Сокращает длинные листинги: печатать полсотни строк кода бессмысленно.
-
-    Оставляем начало — достаточно, чтобы понять приём, — и отсылаем
-    за полным текстом к электронной версии.
-    """
-    out, buf, in_fence, fence = [], [], False, ""
-    for line in text.split("\n"):
-        if line.startswith("```"):
-            if in_fence:
-                if len(buf) > limit:
-                    out.extend(buf[:limit])
-                    out.append("# ... полный листинг — в электронной версии")
-                else:
-                    out.extend(buf)
-                buf, in_fence = [], False
-            else:
-                in_fence, fence = True, line
-            out.append(line)
-            continue
-        (buf if in_fence else out).append(line)
-    out.extend(buf)
-    return "\n".join(out)
-
-
 def drop_sections(text, titles):
     """Вырезает разделы вместе с их содержимым — до заголовка того же уровня."""
     for title in titles:
@@ -840,7 +817,8 @@ def main(volume=None):
             text = keep_first_tasks(text, KEEP_TASKS[path])
         if any(path.startswith(b) for b in BRIEF):
             text = brief_practicum(text)
-        text = trim_listings(text, CODE_LIMIT_NB if is_nb else CODE_LIMIT)
+        # листинги печатаем целиком: обрезка теряла существенные детали,
+        # а на формате А4 место под них есть
         text = clean_output_blocks(
             text, OUTPUT_LIMIT_NB if is_nb else OUTPUT_LIMIT)
         text = strip_manual_numbering(text)
@@ -892,9 +870,11 @@ def main(volume=None):
 Печатное издание отличается от неё в трёх мелочах, о которых стоит знать
 заранее.
 
-Во-первых, длинные распечатки результатов работы программ здесь сокращены
-до первых строк — полный вывод занял бы десятки страниц, не добавив ничего
-к пониманию. Такие места помечены строкой `... (вывод сокращён)`.
+Во-первых, **весь код здесь приведён целиком** — ни один листинг не обрезан.
+Сокращены только распечатки результатов работы программ, да и то лишь те,
+что и на экране читать невозможно: выгрузки координат всех элементов тракта
+и тому подобное. Такие места помечены строкой `... (вывод сокращён)`, их в
+книге пять.
 
 Во-вторых, интерактивные графики, построенные библиотеками Plotly и
 HoloViews, на бумаге показать невозможно: в электронной версии их можно
