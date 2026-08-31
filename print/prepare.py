@@ -163,14 +163,15 @@ def strip_html(text):
     return "\n".join(parts)
 
 
-MAX_CELL = 16
+MAX_CELL = 15
 
 
 def _cells(row):
     """Содержимое ячеек строки таблицы; длинные значения обрезаем.
 
-    В выводах pandas попадаются ячейки в сотни символов — в книжной
-    полосе набора шириной 115 мм такая таблица уезжает за поля.
+    В выводах pandas попадаются ячейки в сотни символов. На полосе А4
+    шириной 170 мм шесть колонок дают по 24.8 мм каждой, и в Times 10 pt
+    (footnotesize при кегле 12) туда влезает 15 знаков.
     """
     out = []
     for cell in re.findall(r"<t[hd][^>]*>(.*?)</t[hd]>", row, flags=re.S):
@@ -182,7 +183,7 @@ def _cells(row):
     return out
 
 
-def _table_html_to_md(html, max_rows=12, max_cols=7):
+def _table_html_to_md(html, max_rows=12, max_cols=6):
     rows = re.findall(r"<tr[^>]*>(.*?)</tr>", html, flags=re.S)
     if not rows:
         return ""

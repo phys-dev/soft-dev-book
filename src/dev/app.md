@@ -116,16 +116,21 @@ def parse_args() -> argparse.Namespace:
         "--plot", action="store_true",
         help="показать график после обработки",
     )
+    parser.add_argument(
+        "--baseline-points", type=int, default=100,
+        help="сколько первых точек считать базовой линией",
+    )
     return parser.parse_args()
 
 
 def main() -> None:
     """Точка входа приложения."""
     args = parse_args()
-    time, voltage = np.loadtxt(args.input, delimiter=",", unpack=True)
+    time, voltage = np.loadtxt(
+        args.input, delimiter=",", skiprows=1, unpack=True)
 
     # Базовая линия — среднее по первым точкам до прихода сигнала.
-    baseline = voltage[:100].mean()
+    baseline = voltage[:args.baseline_points].mean()
     signal = voltage - baseline
     peak_index = int(np.argmax(signal))
     area = float(np.trapezoid(signal, time))
@@ -189,7 +194,7 @@ import os
 data_dir = os.environ.get("BEAMTOOL_DATA_DIR", "/data/beam")
 ```
 
-Пароли и токены (например, доступ к базе данных группы — о ней в следующей главе) не попадают ни в код, ни в git никогда. Только переменные окружения или локальный файл `.env`, добавленный в `.gitignore`. Итоговый приоритет источников обычно такой: значения по умолчанию → конфиг-файл → переменные окружения → аргументы командной строки; каждый следующий уровень перекрывает предыдущий.
+Пароли и токены (например, доступ к базе данных группы — о них в главе про базы данных) не попадают ни в код, ни в git никогда. Только переменные окружения или локальный файл `.env`, добавленный в `.gitignore`. Итоговый приоритет источников обычно такой: значения по умолчанию → конфиг-файл → переменные окружения → аргументы командной строки; каждый следующий уровень перекрывает предыдущий.
 
 ## Логирование вместо print
 

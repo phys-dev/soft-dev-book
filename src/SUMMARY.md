@@ -84,7 +84,7 @@
   - [Оптимизация огибающей пучка заряженных частиц с помощью генетического алгоритма](./examples/envelope-optimize.md)
   - [Релятивистская разностная схема для расчёта динамики частиц](./examples/redpic.md)
   - [Коррекция равновесной орбиты с применением матрицы отклика и нейронных сетей](./examples/orbit-correction.md)
-  - [Схема ускорителя заряженных частиц в CadQuery](./examples/cadquery/layout.md)
+  - [Трёхмерная схема установки кодом](./examples/cadquery/layout.md)
   - [Цифровой двойник ускорителя](./examples/accumulator.md)
   - [Мультиагентный помощник оператора](./examples/sava.md)
   - [Автономный исследователь на языковых моделях](./examples/ai-scientist.md)
@@ -93,10 +93,10 @@
 # Работаем самостоятельно
 
 - [Ищем ошибки в чужом коде](./practicum/review-code-task.md)
-- [Делаем свою LLM](./practicum/markov-chain-task.md)
+- [Генерируем текст цепью Маркова](./practicum/markov-chain-task.md)
 - [Установка Linux](./practicum/booting-linux-task.md)
 - [Набор упражнений для работы в Linux](./practicum/linux-tools-task.md)
-- [Маленькая задачка c Linux](./practicum/linux-structure-task.md)
+- [Маленькая задачка с Linux](./practicum/linux-structure-task.md)
 - [Пишем эффективный код](./practicum/python-algo-task.md)
 - [Деплой стартапа](./practicum/kitty-startup-task.md)
 - [Итоговый проект](./practicum/final-project-requirements.md)
