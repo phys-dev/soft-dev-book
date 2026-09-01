@@ -1,0 +1,294 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Мультиагентный помощник оператора - Разработка и применение программного обеспечения в физических исследованиях</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../intro/intro.html">О книге</a></li><li class="chapter-item expanded affix "><a href="../intro/about-me.html">О себе</a></li><li class="chapter-item expanded affix "><li class="part-title">Собираем инструменты</li><li class="chapter-item expanded "><a href="../ai/intro.html"><strong aria-hidden="true">1.</strong> ИИ для разработки</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ai/context.html"><strong aria-hidden="true">1.1.</strong> Контекст и скорость изменений</a></li><li class="chapter-item expanded "><a href="../ai/develop.html"><strong aria-hidden="true">1.2.</strong> ИИ и разработчик</a></li><li class="chapter-item expanded "><a href="../ai/basic.html"><strong aria-hidden="true">1.3.</strong> Технические основы</a></li><li class="chapter-item expanded "><a href="../ai/instruments.html"><strong aria-hidden="true">1.4.</strong> Инструментарий</a></li><li class="chapter-item expanded "><a href="../ai/copilot.html"><strong aria-hidden="true">1.5.</strong> GitHub Copilot</a></li><li class="chapter-item expanded "><a href="../ai/qa.html"><strong aria-hidden="true">1.6.</strong> Вопросы и ответы</a></li></ol></li><li class="chapter-item expanded "><a href="../dev/git.html"><strong aria-hidden="true">2.</strong> Git</a></li><li class="chapter-item expanded "><a href="../dev/docker.html"><strong aria-hidden="true">3.</strong> Docker</a></li><li class="chapter-item expanded affix "><li class="part-title">Осваиваем Linux</li><li class="chapter-item expanded "><a href="../linux/intro.html"><strong aria-hidden="true">4.</strong> Основы Linux</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../linux/booting.html"><strong aria-hidden="true">4.1.</strong> Процесс загрузки</a></li><li class="chapter-item expanded "><a href="../linux/filesystems.html"><strong aria-hidden="true">4.2.</strong> Файловые системы</a></li><li class="chapter-item expanded "><a href="../linux/tools.html"><strong aria-hidden="true">4.3.</strong> Инструменты</a></li></ol></li><li class="chapter-item expanded "><a href="../linux/install-arch-linux.html"><strong aria-hidden="true">5.</strong> Установка Arch Linux</a></li><li class="chapter-item expanded "><a href="../linux/structure.html"><strong aria-hidden="true">6.</strong> Внутреннее устройство Linux</a></li><li class="chapter-item expanded affix "><li class="part-title">Разбираемся в алгоритмах</li><li class="chapter-item expanded "><a href="../cs/intro.html"><strong aria-hidden="true">7.</strong> Общие знания</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../cs/basic-algos.html"><strong aria-hidden="true">7.1.</strong> Введение в алгоритмы</a></li><li class="chapter-item expanded "><a href="../cs/basic-structures.html"><strong aria-hidden="true">7.2.</strong> Основные структуры данных</a></li><li class="chapter-item expanded "><a href="../cs/recurs-and-sorts.html"><strong aria-hidden="true">7.3.</strong> Рекурсия и сортировки</a></li><li class="chapter-item expanded "><a href="../cs/hash-funcs.html"><strong aria-hidden="true">7.4.</strong> Хеш-функции</a></li><li class="chapter-item expanded "><a href="../cs/trees.html"><strong aria-hidden="true">7.5.</strong> Деревья</a></li><li class="chapter-item expanded "><a href="../cs/graphs.html"><strong aria-hidden="true">7.6.</strong> Графы</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Погружаемся в Python</li><li class="chapter-item expanded "><a href="../dev/python/init.html"><strong aria-hidden="true">8.</strong> Как устроен Python</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../dev/python/objects.html"><strong aria-hidden="true">8.1.</strong> Объекты и память</a></li><li class="chapter-item expanded "><a href="../dev/python/collections.html"><strong aria-hidden="true">8.2.</strong> Коллекции</a></li><li class="chapter-item expanded "><a href="../dev/python/o-notation.html"><strong aria-hidden="true">8.3.</strong> Асимптотическая сложность</a></li><li class="chapter-item expanded "><a href="../dev/python/functions.html"><strong aria-hidden="true">8.4.</strong> Функции</a></li><li class="chapter-item expanded "><a href="../dev/python/async.html"><strong aria-hidden="true">8.5.</strong> Итераторы, генераторы и корутины</a></li><li class="chapter-item expanded "><a href="../dev/python/decorators.html"><strong aria-hidden="true">8.6.</strong> Декораторы и functools</a></li><li class="chapter-item expanded "><a href="../dev/python/classes.html"><strong aria-hidden="true">8.7.</strong> Классы</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Пишем надёжный код</li><li class="chapter-item expanded "><a href="../dev/python/requirements.html"><strong aria-hidden="true">9.</strong> Требования к коду</a></li><li class="chapter-item expanded "><a href="../dev/life.html"><strong aria-hidden="true">10.</strong> Жизненный цикл ПО</a></li><li class="chapter-item expanded "><a href="../dev/app.html"><strong aria-hidden="true">11.</strong> От скрипта к приложению</a></li><li class="chapter-item expanded "><a href="../dev/web.html"><strong aria-hidden="true">12.</strong> Основы WEB</a></li><li class="chapter-item expanded "><a href="../dev/bd.html"><strong aria-hidden="true">13.</strong> Базы данных</a></li><li class="chapter-item expanded affix "><li class="part-title">Обрабатываем данные</li><li class="chapter-item expanded "><a href="../dev/python/intro.html"><strong aria-hidden="true">14.</strong> Научные библиотеки Python</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../dev/python/basics.html"><strong aria-hidden="true">14.1.</strong> Основы Python</a></li><li class="chapter-item expanded "><a href="../dev/python/numpy.html"><strong aria-hidden="true">14.2.</strong> NumPy</a></li><li class="chapter-item expanded "><a href="../dev/python/scipy.html"><strong aria-hidden="true">14.3.</strong> SciPy</a></li><li class="chapter-item expanded "><a href="../dev/python/matplotlib.html"><strong aria-hidden="true">14.4.</strong> Matplotlib</a></li><li class="chapter-item expanded "><a href="../dev/python/holo.html"><strong aria-hidden="true">14.5.</strong> HoloViews</a></li></ol></li><li class="chapter-item expanded "><a href="../dev/python/numpy-and-pandas.html"><strong aria-hidden="true">15.</strong> NumPy и pandas</a></li><li class="chapter-item expanded "><a href="../dev/python/visualization/practice.html"><strong aria-hidden="true">16.</strong> Визуализация данных</a></li><li class="chapter-item expanded "><a href="../ds/intro.html"><strong aria-hidden="true">17.</strong> Машинное обучение</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ds/basic.html"><strong aria-hidden="true">17.1.</strong> Основные понятия</a></li><li class="chapter-item expanded "><a href="../ds/ml.html"><strong aria-hidden="true">17.2.</strong> Классические алгоритмы</a></li><li class="chapter-item expanded "><a href="../ds/nn.html"><strong aria-hidden="true">17.3.</strong> Нейронные сети</a></li><li class="chapter-item expanded "><a href="../ds/tools.html"><strong aria-hidden="true">17.4.</strong> Инструменты: scikit-learn</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Ускоряем код</li><li class="chapter-item expanded "><a href="../perf/intro.html"><strong aria-hidden="true">18.</strong> С чего начинать оптимизацию</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../dev/python/optimization.html"><strong aria-hidden="true">18.1.</strong> Почему Python не очень быстрый</a></li><li class="chapter-item expanded "><a href="../perf/perf.html"><strong aria-hidden="true">18.2.</strong> Скорость выполнения программ</a></li><li class="chapter-item expanded "><a href="../perf/gil.html"><strong aria-hidden="true">18.3.</strong> Многопоточность и GIL</a></li><li class="chapter-item expanded "><a href="../perf/async.html"><strong aria-hidden="true">18.4.</strong> Асинхронность</a></li><li class="chapter-item expanded "><a href="../perf/cuda.html"><strong aria-hidden="true">18.5.</strong> CUDA и вычисления на GPU</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Учимся у других</li><li class="chapter-item expanded "><a href="../examples/intro.html"><strong aria-hidden="true">19.</strong> Коды и скрипты</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../examples/kenv.html"><strong aria-hidden="true">19.1.</strong> Уравнение огибающей Капчинского—Владимирского для пучка заряженных частиц</a></li><li class="chapter-item expanded "><a href="../examples/envelope-optimize.html"><strong aria-hidden="true">19.2.</strong> Оптимизация огибающей пучка заряженных частиц с помощью генетического алгоритма</a></li><li class="chapter-item expanded "><a href="../examples/redpic.html"><strong aria-hidden="true">19.3.</strong> Релятивистская разностная схема для расчёта динамики частиц</a></li><li class="chapter-item expanded "><a href="../examples/orbit-correction.html"><strong aria-hidden="true">19.4.</strong> Коррекция равновесной орбиты с применением матрицы отклика и нейронных сетей</a></li><li class="chapter-item expanded "><a href="../examples/cadquery/layout.html"><strong aria-hidden="true">19.5.</strong> Трёхмерная схема установки кодом</a></li><li class="chapter-item expanded "><a href="../examples/accumulator.html"><strong aria-hidden="true">19.6.</strong> Цифровой двойник ускорителя</a></li><li class="chapter-item expanded "><a href="../examples/sava.html" class="active"><strong aria-hidden="true">19.7.</strong> Мультиагентный помощник оператора</a></li><li class="chapter-item expanded "><a href="../examples/ai-scientist.html"><strong aria-hidden="true">19.8.</strong> Автономный исследователь на языковых моделях</a></li><li class="chapter-item expanded "><a href="../examples/async-api.html"><strong aria-hidden="true">19.9.</strong> Асинхронное API для кинотеатра</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Работаем самостоятельно</li><li class="chapter-item expanded "><a href="../practicum/review-code-task.html"><strong aria-hidden="true">20.</strong> Ищем ошибки в чужом коде</a></li><li class="chapter-item expanded "><a href="../practicum/markov-chain-task.html"><strong aria-hidden="true">21.</strong> Генерируем текст цепью Маркова</a></li><li class="chapter-item expanded "><a href="../practicum/booting-linux-task.html"><strong aria-hidden="true">22.</strong> Установка Linux</a></li><li class="chapter-item expanded "><a href="../practicum/linux-tools-task.html"><strong aria-hidden="true">23.</strong> Набор упражнений для работы в Linux</a></li><li class="chapter-item expanded "><a href="../practicum/linux-structure-task.html"><strong aria-hidden="true">24.</strong> Маленькая задачка с Linux</a></li><li class="chapter-item expanded "><a href="../practicum/python-algo-task.html"><strong aria-hidden="true">25.</strong> Пишем эффективный код</a></li><li class="chapter-item expanded "><a href="../practicum/kitty-startup-task.html"><strong aria-hidden="true">26.</strong> Деплой стартапа</a></li><li class="chapter-item expanded "><a href="../practicum/final-project-requirements.html"><strong aria-hidden="true">27.</strong> Итоговый проект</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded affix "><a href="../resume/intro.html">Заключение</a></li><li class="chapter-item expanded affix "><a href="../resume/literature.html">Литература и статьи</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Разработка и применение программного обеспечения в физических исследованиях</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/phys-dev/soft-dev-book/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="Мультиагентный-помощник-оператора"><a class="header" href="#Мультиагентный-помощник-оператора">Мультиагентный помощник оператора</a></h1>
+<p>Предыдущая глава была о программе, которая притворяется установкой. Эта — о программе, которая стоит рядом с настоящей и которой позволено в неё писать.</p>
+<h2 id="Задача"><a class="header" href="#Задача">Задача</a></h2>
+<p>Оператор в пультовой держит в голове три несвязанные вещи. Первая — приборы: сотни каналов системы управления с именами вроде <code>ACC1:BI-LA1:PK3-fastAvX:Mea</code>, и чтобы посмотреть орбиту, надо помнить имена и знать, какую панель открыть. Вторая — документация. Методики, отчёты и диссертации за десятилетия; ответ на вопрос «как включить линак» где-то есть, но найти его значит вспомнить, в каком документе он написан. Третья — журнал смены, который ведётся руками, а потому ведётся плохо. Запись появляется, если человек не забыл, а слово «успешно» в ней — мнение человека, не факт.</p>
+<p>Помощник по имени <strong>Сава</strong> связывает эти три вещи и разговаривает с оператором обычным языком — текстом или голосом. Взаимодействие бывает трёх видов, и различать их важно:</p>
+<ul>
+<li><strong>Запрос.</strong> Состояние машины не меняется. «Покажи орбиту», «как включить линак», «что делали ночью» — читающие инструменты доступа к записи не имеют вовсе.</li>
+<li><strong>Воздействие.</strong> Состояние меняется. «Поставь корректор в 0.002 А», «скорректируй орбиту» — и всегда через подтверждение оператора с конкретными числами.</li>
+<li><strong>Инициатива системы.</strong> Никто ничего не спрашивал, но сторож увидел пробитый порог или отклонение от нормы. Факт доставляется оператору <strong>без участия языковой модели</strong>, объяснение приходит вторым сообщением.</li>
+</ul>
+<h2 id="Главный-вопрос"><a class="header" href="#Главный-вопрос">Главный вопрос</a></h2>
+<p>Языковая модель в контуре управления физической установкой — случай, где ошибка стоит не переделанного отчёта, а испорченной смены или повреждённого оборудования. Поэтому весь интерес этой главы в одном вопросе. <strong>Как устроена граница между «система советует» и «система пишет в железо»?</strong></p>
+<p>Ответ, ради которого стоит читать этот код, короткий. <strong>Границу проводит тип, а не дисциплина.</strong> Формулировка автора ещё жёстче — «писать ей нечем».</p>
+<p>Разберём по уровням.</p>
+<p><strong>Ноль: физическая недостижимость.</strong> Три агента — сторож, детектор аномалий и аналитик — объявлены без единого инструмента. Объект, через который в системе вообще возможна запись, выдаётся только обработчику инструмента, помеченного как пишущий. У этих агентов инструментов нет, значит и объекта не существует. Они не «не должны» писать. Им нечем.</p>
+<p><strong>Первый: цепочка, замкнутая типами.</strong> Инструмент, помеченный <code>writes=True</code>, обязан иметь планировщик; планировщик обязан выдать конверт; конверт обязан пройти подтверждение оператора. Первое звено сторожит тест — сборка не пройдёт, если появился пишущий инструмент без планировщика. Второе и третье держит сигнатура типа. Собрать план без конверта и текста подтверждения просто нельзя, а ветки «исполнить пишущий инструмент сразу» в графе не существует.</p>
+<p><strong>Второй: состав операции не сочиняет модель.</strong> Планировщик — чистая функция от политики. Что трогать, берётся из конфигурации, а аргументы модели могут только <strong>сузить</strong> список, никогда не расширить. Причина записана в проекте прямо, с датой инцидента. Когда состав выбирала модель, она взяла пять корректоров из десяти вперемешку по плоскостям, и коррекция обнулила как раз те датчики, по которым велось наблюдение.</p>
+<p><strong>Третий: агент не верит тому, что ему прислали.</strong> Получив команду, исполнитель <strong>заново выводит план из своей копии политики</strong> и сверяет с присланным — тот ли идентификатор команды, те ли границы, тот ли поимённый состав. Расширить границы по дороге нельзя.</p>
+<p><strong>Четвёртый: единственный путь записи.</strong> Все записи идут через один объект, который проверяет политику, срок годности операции, бюджет записей и границы каждого значения. Деталь тут важнее общего устройства. <strong>Нарушение границы — отказ, а не обрезка до допустимого.</strong> Обрезав, процедура сочла бы уставку применённой и построила следующие шаги на ложной посылке.</p>
+<h2 id="Конверт-почему-подтверждают-операцию-а-не-каждую-запись"><a class="header" href="#Конверт-почему-подтверждают-операцию-а-не-каждую-запись">Конверт: почему подтверждают операцию, а не каждую запись</a></h2>
+<p>Наивное решение «спрашивать оператора перед каждым <code>caput</code>» не работает. Одна коррекция орбиты — это десятки записей, и человек начнёт жать «да» не глядя уже на пятой.</p>
+<p>Поэтому подтверждается <strong>конверт</strong> — описание операции целиком: её цель, поимённый список каналов, границы для каждого, предельное число записей и срок годности. Оператор видит, что произойдёт, и отвечает один раз.</p>
+<p>Для простой записи одного значения конверт вырождается в точку — подтверждённое значение и есть его границы. Для процедуры границы схлопываются <strong>на объявленные в ней числа</strong>, а не на пределы политики — то есть процедура физически не может записать то, чего оператор не прочитал.</p>
+<p>Отдельно продумано, чего подтверждать <strong>не надо</strong>. Если машина уже в запрошенном режиме, система отвечает без всякого подтверждения, потому что пустое подтверждение учит жать «да» не глядя.</p>
+<h2 id="Что-делает-языковая-модель-и-чего-не-делает"><a class="header" href="#Что-делает-языковая-модель-и-чего-не-делает">Что делает языковая модель и чего не делает</a></h2>
+<p>Делает вот что. Разговаривает с оператором, выбирает инструмент и заполняет его скалярные аргументы, пересказывает результат человеческим языком, выдвигает гипотезы о причине аномалии.</p>
+<p>Не делает:</p>
+<ul>
+<li>не определяет состав операции — его выводит планировщик;</li>
+<li>не видит значений уставок при сохранении и восстановлении режима;</li>
+<li>не участвует в доставке аварийных сообщений — они идут мимо неё, поэтому недоступность провайдера не мешает оператору узнать о проблеме;</li>
+<li>не отвечает по памяти на технические вопросы — только по корпусу документов;</li>
+<li>не может подтвердить запись за оператора.</li>
+</ul>
+<p>Более того, систему пришлось научить <strong>перебивать модель</strong> там, где живой прогон показал ошибку. На просьбу «покажи за последние 2 часа» модель поставила окно в 2 минуты — оператор смотрел бы на двухминутный график в уверенности, что видит два часа. Теперь окно разбирается из слов оператора детерминированно, а не моделью.</p>
+<p>Отдельная история — исполнение процедур. Оператор может попросить систему выполнить последовательность действий, и текст этой процедуры <strong>разбирается синтаксическим анализатором, но никогда не исполняется как код</strong>. Никаких <code>eval</code>. Признаются четыре конструкции: записать значение, прочитать значение, подождать и присвоить прочитанное переменной. Аргументы обязаны быть литералами. Запись вида «поставь текущее значение, умноженное на 0.9» отвергается — такое число становится известно только в момент записи, и оператор подтверждал бы обещание, а не величину.</p>
+<h2 id="Чему-тут-стоит-поучиться"><a class="header" href="#Чему-тут-стоит-поучиться">Чему тут стоит поучиться</a></h2>
+<p><strong>Микросервисы из измерения, а не из моды.</strong> Агент распознавания речи и агент рисования графиков разделены потому, что первый держал в памяти полтора гигабайта — чтобы нарисовать график за четверть секунды, туда загружалась целая библиотека машинного обучения. А вот распознавание и синтез речи <strong>не разделены</strong>: они последовательны по природе и падают по одним причинам. Обе развилки прошли через замер.</p>
+<p><strong>Очереди доставляют «хотя бы один раз», и это стреляет.</strong> Брокер счёл агента коррекции мёртвым, отобрал у него задачу и отдал заново — коррекция пошла по кругу, гоняя корректоры. Лечится это так. Идентификатор команды помечается <strong>до</strong> вызова обработчика, и повтор уже выполненной команды возвращает сохранённый результат вместо повторного исполнения.</p>
+<p><strong>Команда и событие — разные вещи.</strong> Команда адресована («сделай»), событие — факт («случилось»). Журнал решений пишется как поток фактов, и журнал смены <strong>производен от факта записи</strong>, а не от того, вспомнила ли модель его заполнить. Слово «успешно» в нём подтверждено записью в оборудование.</p>
+<p><strong>Единственный источник правды.</strong> Список агентов и инструментов задан один раз, и из него выводится всё остальное: схемы для модели, маршрутизация, цели мониторинга, список очередей. Если факт записан в двух местах, он <strong>разъедется молча</strong>, и в проекте есть три задокументированных случая такого расхождения.</p>
+<p><strong>Отказ вместо подгонки.</strong> Непонятый параметр, значение за пределом, расхождение единиц измерения — отказ с названным числом, а не подстановка умолчания. Обоснование в проекте записано одной строкой — показать оператору не то, что он просил, хуже, чем не показать ничего.</p>
+<h2 id="Что-здесь-слабо"><a class="header" href="#Что-здесь-слабо">Что здесь слабо</a></h2>
+<p>Проект необычно хорошо документирован — почти каждое решение снабжено обоснованием с датой инцидента и измеренными числами. Тем полезнее назвать слабые места.</p>
+<p><strong>Система не работала на настоящем СКИФ.</strong> Все измерения сделаны на цифровой тени и тестовом стенде; пункт про подключение к реальной системе управления в дорожной карте не отмечен. Это надо держать в голове, читая всё вышеописанное. Архитектура безопасности проверена там, где цена ошибки нулевая.</p>
+<p><strong>Физические константы — заглушки.</strong> Часть магнитных пределов — не паспорта источников питания, а «правдоподобный порядок». Один такой предел оказался <strong>шире</strong> настоящего. Заглушка ±5 А стояла там, где источник выдаёт ±3 А. Перешли на данные института и поправили, но класс ошибки показателен: слишком широкий предел не «оставляет запас», он разрешает ток, которого железо не выдаёт.</p>
+<p><strong>Ограничение скорости изменения уставки реализовано, но не заполнено</strong> ни в одном файле конфигурации. То есть защита от резкого скачка существует в коде и не действует.</p>
+<p><strong>Разбор имён каналов молча пропускал оборудование.</strong> В день подключения данных института замер показал, что из 49 горизонтальных корректоров машины разбор узнаёт шесть. Формулировка автора точна — корректор, не опознанный корректором, молча не попадает в состав операции, и коррекция рапортует об успехе, не тронув его.</p>
+<p><strong>Долг не размечен.</strong> В репозитории ноль пометок <code>TODO</code> и <code>FIXME</code> — но долг никуда не делся, он растворён в десяти тысячах строк комментариев. Найти его поиском нельзя, выгрузить в список задач нельзя, и новый человек не может спросить «что здесь недоделано» иначе как прочитав всё.</p>
+<p><strong>Оператор всё равно может нажать «да» не глядя.</strong> Это признано и не закрыто. Подтверждение называет каналы поимённо, стареет за пятнадцать минут, пустых подтверждений система не задаёт — но человеческий фактор так не устраняется. Часть защиты держится на видимости, а не на невозможности: если модель выбросит шаг из процедуры, поймать это может только оператор, читающий пронумерованный список.</p>
+<h2 id="Что-из-этого-следует"><a class="header" href="#Что-из-этого-следует">Что из этого следует</a></h2>
+<p>Через весь проект проходит одна формулировка: <strong>«ни одной неподтверждённой записи» должно быть свойством системы, а не дисциплиной</strong>.</p>
+<p>Дисциплина — это когда все договорились и стараются; держится она, пока люди помнят и никто не торопится. Свойство — это когда нарушить нельзя, потому что нужного объекта не существует, нужной ветки в коде нет, а тип не собирается.</p>
+<p>Проверить свою программу на этот счёт нетрудно. Спроси, что произойдёт, если снять одну переменную окружения; если защита при этом исчезнет, перед тобой дисциплина. В разбираемом проекте такая переменная когда-то была, снимала подтверждение всех записей разом, и её <strong>удалили из кода</strong>. Теперь она не отключает защиту, а мешает сервису запуститься.</p>
+<h2 id="Полезные-ссылки"><a class="header" href="#Полезные-ссылки">Полезные ссылки</a></h2>
+<ul>
+<li><a href="https://kafka.apache.org/">Apache Kafka</a> — шина сообщений, по которой общаются агенты.</li>
+<li><a href="https://langchain-ai.github.io/langgraph/">LangGraph</a> — библиотека для построения графа рассуждений модели.</li>
+<li><a href="https://epics-controls.org/">EPICS</a> — система управления, в которую в конце концов уходит запись.</li>
+<li>Глава <a href="../dev/web.html">«Основы WEB»</a> — про очереди и взаимодействие сервисов; глава <a href="../ai/instruments.html">«Инструментарий»</a> — про инструменты для языковых моделей.</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../examples/accumulator.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../examples/ai-scientist.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../examples/accumulator.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../examples/ai-scientist.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../web/print-edition.js"></script>
+
+
+    </div>
+    </body>
+</html>
