@@ -332,11 +332,18 @@ def jit_matrix_product(X, Y):
 X = np.random.randint(-255, 255, shape)
 Y = np.random.randint(-255, 255, shape)
 
+jit_matrix_product(X, Y)          # прогрев: здесь идёт компиляция
 %timeit -n100 jit_matrix_product(X, Y)
 </code></pre>
-<pre><code>The slowest run took 21.46 times longer than the fastest. This could mean that an intermediate result is being cached.
-495 µs ± 900 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>107 µs ± 1 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
+<p>Строка прогрева тут не для красоты. Numba компилирует функцию при первом вызове
+под конкретные типы аргументов, и на этой машине компиляция занимает около 360 мс —
+в три тысячи раз дольше самого счёта. Без прогрева она попадает в измерение,
+и <code>%timeit</code> выдаёт 495 мкс со среднеквадратичным отклонением 900 мкс, то есть
+разброс больше среднего. Это и есть верный признак испорченного замера: IPython
+в таком случае сам предупреждает, что самый медленный прогон оказался в двадцать
+раз дольше самого быстрого. После прогрева разброс падает до одного микросекунды.</p>
 <h2 id="Настоящая-задача-пространственный-заряд"><a class="header" href="#Настоящая-задача-пространственный-заряд">Настоящая задача: пространственный заряд</a></h2>
 <p>Умножение матриц — учебный пример; посмотрим, что Numba даёт на реальной вычислительной задаче. В коде REDPIC, о котором рассказано в <a href="../examples/redpic.html">отдельной главе</a>, пучок представлен ансамблем макрочастиц, и самая дорогая функция расчёта — суммирование кулоновских сил, которые частицы действуют друг на друга. Это и есть эффект пространственного заряда, из-за которого сильноточный пучок расталкивает сам себя:</p>
 <p>$$
@@ -359,7 +366,11 @@ def space_charge(x, y, z, Fx, Fy, Fz):
 <pre><code class="language-python">def space_charge_par(x, y, z, Fx, Fy, Fz):
     for i in prange(len(x)):       # &lt;-- единственное отличие
         for j in range(len(x)):
-            ...
+            if i != j:
+                r3 = ((x[j]-x[i])**2 + (y[j]-y[i])**2 + (z[j]-z[i])**2)**1.5
+                Fx[i] += (x[i]-x[j]) / r3
+                Fy[i] += (y[i]-y[j]) / r3
+                Fz[i] += (z[i]-z[j]) / r3
 
 jit_version = njit(space_charge)                      # JIT
 par_version = njit(parallel=True)(space_charge_par)   # JIT + ядра CPU
@@ -496,7 +507,7 @@ def cy_matrix_product(np.ndarray[np.int64_t, ndim=2] X,
 </code></pre>
 <pre><code>541 µs ± 5.14 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
-<p>Попробуем пойти дальше и отключить проверки выхода за границы массива и переполнения целочисленных типов.</p>
+<p>Попробуем пойти дальше и отключить проверку выхода за границы массива. Проверку переполнения целых отключать не нужно: в Cython она и так выключена по умолчанию, так что весь выигрыш здесь даёт <code>boundscheck</code>. Взамен ошибка в индексе перестанет возбуждать <code>IndexError</code> и молча полезет в чужую память, поэтому границы такого цикла надо выверять глазами.</p>
 <pre><code class="language-python">%%capture
 %%cython -a
 import numpy as np
@@ -505,7 +516,6 @@ cimport cython
 cimport numpy as np
 
 @cython.boundscheck(False)
-@cython.overflowcheck(False)
 def cy_matrix_product(np.ndarray[np.int64_t, ndim=2] X, 
                       np.ndarray[np.int64_t, ndim=2] Y):
     cdef int n_xrows = X.shape[0]
@@ -528,19 +538,20 @@ def cy_matrix_product(np.ndarray[np.int64_t, ndim=2] X,
 <p>А теперь то, с чего стоило начать.</p>
 <pre><code class="language-python">import numpy as np
 
-X = np.random.randint(-255, 255, shape)
-Y = np.random.randint(-255, 255, shape)
+X = np.random.randint(-255, 255, shape).astype(np.float64)
+Y = np.random.randint(-255, 255, shape).astype(np.float64)
 </code></pre>
 <pre><code class="language-python">%timeit -n100 X.dot(Y)
 </code></pre>
-<pre><code>151 µs ± 4.01 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>2.7 µs ± 0.0 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
 <pre><code class="language-python">%timeit -n100 X@Y
 </code></pre>
-<pre><code>215 µs ± 3.8 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>2.7 µs ± 0.0 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
-<p>Оператор <code>@</code> — то же самое матричное умножение, что и <code>X.dot(Y)</code>, только записанное короче. Под обеими записями один и тот же вызов, а расхождение в замерах — разброс между прогонами, а не свойство операторов.</p>
-<p>Взгляни на масштаб. Наивная реализация на чистом Python считала произведение матриц 64×64 около 0.1 секунды, NumPy справляется за сотни микросекунд — ускорение в сотни раз, и без единой строчки на C с твоей стороны. Под капотом NumPy вызывает BLAS, вылизанную десятилетиями библиотеку линейной алгебры, которая использует векторные инструкции процессора и оптимально работает с кешем.</p>
+<p>Оператор <code>@</code> — то же самое матричное умножение, что и <code>X.dot(Y)</code>, только записанное короче. Под обеими записями один и тот же вызов, и замеры это подтверждают.</p>
+<p>Приведение к <code>float64</code> в первой строке — не косметика. <code>np.random.randint</code> возвращает <code>int64</code>, а BLAS умеет только <code>float32</code>, <code>float64</code> и комплексные типы; на целых матрицах NumPy считает своим циклом и выдаёт около 70 мкс вместо 2.7. Тип данных здесь решает больше, чем выбор между <code>dot</code> и <code>@</code>.</p>
+<p>Взгляни на масштаб. Наивная реализация на чистом Python считала произведение матриц 64×64 около 0.1 секунды, NumPy справляется за единицы микросекунд — ускорение в десятки тысяч раз, и без единой строчки на C с твоей стороны. Под капотом NumPy вызывает BLAS, вылизанную десятилетиями библиотеку линейной алгебры, которая использует векторные инструкции процессора и оптимально работает с кешем.</p>
 <p>Отсюда главный вывод раздела: <strong>прежде чем компилировать Python, попробуй не писать циклы вообще</strong>. Numba и Cython нужны там, где задача принципиально не векторизуется; во всех остальных случаях правильно применённый NumPy обгонит их без всякой возни со сборкой и типами.</p>
 
                     </main>

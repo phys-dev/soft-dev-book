@@ -187,22 +187,31 @@
 <p>Соберём свой аналог <code>range</code>, чтобы увидеть обе роли явно. Контейнер <code>Range</code> умеет только выдать итератор; сам обход делает <code>RangeIterator</code>:</p>
 <pre><code class="language-python">class Range:
     def __init__(self, stop_value: int):
-        self.current = -1
         self.stop_value = stop_value - 1
-    
+
     def __iter__(self):
         return RangeIterator(self)
 
 class RangeIterator:
     def __init__(self, container):
         self.container = container
-    
+        self.current = -1          # состояние обхода живёт здесь
+
+    def __iter__(self):
+        return self                # итератор обязан быть итерируемым
+
     def __next__(self):
-        if self.container.current &lt; self.container.stop_value:
-            self.container.current += 1
-            return self.container.current
+        if self.current &lt; self.container.stop_value:
+            self.current += 1
+            return self.current
         raise StopIteration
 </code></pre>
+<p>Существенно, где лежит <code>current</code>. Он в итераторе, а не в контейнере, и
+поэтому каждый новый <code>for</code> начинает счёт заново — по одному <code>Range(5)</code> можно
+пройти сколько угодно раз. Положи счётчик в контейнер, и второй проход окажется
+пустым, хотя выглядеть код будет почти так же. Метод <code>__iter__</code> у самого
+итератора тоже не формальность: без него объект не итерируем, и <code>for</code> по нему
+не пойдёт.</p>
 <p>Чаще, впрочем, обе роли совмещают в одном классе: <code>__iter__</code> возвращает <code>self</code>. Кода меньше, но второй проход по такому объекту начнётся там, где закончился первый:</p>
 <pre><code class="language-python">class Range2:
     def __init__(self, stop_value: int):
@@ -264,8 +273,10 @@ def func():
 <p>Корутина переворачивает картину. Генератор только отдаёт значения наружу, а корутина умеет и <strong>принимать</strong> их. Выражение <code>deposit = (yield)</code> приостанавливает функцию и ждёт, пока снаружи вызовут <code>send</code>. Выходит диалог с функцией, которая между вопросами сохраняет своё состояние.</p>
 <p>Разберём на счёте сложных процентов. Коэффициент роста считается один раз при создании корутины, а дальше в неё можно бесконечно слать суммы вклада:</p>
 <pre><code class="language-python">import math
+from typing import Generator
 
-def cash_return_coro(percent: float, years: int) -&gt; float:
+def cash_return_coro(percent: float,
+                     years: int) -&gt; Generator[float | None, float, None]:
     value = math.pow(1 + percent / 100, years)
     while True:
         try:

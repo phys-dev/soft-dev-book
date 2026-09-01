@@ -295,7 +295,10 @@ t.start()
 <li>метод <code>acquire</code> захватывает примитив синхронизации,</li>
 <li>а метод <code>release</code> освобождает его.</li>
 </ul>
-<pre><code class="language-python">class SharedCounter:
+<pre><code class="language-python">from threading import Lock
+
+
+class SharedCounter:
     def __init__(self, value):
         self._value = value
         self._lock = Lock()
@@ -326,10 +329,10 @@ t.start()
 def master(q):
     for item in source():
         q.put(item)
-        
-        # блокирующе ждёт, пока все элементы
-        # очереди не будут обработаны
-        q.join()
+
+    # блокирующе ждёт, пока все элементы
+    # очереди не будут обработаны
+    q.join()
 </code></pre>
 <h2 id="Модуль-futures"><a class="header" href="#Модуль-futures">Модуль <code>futures</code></a></h2>
 <p>Модуль <code>concurrent.futures</code> поднимается ещё на уровень выше. Он даёт абстрактный класс <code>Executor</code> и его реализацию поверх пула потоков — <code>ThreadPoolExecutor</code>. Интерфейс исполнителя состоит всего из трёх методов.</p>
@@ -506,24 +509,38 @@ p = mp.Process(target=ponger, args=(child_conn, ))
 <p>Реализация функции <code>integrate_async</code> на основе пула потоков работала долго, попробуем использовать пул процессов:</p>
 <pre><code class="language-python">from concurrent.futures import ProcessPoolExecutor
 </code></pre>
-<pre><code class="language-python">def integrate_async(f, a, b, *, n_jobs, n_iter=1000):
-    executor = ProcessPoolExecutor(max_workers=n_jobs)
+<pre><code class="language-python">def integrate_async(executor, f, a, b, *, n_jobs, n_iter=1000):
     spawn = partial(executor.submit, integrate, f,
                     n_iter=n_iter // n_jobs)
 
     step = (b - a) / n_jobs
     fs=[spawn(a + i * step, a + (i + 1) * step)
         for i in range(n_jobs)]
-    
+
     return sum(f.result() for f in as_completed(fs))
 </code></pre>
-<pre><code class="language-python">%%timeit -n100
-integrate_async(math.cos, 0, math.pi / 2, n_iter=10**6, n_jobs=2)
+<p>Пул принимается аргументом, а не создаётся внутри, и это принципиально. Запуск
+процесса стоит десятки миллисекунд: на macOS и Windows интерпретатор стартует
+заново, целиком. Создай пул внутри измеряемой функции — и замерять будешь запуск
+интерпретатора, а не счёт. Вдобавок незакрытый <code>ProcessPoolExecutor</code> оставляет
+процессы жить, и за сотню итераций <code>%%timeit</code> машина обрастёт ими всерьёз.</p>
+<pre><code class="language-python">with ProcessPoolExecutor(max_workers=2) as executor:
+    integrate_async(executor, math.cos, 0, math.pi / 2,
+                    n_iter=10**6, n_jobs=2)          # прогрев
+    %timeit -n5 integrate_async(executor, math.cos, 0, math.pi / 2, \
+                                n_iter=10**6, n_jobs=2)
 </code></pre>
-<pre><code>16.6 ms ± 144 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>21 ms ± 0.2 ms per loop (mean ± std. dev. of 5 runs, 5 loops each)
 </code></pre>
+<p>Последовательный счёт той же интеграции занимает 44 мс. Два процесса дают 21 мс,
+то есть ровно то двукратное ускорение, которого и ждёшь от двух ядер, — и никакого
+GIL, потому что у каждого процесса он свой.</p>
 <h2 id="Пакет-joblib"><a class="header" href="#Пакет-joblib">Пакет <code>joblib</code></a></h2>
 <p>Пакет <code>joblib</code> даёт параллельный аналог обычного цикла <code>for</code> — удобно, когда итерации независимы и их надо просто разложить по ядрам. Чем раскладывать, потоками или процессами, выбирается одним аргументом <code>backend</code>:</p>
+<p>Замеры ниже сделаны на <strong>исходной</strong>, чистой Python-версии <code>integrate</code>. Если в блокноте
+уже выполнена ячейка с <code>%%cython</code>, имя <code>integrate</code> указывает на скомпилированную
+функцию, и числа получатся другие — на порядок меньше. Сравнивать их с тем, что было
+до Cython, нельзя; чтобы повторить замеры отсюда, определи <code>integrate</code> заново.</p>
 <pre><code class="language-python">from joblib import Parallel, delayed
 
 def integrate_async(f, a, b, *, n_jobs, n_iter=1000, backend=None):

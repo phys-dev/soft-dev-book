@@ -198,31 +198,41 @@
 <p>Запусти виртуальную машину и загрузись с ISO образа Arch Linux.</p>
 </li>
 <li>
-<p>Используй <code>cfdisk</code> для разметки диска (<code>/dev/sda</code>). Создай следующие разделы:</p>
+<p>Используй <code>cfdisk</code> для разметки диска (<code>/dev/sda</code>). Выбери таблицу разделов
+<strong>GPT</strong> и создай три раздела:</p>
 <ul>
-<li><code>/dev/sda1</code>: 1G для EFI System Partition (ESP)</li>
-<li><code>/dev/sda2</code>: остальное пространство для корневой файловой системы</li>
+<li><code>/dev/sda1</code>: 1M, тип <strong>BIOS boot</strong> (код <code>EF02</code>)</li>
+<li><code>/dev/sda2</code>: 1G, тип <strong>EFI System</strong> (код <code>EF00</code>) — это ESP</li>
+<li><code>/dev/sda3</code>: остальное пространство для корневой файловой системы</li>
 </ul>
+<p>Первый раздел выглядит лишним, но без него не обойтись. На диске с MBR GRUB
+прячет свою вторую ступень в промежутке после загрузочной записи, а на GPT
+такого промежутка нет, и <code>grub-install --target=i386-pc</code> откажется работать
+с сообщением «embedding is not possible». Раздел BIOS boot и есть то место,
+куда GRUB её кладёт; файловой системы на нём не создают, он остаётся сырым.</p>
+<p>Второй раздел сейчас тоже не понадобится: при загрузке через BIOS прошивка
+про ESP ничего не знает. Он заведён на будущее — в конце главы мы переключим
+машину на UEFI, и тогда переразмечать диск уже не придётся.</p>
 </li>
 <li>
 <p>Создай файловую систему на ESP разделе:</p>
-<pre><code class="language-bash">mkfs.fat -F32 /dev/sda1
+<pre><code class="language-bash">mkfs.fat -F32 /dev/sda2
 </code></pre>
 </li>
 <li>
 <p>Создай файловую систему на корневом разделе:</p>
-<pre><code class="language-bash">mkfs.ext4 /dev/sda2
+<pre><code class="language-bash">mkfs.ext4 /dev/sda3
 </code></pre>
 </li>
 <li>
 <p>Смонтируй корневую файловую систему:</p>
-<pre><code class="language-bash">mount /dev/sda2 /mnt
+<pre><code class="language-bash">mount /dev/sda3 /mnt
 </code></pre>
 </li>
 <li>
 <p>Создай и смонтируй ESP:</p>
 <pre><code class="language-bash">mkdir /mnt/boot
-mount /dev/sda1 /mnt/boot
+mount /dev/sda2 /mnt/boot
 </code></pre>
 </li>
 <li>
@@ -271,11 +281,15 @@ reboot
 <pre><code class="language-bash">cfdisk /dev/sda
 cfdisk /dev/sdb
 </code></pre>
-<p>Создай разделы на обоих дисках (например, <code>/dev/sda1</code> и <code>/dev/sdb1</code>).</p>
+<p>На каждом диске выбери таблицу <strong>GPT</strong> и создай два раздела: <code>/dev/sda1</code>
+размером 1M с типом <strong>BIOS boot</strong> (<code>EF02</code>) и <code>/dev/sda2</code> на всё остальное
+с типом <strong>Linux RAID</strong> (<code>FD00</code>); то же самое на <code>/dev/sdb</code>. Раздел BIOS boot
+нужен по той же причине, что и в предыдущем разделе, и нужен он на <strong>обоих</strong>
+дисках — иначе после отказа первого машина со второго не поднимется.</p>
 </li>
 <li>
 <p>Создай RAID1 массив:</p>
-<pre><code class="language-bash">mdadm --create --verbose /dev/md0 --level=1 --raid-devices=2 /dev/sda1 /dev/sdb1
+<pre><code class="language-bash">mdadm --create --verbose /dev/md0 --level=1 --raid-devices=2 /dev/sda2 /dev/sdb2
 </code></pre>
 </li>
 <li>
@@ -358,8 +372,8 @@ reboot
 </li>
 <li>
 <p>Смонтируй корневую файловую систему и ESP:</p>
-<pre><code class="language-bash">mount /dev/sda2 /mnt
-mount /dev/sda1 /mnt/boot
+<pre><code class="language-bash">mount /dev/sda3 /mnt
+mount /dev/sda2 /mnt/boot
 arch-chroot /mnt
 </code></pre>
 </li>

@@ -229,6 +229,11 @@ do_smth()
 </code></pre>
 <pre><code>hello
 </code></pre>
+<p>Пример рассчитан на Python до 3.12 включительно. Начиная с 3.13 действует PEP 667:
+<code>f_locals</code> стал прокси, пишущим прямо в переменные кадра, поэтому строчки
+с <code>ctypes</code> больше не нужно — а функции <code>PyFrame_LocalsToFast</code> в C API уже и нет,
+и обращение к ней даст <code>AttributeError</code>. Сам фокус при этом никуда не делся,
+записать в чужой кадр по-прежнему можно, только короче.</p>
 <p>Отсюда следствие. Интерпретатор обязан выполнять написанное слово в слово. Он не может вынести проверку <code>i == 0</code> из цикла, потому что не знает, не поменяется ли <code>a</code>, <code>i</code> или сам <code>range</code> по дороге. Такую оптимизацию приходится делать руками.</p>
 <pre><code class="language-python">def do1():
     a = [-1] * 1000
@@ -843,10 +848,16 @@ sys.getsizeof([SomeClass(i) for i in range(1000000)])
 <p><a href="https://docs.python.org/3/library/array.html">Полный список кодов типов</a> — в документации.</p>
 <h2 id="nparray"><a class="header" href="#nparray">np.array</a></h2>
 <p><code>np.array</code> устроен так же — фиксированный тип, элементы подряд, и памяти занимает существенно меньше стандартного списка. Вдобавок, в отличие от <code>array</code>, он умеет считать.</p>
-<pre><code class="language-python">%memit np.arange(10000000)
+<pre><code class="language-python">np.arange(10000000).nbytes / 2**20
 </code></pre>
-<pre><code>peak memory: 632.75 MiB, increment: 0.00 MiB
+<pre><code>76.29
 </code></pre>
+<p>Здесь <code>%memit</code> не годится, и на этом стоит остановиться. Он меряет прирост
+потребления процессом, а интерпретатор с аллокатором держат уже освобождённые
+страницы про запас и охотно кладут новый массив в них. В таком случае <code>%memit</code>
+покажет <code>increment: 0.00 MiB</code> для восьмидесяти мегабайт данных — и это не
+экономия, а несостоявшееся измерение. У NumPy размер известен точно и без
+всяких замеров: <code>nbytes</code> возвращает ровно <code>len * itemsize</code>.</p>
 <h2 id="tuple-vs-list"><a class="header" href="#tuple-vs-list">tuple vs list</a></h2>
 <p>Кортеж чуть компактнее списка — ему не нужен запас под рост. Разница невелика, зато хорошо видно, во что обходится списковое включение: созданный им список несёт с собой место под будущие <code>append</code>:</p>
 <pre><code class="language-python">sys.getsizeof([i for i in one_million_elements])
@@ -911,9 +922,9 @@ def attr_work(obj):
 <p>Пакет <a href="https://github.com/ilanschnell/bitarray">bitarray</a> хранит булевы значения по одному биту на элемент, а не по указателю на объект. На десяти миллионах флагов разница уже заметна:</p>
 <pre><code class="language-python">import bitarray.util as bu
 
-%memit bu.zeros(10000000)
+bu.zeros(10000000).nbytes / 2**20
 </code></pre>
-<pre><code>peak memory: 634.12 MiB, increment: 0.00 MiB
+<pre><code>1.19
 </code></pre>
 <pre><code class="language-python">%memit [False for i in range(10000000)]
 </code></pre>
