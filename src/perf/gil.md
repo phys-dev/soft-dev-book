@@ -207,6 +207,9 @@ class Task:
 
 
 ```python
+from threading import Lock
+
+
 class SharedCounter:
     def __init__(self, value):
         self._value = value
@@ -244,10 +247,10 @@ def worker(q):
 def master(q):
     for item in source():
         q.put(item)
-        
-        # блокирующе ждёт, пока все элементы
-        # очереди не будут обработаны
-        q.join()
+
+    # блокирующе ждёт, пока все элементы
+    # очереди не будут обработаны
+    q.join()
 ```
 
 ## Модуль `futures`
@@ -572,31 +575,47 @@ from concurrent.futures import ProcessPoolExecutor
 
 
 ```python
-def integrate_async(f, a, b, *, n_jobs, n_iter=1000):
-    executor = ProcessPoolExecutor(max_workers=n_jobs)
+def integrate_async(executor, f, a, b, *, n_jobs, n_iter=1000):
     spawn = partial(executor.submit, integrate, f,
                     n_iter=n_iter // n_jobs)
 
     step = (b - a) / n_jobs
     fs=[spawn(a + i * step, a + (i + 1) * step)
         for i in range(n_jobs)]
-    
+
     return sum(f.result() for f in as_completed(fs))
 ```
 
+Пул принимается аргументом, а не создаётся внутри, и это принципиально. Запуск
+процесса стоит десятки миллисекунд: на macOS и Windows интерпретатор стартует
+заново, целиком. Создай пул внутри измеряемой функции — и замерять будешь запуск
+интерпретатора, а не счёт. Вдобавок незакрытый `ProcessPoolExecutor` оставляет
+процессы жить, и за сотню итераций `%%timeit` машина обрастёт ими всерьёз.
 
 ```python
-%%timeit -n100
-integrate_async(math.cos, 0, math.pi / 2, n_iter=10**6, n_jobs=2)
+with ProcessPoolExecutor(max_workers=2) as executor:
+    integrate_async(executor, math.cos, 0, math.pi / 2,
+                    n_iter=10**6, n_jobs=2)          # прогрев
+    %timeit -n5 integrate_async(executor, math.cos, 0, math.pi / 2, \
+                                n_iter=10**6, n_jobs=2)
 ```
 
-    16.6 ms ± 144 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+    21 ms ± 0.2 ms per loop (mean ± std. dev. of 5 runs, 5 loops each)
+
+Последовательный счёт той же интеграции занимает 44 мс. Два процесса дают 21 мс,
+то есть ровно то двукратное ускорение, которого и ждёшь от двух ядер, — и никакого
+GIL, потому что у каждого процесса он свой.
 
 
 ## Пакет `joblib`
 
 Пакет `joblib` даёт параллельный аналог обычного цикла `for` — удобно, когда итерации независимы и их надо просто разложить по ядрам. Чем раскладывать, потоками или процессами, выбирается одним аргументом `backend`:
 
+
+Замеры ниже сделаны на **исходной**, чистой Python-версии `integrate`. Если в блокноте
+уже выполнена ячейка с `%%cython`, имя `integrate` указывает на скомпилированную
+функцию, и числа получатся другие — на порядок меньше. Сравнивать их с тем, что было
+до Cython, нельзя; чтобы повторить замеры отсюда, определи `integrate` заново.
 
 ```python
 from joblib import Parallel, delayed

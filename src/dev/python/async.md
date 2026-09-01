@@ -16,22 +16,32 @@
 ```python
 class Range:
     def __init__(self, stop_value: int):
-        self.current = -1
         self.stop_value = stop_value - 1
-    
+
     def __iter__(self):
         return RangeIterator(self)
 
 class RangeIterator:
     def __init__(self, container):
         self.container = container
-    
+        self.current = -1          # состояние обхода живёт здесь
+
+    def __iter__(self):
+        return self                # итератор обязан быть итерируемым
+
     def __next__(self):
-        if self.container.current < self.container.stop_value:
-            self.container.current += 1
-            return self.container.current
+        if self.current < self.container.stop_value:
+            self.current += 1
+            return self.current
         raise StopIteration
 ```
+
+Существенно, где лежит `current`. Он в итераторе, а не в контейнере, и
+поэтому каждый новый `for` начинает счёт заново — по одному `Range(5)` можно
+пройти сколько угодно раз. Положи счётчик в контейнер, и второй проход окажется
+пустым, хотя выглядеть код будет почти так же. Метод `__iter__` у самого
+итератора тоже не формальность: без него объект не итерируем, и `for` по нему
+не пойдёт.
 
 Чаще, впрочем, обе роли совмещают в одном классе: `__iter__` возвращает `self`. Кода меньше, но второй проход по такому объекту начнётся там, где закончился первый:
 
@@ -117,8 +127,10 @@ def func():
 
 ```python
 import math
+from typing import Generator
 
-def cash_return_coro(percent: float, years: int) -> float:
+def cash_return_coro(percent: float,
+                     years: int) -> Generator[float | None, float, None]:
     value = math.pow(1 + percent / 100, years)
     while True:
         try:

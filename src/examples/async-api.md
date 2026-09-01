@@ -183,7 +183,7 @@ async def film_details(
 from functools import lru_cache
 from typing import Optional
 from aioredis import Redis
-from elasticsearch import AsyncElasticsearch
+from elasticsearch import AsyncElasticsearch, NotFoundError
 from fastapi import Depends
 
 from db.elastic import get_elastic
@@ -205,7 +205,10 @@ class FilmService:
         return film
     
     async def _get_film_from_elastic(self, film_id: str) -> Optional[Film]:
-        doc = await self.elastic.get('movies', film_id)
+        try:
+            doc = await self.elastic.get('movies', film_id)
+        except NotFoundError:
+            return None
         return Film(**doc['_source'])
     
     async def _film_from_cache(self, film_id: str) -> Optional[Film]:
