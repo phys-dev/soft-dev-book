@@ -620,14 +620,24 @@ def brief_practicum(text, max_items=8):
     lines = text.split("\n")
     head = lines[0] if lines and lines[0].startswith("# ") else ""
     body, items, in_fence, repo = [], 0, False, ""
+    deliver = []          # раздел «Что сдавать» печатаем целиком
+    in_deliver = False
     for line in lines[1:]:
         if line.startswith("```"):
             in_fence = not in_fence
             continue
         if in_fence:
             continue
-        if re.match(r"^#{2,6} ", line):
-            continue                       # рубрики задания не печатаем
+        head_match = re.match(r"^(#{2,6}) (.+)$", line)
+        if head_match:
+            # рубрики задания не печатаем, кроме одной: без неё студент
+            # не знает, что считается выполненным, а прежний отсыл
+            # «подробности на сайте» ни на что не указывал.
+            # Флаг переключаем только на втором уровне: внутри раздела
+            # бывают подрубрики, и они не должны его сбрасывать.
+            if len(head_match.group(1)) == 2:
+                in_deliver = head_match.group(2).strip().startswith("Что сдавать")
+            continue
         stripped = line.strip()
         if not stripped:
             continue
@@ -635,14 +645,16 @@ def brief_practicum(text, max_items=8):
             # сохраняем вложенность: иначе подпункты становятся
             # отдельными требованиями и смысл списка ломается
             indent = len(line) - len(line.lstrip())
-            if indent == 0:
-                items += 1
-                if items > max_items:
+            if not in_deliver:
+                if indent == 0:
+                    items += 1
+                    if items > max_items:
+                        continue
+                elif items > max_items:
                     continue
-            elif items > max_items:
-                continue
             pad = "    " * min(indent // 2, 2)
-            body.append(pad + "* " + re.sub(r"^([-*+]|\d+\.)\s*", "", stripped))
+            (deliver if in_deliver else body).append(
+                pad + "* " + re.sub(r"^([-*+]|\d+\.)\s*", "", stripped))
         elif "github.com/" in stripped and "Опирается" not in stripped:
             # адрес репозитория с материалами печатаем как текст: перейти
             # по ссылке с бумаги нельзя, а набрать её руками можно.
@@ -656,12 +668,17 @@ def brief_practicum(text, max_items=8):
             body.append(stripped)
     out = [head, ""] if head else []
     out.extend(body)
+    if deliver:
+        out.append("")
+        out.append("**Что сдавать.**")
+        out.append("")
+        out.extend(deliver)
     out.append("")
     if repo:
         out.append(f"Заготовка и материалы к заданию: {repo}")
         out.append("")          # иначе обе ссылки слипнутся в один абзац
-    out.append("Развёрнутые требования и критерии приёмки — "
-               f"в электронной версии: {WEB}")
+    out.append("Постоянно обновляемая версия задания — "
+               f"в электронном издании: {WEB}")
     out.append("")
     return "\n".join(out)
 
