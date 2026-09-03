@@ -92,12 +92,13 @@
 
 # Работаем самостоятельно
 
-- [Ищем ошибки в чужом коде](./practicum/review-code-task.md)
-- [Генерируем текст цепью Маркова](./practicum/markov-chain-task.md)
-- [Установка Linux](./practicum/booting-linux-task.md)
-- [Набор упражнений для работы в Linux](./practicum/linux-tools-task.md)
-- [Маленькая задачка с Linux](./practicum/linux-structure-task.md)
-- [Пишем эффективный код](./practicum/python-algo-task.md)
+- [Как устроены задания](./practicum/intro.md)
+- [Ревью чужого кода](./practicum/review-code-task.md)
+- [Генерация текста на основе данных](./practicum/markov-chain-task.md)
+- [Установка Arch Linux вручную с RAID1 и UEFI](./practicum/booting-linux-task.md)
+- [Настройка окружения и работа с утилитами](./practicum/linux-tools-task.md)
+- [Работа с долгоиграющими процессами](./practicum/linux-structure-task.md)
+- [Решение задач на Python и анализ сложности](./practicum/python-algo-task.md)
 - [Деплой стартапа](./practicum/kitty-startup-task.md)
 - [Итоговый проект](./practicum/final-project-requirements.md)
 

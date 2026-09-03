@@ -95,6 +95,9 @@ KEEP_TASKS = {"./cs/trees.md": 2, "./cs/graphs.md": 2}
 
 # Практикум печатаем кратко: постановка задачи и ссылка на сайт.
 BRIEF = {"./practicum/"}
+# Вводная глава практикума — не задание: сокращать в ней нечего,
+# а brief_practicum склеил бы абзацы и дописал строку про критерии приёмки.
+BRIEF_SKIP = {"./practicum/intro.md"}
 
 # Пределы для листингов и распечаток
 # Порог сокращения вывода программ. Поднят так, чтобы проходили осмысленные
@@ -606,15 +609,17 @@ def keep_first_tasks(text, keep):
 
 
 def brief_practicum(text, max_items=8):
-    """Оставляет от задания суть: заголовок, постановку и ссылку.
+    """Оставляет от задания суть: заголовок, постановку и обе ссылки.
 
     Развёрнутые требования, критерии приёмки и форматы отчёта живут
     на сайте — в книге от задания нужна формулировка, чтобы студент
-    понял, о чём речь, и пошёл за подробностями по ссылке.
+    понял, о чём речь, и пошёл за подробностями. Адрес репозитория
+    с заготовкой печатается полностью: на бумаге ссылка не кликается,
+    зато набирается.
     """
     lines = text.split("\n")
     head = lines[0] if lines and lines[0].startswith("# ") else ""
-    body, items, in_fence = [], 0, False
+    body, items, in_fence, repo = [], 0, False, ""
     for line in lines[1:]:
         if line.startswith("```"):
             in_fence = not in_fence
@@ -638,15 +643,25 @@ def brief_practicum(text, max_items=8):
                 continue
             pad = "    " * min(indent // 2, 2)
             body.append(pad + "* " + re.sub(r"^([-*+]|\d+\.)\s*", "", stripped))
-        elif stripped.startswith("["):
-            continue                       # ссылки соберём в конце
+        elif "github.com/" in stripped and "Опирается" not in stripped:
+            # адрес репозитория с материалами печатаем как текст: перейти
+            # по ссылке с бумаги нельзя, а набрать её руками можно.
+            # К этому месту fix_links уже превратил ссылку в сноску
+            # «текст^[адрес]», поэтому ловим обе формы записи.
+            found = re.search(r"(?:\]\(|\^\[)(https?://[^)\]]+)", stripped)
+            if found:
+                repo = found.group(1)
+            continue
         elif items == 0:
             body.append(stripped)
     out = [head, ""] if head else []
     out.extend(body)
     out.append("")
-    out.append("Развёрнутые требования, критерии приёмки и материалы "
-               f"к заданию — в электронной версии: {WEB}")
+    if repo:
+        out.append(f"Заготовка и материалы к заданию: {repo}")
+        out.append("")          # иначе обе ссылки слипнутся в один абзац
+    out.append("Развёрнутые требования и критерии приёмки — "
+               f"в электронной версии: {WEB}")
     out.append("")
     return "\n".join(out)
 
@@ -836,7 +851,7 @@ def main(volume=None):
             text = drop_sections(text, DROP_SECTIONS[path])
         if path in KEEP_TASKS:
             text = keep_first_tasks(text, KEEP_TASKS[path])
-        if any(path.startswith(b) for b in BRIEF):
+        if any(path.startswith(b) for b in BRIEF) and path not in BRIEF_SKIP:
             text = brief_practicum(text)
         # листинги печатаем целиком: обрезка теряла существенные детали,
         # а на формате А4 место под них есть

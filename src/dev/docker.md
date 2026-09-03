@@ -251,3 +251,5 @@ docker compose down       # остановить и удалить контей�
 - [Docker: гибкая сеть без NAT на все случаи жизни](https://habr.com/ru/company/badoo/blog/308402/)
 - [Docker Compose](https://docs.docker.com/reference/compose-file/)
 - [Docker Compose CLI](https://docs.docker.com/reference/cli/docker/compose/)
+
+> **Задание.** Упакуй бэкенд и фронтенд в образы и свяжи их через `docker-compose`: [«Деплой стартапа „Котики в мир“»](../practicum/kitty-startup-task.md).
