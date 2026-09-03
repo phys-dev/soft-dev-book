@@ -25,24 +25,24 @@
 
 # Разбираемся в алгоритмах
 
-- [Общие знания](./cs/intro.md)
-  - [Введение в алгоритмы](./cs/basic-algos.md)
-  - [Основные структуры данных](./cs/basic-structures.md)
-  - [Рекурсия и сортировки](./cs/recurs-and-sorts.md)
-  - [Хеш-функции](./cs/hash-funcs.md)
-  - [Деревья](./cs/trees.md)
-  - [Графы](./cs/graphs.md)
+- [Зачем физику алгоритмы](./cs/intro.md)
+- [Введение в алгоритмы](./cs/basic-algos.md)
+- [Основные структуры данных](./cs/basic-structures.md)
+- [Рекурсия и сортировки](./cs/recurs-and-sorts.md)
+- [Хеш-функции](./cs/hash-funcs.md)
+- [Деревья](./cs/trees.md)
+- [Графы](./cs/graphs.md)
 
 # Погружаемся в Python
 
 - [Как устроен Python](./dev/python/init.md)
-  - [Объекты и память](./dev/python/objects.md)
-  - [Коллекции](./dev/python/collections.md)
-  - [Асимптотическая сложность](./dev/python/o-notation.md)
-  - [Функции](./dev/python/functions.md)
-  - [Итераторы, генераторы и корутины](./dev/python/async.md)
-  - [Декораторы и functools](./dev/python/decorators.md)
-  - [Классы](./dev/python/classes.md)
+- [Объекты и память](./dev/python/objects.md)
+- [Коллекции](./dev/python/collections.md)
+- [Асимптотическая сложность](./dev/python/o-notation.md)
+- [Функции](./dev/python/functions.md)
+- [Итераторы, генераторы и корутины](./dev/python/async.md)
+- [Декораторы и functools](./dev/python/decorators.md)
+- [Классы](./dev/python/classes.md)
 
 # Пишем надёжный код
 
@@ -71,24 +71,24 @@
 # Ускоряем код
 
 - [С чего начинать оптимизацию](./perf/intro.md)
-  - [Почему Python не очень быстрый](./dev/python/optimization.md)
-  - [Скорость выполнения программ](./perf/perf.md)
-  - [Многопоточность и GIL](./perf/gil.md)
-  - [Асинхронность](./perf/async.md)
-  - [CUDA и вычисления на GPU](./perf/cuda.md)
+- [Почему Python не очень быстрый](./dev/python/optimization.md)
+- [Скорость выполнения программ](./perf/perf.md)
+- [Многопоточность и GIL](./perf/gil.md)
+- [Асинхронность](./perf/async.md)
+- [CUDA и вычисления на GPU](./perf/cuda.md)
 
 # Учимся у других
 
 - [Коды и скрипты](./examples/intro.md)
-  - [Уравнение огибающей Капчинского—Владимирского для пучка заряженных частиц](./examples/kenv.md)
-  - [Оптимизация огибающей пучка заряженных частиц с помощью генетического алгоритма](./examples/envelope-optimize.md)
-  - [Релятивистская разностная схема для расчёта динамики частиц](./examples/redpic.md)
-  - [Коррекция равновесной орбиты с применением матрицы отклика и нейронных сетей](./examples/orbit-correction.md)
-  - [Трёхмерная схема установки кодом](./examples/cadquery/layout.md)
-  - [Цифровой двойник ускорителя](./examples/accumulator.md)
-  - [Мультиагентный помощник оператора](./examples/sava.md)
-  - [Автономный исследователь на языковых моделях](./examples/ai-scientist.md)
-  - [Асинхронное API для кинотеатра](./examples/async-api.md)
+- [Уравнение огибающей Капчинского—Владимирского для пучка заряженных частиц](./examples/kenv.md)
+- [Оптимизация огибающей пучка заряженных частиц с помощью генетического алгоритма](./examples/envelope-optimize.md)
+- [Релятивистская разностная схема для расчёта динамики частиц](./examples/redpic.md)
+- [Коррекция равновесной орбиты с применением матрицы отклика и нейронных сетей](./examples/orbit-correction.md)
+- [Трёхмерная схема установки кодом](./examples/cadquery/layout.md)
+- [Цифровой двойник ускорителя](./examples/accumulator.md)
+- [Мультиагентный помощник оператора](./examples/sava.md)
+- [Автономный исследователь на языковых моделях](./examples/ai-scientist.md)
+- [Асинхронное API для кинотеатра](./examples/async-api.md)
 
 # Работаем самостоятельно
 
