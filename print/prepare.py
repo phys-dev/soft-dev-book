@@ -675,7 +675,7 @@ def brief_practicum(text, max_items=8):
         out.extend(deliver)
     out.append("")
     if repo:
-        out.append(f"Заготовка и материалы к заданию: {repo}")
+        out.append(f"Репозиторий задания: {repo}")
         out.append("")          # иначе обе ссылки слипнутся в один абзац
     out.append("Постоянно обновляемая версия задания — "
                f"в электронном издании: {WEB}")
