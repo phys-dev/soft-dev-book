@@ -432,7 +432,7 @@ translations = data['def'][0]['tr']
         response = self.session.get('https://api.example.com/user')
         return response.json()
 </code></pre>
-<p>Обрати внимание на <code>requests.Session()</code>. Сессия хранит заголовки между запросами и переиспользует TCP-соединение, так что серия обращений к одному серверу идёт заметно быстрее, чем столько же отдельных вызовов <code>requests.get</code>.</p>
+<p>Отдельно стоит <code>requests.Session()</code>. Сессия хранит заголовки между запросами и переиспользует TCP-соединение, так что серия обращений к одному серверу идёт заметно быстрее, чем столько же отдельных вызовов <code>requests.get</code>.</p>
 <h3 id="json-формат"><a class="header" href="#json-формат">JSON формат</a></h3>
 <p>JavaScript Object Notation — стандартный формат обмена данными: текстовый, читаемый глазами и почти один в один ложащийся на словари и списки Python.</p>
 <pre><code class="language-python">import json
