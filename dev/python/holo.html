@@ -179,13 +179,14 @@
                 <div id="content" class="content">
                     <main>
                         <h2 id="holoviews"><a class="header" href="#holoviews">HoloViews</a></h2>
-<p>Matplotlib рисует буквально то, что ему велено, и потому требует расписывать каждый шаг. А хочется иногда обратного — описать, <em>что</em> за данные у тебя в руках, и дать библиотеке решить, как их показать.</p>
-<p><a href="https://holoviews.org">HoloViews</a> — библиотека визуализации, построенная на
-принципе «аннотируй данные, а не рисуй график». Ты описываешь сами данные и их
-семантику (что здесь аргумент, что — значение, в каких они единицах), а
-библиотека уже сама решает, как это отобразить. Один и тот же объект можно
-отрисовать разными бэкендами: интерактивным <code>bokeh</code>, привычным <code>matplotlib</code>
-или <code>plotly</code>. В итоге меньше кода про пиксели — больше кода про физику.</p>
+<p>Matplotlib рисует буквально то, что ему велено, и потому требует расписывать каждый шаг. А хочется иногда обратного, то есть описать, <em>что</em> за данные у тебя в руках, и дать библиотеке решить, как их показать.</p>
+<p><a href="https://holoviews.org">HoloViews</a> представляет собой библиотеку визуализации,
+построенную на принципе «аннотируй данные, а не рисуй график». Ты описываешь
+сами данные и их семантику (что здесь аргумент, что значение, в каких они
+единицах), а библиотека уже сама решает, как это отобразить. Один и тот же
+объект можно отрисовать разными бэкендами: интерактивным <code>bokeh</code>, привычным
+<code>matplotlib</code> или <code>plotly</code>. В итоге кода про пиксели становится меньше, а кода
+про физику больше.</p>
 <h3 id="Установка-и-импорт"><a class="header" href="#Установка-и-импорт">Установка и импорт</a></h3>
 <pre><code class="language-bash">pip install holoviews bokeh
 </code></pre>
@@ -197,14 +198,15 @@ import holoviews as hv
 hv.extension('bokeh')
 </code></pre>
 <p>В Jupyter объект HoloViews из последней строки ячейки рендерится
-автоматически — аналог <code>%matplotlib inline</code> не нужен. С бэкендом <code>bokeh</code> ты
-бесплатно получаешь панорамирование, зум и всплывающие подсказки с точными
-значениями. Подозрительный выброс на графике можно рассмотреть вблизи, не
-перестраивая картинку с новыми пределами осей.</p>
+автоматически, так что аналог <code>%matplotlib inline</code> не нужен. С бэкендом
+<code>bokeh</code> ты бесплатно получаешь панорамирование, зум и всплывающие подсказки
+с точными значениями. Подозрительный выброс на графике можно рассмотреть
+вблизи, не перестраивая картинку с новыми пределами осей.</p>
 <h3 id="Элементы-данные-плюс-семантика"><a class="header" href="#Элементы-данные-плюс-семантика">Элементы: данные плюс семантика</a></h3>
-<p>Базовый кирпичик HoloViews — элемент, контейнер с данными, который знает свой
-тип визуализации. <code>hv.Curve</code> — непрерывная зависимость, <code>hv.Scatter</code> —
-дискретные измерения, <code>hv.Image</code> — величина на регулярной 2D-сетке.</p>
+<p>Базовым кирпичиком HoloViews служит элемент, контейнер с данными, знающий свой
+тип визуализации. <code>hv.Curve</code> задаёт непрерывную зависимость, <code>hv.Scatter</code>
+показывает дискретные измерения, а <code>hv.Image</code> отображает величину на
+регулярной 2D-сетке.</p>
 <pre><code class="language-python"># Затухающие колебания в контуре
 t = np.linspace(0, 10, 500)
 u = np.exp(-t / 5) * np.sin(2 * np.pi * t)
@@ -213,13 +215,13 @@ u = np.exp(-t / 5) * np.sin(2 * np.pi * t)
 decay = hv.Curve((t, u), 't', 'U')
 decay
 </code></pre>
-<p>Измерениям можно задать человеческие подписи и единицы — они автоматически
-попадут на оси и в подсказки:</p>
+<p>Измерениям можно задать человеческие подписи и единицы, автоматически
+попадающие на оси и в подсказки:</p>
 <pre><code class="language-python">dim_t = hv.Dimension('t', label='Время', unit='с')
 dim_u = hv.Dimension('U', label='Напряжение', unit='В')
 decay = hv.Curve((t, u), dim_t, dim_u)
 </code></pre>
-<p><code>hv.Scatter</code> — те же оси «аргумент — значение», но точками. Идеально для
+<p><code>hv.Scatter</code> даёт те же оси «аргумент — значение», но точками. Идеально для
 экспериментальных данных:</p>
 <pre><code class="language-python">rng = np.random.default_rng(42)
 
@@ -230,17 +232,17 @@ u_exp += rng.normal(0, 0.05, t_exp.size)
 
 experiment = hv.Scatter((t_exp, u_exp), dim_t, dim_u)
 </code></pre>
-<p><code>hv.Points</code> внешне похож на <code>Scatter</code>, а семантика другая. Обе координаты —
-независимые ключевые измерения, точки просто живут на плоскости. Классический
-пример — частицы в фазовом пространстве:</p>
+<p><code>hv.Points</code> внешне похож на <code>Scatter</code>, а семантика другая. Обе координаты
+выступают независимыми ключевыми измерениями, а точки просто живут на
+плоскости. Классическим примером служат частицы в фазовом пространстве:</p>
 <pre><code class="language-python"># Пучок электронов в фазовой плоскости (x, px)
 x = rng.normal(0, 1.0, 1000)
 px = rng.normal(0, 0.3, 1000)
 
 phase_portrait = hv.Points((x, px), ['x', 'px'])
 </code></pre>
-<p><code>hv.Image</code> — двумерное поле. Например, поперечное распределение интенсивности
-гауссова лазерного пучка:</p>
+<p><code>hv.Image</code> хранит двумерное поле, например поперечное распределение
+интенсивности гауссова лазерного пучка:</p>
 <pre><code class="language-python">grid = np.linspace(-3, 3, 400)
 xx, yy = np.meshgrid(grid, grid)
 w = 1.2  # радиус пучка, мм
@@ -250,7 +252,7 @@ intensity = np.exp(-2 * (xx ** 2 + yy ** 2) / w ** 2)
 beam = hv.Image(intensity, bounds=(-3, -3, 3, 3),
                 kdims=['x', 'y'], vdims='I')
 </code></pre>
-<p>Нигде выше мы не сказали ни слова о том, <em>как</em> рисовать, — только о том,
+<p>Нигде выше мы не сказали ни слова о том, <em>как</em> рисовать, зато сказали о том,
 <em>что</em> мы рисуем.</p>
 <h3 id="Композиция--и-"><a class="header" href="#Композиция--и-">Композиция: <code>+</code> и <code>*</code></a></h3>
 <p>Элементы комбинируются операторами. <code>+</code> кладёт графики рядом (layout), <code>*</code>
@@ -267,8 +269,8 @@ theory_vs_experiment = decay * experiment
 <pre><code class="language-python">(decay + experiment + beam).cols(2)
 </code></pre>
 <h3 id="holomap-и-dynamicmap-параметр-вместо-цикла"><a class="header" href="#holomap-и-dynamicmap-параметр-вместо-цикла">HoloMap и DynamicMap: параметр вместо цикла</a></h3>
-<p>Часто нужен не один график, а семейство: как меняется сигнал при изменении
-частоты, температуры, тока в линзе. В Matplotlib ты рисовал бы цикл из
+<p>Часто нужен не один график, а семейство, показывающее, как меняется сигнал
+при изменении частоты, температуры, тока в линзе. В Matplotlib ты рисовал бы цикл из
 subplots; HoloViews превращает параметр в слайдер.</p>
 <pre><code class="language-python">def waveform(f):
     """Строит кривую затухающего сигнала для частоты f (Гц)."""
@@ -283,8 +285,8 @@ hmap = hv.HoloMap({f: waveform(f) for f in frequencies}, kdims='f')
 hmap
 </code></pre>
 <p>Рядом с графиком появится слайдер по <code>f</code>. <code>HoloMap</code> хранит все кадры в памяти,
-поэтому его можно сохранить в самодостаточный HTML — слайдер останется живым
-даже без Python, удобно отправлять коллегам:</p>
+поэтому его можно сохранить в самодостаточный HTML, где слайдер останется
+живым даже без Python, что удобно при отправке коллегам:</p>
 <pre><code class="language-python">hv.save(hmap, 'waveform.html')
 </code></pre>
 <p><code>DynamicMap</code> вычисляет кадры лениво, по движению слайдера, что спасает, когда
@@ -306,14 +308,15 @@ hmap
 beam.opts(width=420, height=360, cmap='inferno',
           colorbar=True, logz=True)
 </code></pre>
-<p>Логарифмическая шкала цвета — то, что нужно для пучков и спектров с большим
-динамическим диапазоном. Учти, что часть опций зависит от бэкенда: <code>width</code> и
-<code>height</code> в пикселях — <code>bokeh</code>, у <code>matplotlib</code> вместо них <code>fig_inches</code> и
-<code>aspect</code>. Полный список опций элемента покажет <code>hv.help(hv.Curve)</code>.</p>
+<p>Логарифмическая шкала цвета подходит для пучков и спектров с большим
+динамическим диапазоном. Учти, что часть опций зависит от бэкенда. Ширина
+<code>width</code> и высота <code>height</code> задаются в пикселях у <code>bokeh</code>, а у <code>matplotlib</code>
+вместо них идут <code>fig_inches</code> и <code>aspect</code>. Полный список опций элемента покажет
+<code>hv.help(hv.Curve)</code>.</p>
 <h3 id="Экосистема-holoviz"><a class="header" href="#Экосистема-holoviz">Экосистема HoloViz</a></h3>
-<p>HoloViews — центр целой экосистемы <a href="https://holoviz.org">HoloViz</a>. Самая
-востребованная её часть — <a href="https://hvplot.holoviz.org">hvPlot</a>, интерактивная
-замена встроенного <code>df.plot()</code> из pandas. Один импорт — и у DataFrame
+<p>HoloViews стоит в центре целой экосистемы <a href="https://holoviz.org">HoloViz</a>. Самая
+востребованная её часть, <a href="https://hvplot.holoviz.org">hvPlot</a>, интерактивно
+заменяет встроенный <code>df.plot()</code> из pandas. После одного импорта у DataFrame
 появляется аксессор <code>.hvplot</code>, возвращающий обычные объекты HoloViews, со
 всеми слайдерами, оверлеями и <code>.opts()</code>:</p>
 <pre><code class="language-python">import pandas as pd
@@ -322,21 +325,21 @@ import hvplot.pandas  # регистрирует аксессор .hvplot
 df = pd.DataFrame({'t': t, 'U': u})
 df.hvplot.line(x='t', y='U')  # тот же hv.Curve, но одной строкой
 </code></pre>
-<p>Вторая опора экосистемы — <a href="https://panel.holoviz.org">Panel</a>, библиотека для
-сборки дашбордов и веб-приложений. Она связывает объекты HoloViews, виджеты
-(слайдеры, кнопки, поля ввода) и текст в единый интерфейс, который командой
-<code>panel serve app.py</code> превращается в веб-приложение. Так мониторинг установки
-или разведочный анализ данных становится страницей в браузере — без единой
-строки JavaScript.</p>
+<p>Вторая опора экосистемы, <a href="https://panel.holoviz.org">Panel</a>, служит
+библиотекой для сборки дашбордов и веб-приложений. Она связывает объекты
+HoloViews, виджеты (слайдеры, кнопки, поля ввода) и текст в единый интерфейс,
+который командой <code>panel serve app.py</code> превращается в веб-приложение. Так
+мониторинг установки или разведочный анализ данных становится страницей в
+браузере, не требующей ни единой строки JavaScript.</p>
 <h3 id="Полезные-ссылки"><a class="header" href="#Полезные-ссылки">Полезные ссылки</a></h3>
 <ul>
-<li><a href="https://holoviews.org">holoviews.org</a> — документация HoloViews;</li>
-<li><a href="https://holoviews.org/gallery/index.html">Галерея примеров</a> — быстрый
+<li><a href="https://holoviews.org">holoviews.org</a>, документация HoloViews;</li>
+<li><a href="https://holoviews.org/gallery/index.html">Галерея примеров</a>, быстрый
 способ найти заготовку под свою задачу;</li>
-<li><a href="https://hvplot.holoviz.org">hvplot.holoviz.org</a> — интерактивные графики
+<li><a href="https://hvplot.holoviz.org">hvplot.holoviz.org</a>, интерактивные графики
 для pandas в одну строку;</li>
-<li><a href="https://panel.holoviz.org">panel.holoviz.org</a> — дашборды и веб-приложения;</li>
-<li><a href="https://holoviz.org">holoviz.org</a> — обзор всей экосистемы HoloViz.</li>
+<li><a href="https://panel.holoviz.org">panel.holoviz.org</a>, дашборды и веб-приложения;</li>
+<li><a href="https://holoviz.org">holoviz.org</a>, обзор всей экосистемы HoloViz.</li>
 </ul>
 
                     </main>
