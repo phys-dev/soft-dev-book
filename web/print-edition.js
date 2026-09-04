@@ -5,10 +5,10 @@
 //
 // Ссылка ведёт на latest, а не на конкретный тег: так после нового релиза
 // сайт править не нужно. Ведём на страницу релиза, а не на отдельный файл:
-// издание выходит в двух частях, и прямая ссылка отдавала бы только одну.
+// так ссылка переживает переименование PDF.
 (function () {
   var PDF = "https://github.com/phys-dev/soft-dev-book/releases/latest";
-  var TITLE = "Скачать печатное издание: обе части (PDF, А4)";
+  var TITLE = "Скачать печатное издание (PDF, А4)";
 
   function retarget() {
     var icon = document.getElementById("print-button");
