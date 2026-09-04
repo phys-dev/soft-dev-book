@@ -4,7 +4,6 @@
 
 # Собираем инструменты
 
-- [Git](./dev/git.md)
 - [ИИ для разработки](./ai/intro.md)
   - [Контекст и скорость изменений](./ai/context.md)
   - [ИИ и разработчик](./ai/develop.md)
@@ -12,6 +11,7 @@
   - [Инструментарий](./ai/instruments.md)
   - [GitHub Copilot](./ai/copilot.md)
   - [Вопросы и ответы](./ai/qa.md)
+- [Git](./dev/git.md)
 
 # Осваиваем Linux
 
