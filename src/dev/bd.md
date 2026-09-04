@@ -397,6 +397,230 @@ Redis держит то, что живёт недолго: кеш частых �
 
 Отсюда практический вывод для студенческого проекта: **начинай с одной базы**. Одна PostgreSQL закрывает потребности лабораторного сервиса на годы вперёд, а для документов в ней есть тип `JSONB` с индексацией по полям внутри документа. Вторую базу заводят не потому, что «так делают в больших системах», а когда первая измеримо перестала справляться с конкретным профилем нагрузки.
 
+## Одна задача в четырёх хранилищах
+
+Всё сказанное выше проще увидеть на одном примере. Возьмём учебный сервис, то есть список записей с операциями «прочитать страницу», «добавить», «изменить», «удалить», и переложим его последовательно в четыре хранилища: текстовый файл, структуру в оперативной памяти, реляционную базу и кеш поверх неё.
+
+Смотреть надо не на код, который почти не меняется, а на то, где лежат данные и во что обходится каждая операция. Про сложность операций и структуры данных речь шла в главе [«Основные структуры данных»](../cs/basic-structures.md), и здесь мы увидим ту же арифметику на живом сервисе.
+
+### Наивное решение. GET
+
+Самым прямолинейным вариантом остаётся обычный текстовый файл, по строке на запись. Чтобы отдать одну страницу, приходится прочитать файл целиком, а при изменении и удалении ещё и переписать его заново, а это \\(O(n)\\) на каждую операцию.
+
+```python
+@app.route('/', methods=['GET'])
+def paginated_get():
+    page = int(request.args.get('page', '0'))
+    first = page * PAGE_SIZE
+    last = first + PAGE_SIZE
+    result = []
+    with open(FILE_PATH, 'r') as f:
+        for i, line in enumerate(f.readlines()[first:last]):
+            result.append( {'id': first + i, 'data': line.strip()})
+    return {"result": result}
+```
+
+### Наивное решение. POST
+
+```python
+@app.route('/', methods=['POST'])
+def post():
+    data = request.json['data']
+    with open(FILE_PATH, 'a') as f:
+        f.write('\n' + data)
+    return {}, 201
+```
+
+### Наивное решение. PUT
+
+```python
+@app.route('/<int:data_id>', methods=['PUT'])
+def put(data_id):
+    data = request.json['data']
+    with open(FILE_PATH, 'r') as f:
+        new_data = f.readlines()
+        new_data[data_id] = data + '\n'
+    with open(FILE_PATH, 'w') as f:
+        f.writelines(new_data)
+    return {}, 204
+```
+
+### Наивное решение. DELETE
+
+```python
+@app.route('/<int:data_id>', methods=['DELETE'])
+def delete(data_id):
+    with open(FILE_PATH, 'r') as f:
+        new_data = f.readlines()
+    del new_data[data_id]
+    with open(FILE_PATH, 'w') as f:
+        f.writelines(new_data)
+    return {}, 204
+```
+
+### Фиксированный. GET
+
+Если отвести каждой записи одинаковое число байт, файл превращается в массив, и нужную запись читаем сразу, перескочив к её смещению через `seek()`. Зато удаление дорожает: хвост файла приходится сдвигать вручную.
+
+```python
+@app.route('/', methods=['GET'])
+def paginated_get():
+    page = int(request.args.get('page', '0'))
+    first = page * PAGE_SIZE
+    result = []
+    with open(FILE_PATH, 'rb') as f:
+        f.seek(first * ELEMENT_SIZE)
+        data = f.read(PAGE_SIZE * ELEMENT_SIZE)
+        for i, n in enumerate(range(PAGE_SIZE)):
+            result.append(
+                {
+                    "id": first + i,
+                    "data": (
+                        data[n * ELEMENT_SIZE: (n + 1) * ELEMENT_SIZE].
+                        strip(FILL_CHAR).decode('utf-8')
+                    )
+                }
+            )
+    return {"result": result}
+```
+
+### Фиксированный. POST
+
+```python
+def post():
+    data = str(request.json['data'])
+    with open(FILE_PATH, 'a+b') as f:
+        f.write(data.encode('utf-8').ljust(ELEMENT_SIZE, FILL_CHAR))
+    return {}, 201
+```
+
+### Фиксированный. PUT
+
+```python
+@app.route('/<int:data_id>', methods=['PUT'])
+def put(data_id):
+    data = request.json['data']
+    with open(FILE_PATH, 'r+b') as f:
+        f.seek(data_id * ELEMENT_SIZE)
+        f.write(data.encode('utf-8').ljust(ELEMENT_SIZE, FILL_CHAR))
+    return {}, 204
+```
+
+### Фиксированный. DELETE
+
+```python
+@app.route('/<int:data_id>', methods=['DELETE'])
+def delete(data_id):
+    with open(FILE_PATH, 'r+b') as f:
+        point = data_id * ELEMENT_SIZE
+        f.seek(point)
+        while True:
+            f.seek(point + ELEMENT_SIZE)
+            complex_data = f.read(ELEMENT_SIZE)
+            f.seek(point)
+            if len(complex_data):
+                f.write(complex_data)
+                point += ELEMENT_SIZE
+            else:
+                f.truncate()
+                break
+    return {}, 204
+```
+
+### Database. GET
+
+Настоящая база данных прячет всю эту механику за индексами, а искать по ключу, вставлять и удалять она умеет сама, и делает это не хуже структур из этой главы.
+
+```python
+@app.route('/', methods=['GET'])
+def paginated_get():
+    page = int(request.args.get('page', '0'))
+    with closing(psycopg2.connect(dbname=dbname, host=host)) as conn:
+        with conn.cursor() as cursor:
+            cursor.execute(
+                'SELECT "id", "todo" FROM "todos" ORDER BY "id" OFFSET %s LIMIT %s;',
+                (page * PAGE_SIZE, PAGE_SIZE)
+            )
+            return {
+                "result": [ {"id": row[0], "data": row[1]} for row in cursor]
+            }
+```
+
+### Database. POST
+
+```python
+@app.route('/', methods=['POST'])
+def post():
+    data = str(request.json['data'])
+    with closing(psycopg2.connect(dbname=dbname, host=host)) as conn:
+        with conn.cursor() as cursor:
+            cursor.execute(
+                'INSERT INTO "todos" ("todo") VALUES (%s) RETURNING "id";',
+                (data,)
+            )
+            conn.commit()
+            return {"id": cursor.fetchone()[0]}, 201
+```
+
+### Database. PUT
+
+```python
+@app.route('/<int:data_id>', methods=['PUT'])
+def put(data_id):
+    data = request.json['data']
+    with closing(psycopg2.connect(dbname=dbname, host=host)) as conn:
+        with conn.cursor() as cursor:
+            cursor.execute(
+                'UPDATE "todos" SET "todo" = %s WHERE "id" = %s;',
+                (data, data_id)
+            )
+            conn.commit()
+            return {}, 204
+```
+
+### Database. DELETE
+
+```python
+@app.route('/<int:data_id>', methods=['DELETE'])
+def delete(data_id):
+    with closing(psycopg2.connect(dbname=dbname, host=host)) as conn:
+        with conn.cursor() as cursor:
+            cursor.execute(
+                'DELETE FROM "todos" WHERE "id" = %s;',
+                (data_id,)
+            )
+            conn.commit()
+            return {}, 204
+```
+
+### Cache. GET
+
+Наконец, самые частые запросы можно вовсе не доводить до базы, поскольку готовый ответ кладётся в Redis и в следующий раз отдаётся прямо из оперативной памяти.
+
+```python
+@app.route('/', methods=['GET'])
+def paginated_get():
+    page = int(request.args.get('page', '0'))
+                                
+    redis_client = redis.StrictRedis(**redis_creds)
+    cached_page = redis_client.get(page)
+                                
+    if cached_page:
+        return cached_page
+                                
+    with closing(psycopg2.connect(**postgres_creds)) as conn:
+        with conn.cursor() as cursor:
+            cursor.execute(
+                'SELECT "id", "todo" FROM "todos" ORDER BY "id" OFFSET %s LIMIT %s;',
+                (page * PAGE_SIZE, PAGE_SIZE)
+            )
+            result = json.dumps({
+                "result": [{"id": row[0], "data": row[1]} for row in cursor]
+            })
+            redis_client.set(page, result, ex=ttl)
+            return result
+```
+
 ## Pandas и базы данных
 
 Мост между базой и анализом данных встроен в pandas. Функция `read_sql` выполняет запрос и возвращает `DataFrame`, а `to_sql` записывает `DataFrame` в таблицу.
