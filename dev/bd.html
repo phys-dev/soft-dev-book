@@ -479,6 +479,184 @@ with Session(engine) as session:
 </div>
 <p>У полиглотного хранения есть и цена, о которой лучше знать заранее. Как только данные разъезжаются по трём базам, <strong>исчезает транзакция, охватывающая их все</strong>, и одним атомарным действием уже не записать эксперимент в PostgreSQL вместе с его результатами в MongoDB. Согласованность приходится обеспечивать вручную, распределёнными транзакциями или компенсирующими действиями, откатывающими то, что успело записаться. Сложность заметная. Окупается она, только когда профили данных действительно разные.</p>
 <p>Отсюда практический вывод для студенческого проекта: <strong>начинай с одной базы</strong>. Одна PostgreSQL закрывает потребности лабораторного сервиса на годы вперёд, а для документов в ней есть тип <code>JSONB</code> с индексацией по полям внутри документа. Вторую базу заводят не потому, что «так делают в больших системах», а когда первая измеримо перестала справляться с конкретным профилем нагрузки.</p>
+<h2 id="Одна-задача-в-четырёх-хранилищах"><a class="header" href="#Одна-задача-в-четырёх-хранилищах">Одна задача в четырёх хранилищах</a></h2>
+<p>Всё сказанное выше проще увидеть на одном примере. Возьмём учебный сервис, то есть список записей с операциями «прочитать страницу», «добавить», «изменить», «удалить», и переложим его последовательно в четыре хранилища: текстовый файл, структуру в оперативной памяти, реляционную базу и кеш поверх неё.</p>
+<p>Смотреть надо не на код, который почти не меняется, а на то, где лежат данные и во что обходится каждая операция. Про сложность операций и структуры данных речь шла в главе <a href="../cs/basic-structures.html">«Основные структуры данных»</a>, и здесь мы увидим ту же арифметику на живом сервисе.</p>
+<h3 id="Наивное-решение-get"><a class="header" href="#Наивное-решение-get">Наивное решение. GET</a></h3>
+<p>Самым прямолинейным вариантом остаётся обычный текстовый файл, по строке на запись. Чтобы отдать одну страницу, приходится прочитать файл целиком, а при изменении и удалении ещё и переписать его заново, а это \(O(n)\) на каждую операцию.</p>
+<pre><code class="language-python">@app.route('/', methods=['GET'])
+def paginated_get():
+    page = int(request.args.get('page', '0'))
+    first = page * PAGE_SIZE
+    last = first + PAGE_SIZE
+    result = []
+    with open(FILE_PATH, 'r') as f:
+        for i, line in enumerate(f.readlines()[first:last]):
+            result.append( {'id': first + i, 'data': line.strip()})
+    return {"result": result}
+</code></pre>
+<h3 id="Наивное-решение-post"><a class="header" href="#Наивное-решение-post">Наивное решение. POST</a></h3>
+<pre><code class="language-python">@app.route('/', methods=['POST'])
+def post():
+    data = request.json['data']
+    with open(FILE_PATH, 'a') as f:
+        f.write('\n' + data)
+    return {}, 201
+</code></pre>
+<h3 id="Наивное-решение-put"><a class="header" href="#Наивное-решение-put">Наивное решение. PUT</a></h3>
+<pre><code class="language-python">@app.route('/&lt;int:data_id&gt;', methods=['PUT'])
+def put(data_id):
+    data = request.json['data']
+    with open(FILE_PATH, 'r') as f:
+        new_data = f.readlines()
+        new_data[data_id] = data + '\n'
+    with open(FILE_PATH, 'w') as f:
+        f.writelines(new_data)
+    return {}, 204
+</code></pre>
+<h3 id="Наивное-решение-delete"><a class="header" href="#Наивное-решение-delete">Наивное решение. DELETE</a></h3>
+<pre><code class="language-python">@app.route('/&lt;int:data_id&gt;', methods=['DELETE'])
+def delete(data_id):
+    with open(FILE_PATH, 'r') as f:
+        new_data = f.readlines()
+    del new_data[data_id]
+    with open(FILE_PATH, 'w') as f:
+        f.writelines(new_data)
+    return {}, 204
+</code></pre>
+<h3 id="Фиксированный-get"><a class="header" href="#Фиксированный-get">Фиксированный. GET</a></h3>
+<p>Если отвести каждой записи одинаковое число байт, файл превращается в массив, и нужную запись читаем сразу, перескочив к её смещению через <code>seek()</code>. Зато удаление дорожает: хвост файла приходится сдвигать вручную.</p>
+<pre><code class="language-python">@app.route('/', methods=['GET'])
+def paginated_get():
+    page = int(request.args.get('page', '0'))
+    first = page * PAGE_SIZE
+    result = []
+    with open(FILE_PATH, 'rb') as f:
+        f.seek(first * ELEMENT_SIZE)
+        data = f.read(PAGE_SIZE * ELEMENT_SIZE)
+        for i, n in enumerate(range(PAGE_SIZE)):
+            result.append(
+                {
+                    "id": first + i,
+                    "data": (
+                        data[n * ELEMENT_SIZE: (n + 1) * ELEMENT_SIZE].
+                        strip(FILL_CHAR).decode('utf-8')
+                    )
+                }
+            )
+    return {"result": result}
+</code></pre>
+<h3 id="Фиксированный-post"><a class="header" href="#Фиксированный-post">Фиксированный. POST</a></h3>
+<pre><code class="language-python">def post():
+    data = str(request.json['data'])
+    with open(FILE_PATH, 'a+b') as f:
+        f.write(data.encode('utf-8').ljust(ELEMENT_SIZE, FILL_CHAR))
+    return {}, 201
+</code></pre>
+<h3 id="Фиксированный-put"><a class="header" href="#Фиксированный-put">Фиксированный. PUT</a></h3>
+<pre><code class="language-python">@app.route('/&lt;int:data_id&gt;', methods=['PUT'])
+def put(data_id):
+    data = request.json['data']
+    with open(FILE_PATH, 'r+b') as f:
+        f.seek(data_id * ELEMENT_SIZE)
+        f.write(data.encode('utf-8').ljust(ELEMENT_SIZE, FILL_CHAR))
+    return {}, 204
+</code></pre>
+<h3 id="Фиксированный-delete"><a class="header" href="#Фиксированный-delete">Фиксированный. DELETE</a></h3>
+<pre><code class="language-python">@app.route('/&lt;int:data_id&gt;', methods=['DELETE'])
+def delete(data_id):
+    with open(FILE_PATH, 'r+b') as f:
+        point = data_id * ELEMENT_SIZE
+        f.seek(point)
+        while True:
+            f.seek(point + ELEMENT_SIZE)
+            complex_data = f.read(ELEMENT_SIZE)
+            f.seek(point)
+            if len(complex_data):
+                f.write(complex_data)
+                point += ELEMENT_SIZE
+            else:
+                f.truncate()
+                break
+    return {}, 204
+</code></pre>
+<h3 id="database-get"><a class="header" href="#database-get">Database. GET</a></h3>
+<p>Настоящая база данных прячет всю эту механику за индексами, а искать по ключу, вставлять и удалять она умеет сама, и делает это не хуже структур из этой главы.</p>
+<pre><code class="language-python">@app.route('/', methods=['GET'])
+def paginated_get():
+    page = int(request.args.get('page', '0'))
+    with closing(psycopg2.connect(dbname=dbname, host=host)) as conn:
+        with conn.cursor() as cursor:
+            cursor.execute(
+                'SELECT "id", "todo" FROM "todos" ORDER BY "id" OFFSET %s LIMIT %s;',
+                (page * PAGE_SIZE, PAGE_SIZE)
+            )
+            return {
+                "result": [ {"id": row[0], "data": row[1]} for row in cursor]
+            }
+</code></pre>
+<h3 id="database-post"><a class="header" href="#database-post">Database. POST</a></h3>
+<pre><code class="language-python">@app.route('/', methods=['POST'])
+def post():
+    data = str(request.json['data'])
+    with closing(psycopg2.connect(dbname=dbname, host=host)) as conn:
+        with conn.cursor() as cursor:
+            cursor.execute(
+                'INSERT INTO "todos" ("todo") VALUES (%s) RETURNING "id";',
+                (data,)
+            )
+            conn.commit()
+            return {"id": cursor.fetchone()[0]}, 201
+</code></pre>
+<h3 id="database-put"><a class="header" href="#database-put">Database. PUT</a></h3>
+<pre><code class="language-python">@app.route('/&lt;int:data_id&gt;', methods=['PUT'])
+def put(data_id):
+    data = request.json['data']
+    with closing(psycopg2.connect(dbname=dbname, host=host)) as conn:
+        with conn.cursor() as cursor:
+            cursor.execute(
+                'UPDATE "todos" SET "todo" = %s WHERE "id" = %s;',
+                (data, data_id)
+            )
+            conn.commit()
+            return {}, 204
+</code></pre>
+<h3 id="database-delete"><a class="header" href="#database-delete">Database. DELETE</a></h3>
+<pre><code class="language-python">@app.route('/&lt;int:data_id&gt;', methods=['DELETE'])
+def delete(data_id):
+    with closing(psycopg2.connect(dbname=dbname, host=host)) as conn:
+        with conn.cursor() as cursor:
+            cursor.execute(
+                'DELETE FROM "todos" WHERE "id" = %s;',
+                (data_id,)
+            )
+            conn.commit()
+            return {}, 204
+</code></pre>
+<h3 id="cache-get"><a class="header" href="#cache-get">Cache. GET</a></h3>
+<p>Наконец, самые частые запросы можно вовсе не доводить до базы, поскольку готовый ответ кладётся в Redis и в следующий раз отдаётся прямо из оперативной памяти.</p>
+<pre><code class="language-python">@app.route('/', methods=['GET'])
+def paginated_get():
+    page = int(request.args.get('page', '0'))
+                                
+    redis_client = redis.StrictRedis(**redis_creds)
+    cached_page = redis_client.get(page)
+                                
+    if cached_page:
+        return cached_page
+                                
+    with closing(psycopg2.connect(**postgres_creds)) as conn:
+        with conn.cursor() as cursor:
+            cursor.execute(
+                'SELECT "id", "todo" FROM "todos" ORDER BY "id" OFFSET %s LIMIT %s;',
+                (page * PAGE_SIZE, PAGE_SIZE)
+            )
+            result = json.dumps({
+                "result": [{"id": row[0], "data": row[1]} for row in cursor]
+            })
+            redis_client.set(page, result, ex=ttl)
+            return result
+</code></pre>
 <h2 id="pandas-и-базы-данных"><a class="header" href="#pandas-и-базы-данных">Pandas и базы данных</a></h2>
 <p>Мост между базой и анализом данных встроен в pandas. Функция <code>read_sql</code> выполняет запрос и возвращает <code>DataFrame</code>, а <code>to_sql</code> записывает <code>DataFrame</code> в таблицу.</p>
 <pre><code class="language-python">import pandas as pd
