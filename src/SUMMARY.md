@@ -49,7 +49,7 @@
 - [Требования к коду](./dev/python/requirements.md)
 - [Жизненный цикл ПО](./dev/life.md)
 - [От скрипта к приложению](./dev/app.md)
-- [Основы WEB](./dev/web.md)
+- [Сети и веб-технологии](./dev/web.md)
 - [Базы данных](./dev/bd.md)
 
 # Обрабатываем данные
@@ -60,7 +60,7 @@
   - [Matplotlib](./dev/python/matplotlib.md)
 - [NumPy и pandas](./dev/python/numpy-and-pandas.md)
 - [SciPy](./dev/python/scipy.md)
-- [Визуализация данных](./dev/python/visualization/practice.md)
+- [Визуализация на Python](./dev/python/visualization/practice.md)
 - [HoloViews](./dev/python/holo.md)
 - [Машинное обучение](./ds/intro.md)
   - [Основные понятия](./ds/basic.md)
