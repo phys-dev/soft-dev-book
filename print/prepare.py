@@ -55,11 +55,15 @@ VOLUMES = {
 # Главы, дословно дублирующие материал других разделов.
 # Экспресс-курс по Python пересказывает темы разделов «Погружаемся
 # в Python» и «Обрабатываем данные», поэтому в книге его нет.
+# Приложение с экспресс-курсом остаётся только в электронной версии:
+# основы языка, NumPy и Matplotlib разобраны в книге полными главами,
+# а здесь дан беглый справочник для тех, кто Python не знает вовсе.
 SKIP = {
     "./dev/python/basics.md",
     "./dev/python/numpy.md",
     "./dev/python/matplotlib.md",
 }
+SKIP_PARTS = {"Приложение. Экспресс-курс"}
 
 # Выгрузки из Jupyter: печатаем текст, формулы и короткие фрагменты,
 # длинные листинги заменяем началом кода и ссылкой на сайт.
@@ -821,7 +825,7 @@ def main(volume=None):
     keep = wanted is None
     for kind, title, path, level in parse_summary():
         if kind == "part":
-            keep = wanted is None or title in wanted
+            keep = (wanted is None or title in wanted) and title not in SKIP_PARTS
             if keep:
                 parts.append(f"\n\n# {title}\n\n")
             continue

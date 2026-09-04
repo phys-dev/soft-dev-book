@@ -4,6 +4,7 @@
 
 # Собираем инструменты
 
+- [Git](./dev/git.md)
 - [ИИ для разработки](./ai/intro.md)
   - [Контекст и скорость изменений](./ai/context.md)
   - [ИИ и разработчик](./ai/develop.md)
@@ -11,27 +12,16 @@
   - [Инструментарий](./ai/instruments.md)
   - [GitHub Copilot](./ai/copilot.md)
   - [Вопросы и ответы](./ai/qa.md)
-- [Git](./dev/git.md)
-- [Docker](./dev/docker.md)
 
 # Осваиваем Linux
 
 - [Основы Linux](./linux/intro.md)
-  - [Процесс загрузки](./linux/booting.md)
-  - [Файловые системы](./linux/filesystems.md)
-  - [Инструменты](./linux/tools.md)
+- [Инструменты](./linux/tools.md)
+- [Процесс загрузки](./linux/booting.md)
+- [Файловые системы](./linux/filesystems.md)
 - [Установка Arch Linux](./linux/install-arch-linux.md)
 - [Внутреннее устройство Linux](./linux/structure.md)
-
-# Разбираемся в алгоритмах
-
-- [Зачем физику алгоритмы](./cs/intro.md)
-- [Введение в алгоритмы](./cs/basic-algos.md)
-- [Основные структуры данных](./cs/basic-structures.md)
-- [Рекурсия и сортировки](./cs/recurs-and-sorts.md)
-- [Хеш-функции](./cs/hash-funcs.md)
-- [Деревья](./cs/trees.md)
-- [Графы](./cs/graphs.md)
+- [Docker](./dev/docker.md)
 
 # Погружаемся в Python
 
@@ -44,10 +34,20 @@
 - [Декораторы и functools](./dev/python/decorators.md)
 - [Классы](./dev/python/classes.md)
 
+# Разбираемся в алгоритмах
+
+- [Зачем физику алгоритмы](./cs/intro.md)
+- [Введение в алгоритмы](./cs/basic-algos.md)
+- [Основные структуры данных](./cs/basic-structures.md)
+- [Рекурсия и сортировки](./cs/recurs-and-sorts.md)
+- [Хеш-функции](./cs/hash-funcs.md)
+- [Деревья](./cs/trees.md)
+- [Графы](./cs/graphs.md)
+
 # Пишем надёжный код
 
-- [Требования к коду](./dev/python/requirements.md)
 - [Жизненный цикл ПО](./dev/life.md)
+- [Требования к коду](./dev/python/requirements.md)
 - [От скрипта к приложению](./dev/app.md)
 - [Сети и веб-технологии](./dev/web.md)
 - [Базы данных](./dev/bd.md)
@@ -55,9 +55,6 @@
 # Обрабатываем данные
 
 - [Научные библиотеки Python](./dev/python/intro.md)
-  - [Основы Python](./dev/python/basics.md)
-  - [NumPy](./dev/python/numpy.md)
-  - [Matplotlib](./dev/python/matplotlib.md)
 - [NumPy и pandas](./dev/python/numpy-and-pandas.md)
 - [SciPy](./dev/python/scipy.md)
 - [Визуализация на Python](./dev/python/visualization/practice.md)
@@ -104,6 +101,12 @@
 - [Итоговый проект](./practicum/final-project-requirements.md)
 
 ---
+
+# Приложение. Экспресс-курс
+
+- [Основы языка](./dev/python/basics.md)
+- [Массивы NumPy](./dev/python/numpy.md)
+- [Графики Matplotlib](./dev/python/matplotlib.md)
 
 [Заключение](./resume/intro.md)
 
