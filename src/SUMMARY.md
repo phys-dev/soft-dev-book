@@ -72,6 +72,7 @@
 
 - [С чего начинать оптимизацию](./perf/intro.md)
 - [Почему Python не очень быстрый](./dev/python/optimization.md)
+- [Что выжать из самого Python](./perf/python-tricks.md)
 - [Скорость выполнения программ](./perf/perf.md)
 - [Многопоточность и GIL](./perf/gil.md)
 - [Асинхронность](./perf/async.md)
