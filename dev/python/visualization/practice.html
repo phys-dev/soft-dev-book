@@ -179,9 +179,9 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="Визуализация-на-python"><a class="header" href="#Визуализация-на-python">Визуализация на Python</a></h1>
-<p>С массивами и таблицами разобрались, пора превратить их в картинки, и три библиотеки ниже покрывают почти все потребности. Matplotlib отвечает за статику в статью, seaborn за быстрый разведочный анализ, plotly за интерактивные графики в блокноте.</p>
+<p>С массивами и таблицами разобрались, пора превратить их в картинки, и три библиотеки, разобранные ниже, покрывают почти все потребности. Matplotlib отвечает за статику в статью, seaborn за быстрый разведочный анализ, plotly за интерактивные графики в блокноте.</p>
 <h2 id="Часть-1-matplotlib"><a class="header" href="#Часть-1-matplotlib">Часть 1. Matplotlib</a></h2>
-<p>В начале, как всегда, настроим окружение, то есть импортируем все необходимые библиотеки и немного поправим дефолтное отображение картинок.</p>
+<p>В начале, как всегда, настроим окружение, то есть импортируем нужные библиотеки и немного поправим отображение картинок, заданное по умолчанию.</p>
 <pre><code class="language-python">! ls
 </code></pre>
 <pre><code>07_manual.ipynb				    test.ipynb
@@ -222,7 +222,7 @@ import seaborn as sns
 <pre><code>%pylab is deprecated, use %matplotlib inline and import the required libraries.
 Populating the interactive namespace from numpy and matplotlib
 </code></pre>
-<p>После этого загрузим в <code>dataframe</code> данные, с которыми будем работать, а для примеров визуализаций я выбрала данные о продажах и оценках видео-игр с  <a href="https://www.kaggle.com/rush4ratio/video-game-sales-with-ratings">Kaggle Datasets</a>. Данные об оценках игр есть не для всех строк, поэтому сразу оставим только те записи, по которым есть полные данные.</p>
+<p>После этого загрузим в <code>dataframe</code> данные, с которыми будем работать, а для примеров визуализаций я выбрала данные о продажах и оценках видео-игр с  <a href="https://www.kaggle.com/rush4ratio/video-game-sales-with-ratings">Kaggle Datasets</a>. Данные об оценках игр есть не для всех строк, поэтому сразу оставим только записи, снабжённые полными данными.</p>
 <pre><code class="language-python">df = pd.read_csv('video_games_sales.csv')
 print(df.shape)
 </code></pre>
@@ -542,7 +542,7 @@ df['Critic_Count'] = df.Critic_Count.astype('int64')
 </code></pre>
 <pre><code>(6825, 16)
 </code></pre>
-<p>Всего в таблице 6825 объектов и 16 признаков для них, и посмотрим мы на несколько первых записей c помощью метода head, чтобы убедиться, что все распарсилось правильно. Для удобства я оставила только те признаки, которые мы будем в дальнейшем использовать.</p>
+<p>Всего в загруженной таблице 6825 объектов и 16 признаков для них, и посмотрим мы на несколько первых записей c помощью метода head, чтобы убедиться, что все распарсилось правильно. Для удобства я оставила только признаки, используемые в дальнейшем.</p>
 <pre><code class="language-python">useful_cols = ['Name', 'Platform', 'Year_of_Release', 'Genre', 
                'Global_Sales', 'Critic_Score', 'Critic_Count',
                'User_Score', 'User_Count', 'Rating'
@@ -713,9 +713,9 @@ df[useful_cols].head(10)
   </tbody>
 </table>
 </div>
-<p>Начнём с самого простого и зачастую удобного способа визуализировать данные из <code>pandas dataframe</code>, воспользовавшись функцией <code>plot</code>.
+<p>Начнём с самого простого и зачастую удобного способа визуализировать данные, загруженные в <code>pandas dataframe</code>, воспользовавшись функцией <code>plot</code>.
 Для примера построим <strong>график продаж видео игр в различных странах в зависимости от года</strong>, для чего сначала отфильтруем только нужные нам столбцы, затем посчитаем суммарные продажи по годам и у получившегося <code>dataframe</code> вызовем функцию <code>plot</code> без параметров.</p>
-<p>В библиотеку <code>pandas</code> встроен wrapper для <code>matplotlib</code>.</p>
+<p>В библиотеке <code>pandas</code> есть встроенный wrapper для <code>matplotlib</code>.</p>
 <pre><code class="language-python">[x for x in df.columns if 'Sales' in x]
 </code></pre>
 <pre><code>['NA_Sales', 'EU_Sales', 'JP_Sales', 'Other_Sales', 'Global_Sales']
@@ -804,12 +804,12 @@ df1.head()
 <pre><code class="language-python">df1.plot();
 </code></pre>
 <p><img src="output_17_0.svg" alt="svg" /></p>
-<p>В этом случае мы сконцентрировались на отображении трендов продаж в разных регионах.</p>
-<p>C помощью параметра kind можно изменить тип графика, например, на bar chart. Matplotlib позволяет очень гибко настраивать графики, и изменить на них можно почти все, что угодно, но потребуется порыться в документации и найти нужные параметры. Например, параметра rot отвечает за угол наклона подписей к оси x.</p>
+<p>В этом случае мы сконцентрировались на отображении трендов продаж, разнесённых по регионам.</p>
+<p>C помощью параметра kind, задающего тип графика, можно переключиться, например, на bar chart. Matplotlib позволяет очень гибко настраивать графики, и изменить на них можно почти все, что угодно, но потребуется порыться в документации и найти нужные параметры. Например, параметр rot отвечает за угол наклона подписей, расставленных по оси x.</p>
 <pre><code class="language-python">df1.plot(kind='bar', rot=45, stacked=True);
 </code></pre>
 <p><img src="output_19_0.svg" alt="svg" /></p>
-<p>Или можем сделать stacked bar chart, чтобы показать и динамику продаж и их разбиение по рынкам.</p>
+<p>Или можем сделать stacked bar chart, показывающий и динамику продаж, и их разбиение по рынкам.</p>
 <pre><code class="language-python">df1[list(filter(lambda x: x != 'Global_Sales', df1.columns))]\
     .plot(kind='bar', rot=45, stacked=True);
 </code></pre>
@@ -832,7 +832,7 @@ ax.set_ylabel('games')
 <pre><code>Text(0, 0.5, 'games')
 </code></pre>
 <p><img src="output_25_1.svg" alt="svg" /></p>
-<p>У гистограмм можно контролировать, на сколько групп мы разбиваем распределение с помощью параметра <code>bins</code>.</p>
+<p>Число групп, полученных при разбиении распределения, у гистограмм задаётся параметром <code>bins</code>.</p>
 <pre><code class="language-python">ax = df.Critic_Score.hist(bins = 20)
 ax.set_title('Critic Score distribution')
 ax.set_xlabel('critic score')
@@ -841,7 +841,7 @@ ax.set_ylabel('games')
 <pre><code>Text(0, 0.5, 'games')
 </code></pre>
 <p><img src="output_27_1.svg" alt="svg" /></p>
-<p>Еще немного познакомимся с тем, как в pandas можно стилизовать таблицы.</p>
+<p>Еще немного познакомимся с тем, как в pandas можно стилизовать выведенные таблицы.</p>
 <pre><code class="language-python">top_developers_df = df.groupby('Developer')[['Global_Sales']].sum()\
     .sort_values('Global_Sales', ascending=False).head(10)
     
@@ -1033,8 +1033,8 @@ AttributeError: 'Styler' object has no attribute 'render'
 <li><a href="https://matplotlib.org/">Документация matplotlib</a></li>
 </ul>
 <h2 id="Часть-2-seaborn"><a class="header" href="#Часть-2-seaborn">Часть 2. Seaborn</a></h2>
-<p>Теперь давай перейдём к библиотеке seaborn, которая представляет собой более высокоуровневое API, построенное на базе matplotlib, и содержит более адекватные дефолтные настройки оформления графиков. Если просто добавить в код import seaborn, то картинки станут гораздо симпатичнее. Также в библиотеке есть достаточно сложные типы визуализации, которые в matplotlib потребовали бы большого количество кода.</p>
-<p>Познакомимся с первым таким «сложным» типом графиков <strong>pair plot (scatter plot matrix)</strong>, который поможет нам посмотреть на одной картинке, как связаны между собой различные признаки.</p>
+<p>Теперь давай перейдём к библиотеке seaborn, надстроенной над matplotlib: у неё более высокоуровневое API и более адекватные настройки оформления графиков, заданные по умолчанию. Если просто добавить в код import seaborn, то картинки станут гораздо симпатичнее. Также в библиотеке есть достаточно сложные типы визуализации, потребовавшие бы в matplotlib большого количества кода.</p>
+<p>Познакомимся с первым таким «сложным» типом графиков <strong>pair plot (scatter plot matrix)</strong>, помогающим посмотреть на одной картинке, как связаны между собой различные признаки.</p>
 <pre><code class="language-python">import seaborn as sns
 </code></pre>
 <pre><code class="language-python"># c svg pairplot браузер начинает тормозить
@@ -1044,12 +1044,12 @@ sns_plot = sns.pairplot(
 sns_plot.savefig('pairplot.png')
 </code></pre>
 <p><img src="output_36_0.png" alt="png" /></p>
-<p>Также с помощью <code>seaborn</code> можно построить распределение, для примера посмотрим на <strong>распределение оценок критиков <code>Critic_Score</code></strong>. Для этого построим <strong><code>distplot</code></strong>, на котором по default'у отображается гистограмма и <a href="https://en.wikipedia.org/wiki/Kernel_density_estimation">kernel density estimation</a>.</p>
+<p>Также с помощью <code>seaborn</code> можно построить распределение, для примера посмотрим на <strong>распределение оценок критиков <code>Critic_Score</code></strong>. Для этого построим <strong><code>distplot</code></strong>, рисующий по умолчанию гистограмму и <a href="https://en.wikipedia.org/wiki/Kernel_density_estimation">kernel density estimation</a>.</p>
 <pre><code class="language-python">%config InlineBackend.figure_format = 'svg' 
 sns.distplot(df.Critic_Score);
 </code></pre>
 <p><img src="output_38_0.svg" alt="svg" /></p>
-<p>Для того чтобы подробнее посмотреть на взаимосвязь двух численных признаков, есть ещё и <strong><code>joint_plot</code></strong>, гибрид <code>scatter plot</code> и <code>histogram</code> (отображаются также гистограммы распределений признаков). Посмотрим на то, как связаны между собой <strong>оценка критиков <code>Critic_Score</code> и оценка пользователя <code>User_Score</code></strong>.</p>
+<p>Для того чтобы подробнее посмотреть на взаимосвязь двух численных признаков, есть ещё и <strong><code>joint_plot</code></strong>, гибрид <code>scatter plot</code> и <code>histogram</code>, дополненный гистограммами распределений обоих признаков. Посмотрим на то, как связаны между собой <strong>оценка критиков <code>Critic_Score</code> и оценка пользователя <code>User_Score</code></strong>.</p>
 <pre><code class="language-python">sns.jointplot(x='Critic_Score', y='User_Score', 
               data=df, kind='scatter');
 </code></pre>
@@ -1058,7 +1058,7 @@ sns.distplot(df.Critic_Score);
               data=df, kind='reg');
 </code></pre>
 <p><img src="output_41_0.svg" alt="svg" /></p>
-<p>Ещё один полезный тип графиков носит название <strong><code>box plot</code></strong>, с помощью которого давай <strong>сравним пользовательские оценки игр для топ-5 крупнейших игровых платформ</strong>.</p>
+<p>Ещё один полезный тип графиков, носящий название <strong><code>box plot</code></strong>, поможет <strong>сравнить пользовательские оценки игр для топ-5 крупнейших игровых платформ</strong>.</p>
 <pre><code class="language-python">top_platforms = df.Platform.value_counts().sort_values(ascending = False).head(5).index.values
 sns.boxplot(x="Platform", y="Critic_Score", 
             data=df[df.Platform.isin(top_platforms)])
@@ -1066,8 +1066,8 @@ sns.boxplot(x="Platform", y="Critic_Score",
 <pre><code>&lt;Axes: xlabel='Platform', ylabel='Critic_Score'&gt;
 </code></pre>
 <p><img src="output_43_1.svg" alt="svg" /></p>
-<p>Думаю, стоит обсудить немного подробнее, как же понимать <code>box plot</code>. <code>Box plot</code> состоит из коробки (поэтому он и называется <code>box plot</code>), усиков и точек. Коробка показывает интерквантильный размах распределения, то есть соответственно 25% (<code>Q1</code>) и 75% (<code>Q3</code>) процентили, а черта внутри неё обозначает медиану распределения.
-С коробкой разобрались, а усы отображают весь разброс точек кроме выбросов, то есть минимальные и максимальные значения, которые попадают в промежуток <code>(Q1 - 1.5*IQR, Q3 + 1.5*IQR)</code>, где <code>IQR = Q3 - Q1</code> - интерквантильный размах. Точками на графике обозначаются выбросы (<code>outliers</code>), то есть значения, не вписывающиеся в промежуток, заданный усами графика.</p>
+<p>Думаю, стоит обсудить немного подробнее, как же понимать <code>box plot</code>: он состоит из коробки (поэтому его так и называют), усиков и точек. Коробка показывает интерквантильный размах распределения, то есть соответственно 25% (<code>Q1</code>) и 75% (<code>Q3</code>) процентили, а черта, проведённая внутри неё, обозначает медиану распределения.
+С коробкой разобрались, а усы отображают весь разброс точек кроме выбросов, то есть минимальные и максимальные значения, попадающие в промежуток <code>(Q1 - 1.5*IQR, Q3 + 1.5*IQR)</code>, где <code>IQR = Q3 - Q1</code> - интерквантильный размах. Точками на графике обозначаются выбросы (<code>outliers</code>), то есть значения, не вписывающиеся в промежуток, заданный усами графика.</p>
 <p>И ещё один тип графиков, последний из рассматриваемых в этой части, называется <strong><code>heat map</code></strong> и позволяет посмотреть на распределение какого-то численного признака по двум категориальным. Визуализируем <strong>суммарные продажи игр по жанрам и игровым платформам</strong>.</p>
 <pre><code class="language-python">platform_genre_sales = df.pivot_table(
                         index='Platform', 
@@ -1392,9 +1392,9 @@ platform_genre_sales
 <li><a href="https://seaborn.pydata.org/examples/index.html">Gellery</a></li>
 </ul>
 <h2 id="Часть-3-plotly"><a class="header" href="#Часть-3-plotly">Часть 3. Plotly</a></h2>
-<p>Мы рассмотрели визуализации на базе библиотеки <code>matplotlib</code>, которая, однако, не единственная опция для построения графиков на языке <code>python</code>. Познакомимся также с библиотекой <strong><code>plotly</code></strong>. <code>Plotly</code> - это open-source библиотека, которая позволяет строить интерактивные графики в jupyter.notebook'e без необходимости зарываться в javascript код.</p>
+<p>Мы рассмотрели визуализации, построенные на базе библиотеки <code>matplotlib</code>, но она не единственная опция для построения графиков на языке <code>python</code>, поэтому познакомимся также с библиотекой <strong><code>plotly</code></strong>. <code>Plotly</code> - это open-source библиотека, позволяющая строить интерактивные графики в jupyter.notebook'e без необходимости зарываться в javascript код.</p>
 <p>Прелесть интерактивных графиков заключается в том, что можно посмотреть точное численное значение при наведении мыши, скрыть неинтересные ряды в визуализации, приблизить определённый участок графика и т.д.</p>
-<p>Перед началом работы импортируем все необходимые модули и инициализируем <code>plotly</code> с помощью команды <code>init_notebook_mode</code>.</p>
+<p>Перед началом работы импортируем нужные модули и инициализируем <code>plotly</code> с помощью команды <code>init_notebook_mode</code>.</p>
 <pre><code class="language-python">from plotly.offline import init_notebook_mode, iplot
 import plotly.graph_objects as go
 import plotly
@@ -1640,7 +1640,7 @@ years_df.head()
   </tbody>
 </table>
 </div>
-<p>В <code>plotly</code> строится визуализация объекта <code>Figure</code>, который состоит из данных (массив линий, которые в библиотеке называются <code>traces</code>) и оформления/стиля, за который отвечает объект <code>layout</code>. В простых случаях можно вызывать функцию <code>iplot</code> и просто от массива <code>traces</code>.</p>
+<p>В <code>plotly</code> строится визуализация объекта <code>Figure</code>, состоящего из данных (массив линий, они же <code>traces</code>) и оформления, за которое отвечает объект <code>layout</code>. В простых случаях можно вызывать функцию <code>iplot</code> и просто от массива <code>traces</code>.</p>
 <pre><code class="language-python">trace0 = go.Scatter(
     x=years_df.index,
     y=years_df.Global_Sales,
@@ -1683,7 +1683,7 @@ x.observe(outputEl, {childList: true});
 }}</p>
 <pre><code>                    })                };                });            &lt;/script&gt;        &lt;/div&gt;
 </code></pre>
-<p>Также можно сразу сохранить график в виде html-файла.</p>
+<p>Также можно сразу сохранить построенный график в виде html-файла.</p>
 <pre><code class="language-python">plotly.offline.plot(fig, filename='years_stats.html', show_link=False);
 </code></pre>
 <p>Посмотрим также на <strong>рыночную долю игровых платформ, рассчитанную по количеству выпущенных игр и по суммарной выручке</strong>, для чего построим <strong><code>bar chart</code></strong>.</p>
@@ -1795,7 +1795,7 @@ x.observe(outputEl, {childList: true});
 }}</p>
 <pre><code>                    })                };                });            &lt;/script&gt;        &lt;/div&gt;
 </code></pre>
-<p>В <code>plotly</code> можно построить и <strong><code>box plot</code></strong>. Рассмотрим <strong>различия оценок критиков в зависимости от жанра игры</strong>.</p>
+<p>В <code>plotly</code> можно построить и <strong><code>box plot</code></strong>, поэтому рассмотрим <strong>различия оценок критиков в зависимости от жанра игры</strong>.</p>
 <pre><code class="language-python">df.Genre.unique()
 </code></pre>
 <pre><code>array(['Sports', 'Racing', 'Platform', 'Misc', 'Action', 'Puzzle',
@@ -1833,7 +1833,7 @@ x.observe(outputEl, {childList: true});
 }}</p>
 <pre><code>                    })                };                });            &lt;/script&gt;        &lt;/div&gt;
 </code></pre>
-<p>Давай посмотрим на график зависимости средней оценки пользователей и оценки критиков по жанрам, который будет обычным scatter plot.</p>
+<p>Давай посмотрим на график зависимости средней оценки пользователей и оценки критиков по жанрам, построенный как обычный scatter plot.</p>
 <pre><code class="language-python">scores_genres_df = df.groupby('Genre')[['Critic_Score', 'User_Score']].mean()
 sales_genres_df = df.groupby('Genre')[['Global_Sales']].sum()
 
@@ -2104,8 +2104,8 @@ x.observe(outputEl, {childList: true});
 }}</p>
 <pre><code>                    })                };                });            &lt;/script&gt;        &lt;/div&gt;
 </code></pre>
-<p>Немного отвлечемся от данных об играх и рассмотрим ещё один тип графика, который можно построить в plotly и который бывает очень полезен, например, для web-аналитики. Это <strong>воронка или funnel пользователя на сайте</strong>.
-В plotly на данный момент нет функции, которая умеет строить воронки из коробки, но с помощью svg фигур её достаточно легко построить. Этот пример покажет нам, насколько легко можно кастомизировать библиотеку под свои нужды.</p>
+<p>Немного отвлечемся от данных об играх и рассмотрим ещё один тип графика, строящийся в plotly и очень полезный, например, для web-аналитики: это <strong>воронка или funnel пользователя на сайте</strong>.
+В plotly на данный момент нет функции, умеющей строить воронки из коробки, но с помощью svg фигур её достаточно легко построить, и этот пример покажет, насколько легко можно кастомизировать библиотеку под свои нужды.</p>
 <pre><code class="language-python"># chart stages data
 values = [40000, 17567, 7443, 3290, 2567]
 phases = ['Main Page', 'Catalog', 'Product Details', 'Cart', 'Purchase']
@@ -2294,7 +2294,7 @@ x.observe(outputEl, {childList: true});
 <pre><code>                    })                };                });            &lt;/script&gt;        &lt;/div&gt;
 </code></pre>
 <h3 id="Обертки-для-plotly"><a class="header" href="#Обертки-для-plotly">Обертки для plotly</a></h3>
-<p>Как ты мог заметить, описывать все traces бывает достаточно многословно, поэтому для частых cases удобно написать функции-обертки на DataFrame. Самыми частыми сценариями оказываются line plot и несколько line plots с drop down.</p>
+<p>Как ты мог заметить, описывать все traces бывает достаточно многословно, поэтому для частых cases удобно написать функции-обёртки, принимающие DataFrame. Самыми частыми сценариями оказываются line plot и несколько line plots с drop down.</p>
 <pre><code class="language-python">def plotly_line_plot(df, title = ''):
     data = []
     
@@ -2590,7 +2590,7 @@ x.observe(outputEl, {childList: true});
 <li><a href="https://plot.ly/python/reference/">Документация</a></li>
 </ul>
 <h3 id="plotly-express"><a class="header" href="#plotly-express">Plotly express</a></h3>
-<p>Это обёртка над <code>plotly.graph_objects</code>, которая позволяет строить графики проще.</p>
+<p>Это обёртка над <code>plotly.graph_objects</code>, упрощающая построение графиков.</p>
 <p><a href="https://plot.ly/python/plotly-express/">Документация</a></p>
 <pre><code class="language-python">import plotly.express as px
 </code></pre>
