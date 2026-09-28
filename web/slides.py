@@ -6,7 +6,9 @@
 попадают в порядке deck.json без заметок докладчика (<aside>): в заметках
 ответы на вопросы аудитории и тайминг, читателю они не нужны. Показывает
 слайды общий просмотрщик src/slides/viewer.js и viewer.css, поэтому
-страница кладётся в ту же папку.
+страница кладётся в ту же папку. Живые вставки <x-embed> (записи
+демонстраций в терминале) становятся изолированными <iframe>: скрипты
+в них разрешены, доступ к странице книги и к сети закрыт.
 
     python3 web/slides.py <папка с deck.json> src/slides/lecture-01.html
 
@@ -21,6 +23,11 @@ import sys
 
 FONTS = "https://fonts.googleapis.com/css2?"
 SLIDE_ID = re.compile(r"^[A-Za-z0-9_-]{1,64}$")
+EMBED = re.compile(r'<x-embed style="([^"]*)">(.*?)</x-embed>', re.S)
+# как и в редакторе презентаций: вставке доступны только собственные
+# встроенные скрипты и стили, сеть закрыта
+EMBED_CSP = ('<meta http-equiv="Content-Security-Policy" content="default-src \'none\'; '
+             'script-src \'unsafe-inline\'; style-src \'unsafe-inline\'; font-src data:">')
 
 ICON = ('<svg viewBox="0 0 24 24" aria-hidden="true"><path d="{}" fill="none" '
         'stroke="currentColor" stroke-width="2.2" stroke-linecap="round" '
@@ -76,6 +83,17 @@ def deck_folder(path):
     sys.exit(f"нет deck.json в {path}")
 
 
+def embed(match):
+    """Вставка <x-embed> в виде <iframe>. Страницу вставки просмотрщик
+    загружает из data-srcdoc, только пока слайд на экране."""
+    style, page = match.groups()
+    page = (page.replace("<head>", "<head>" + EMBED_CSP, 1) if "<head>" in page
+            else EMBED_CSP + page)
+    return (f'<iframe class="embed" sandbox="allow-scripts" '
+            f'title="Запись демонстрации в терминале" style="{style}" '
+            f'data-srcdoc="{html.escape(page)}"></iframe>')
+
+
 def slide(folder, slide_id):
     """Один слайд без заметок докладчика и служебных комментариев."""
     if not SLIDE_ID.match(slide_id):
@@ -88,7 +106,7 @@ def slide(folder, slide_id):
     if (not text.startswith(f'<section id="{slide_id}"')
             or text.count("<section") != 1 or not text.endswith("</section>")):
         sys.exit(f"{slide_id}.html: ожидается ровно один <section id=\"{slide_id}\">")
-    return text
+    return EMBED.sub(embed, text)
 
 
 def build(folder):
