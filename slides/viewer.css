@@ -178,6 +178,8 @@ body {
 @media print {
   @page { size: 1920px 1080px; margin: 0; }
   html, body { height: auto; overflow: visible; background: none; }
+  /* цветные фоны слайдов — часть оформления: печатаются как на экране */
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   body { display: block; }
   .bar, .notes { display: none; }
   .stage { position: static; overflow: visible; }
