@@ -29,7 +29,8 @@
 <div style="width:420px; display:flex; flex-direction:column; justify-content:center; align-items:center">
 <div style="width:320px; height:320px; background:#2AE881; border-radius:32px; display:flex; align-items:center; justify-content:center"><p style="font-family:'Jersey 10', 'Courier New', monospace; font-size:200px; line-height:1; color:#201B10">$_</p></div>
 </div>
-
+<aside hidden>Изложение. Лекция открывает раздел курса, посвящённый операционной системе Linux, и состоит из двух частей. В первой части рассматривается процесс загрузки системы от нажатия кнопки питания до запуска служб, во второй — организация хранения данных: устройство дисков, файловые системы, монтирование, RAID и LVM. Под управлением Linux работают вычислительные кластеры, серверы экспериментальных установок и машины сбора данных, поэтому понимание устройства системы необходимо исследователю в той же мере, что и владение языком программирования.
+Демонстрации. Слайды с розовым выделением слова «Демонстрация» отмечают места, где изложение прерывается для работы в терминале виртуальной машины.</aside>
 </section>
 <section id="plan-boot" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-direction:column; gap:20px">
@@ -42,7 +43,8 @@
 <div style="display:flex; gap:40px; align-items:center"><p style="width:110px; font-family:'Jersey 10', 'Courier New', monospace; font-size:120px; line-height:0.8; text-align:right; color:#E85400">03</p><p style="font-size:48px; color:#201B10">Ядро</p></div>
 <div style="display:flex; gap:40px; align-items:center"><p style="width:110px; font-family:'Jersey 10', 'Courier New', monospace; font-size:120px; line-height:0.8; text-align:right; color:#E85400">04</p><p style="font-size:48px; color:#201B10">Init</p></div>
 </div>
-
+<aside hidden>Изложение. В первой части лекции рассматривается процесс загрузки операционной системы Linux. Он разбивается на четыре этапа: работа прошивки (BIOS или UEFI), работа загрузчика, запуск ядра и запуск процесса init. Каждый этап находит следующий, передаёт ему управление и завершается; исключение составляет init, работающий до выключения машины. Такое разбиение позволяет при неисправности установить, на каком этапе загрузка остановилась, и тем самым сузить круг возможных причин.
+Демонстрации. Практические примеры показываются по ходу изложения, непосредственно после соответствующей теории.</aside>
 </section>
 <section id="sec-bios" data-transition="fade" style="background:#D4FAE6; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:row; gap:64px">
 <div style="flex:1; display:flex; flex-direction:column; justify-content:space-between">
@@ -69,7 +71,8 @@
 <div style="width:20px; height:20px; background:#2AE881; border-radius:50%"></div>
 <p style="width:420px; font-size:36px; font-weight:700; line-height:1.4; text-align:center; color:#0F9E50; background:#FFFFFF; padding:24px 0px; border-radius:24px">Init</p>
 </div>
-
+<aside hidden>Изложение. Первый этап загрузки выполняет прошивка материнской платы. Исторически она называется BIOS (Basic Input/Output System); в современных системах её место занимает UEFI, который рассматривается в конце раздела. Прошивка хранится в микросхеме флеш-памяти на материнской плате и отвечает за проверку и инициализацию оборудования, а также за поиск загрузчика.
+Индикатор справа повторяется на титульных слайдах разделов и показывает, какой этап загрузки рассматривается.</aside>
 </section>
 <section id="reset-vector" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10">Переход к коду прошивки</h2>
@@ -95,7 +98,8 @@
 <p style="position:absolute; left:360px; top:318px; width:760px; font-size:36px; font-weight:800; text-align:center; color:#201B10">адресное пространство</p>
 </div>
 <p style="font-size:30px; line-height:1.4; color:#201B10">После сброса процессор выполняет инструкцию по адресу 0xFFFFFFF0 (вектор сброса). Адрес отображается на флеш-память с прошивкой, поскольку оперативная память ещё не инициализирована; по нему размещена команда перехода к основному коду прошивки.</p>
-
+<aside hidden>Изложение. После подачи питания или сброса регистры процессора принимают значения по умолчанию, и выполнение начинается с фиксированного адреса 0xFFFFFFF0, расположенного на 16 байт ниже границы 4 ГиБ. Этот адрес называется вектором сброса (reset vector). Чипсет отображает его на микросхему флеш-памяти, в которой записана прошивка, и по этому адресу размещена команда перехода jmp к основному коду прошивки. Оперативная память в этот момент ещё не инициализирована: её инициализирует сама прошивка, а на ранних этапах в качестве памяти используется кеш процессора (режим Cache-as-RAM).
+Демонстрация. У процессоров ARM, в том числе в виртуальной машине стенда, адрес начала выполнения задаётся платформой, поэтому этот этап показывается только на слайде.</aside>
 </section>
 <section id="post" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-direction:column">
@@ -111,7 +115,7 @@
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Пояснение</p>
 <p style="font-size:28px; line-height:1.45; color:#201B10">В UEFI те же задачи распределены по фазам SEC, PEI, DXE и BDS; оперативная память инициализируется на фазе PEI.</p>
 </div>
-
+<aside hidden>Изложение. Первым действием прошивки является самотестирование при включении (Power On Self Test, POST). В его ходе проверяется целостность образа прошивки, инициализируются процессор, оперативная память, чипсет и интерфейсы (USB, I²C и другие), после чего запускаются встроенные прошивки устройств (Option ROM) — видеокарты, сетевой карты, RAID-контроллера. Управление от прошивки устройства возвращается к основной прошивке, и та продолжает работу.</aside>
 </section>
 <section id="post-errors" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -145,7 +149,7 @@
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#FF5F00; padding:2px 12px">Важно</p>
 <p style="font-size:28px; line-height:1.45; color:#201B10">Расшифровка кодов и сигналов различается у производителей прошивок (AMI, Award, Phoenix); на серверах те же сведения записываются в журнал контроллера BMC.</p>
 </div>
-
+<aside hidden>Изложение. До инициализации видеокарты вывести сообщение об ошибке на экран невозможно, поэтому результат POST сообщается иными средствами. Первый из них — POST-карта: плата расширения с двузначным шестнадцатеричным индикатором, отображающим код текущего этапа; по последнему коду определяется, на каком этапе работа прошивки остановилась. Второй — встроенный динамик: один короткий сигнал означает успешное завершение, комбинации длинных и коротких сигналов указывают на конкретную неисправность. Таблицы кодов приводятся в документации производителя прошивки и различаются у разных производителей.</aside>
 </section>
 <section id="mbr" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
 <div style="display:flex; flex-direction:column">
@@ -163,7 +167,8 @@
 </div>
 </div>
 <p style="font-size:30px; line-height:1.4; color:#201B10">Запись MBR занимает первый сектор диска и описывает не более четырёх первичных разделов; номер сектора в ней 32-битный, поэтому размер диска ограничен 2 ТиБ.</p>
-
+<aside hidden>Изложение. Прошивка BIOS умеет немногое: прочитать первый сектор диска размером 512 байт в память по адресу 0x7C00 и передать ему управление. Этот сектор называется главной загрузочной записью (Master Boot Record, MBR). Помимо кода начального загрузчика в нём размещается таблица разделов, рассчитанная на четыре записи; отсюда ограничение в четыре первичных раздела.
+Ограничение размера следует из разрядности: номер сектора в записи таблицы 32-битный, и адресуется 2³² секторов по 512 байт, то есть 2⁴¹ байт = 2 ТиБ (около 2,2 ТБ в десятичных единицах). Для физиков полезно отметить разницу между ТиБ и ТБ: при таких объёмах она составляет около 10 %.</aside>
 </section>
 <section id="mbr-layout" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -191,7 +196,8 @@
 <p style="align-self:start; font-size:28px; line-height:1.4; color:#201B10; background:#2AE881; padding:2px 12px">root@lab:~# dd if=/dev/vda bs=512 count=1 2&gt;/dev/null | xxd | tail -n 1</p>
 <p style="font-size:26px; line-height:1.4; color:#6B665C">000001f0: 0000 0000 0000 0000 0000 0000 0000 55aa ..............U.</p>
 </div>
-
+<aside hidden>Изложение. Сектор MBR состоит из трёх частей. Первые 446 байт занимает код начального загрузчика, получающий управление от BIOS; далее следуют четыре записи таблицы разделов по 16 байт, начиная со смещения 446 (0x1BE); последние два байта содержат сигнатуру 55 AA, по которой прошивка отличает загрузочный сектор от незаполненного. Каждая запись таблицы содержит тип раздела, флаг активности (0x80) и адрес начала и длину раздела в секторах.
+Демонстрация. Команда dd считывает сектор 0, xxd выводит его в шестнадцатеричном виде; в последней строке видна сигнатура 55 aa. На диске с разметкой GPT результат тот же, поскольку в секторе 0 располагается защитный MBR. В виртуальной машине диск называется /dev/vda, на компьютере с NVMe-накопителем — /dev/nvme0n1.</aside>
 </section>
 <section id="ebr" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -220,7 +226,7 @@
 </div>
 </div>
 <p style="font-size:30px; line-height:1.4; color:#201B10">Одна из записей таблицы описывает расширенный раздел; логические разделы внутри него образуют связный список, в котором каждая запись EBR указывает на данные своего раздела и на следующую запись EBR.</p>
-
+<aside hidden>Изложение. Для размещения на диске более четырёх разделов одна из четырёх записей таблицы MBR описывает не первичный, а расширенный раздел (extended partition). Внутри него располагаются логические разделы, каждому из которых предшествует расширенная загрузочная запись (Extended Boot Record, EBR). Запись EBR содержит ссылку на данные своего раздела и ссылку на следующую запись EBR, так что логические разделы образуют связный список произвольной длины.</aside>
 </section>
 <section id="gpt" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:36px">
 <div style="display:flex; flex-direction:column">
@@ -253,7 +259,8 @@
 <div style="flex:1; display:flex; gap:20px; align-items:center"><p style="font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; color:#D640D6">02</p><p style="flex:1; font-size:26px; line-height:1.35; color:#201B10">По умолчанию 128 записей о разделах</p></div>
 <div style="flex:1; display:flex; gap:20px; align-items:center"><p style="font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; color:#D640D6">03</p><p style="flex:1; font-size:26px; line-height:1.35; color:#201B10">Контрольные суммы CRC32 и резервная копия</p></div>
 </div>
-
+<aside hidden>Изложение. Таблица разделов GPT (GUID Partition Table) снимает ограничения MBR. В секторе 0 сохраняется защитный MBR, описывающий весь диск как один раздел типа 0xEE: старые утилиты, не знающие GPT, видят диск занятым и не предлагают его разметить. Сектор 1 занимает заголовок GPT, далее следует таблица разделов; по умолчанию она содержит 128 записей по 128 байт, то есть занимает 32 сектора. Номер сектора 64-битный, что даёт предел 2⁶⁴ × 512 байт = 8 ЗиБ. Заголовок и таблица защищены контрольными суммами CRC32 и продублированы в конце диска, поэтому повреждение начала диска не приводит к потере разметки.
+Каждый раздел и каждый тип раздела обозначается глобально уникальным идентификатором (GUID); в отличие от MBR, где идентификация опиралась на порядок дисков, GUID раздела не зависит от того, к какому разъёму подключён диск.</aside>
 </section>
 <section id="uefi-bios" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -271,7 +278,8 @@
 <p style="font-size:26px; line-height:1.4; color:#6B665C">Режим, в котором загружена текущая система:</p>
 <p style="align-self:start; font-size:28px; line-height:1.4; color:#201B10; background:#2AE881; padding:2px 12px">root@lab:~# [ -d /sys/firmware/efi ] &amp;&amp; echo UEFI || echo BIOS</p>
 </div>
-
+<aside hidden>Изложение. UEFI (Unified Extensible Firmware Interface) является не новой версией BIOS, а иным интерфейсом между прошивкой и операционной системой. BIOS представляет собой программу, выполняющую POST и передающую управление первому сектору диска; UEFI предоставляет полноценную среду с драйверами и программным интерфейсом. Практически важны два отличия: UEFI читает файловую систему FAT32 и запускает загрузчик как обычный файл, а список вариантов загрузки хранит в энергонезависимой памяти NVRAM. Кроме того, в UEFI реализована проверка подписи загрузчика (Secure Boot), рассматриваемая в конце первой части.
+Демонстрация. Наличие каталога /sys/firmware/efi означает, что система загружена через UEFI; в виртуальной машине стенда на ARM64 результатом всегда будет UEFI, поскольку прошивка BIOS на ARM отсутствует.</aside>
 </section>
 <section id="sec-bootloader" data-transition="fade" style="background:#E3F5FF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:row; gap:64px">
 <div style="flex:1; display:flex; flex-direction:column; justify-content:space-between">
@@ -293,7 +301,7 @@
 <div style="width:20px; height:20px; background:#73CCFE; border-radius:50%"></div>
 <p style="width:420px; font-size:36px; font-weight:700; line-height:1.4; text-align:center; color:#0B8FD6; background:#FFFFFF; padding:24px 0px; border-radius:24px">Init</p>
 </div>
-
+<aside hidden>Изложение. Второй этап загрузки выполняет загрузчик. Его задача состоит в том, чтобы найти ядро операционной системы, загрузить его вместе с образом initramfs в оперативную память и передать ядру управление вместе со строкой параметров. Способ, которым прошивка находит сам загрузчик, зависит от сочетания прошивки и разметки диска: рассмотрим последовательно схемы BIOS с MBR и UEFI с GPT.</aside>
 </section>
 <section id="boot-bios-mbr" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -319,7 +327,7 @@
 </div>
 </div>
 <p style="font-size:30px; line-height:1.4; color:#201B10">Код из MBR находит раздел с флагом bootable и передаёт управление коду его первого сектора, который загружает основной код загрузчика.</p>
-
+<aside hidden>Изложение. Рассмотрим классическую схему загрузки с BIOS и MBR. Прошивка считывает сектор 0 и передаёт управление коду начального загрузчика, размещённому в первых 446 байтах. Этого объёма недостаточно ни для какого полноценного загрузчика, поэтому код в MBR выполняет единственную задачу: находит в таблице раздел с флагом bootable и передаёт управление коду первого сектора этого раздела, который, в свою очередь, загружает основной код загрузчика.</aside>
 </section>
 <section id="boot-uefi-gpt" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -348,7 +356,7 @@
 <x-connector x1="600" y1="260" x2="820" y2="325" route="vh" style="color:#201B10; border-width:4px"></x-connector>
 </div>
 <p style="font-size:30px; line-height:1.4; color:#201B10">Прошивка берёт из NVRAM загрузочную запись, указывающую диск, раздел и путь к файлу, и запускает этот файл с раздела FAT32 как программу.</p>
-
+<aside hidden>Изложение. Схема UEFI с GPT существенно проще. Прошивка хранит в энергонезависимой памяти NVRAM список загрузочных записей; каждая запись содержит описание, диск, раздел и путь к исполняемому файлу формата EFI. Прошивка читает раздел ESP (EFI System Partition), отформатированный в FAT32, и запускает указанный файл как обычную программу; размещать код в первых секторах диска не требуется. Порядок перебора записей задаётся переменной BootOrder. Если ни одной записи нет, прошивка ищет запасной путь \EFI\BOOT\BOOTX64.EFI (на ARM — BOOTAA64.EFI); так загружаются установочные носители.</aside>
 </section>
 <section id="demo-boot-entries" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:44px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -365,7 +373,8 @@
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Что наблюдается</p>
 <p style="font-size:28px; line-height:1.45; color:#201B10">Запись Ubuntu указывает на раздел GPT по его GUID и на файл \EFI\ubuntu\shimaa64.efi; раздел ESP смонтирован в /boot/efi и имеет тип vfat.</p>
 </div>
-
+<aside hidden>Демонстрация. Все команды выполняются в виртуальной машине lab от имени root (sudo -i). Команда efibootmgr -v выводит переменные BootCurrent и BootOrder и загрузочные записи Boot0000…; у записи Ubuntu указан путь вида HD(1,GPT,&lt;GUID раздела&gt;)/\EFI\ubuntu\shimaa64.efi. На компьютере с процессором x86_64 файл называется shimx64.efi, а загрузчик — grubx64.efi. Команда fdisk -l показывает тип таблицы разделов (Disklabel type: gpt) и первый раздел типа EFI System. Команда lsblk -f показывает, что этот раздел имеет файловую систему vfat и смонтирован в /boot/efi. Наконец, в каталоге /boot/efi/EFI находятся подкаталоги ubuntu и BOOT с файлами .efi.
+Вывод для аудитории. Прошивка UEFI не «знает» о GRUB: она лишь запускает файл, путь к которому записан в NVRAM.</aside>
 </section>
 <section id="loaders" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -385,7 +394,7 @@
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Пояснение</p>
 <p style="font-size:28px; line-height:1.45; color:#201B10">Далее рассматривается GRUB2 как наиболее распространённый загрузчик Linux.</p>
 </div>
-
+<aside hidden>Изложение. Загрузчиков существует несколько, и различаются они прежде всего тем, с какой прошивкой работают и умеют ли читать файловые системы. GRUB2 поддерживает обе схемы загрузки и за счёт модулей читает практически любые файловые системы, а также RAID и LVM. systemd-boot работает только с UEFI и описывает пункты меню простыми текстовыми файлами. EFI stub позволяет прошивке запустить ядро напрямую, поскольку ядро само собрано как EFI-приложение; при этом отсутствует меню выбора ядра. LILO представляет исторический интерес: он не читал файловые системы и хранил физические номера блоков ядра, поэтому после каждого обновления ядра требовал переустановки.</aside>
 </section>
 <section id="grub2" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -401,7 +410,9 @@
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#FF5F00; padding:2px 12px">Важно</p>
 <p style="font-size:28px; line-height:1.45; color:#201B10">Файл grub.cfg генерируется командой update-grub (grub-mkconfig) из /etc/default/grub и /etc/grub.d/; ручная правка теряется при обновлении ядра.</p>
 </div>
-
+<aside hidden>Изложение. GRUB2 (Grand Unified Bootloader) является наиболее распространённым загрузчиком Linux. Поддержка файловых систем и оборудования вынесена в модули (ext2, fat, lvm, mdraid и другие), чтобы не увеличивать основной исполняемый файл; модули расположены в каталоге /boot/grub/x86_64-efi (на ARM — arm64-efi). Меню позволяет выбрать одну из установленных систем или одну из версий ядра, а описание пунктов меню хранится в /boot/grub/grub.cfg.
+Файл grub.cfg не предназначен для ручной правки: его собирает утилита grub-mkconfig (в Debian и Ubuntu — обёртка update-grub), выполняя скрипты из /etc/grub.d с параметрами из /etc/default/grub и находя все ядра в /boot. Пакетный менеджер пересобирает файл при каждом обновлении ядра, поэтому изменения вносятся в /etc/default/grub.
+Демонстрация. Команда ls показывает модули *.mod; команда grep — пункты menuentry и submenu. В каждом пункте видны команды insmod, search --fs-uuid, linux с параметрами ядра и initrd.</aside>
 </section>
 <section id="grub-modes" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -434,7 +445,9 @@
 </div>
 </div>
 <p style="font-size:30px; line-height:1.4; color:#201B10">В режиме UEFI загрузчик является обычным файлом на разделе FAT32, поэтому промежуточные ступени не требуются.</p>
-
+<aside hidden>Изложение. В режиме BIOS загрузка GRUB2 проходит через промежуточные ступени, поскольку BIOS не понимает файловых систем, а GRUB не может разместиться в 446 байтах. Код boot.img в MBR загружает основную часть загрузчика core.img, записанную в промежуток между MBR и первым разделом (на диске с MBR) или в специальный раздел BIOS boot размером около 1 МиБ (на диске с GPT). Образ core.img содержит драйвер файловой системы, достаточный для чтения каталога /boot/grub, откуда загружаются остальные модули, меню и grub.cfg. После выбора пункта меню GRUB загружает ядро и initramfs.
+В режиме UEFI промежуточные ступени не нужны: прошивка сама читает FAT32 и запускает файл grubx64.efi, который сразу работает как полноценный загрузчик.
+Связь с домашним заданием. Если на GPT-диске в режиме BIOS отсутствует раздел BIOS boot, команда grub-install --target=i386-pc завершается ошибкой «embedding is not possible».</aside>
 </section>
 <section id="demo-grub" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:44px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -451,7 +464,8 @@
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Что наблюдается</p>
 <p style="font-size:28px; line-height:1.45; color:#201B10">update-grub перечисляет найденные ядра; после перезагрузки появляется меню, а правка строки linux действует однократно.</p>
 </div>
-
+<aside hidden>Демонстрация. По умолчанию Ubuntu скрывает меню GRUB (GRUB_TIMEOUT_STYLE=hidden, GRUB_TIMEOUT=0). В файле /etc/default/grub устанавливаются значения menu и 10, после чего update-grub пересобирает /boot/grub/grub.cfg и выводит строки Found linux image и Found initrd image. После перезагрузки виртуальной машины появляется меню; клавиша e открывает выбранный пункт для однократной правки. В конец строки linux можно дописать systemd.unit=rescue.target и запустить загрузку сочетанием Ctrl+X: система загрузится в режим восстановления, не изменяя конфигурацию. Режим восстановления запрашивает пароль root; в Ubuntu учётная запись root по умолчанию заблокирована, поэтому пароль задаётся при подготовке стенда (passwd), иначе выводится сообщение «Cannot open access to console, the root account is locked» и загрузка продолжается в обычном режиме. Выход из режима восстановления — команда systemctl default.
+Вывод для аудитории. Постоянные изменения вносятся в /etc/default/grub с последующим update-grub; однократные — в меню GRUB.</aside>
 </section>
 <section id="sec-kernel" data-transition="fade" style="background:#F0EDFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:row; gap:64px">
 <div style="flex:1; display:flex; flex-direction:column; justify-content:space-between">
@@ -473,7 +487,7 @@
 <div style="width:20px; height:20px; background:#B6A3FF; border-radius:50%"></div>
 <p style="width:420px; font-size:36px; font-weight:700; line-height:1.4; text-align:center; color:#7C62F0; background:#FFFFFF; padding:24px 0px; border-radius:24px">Init</p>
 </div>
-
+<aside hidden>Изложение. Третий этап загрузки связан с ядром операционной системы. С точки зрения загрузчика ядро является обычным исполняемым файлом, который помещается в оперативную память и запускается со строкой параметров. Рассмотрим, как устроен этот файл, какие параметры ему передаются и зачем вместе с ядром загружается образ initramfs.</aside>
 </section>
 <section id="kernel" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -491,7 +505,8 @@
 <tr style="background:#FFFFFF"><td>ro</td><td>корень монтируется только для чтения до проверки fsck</td></tr>
 <tr style="background:#F0EDFF"><td>quiet splash</td><td>сокращённый вывод сообщений и заставка</td></tr>
 </table>
-
+<aside hidden>Изложение. Ядро Linux хранится в каталоге /boot в виде сжатого исполняемого файла vmlinuz-&lt;версия&gt;. Загрузчик помещает его в оперативную память вместе с образом initramfs и передаёт строку параметров, которую после загрузки можно прочитать из /proc/cmdline. Параметр root= указывает корневую файловую систему (надёжнее всего по UUID, поскольку имена /dev/sdX меняются при подключении дисков), ro предписывает смонтировать корень только для чтения, чтобы безопасно выполнить проверку fsck, после чего служба systemd-remount-fs перемонтирует его согласно /etc/fstab. Параметры quiet и splash сокращают вывод сообщений и включают заставку. Параметр init= позволяет запустить вместо init другую программу; этим пользуются при восстановлении системы.
+Проверка того, что ядро является исполняемым файлом (x86_64): скрипт scripts/extract-vmlinux из исходников ядра (также /usr/src/linux-headers-$(uname -r)/scripts/extract-vmlinux в Ubuntu) распаковывает vmlinuz в ELF-файл vmlinux.</aside>
 </section>
 <section id="demo-kernel" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:44px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -508,7 +523,8 @@
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Что наблюдается</p>
 <p style="font-size:28px; line-height:1.45; color:#201B10">Ядро хранится в сжатом виде; строка параметров совпадает со строкой linux в пункте меню grub.cfg.</p>
 </div>
-
+<aside hidden>Демонстрация. Команда ls -lh /boot показывает пары файлов vmlinuz-&lt;версия&gt; и initrd.img-&lt;версия&gt; для каждого установленного ядра, а также каталог grub. Команда file сообщает формат ядра: на x86_64 это «Linux kernel x86 boot executable bzImage», на стенде ARM64 — «gzip compressed data», то есть образ Image, сжатый gzip. В строке /proc/cmdline видны BOOT_IMAGE, root=UUID=… (или путь к логическому тому LVM) и ro; тот же UUID показывает команда lsblk -f. Дополнительно команда dmesg | head -n 5 выводит первые сообщения ядра, в том числе ту же командную строку.
+Дополнительная демонстрация для x86_64: скрипт extract-vmlinux распаковывает vmlinuz в ELF-файл vmlinux; команда file подтверждает формат ELF, а попытка запустить ./vmlinux завершается ошибкой Segmentation fault. Причина состоит в том, что сегменты ядра слинкованы на адреса ядра (0xffffffff81000000), которые execve не может отобразить в пространство пользователя. На виртуальной машине ARM64 этот пример не воспроизводится, поскольку распакованный образ Image не является ELF-файлом.</aside>
 </section>
 <section id="kernel-init" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <h2 style="align-self:start; font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#FCE300; padding:0px 14px">Процесс инициализации ядра</h2>
@@ -529,7 +545,7 @@
 <p style="font-size:28px; line-height:1.45; color:#201B10">Ядро хранится в сжатом виде: загрузчику приходится читать с диска меньший объём, а распаковка в памяти выполняется быстрее чтения.</p>
 </div>
 </div>
-
+<aside hidden>Изложение. Инициализация ядра проходит несколько шагов. Загрузчик помещает в оперативную память сжатый образ ядра и образ initramfs; ядро распаковывает само себя и запускается с параметрами командной строки; затем ядро инициализирует подсистемы (управление памятью, планировщик, встроенные драйверы) и разворачивает в памяти временную корневую файловую систему initramfs. Назначение последней рассматривается на следующем слайде.</aside>
 </section>
 <section id="initramfs" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <h2 style="align-self:start; font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#73CCFE; padding:0px 14px">Initramfs</h2>
@@ -564,7 +580,9 @@
 </div>
 </div>
 </div>
-
+<aside hidden>Изложение. Рассмотрим задачу, которую решает initramfs. Ядро должно смонтировать корневую файловую систему, однако для этого может потребоваться драйвер контроллера диска, драйвер самой файловой системы, сборка RAID-массива, активация томов LVM или расшифровка LUKS. Если соответствующий драйвер собран модулем, модуль хранится в /lib/modules на том самом корне, который ещё не смонтирован. Встраивание всех драйверов в ядро привело бы к неоправданному увеличению его размера.
+Initramfs (initial RAM file system) разрешает это противоречие: это cpio-архив, который загрузчик помещает в память рядом с ядром. Ядро распаковывает его во временную файловую систему tmpfs и запускает оттуда скрипт /init. Скрипт загружает необходимые модули, собирает массивы, находит и монтирует настоящий корень, после чего командой switch_root (в Ubuntu — run-init) передаёт управление настоящему init.
+Связь с домашним заданием. Установленная на RAID1 система не загрузится, если образ не умеет собирать массив: в Arch Linux хук mdadm_udev добавляется в HOOKS файла /etc/mkinitcpio.conf раньше filesystems, после чего образ пересобирается командой mkinitcpio -P.</aside>
 </section>
 <section id="demo-initramfs" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:44px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -581,7 +599,8 @@
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Что наблюдается</p>
 <p style="font-size:28px; line-height:1.45; color:#201B10">В образе находятся модули ядра, утилиты и скрипт init, который монтирует /proc и /sys, находит корень и передаёт управление настоящему init.</p>
 </div>
-
+<aside hidden>Демонстрация. Команда file видит только начало образа и сообщает «ASCII cpio archive (SVR4 with no CRC)»: образ состоит из склеенных cpio-архивов, первый из которых не сжат. Команда lsinitramfs выводит список файлов, среди которых модули ядра (usr/lib/modules/…), утилиты и скрипты. Команда unmkinitramfs раскладывает архивы по подкаталогам: в Ubuntu 24.04 early содержит уже сжатые модули ядра и прошивки (на стенде ARM64 — около 60 МБ), main — основной архив, сжатый zstd; на x86_64 перед ними добавляются архивы с микрокодом процессора. В скрипте init видны монтирование /proc и /sys, разбор параметров из /proc/cmdline и последний шаг — вызов run-init, передающий управление настоящему init.
+Вывод для аудитории. Initramfs — это небольшая операционная система, единственная задача которой состоит в том, чтобы найти и смонтировать настоящий корень.</aside>
 </section>
 <section id="sec-init" data-transition="fade" style="background:#FFEAFE; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:row; gap:64px">
 <div style="flex:1; display:flex; flex-direction:column; justify-content:space-between">
@@ -603,7 +622,7 @@
 <div style="width:20px; height:20px; background:#FF87FF; border-radius:50%"></div>
 <p style="width:420px; font-size:36px; font-weight:700; line-height:1.4; text-align:center; color:#201B10; background:#FF87FF; padding:24px 0px; border-radius:24px">Init</p>
 </div>
-
+<aside hidden>Изложение. Последний этап загрузки — запуск процесса init. Это первый процесс пространства пользователя: ядро запускает его с идентификатором PID 1, и от него происходят все остальные пользовательские процессы. В отличие от предыдущих этапов, init не завершается после передачи управления, а работает до выключения машины.</aside>
 </section>
 <section id="init-why" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -620,7 +639,8 @@
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Пояснение</p>
 <p style="font-size:28px; line-height:1.45; color:#201B10">Процесс init получает PID 1; при его завершении ядро останавливается с сообщением «Attempted to kill init!».</p>
 </div>
-
+<aside hidden>Изложение. Задачи init в историческом порядке их появления таковы: запуск процессов в правильной последовательности, надзор за запущенными процессами, монтирование файловых систем по описанию в /etc/fstab и, в современных реализациях, управление системой в целом (сетью, журналами, временем, именем узла). К надзору относится также «усыновление» осиротевших процессов: процесс, родитель которого завершился, становится потомком PID 1, и init забирает его код завершения, не допуская накопления процессов-зомби.
+Процесс с PID 1 не может завершиться без последствий: в этом случае ядро останавливается с сообщением «Attempted to kill init!». Сигналы без установленного обработчика, включая SIGKILL, процессу PID 1 не доставляются, поэтому команда kill -9 1 не оказывает действия.</aside>
 </section>
 <section id="init-kinds" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -638,7 +658,8 @@
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Пояснение</p>
 <p style="font-size:28px; line-height:1.45; color:#201B10">В контейнере роль PID 1 выполняет само приложение; для корректной обработки сигналов и потомков применяют минимальный init (tini, docker run --init).</p>
 </div>
-
+<aside hidden>Изложение. Реализаций init несколько. Классический SysV init запускает службы shell-скриптами из /etc/init.d в порядке, заданном уровнями запуска; каждый скрипт самостоятельно реализует действия start, stop и status. Upstart, созданный для Ubuntu, запускал службы по событиям и использовался до перехода Ubuntu на systemd в версии 15.04. OpenRC добавляет к скриптам явные зависимости и применяется в Alpine и Gentoo. Systemd описывает службы декларативно, запускает их параллельно с учётом зависимостей и в настоящее время используется в большинстве дистрибутивов.
+Связь с главой «Docker»: в контейнере PID 1 — само приложение; если оно не подбирает завершившихся потомков, в контейнере накапливаются процессы-зомби.</aside>
 </section>
 <section id="systemd" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-direction:column; gap:16px">
@@ -654,7 +675,7 @@
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Пояснение</p>
 <p style="font-size:28px; line-height:1.45; color:#201B10">Юнит — объект управления systemd: служба, точка монтирования, сокет, таймер; цель (target) объединяет юниты в состояние системы.</p>
 </div>
-
+<aside hidden>Изложение. Systemd является наиболее распространённой реализацией init. Причин тому три. Во-первых, systemd включает набор утилит управления системой: systemctl, journalctl, hostnamectl, timedatectl и другие позволяют без правки файлов изменить имя узла, часовой пояс или состояние службы. Во-вторых, всё, чем управляет systemd, описывается однотипными объектами — юнитами (службы, точки монтирования, сокеты, таймеры), между которыми задаются зависимости; цели (target) объединяют юниты в состояния системы, например multi-user.target или graphical.target. В-третьих, службы описываются декларативно: вместо скрипта из десятков строк достаточно нескольких параметров.</aside>
 </section>
 <section id="unit-example" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -687,7 +708,10 @@
 </div>
 </div>
 </div>
-
+<aside hidden>Изложение. Рассмотрим описание службы в формате systemd на примере, близком к лабораторной практике: программа записи данных с АЦП должна запускаться при загрузке после появления сети, работать от имени отдельного пользователя и перезапускаться при аварийном завершении. Секция [Unit] содержит описание и зависимости: Wants добавляет network-online.target в число запускаемых юнитов, After задаёт порядок. Секция [Service] определяет пользователя, команду запуска и политику перезапуска. Секция [Install] указывает цель, в составе которой служба запускается при загрузке.
+Команда daemon-reload перечитывает описания юнитов, enable --now включает автозапуск и сразу запускает службу, journalctl -u daq -f выводит её журнал в реальном времени; стандартный вывод программы попадает в журнал без дополнительной настройки.
+Для физиков: такое оформление заменяет запуск программы в screen или tmux и цикл while true, обеспечивая перезапуск и журналирование средствами системы.
+Связь с практикумом: задание «Работа с долгоиграющими процессами» опирается на этот материал.</aside>
 </section>
 <section id="demo-systemd" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -705,7 +729,9 @@
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Что наблюдается</p>
 <p style="font-size:28px; line-height:1.45; color:#201B10">В корне дерева процессов находится systemd (PID 1); описание ufw в формате systemd в несколько раз короче скрипта SysV.</p>
 </div>
-
+<aside hidden>Демонстрация. Команда pstree -p показывает дерево процессов, в корне которого находится systemd(1). Команда systemctl status выводит состояние службы, её основной процесс, потребление памяти и последние строки журнала; journalctl -u показывает журнал выбранной службы. Команда list-dependencies выводит дерево зависимостей default.target: graphical или multi-user, затем basic.target, sockets.target, local-fs.target и swap.target. Команда wc -l сравнивает длину скрипта SysV и юнита systemd: на стенде скрипт занимает 86 строк, юнит — 16.
+Дополнительно: systemd-analyze выводит длительность загрузки, а systemd-analyze blame | head — службы, дольше всего запускавшиеся при последней загрузке.
+Вывод для аудитории. Systemd управляет не только службами, но и монтированием, подкачкой и сокетами; например, юнит подкачки генерируется из /etc/fstab.</aside>
 </section>
 <section id="booted" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -734,7 +760,8 @@
 <tr style="background:#FFFFFF"><td>init</td><td>аварийный режим, «Dependency failed»</td><td>systemctl --failed</td></tr>
 </table>
 <p style="font-size:28px; line-height:1.4; color:#201B10">Последнее сообщение на экране указывает звено, на котором загрузка остановилась.</p>
-
+<aside hidden>Изложение. Подведём итог первой части. Процесс загрузки представляет собой цепочку: прошивка выполняет POST и находит загрузчик (по сектору MBR или по записи в NVRAM), загрузчик помещает в память ядро и initramfs, ядро с помощью initramfs монтирует корень и запускает init, а init запускает службы. Каждое звено передаёт управление следующему, поэтому при неисправности достаточно установить, какое звено отработало последним.
+Таблица содержит типичные признаки. Звуковые сигналы и пустой экран указывают на оборудование: до Linux дело не дошло. Сообщение «No bootable device» означает, что прошивка не нашла загрузчик, а приглашение grub rescue&gt; — что первая ступень GRUB не нашла свои модули или grub.cfg, например после смены UUID раздела. Паника ядра «VFS: Unable to mount root fs» указывает на неверный параметр root= или отсутствие драйвера в initramfs. Оболочка (initramfs) возникает, когда не собран массив или не найден раздел, а аварийный режим systemd — при ошибке в /etc/fstab или в службе.</aside>
 </section>
 <section id="secure-boot" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:44px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -751,7 +778,9 @@
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#2AE881; padding:2px 12px">Для физика</p>
 <p style="font-size:28px; line-height:1.45; color:#201B10">Самостоятельно собранный модуль ядра, например драйвер платы сбора данных, при включённом Secure Boot не загрузится без подписи ключом, зарегистрированным через MOK.</p>
 </div>
-
+<aside hidden>Изложение. Secure Boot защищает цепочку загрузки от подмены: прошивка UEFI запускает только код, подписанный ключом из своей базы db. Угроза, от которой защищает механизм, — подмена загрузчика на диске, например после его извлечения и подключения к другой машине. Изначально в базе прошивки размещены сертификаты Microsoft, поэтому всё, что запускается без дополнительной настройки, должно быть подписано ими. Владелец машины может зарегистрировать собственные ключи MOK (Machine Owner Key) командой mokutil --import с подтверждением при перезагрузке и подписывать ими собираемое ПО.
+Демонстрация. Команда mokutil --sb-state сообщает, включён ли Secure Boot: на компьютере с включённой защитой — «SecureBoot enabled», а в виртуальной машине стенда, прошивка которой Secure Boot не поддерживает, — «This system doesn't support Secure Boot».
+Для физиков: драйверы плат АЦП, собственные модули ядра и драйвер NVIDIA собираются через DKMS и при включённом Secure Boot требуют подписи; признак проблемы — сообщение «Key was rejected by service» при загрузке модуля.</aside>
 </section>
 <section id="shim" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -779,7 +808,9 @@
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Пояснение</p>
 <p style="font-size:28px; line-height:1.45; color:#201B10">Microsoft не подписывает код под лицензией GPLv3, поэтому подписывается небольшой shim, а GRUB и ядро — ключом дистрибутива.</p>
 </div>
-
+<aside hidden>Изложение. Дистрибутивы Linux реализуют Secure Boot с помощью промежуточного загрузчика shim. Прошивка проверяет подпись shim сертификатом Microsoft, поскольку shim подписан Microsoft; в shim встроен сертификат дистрибутива, которым проверяется подпись GRUB; подписанный GRUB обращается к shim для проверки подписи ядра, а ядро в режиме lockdown загружает только подписанные модули. Нарушение любого звена прерывает загрузку, поэтому цепочку невозможно обойти, подменив одно из промежуточных звеньев.
+Причина появления shim состоит в том, что Microsoft не подписывает код под лицензией GPLv3, к которому относится GRUB. Заявки дистрибутивов на подпись shim проходят открытую проверку в репозитории rhboot/shim-review.
+Ограничения. Secure Boot не проверяет initrd, grub.cfg и параметры ядра; эти звенья защищают единые образы ядра (UKI), пароль на GRUB и шифрование диска с ключом в TPM. От физического доступа к машине Secure Boot не защищает.</aside>
 </section>
 <section id="pxe" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
 <div style="display:flex; flex-direction:column">
@@ -805,7 +836,8 @@
 <p style="width:640px; font-size:26px; font-weight:700; line-height:1.3; text-align:center; color:#201B10; background:#FF87FF; padding:18px 16px; border-radius:18px">узел получает IP-адрес и загрузчик по TFTP</p>
 </div>
 </div>
-
+<aside hidden>Изложение. PXE (Preboot eXecution Environment) представляет собой не протокол, а среду сетевой загрузки, встроенную в прошивку сетевой карты. Она опирается на два протокола. DHCP (исторически BOOTP) выдаёт узлу IP-адрес и в дополнительных параметрах сообщает адрес TFTP-сервера и имя файла загрузчика. TFTP — простейший протокол передачи файлов поверх UDP без аутентификации — доставляет этот файл (например, pxelinux.0 или ipxe.efi), после чего загрузчик получает ядро и initrd.
+Для физиков: так устроены многие вычислительные кластеры и фермы машин сбора данных; системный образ один для всех узлов и обновляется централизованно.</aside>
 </section>
 <section id="fs-cover" data-transition="fade" style="background:#FFF9C1; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:row; gap:64px">
 <div style="flex:1; display:flex; flex-direction:column; justify-content:space-between">
@@ -821,7 +853,8 @@
 <div style="width:420px; display:flex; flex-direction:column; justify-content:center; align-items:center">
 <div style="width:320px; height:320px; background:#73CCFE; border-radius:32px; display:flex; align-items:center; justify-content:center"><p style="font-family:'Jersey 10', 'Courier New', monospace; font-size:220px; line-height:1; color:#201B10">/</p></div>
 </div>
-
+<aside hidden>Изложение. Вторая часть лекции посвящена хранению данных. Диск умеет выполнять только две операции — чтение и запись блока по номеру; имена, каталоги, права доступа и надёжность хранения обеспечивают слои, расположенные над ним. Для архива эксперимента от устройства этих слоёв зависит, переживут ли данные отказ оборудования.
+Порядок изложения следует второй части исходной лекции: устройство дисков, задачи файловой системы, виды файловых систем, их настройка, монтирование, RAID и LVM.</aside>
 </section>
 <section id="plan-fs" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:56px">
 <h2 style="align-self:start; font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#B6A3FF; padding:0px 14px">План</h2>
@@ -835,7 +868,7 @@
 <div style="display:flex; gap:32px; align-items:center"><p style="width:100px; font-family:'Jersey 10', 'Courier New', monospace; font-size:110px; line-height:0.8; text-align:right; color:#7C62F0">04</p><p style="flex:1; font-size:36px; line-height:1.3; color:#201B10">Настройка файловой системы</p></div>
 <div style="display:flex; gap:32px; align-items:center"><p style="width:100px; font-family:'Jersey 10', 'Courier New', monospace; font-size:110px; line-height:0.8; text-align:right; color:#7C62F0">08</p><p style="flex:1; font-size:36px; line-height:1.3; color:#201B10">Заключение</p></div>
 </div>
-
+<aside hidden>Изложение. Вторая часть состоит из семи разделов. Сначала рассматривается устройство дисков и способ размещения на них файловой системы, затем задачи, которые решает файловая система, и основные её виды. Далее обсуждаются настройка файловой системы и монтирование, а в конце — два слоя между дисками и файловой системой: RAID, обеспечивающий надёжность и скорость, и LVM, обеспечивающий гибкость распределения пространства.</aside>
 </section>
 <section id="sec-disks" data-transition="fade" style="background:#F0EDFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:row; gap:64px">
 <div style="flex:1; display:flex; flex-direction:column; justify-content:space-between">
@@ -866,7 +899,7 @@
 <div style="width:16px; height:16px; background:#B6A3FF; border-radius:50%"></div>
 <p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#7C62F0; background:#FFFFFF; padding:14px 0px; border-radius:20px">LVM</p>
 </div>
-
+<aside hidden>Изложение. Первый раздел второй части посвящён устройству дисков. Для операционной системы диск представляет собой последовательность пронумерованных блоков; рассмотрим, как это представление соотносится с физическим устройством накопителя и где на диске размещается файловая система.</aside>
 </section>
 <section id="hdd" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -917,7 +950,9 @@
 </div>
 <p style="flex:1; font-size:28px; line-height:1.45; color:#201B10">Пластины на общем шпинделе разделены на концентрические дорожки, дорожки — на секторы по 512 байт или 4 КиБ. Дорожки с одинаковым номером на всех пластинах образуют цилиндр; для каждой поверхности предусмотрена своя головка.</p>
 </div>
-
+<aside hidden>Изложение. Жёсткий диск (HDD) состоит из нескольких магнитных пластин, закреплённых на общем шпинделе. Поверхность пластины разделена на концентрические дорожки, а дорожки — на секторы размером 512 байт или 4 КиБ. Дорожки с одинаковым номером на всех поверхностях образуют цилиндр. Для каждой поверхности предусмотрена отдельная головка, поэтому у диска с четырьмя пластинами восемь головок; все головки перемещаются одним приводом. Время доступа к произвольному сектору определяется механикой — перемещением головки и поворотом пластины — и составляет порядка 10 мс, поэтому для жёсткого диска важна последовательность чтения.
+Твердотельный накопитель (SSD) не содержит движущихся частей: данные хранятся во флеш-памяти, а контроллер (FTL) скрывает особенности записи и износа. Снаружи SSD предоставляет тот же интерфейс из пронумерованных секторов, и файловая система этой разницы почти не замечает.
+Для физиков: физика магнитной записи на слайдах не рассматривается; её целесообразно пояснить устно (магнитные домены, считывание по эффекту магнитосопротивления).</aside>
 </section>
 <section id="blocks" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -939,7 +974,7 @@
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Пояснение</p>
 <p style="font-size:28px; line-height:1.45; color:#201B10">Имена файлов, каталоги и права доступа на диске отсутствуют: это структуры данных, которые файловая система хранит в тех же блоках.</p>
 </div>
-
+<aside hidden>Изложение. Независимо от физического устройства накопитель предоставляет операционной системе единообразный интерфейс: последовательность пронумерованных блоков одинакового размера, для которой определены только чтение и запись блока с заданным номером. Файловая система работает с блоками, объединяющими несколько секторов (обычно 4 КиБ). Всё, что пользователь воспринимает как файлы и каталоги, представляет собой структуры данных, записанные в эти же блоки.</aside>
 </section>
 <section id="fs-where" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -964,7 +999,7 @@
 <div style="position:absolute; left:1435px; top:240px; width:277px; height:160px; background:#FF5F00; border-radius:16px; padding:12px; display:flex; align-items:center; justify-content:center"><p style="font-size:24px; font-weight:700; line-height:1.3; text-align:center; color:#201B10">ФАЙЛЫ И КАТАЛОГИ</p></div>
 </div>
 <p style="font-size:30px; line-height:1.4; color:#201B10">Файловая система размещается внутри раздела: в его начале находятся служебные структуры, далее — таблица инодов и блоки данных.</p>
-
+<aside hidden>Изложение. Файловая система размещается внутри раздела, описанного в таблице MBR или GPT. В начале раздела ext4 находятся служебные структуры. Суперблок хранит параметры файловой системы в целом: размер блока, общее и свободное число блоков и инодов, время последней проверки и признак корректного размонтирования. Сведения о свободном пространстве хранятся в битовых картах, позволяющих быстро найти незанятые блоки и иноды. Таблица инодов содержит записи о файлах; её размер задаётся при создании файловой системы. Корневой каталог является обычным каталогом с фиксированным номером инода 2, а остальное пространство занимают блоки данных файлов и каталогов.</aside>
 </section>
 <section id="demo-superblock" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:44px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -981,7 +1016,9 @@
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Что наблюдается</p>
 <p style="font-size:28px; line-height:1.45; color:#201B10">Копии суперблока хранятся в блоках 32768, 98304, 163840, 229376; при повреждении основного используется копия: e2fsck -b 32768.</p>
 </div>
-
+<aside hidden>Демонстрация. Вместо реального диска используется файл-образ, поэтому демонстрация безопасна. Команда truncate создаёт разреженный файл размером 1 ГиБ, не занимающий места на диске. Утилита mkfs.ext4 создаёт на нём файловую систему и сообщает строку «Superblock backups stored on blocks: 32768, 98304, 163840, 229376». Команда dumpe2fs подтверждает расположение основного суперблока и его копий, а с ключом -h выводит параметры из суперблока: число инодов и блоков, размер блока, дату создания, состояние (clean) и счётчик монтирований.
+Вывод для аудитории. Суперблок является единственной точкой отказа файловой системы, поэтому mkfs сразу размещает его копии по известным адресам; при повреждении основного суперблока e2fsck восстанавливает его из копии.
+Файл disk.img используется и в следующих демонстрациях (журнал, резерв блоков, монтирование), поэтому его не следует удалять.</aside>
 </section>
 <section id="file" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1022,7 +1059,8 @@
 <x-connector x1="950" y1="260" x2="1575" y2="330" style="color:#201B10; border-width:3px"></x-connector>
 </div>
 <p style="font-size:30px; line-height:1.4; color:#201B10">Инод хранит метаданные файла и номера его блоков; у большого файла номера блоков выносятся в косвенные блоки. Имени файла в иноде нет.</p>
-
+<aside hidden>Изложение. Файл на диске представлен инодом и блоками данных. Инод (index node) представляет собой запись фиксированного размера, обычно 256 байт, в которой хранятся тип файла, права доступа, владелец, размер, отметки времени, число жёстких ссылок и указатели на блоки данных. В классической схеме ext2 и ext3 инод содержит 12 прямых указателей; если файл занимает больше блоков, номера остальных записываются в косвенный блок, затем в двойной и тройной косвенные блоки. В ext4 вместо перечня блоков используются экстенты, рассматриваемые далее.
+Ключевой факт: имени файла в иноде нет. Имя хранится в каталоге, о чём говорит следующий слайд.</aside>
 </section>
 <section id="dir" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:44px">
 <h2 style="align-self:start; font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#2AE881; padding:0px 14px">Каталог</h2>
@@ -1039,7 +1077,7 @@
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Пояснение</p>
 <p style="font-size:28px; line-height:1.45; color:#201B10">Жёсткая ссылка — вторая запись в каталоге с тем же номером инода; символическая ссылка — отдельный файл, содержащий путь.</p>
 </div>
-
+<aside hidden>Изложение. Каталог представляет собой файл особого типа, содержимое которого — таблица соответствия имён и номеров инодов. Из этого следует несколько практически важных свойств. Переименование файла в пределах одной файловой системы выполняется мгновенно при любом размере файла, поскольку изменяется только запись в каталоге. Жёсткая ссылка является ещё одной записью с тем же номером инода, так что у файла появляются два равноправных имени, а счётчик ссылок в иноде увеличивается. Команда rm не стирает данные, а удаляет имя (системный вызов unlink); блоки освобождаются, когда счётчик ссылок равен нулю и файл никем не открыт. Символическая ссылка является отдельным файлом, содержащим путь, и перестаёт работать при удалении или переименовании цели.</aside>
 </section>
 <section id="demo-links" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:44px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1056,7 +1094,9 @@
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Что наблюдается</p>
 <p style="font-size:28px; line-height:1.45; color:#201B10">У foo.txt и bar.txt один номер инода и две ссылки; после удаления foo.txt данные доступны через bar.txt, а символическая ссылка становится недействительной.</p>
 </div>
-
+<aside hidden>Демонстрация. Первая команда создаёт файл foo.txt, жёсткую ссылку bar.txt и символическую ссылку sym.txt. В выводе ls -li первая колонка содержит номер инода: у foo.txt и bar.txt он совпадает, а счётчик ссылок равен 2; у sym.txt собственный инод, тип l и указание на цель. Команда stat выводит содержимое инода: размер, число блоков, права, владельца, три отметки времени (Access, Modify, Change) и число ссылок — но не имя. После rm foo.txt команда cat bar.txt выводит «run 42», поскольку инод по-прежнему доступен через оставшееся имя, а cat sym.txt сообщает «No such file or directory»: символическая ссылка указывала на имя, которого больше нет.
+Вывод для аудитории. Удаление файла означает удаление имени; данные освобождаются, когда на инод не остаётся ни одной ссылки.
+Уборка: rm bar.txt sym.txt.</aside>
 </section>
 <section id="fhs" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1085,7 +1125,8 @@
 </div>
 </div>
 </div>
-
+<aside hidden>Изложение. В отличие от Windows, где у каждого диска свой корень, обозначенный буквой, в Linux существует единое дерево каталогов с корнем /, сколько бы дисков ни было подключено. Расположение каталогов стандартизовано документом Filesystem Hierarchy Standard, описание которого доступно в системе командой man hier. Поэтому в любом дистрибутиве настройки ищутся в /etc, журналы — в /var/log, программы — в /usr, ядро и загрузчик — в /boot. Каталоги /proc и /sys являются виртуальными файловыми системами: команда cat /proc/cpuinfo читает сведения о процессоре, сформированные ядром в момент чтения.
+Для физиков: большие данные не размещаются в /home на системном диске; для них выделяется отдельный том, смонтированный, например, в /data, тогда переустановка системы их не затрагивает.</aside>
 </section>
 <section id="sec-fs-tasks" data-transition="fade" style="background:#D4FAE6; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:row; gap:64px">
 <div style="flex:1; display:flex; flex-direction:column; justify-content:space-between">
@@ -1116,7 +1157,7 @@
 <div style="width:16px; height:16px; background:#2AE881; border-radius:50%"></div>
 <p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#0F9E50; background:#FFFFFF; padding:14px 0px; border-radius:20px">LVM</p>
 </div>
-
+<aside hidden>Изложение. Второй раздел отвечает на вопрос, зачем нужна файловая система. Мысленный эксперимент: если записывать данные командой dd прямо в блоки диска, то неизвестно, где начинается и заканчивается каждая запись, кто имеет к ней доступ и какие блоки свободны. Файловая система решает эти задачи и, кроме того, обеспечивает производительность и надёжность хранения.</aside>
 </section>
 <section id="fs-tasks" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1131,7 +1172,8 @@
 <div style="background:#D4FAE6; border-radius:20px; padding:24px 28px; display:flex; gap:24px; align-items:center"><p style="font-family:'Jersey 10', 'Courier New', monospace; font-size:96px; line-height:0.8; color:#0F9E50">05</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:30px; font-weight:700; line-height:1.3; color:#201B10">Поддержка множества устройств</p><p style="font-size:26px; line-height:1.35; color:#201B10">единый интерфейс для разных носителей</p></div></div>
 <div style="background:#D4FAE6; border-radius:20px; padding:24px 28px; display:flex; gap:24px; align-items:center"><p style="font-family:'Jersey 10', 'Courier New', monospace; font-size:96px; line-height:0.8; color:#0F9E50">06</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:30px; font-weight:700; line-height:1.3; color:#201B10">Управление чтением и записью</p><p style="font-size:26px; line-height:1.35; color:#201B10">согласованность при сбоях, журнал</p></div></div>
 </div>
-
+<aside hidden>Изложение. Файловая система решает шесть взаимосвязанных задач. Она управляет пространством, отслеживая свободные и занятые блоки; оптимизирует производительность за счёт кеширования в оперативной памяти и размещения данных, уменьшающего число обращений к диску; индексирует данные, позволяя быстро находить файл по имени; контролирует доступ, храня владельца, права и списки ACL; предоставляет единый интерфейс для разнородных носителей; наконец, обеспечивает согласованность данных при чтении и записи, в том числе при внезапном отключении питания.
+Пример к контролю доступа: раздел NTFS читается из Linux, однако установить на него систему нельзя, поскольку NTFS не хранит права в модели POSIX.</aside>
 </section>
 <section id="defrag" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <h2 style="align-self:start; font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#FF5F00; padding:0px 14px">Фрагментация</h2>
@@ -1154,7 +1196,8 @@
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Пояснение</p>
 <p style="font-size:28px; line-height:1.45; color:#201B10">Современные ФС снижают фрагментацию отложенным выделением места; на SSD фрагментация практически не влияет на скорость.</p>
 </div>
-
+<aside hidden>Изложение. Рассмотрим пример из исходной лекции. На диске последовательно записаны десять файлов по 4 КиБ. После удаления второго и десятого файлов освобождаются два несмежных блока. Если затем записать файл размером 8 КиБ, он будет разделён между началом и концом занятой области, и при чтении головке жёсткого диска придётся перемещаться между ними. Такое разбиение файлов называется фрагментацией.
+Современные файловые системы (ext4, XFS, btrfs) снижают фрагментацию, откладывая выделение места до момента записи на диск и подбирая непрерывные участки; ручная дефрагментация (e4defrag) требуется редко. На SSD время доступа не зависит от расположения блоков, поэтому фрагментация практически не влияет на скорость.</aside>
 </section>
 <section id="sec-fs-kinds" data-transition="fade" style="background:#E3F5FF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:row; gap:64px">
 <div style="flex:1; display:flex; flex-direction:column; justify-content:space-between">
@@ -1185,7 +1228,7 @@
 <div style="width:16px; height:16px; background:#73CCFE; border-radius:50%"></div>
 <p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#0B8FD6; background:#FFFFFF; padding:14px 0px; border-radius:20px">LVM</p>
 </div>
-
+<aside hidden>Изложение. Третий раздел посвящён видам файловых систем. Их существует более сотни; рассмотрим общий интерфейс, через который ядро работает с любой из них, и четыре файловые системы, покрывающие практически все случаи: FAT, ext4, XFS и btrfs.</aside>
 </section>
 <section id="vfs" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1223,7 +1266,8 @@
 <p style="width:880px; font-size:28px; font-weight:700; text-align:center; color:#201B10; background:#FCE300; padding:18px 16px; border-radius:18px">кеш страниц, блочный уровень</p>
 </div>
 </div>
-
+<aside hidden>Изложение. Файловых систем существует более сотни, и программы не должны содержать код для каждой из них. Эту задачу решает виртуальная файловая система (Virtual File System, VFS) — слой ядра, принимающий системные вызовы open, read, write, close, lseek и stat. По пути к файлу VFS определяет, какой файловой системе он принадлежит, и вызывает её реализацию соответствующей операции. Поэтому одинаково читаются файл на локальной ext4, файл на сетевой NFS и «файл» /proc/cpuinfo, содержимое которого формирует ядро в момент чтения. Ниже VFS расположен кеш страниц, общий для всех файловых систем, и блочный уровень, передающий запросы драйверам устройств.
+Для физиков: рабочий каталог на кластере часто размещается на сетевой файловой системе (NFS, Lustre, BeeGFS); код менять не требуется, однако мелкие операции по сети выполняются значительно медленнее, чем на локальном диске.</aside>
 </section>
 <section id="fat" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <h2 style="align-self:start; font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#73CCFE; padding:0px 14px">FAT</h2>
@@ -1249,7 +1293,8 @@
 <p style="font-size:24px; line-height:1.4; color:#6B665C">* Штатное средство Windows форматирует FAT32 объёмом не более 32 ГиБ.</p>
 </div>
 </div>
-
+<aside hidden>Изложение. Файловая система FAT (File Allocation Table) происходит из эпохи дискет. Её сильные стороны — простота и совместимость: FAT читают практически все операционные системы, поэтому она применяется на флеш-накопителях и обязательна для раздела ESP. Слабые стороны — отсутствие журнала и жёсткие ограничения размеров, заложенные в формат.
+Числа 12, 16 и 32 в названии обозначают разрядность номера кластера в таблице размещения. У FAT32 под номер фактически отведено 28 бит. Предельный размер раздела получается умножением числа кластеров на размер кластера; размер файла в FAT32 ограничен 32-битным полем записи каталога, то есть 4 ГиБ без одного байта.</aside>
 </section>
 <section id="fat-calc" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1275,7 +1320,8 @@
 <p style="font-size:28px; line-height:1.45; color:#201B10">Тот же расчёт применим к данным: 32-битный счётчик тактов при частоте 100 МГц переполняется за 43 с.</p>
 </div>
 </div>
-
+<aside hidden>Изложение. Все рассмотренные ограничения являются следствием разрядности полей, заложенной в формат, и вычисляются по одной формуле: число адресуемых единиц умножается на размер единицы. Для FAT12 номер кластера двенадцатибитный, что даёт 2¹² = 4096 номеров; при кластере 4 КиБ предельный размер раздела составляет 16 МиБ, при кластере 512 байт — 2 МиБ. Та же формула даёт предел MBR (2³² секторов по 512 байт = 2 ТиБ) и предел размера файла в FAT32 (32-битное поле размера — 4 ГиБ без одного байта).
+Для физиков: та же арифметика объясняет переполнение 32-битных счётчиков в электронике и в данных, например отметок времени: 2³² / 10⁸ Гц ≈ 43 с. Полезно также различать двоичные и десятичные приставки: ТиБ = 2⁴⁰ байт, ТБ = 10¹² байт.</aside>
 </section>
 <section id="ext4" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <h2 style="align-self:start; font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#2AE881; padding:0px 14px">ext4</h2>
@@ -1291,7 +1337,8 @@
 <p style="font-size:26px; line-height:1.4; color:#6B665C">Возможности, включённые в файловой системе из демонстрации:</p>
 <p style="align-self:start; font-size:28px; line-height:1.4; color:#201B10; background:#2AE881; padding:2px 12px">root@lab:~# tune2fs -l disk.img | grep -i features</p>
 </div>
-
+<aside hidden>Изложение. Если файловая система не выбиралась сознательно, почти наверняка используется ext4: она устанавливается по умолчанию в Debian, Ubuntu и многих других дистрибутивах и подходит для машины общего назначения. К её основным свойствам относятся экстенты, описывающие непрерывные участки блоков (следующий слайд), хеш-деревья HTree для быстрого поиска имён в больших каталогах и журналирование метаданных. Ограничение ext4 состоит в том, что число инодов задаётся один раз при создании файловой системы и в дальнейшем не изменяется.
+Демонстрация. В выводе tune2fs -l строка Filesystem features содержит has_journal (журнал), extent (экстенты), dir_index (хеш-деревья каталогов) и другие возможности.</aside>
 </section>
 <section id="extents" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1321,7 +1368,8 @@
 <p style="font-size:26px; line-height:1.4; color:#6B665C">Число экстентов конкретного файла:</p>
 <p style="align-self:start; font-size:28px; line-height:1.4; color:#201B10; background:#2AE881; padding:2px 12px">root@lab:~# filefrag -v /boot/initrd.img-$(uname -r)</p>
 </div>
-
+<aside hidden>Изложение. Рассмотрим, как инод указывает на данные. В ext2 и ext3 инод содержит перечень номеров блоков: 12 прямых указателей, затем косвенный, двойной и тройной косвенные блоки. Для файла размером 1 ГиБ при блоке 4 КиБ требуется 262 144 указателя, которые необходимо хранить и читать. В ext4 используются экстенты — записи вида «начальный блок и длина». Один экстент описывает до 32 768 блоков подряд, то есть 128 МиБ; гигабайтный файл, записанный непрерывно, описывается восемью записями. Уменьшение объёма метаданных ускоряет чтение больших файлов и их удаление.
+Демонстрация. Команда filefrag -v выводит экстенты файла: смещение в файле, физический номер начального блока и длину.</aside>
 </section>
 <section id="demo-inodes" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:44px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1338,7 +1386,10 @@
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Что наблюдается</p>
 <p style="font-size:28px; line-height:1.45; color:#201B10">Около тысячного файла появляется ошибка No space left on device, хотя df -h показывает свободное место; df -i показывает 100 % занятых инодов.</p>
 </div>
-
+<aside hidden>Демонстрация. Утилита mkfs.ext4 с параметром -N создаёт файловую систему всего с 1024 инодами. После монтирования цикл создаёт пустые файлы до первой ошибки. Примерно на тысячном файле команда touch сообщает «No space left on device»: первые десять инодов зарезервированы (в их числе инод 2 корневого каталога), инод 11 занят каталогом lost+found, остальные — созданными файлами. При этом df -h показывает, что занято лишь несколько процентов блоков, а df -i — что заняты все иноды.
+Изложение. Число инодов в ext4 фиксируется при создании файловой системы (по умолчанию один инод на 16 КиБ объёма). Программа, создающая миллионы файлов по несколько килобайт, исчерпывает иноды при свободных блоках. Способы решения: упаковать мелкие файлы в контейнер, пересоздать файловую систему с большим числом инодов (mkfs.ext4 -N или -i) или использовать XFS, где иноды выделяются динамически.
+Для физиков: пакеты моделирования, записывающие файл на каждое событие или прогон, быстро исчерпывают иноды; на кластере с квотой на число файлов это приводит к отказу задач. Сохранение результатов в один файл HDF5 или ROOT решает проблему и ускоряет последующее чтение.
+Уборка: umount /mnt/small; rm small.img.</aside>
 </section>
 <section id="journal" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <h2 style="align-self:start; font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#FF87FF; padding:0px 14px">Журналирование</h2>
@@ -1365,7 +1416,9 @@
 <p style="font-size:28px; line-height:1.4; color:#201B10">После сбоя зафиксированные транзакции повторяются из журнала за секунды вместо полной проверки диска.</p>
 </div>
 <p style="align-self:start; font-size:28px; line-height:1.4; color:#201B10; background:#FF87FF; padding:2px 12px">root@lab:~# debugfs -R logdump disk.img</p>
-
+<aside hidden>Изложение. Любая операция с файлом требует нескольких записей в разные места диска. Удаление включает удаление записи из каталога, освобождение инода и отметку блоков как свободных. Если питание пропадает между шагами, файловая система остаётся несогласованной: например, инод занят, но на него не ссылается ни один каталог. Прежде такие ошибки исправляла утилита fsck полной проверкой диска, занимавшей на больших томах часы.
+Журнал представляет собой служебную область, в которую сначала записывается описание операции целиком (транзакция), затем признак фиксации, и только после этого изменения вносятся на место. После сбоя файловая система перечитывает журнал: зафиксированные транзакции повторяются, незафиксированные отбрасываются. В режиме по умолчанию (data=ordered) журналируются только метаданные; журнал защищает целостность структуры файловой системы, но не содержимое недописанных файлов.
+Демонстрация. Команда debugfs -R logdump читает журнал файловой системы из образа disk.img. Файловая система только что создана и не монтировалась, поэтому вывод ограничивается строкой «Journal starts at block 0, …»: нулевой начальный блок означает, что журнал пуст. Журнал не хранит историю изменений: после переноса изменений на место транзакции удаляются из него, и у корректно размонтированной файловой системы журнал пуст. Непустой журнал можно показать в демонстрации резерва блоков, пока образ смонтирован: после touch /mnt/disk/a; sync команда debugfs -R logdump $LOOP выводит дескрипторные блоки и блоки фиксации транзакций.</aside>
 </section>
 <section id="xfs" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <h2 style="align-self:start; font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#FF5F00; padding:0px 14px">XFS</h2>
@@ -1381,7 +1434,9 @@
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#FF5F00; padding:2px 12px">Важно</p>
 <p style="font-size:28px; line-height:1.45; color:#201B10">Том XFS можно увеличить, но нельзя уменьшить; это учитывается при планировании дискового пространства.</p>
 </div>
-
+<aside hidden>Изложение. Файловая система XFS изначально разрабатывалась компанией SGI для рабочих станций, обрабатывавших видео и научные данные, и ориентирована на большие файлы и параллельную запись из многих потоков. Индексы XFS построены на B+-деревьях, место под данные выделяется отложенно, в момент сброса на диск, что позволяет размещать файлы непрерывно. Иноды выделяются динамически, по мере необходимости, поэтому проблема исчерпания инодов, рассмотренная для ext4, в XFS практически не возникает. XFS устанавливается по умолчанию в Red Hat Enterprise Linux начиная с версии 7 и в производных дистрибутивах. Размер файла и тома достигает 8 ЭиБ.
+Ограничение, которое необходимо учитывать: XFS можно расширить, но нельзя уменьшить.
+Для физиков: XFS хорошо подходит для архивов эксперимента и дампов моделирования, состоящих из многогигабайтных файлов.</aside>
 </section>
 <section id="btrfs" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:44px">
 <h2 style="align-self:start; font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#B6A3FF; padding:0px 14px">Btrfs</h2>
@@ -1404,7 +1459,9 @@
 </div>
 <p style="font-size:28px; line-height:1.4; color:#201B10">Команда TRIM сообщает накопителю, что блоки больше не используются и могут быть очищены заранее.</p>
 </div>
-
+<aside hidden>Изложение. Btrfs (B-tree file system) является современной файловой системой, все структуры которой построены на B-деревьях. Главное её свойство — копирование при записи, на котором основаны дешёвые снимки (следующий слайд). Каждый блок данных и метаданных снабжается контрольной суммой, поэтому скрытая порча данных обнаруживается при чтении, а в зеркальной конфигурации исправляется по копии. Btrfs самостоятельно управляет несколькими дисками (RAID 0, 1 и 10) и подтомами, хранит небольшие файлы непосредственно в метаданных и устанавливается по умолчанию в openSUSE и Fedora.
+TRIM. Твердотельный накопитель записывает данные страницами, а стирает крупными блоками, поэтому перед записью ячейки должны быть очищены. Команда TRIM сообщает накопителю, какие блоки файловая система больше не использует, чтобы контроллер не переносил устаревшие данные при сборке мусора и очищал ячейки заранее. TRIM поддерживается также ext4 и XFS (периодически его выполняет служба fstrim.timer).
+Ограничение: режимы RAID 5 и 6 в btrfs официально не рекомендуются для рабочих данных.</aside>
 </section>
 <section id="cow" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1434,7 +1491,9 @@
 <p style="font-size:26px; line-height:1.4; color:#6B665C">Пример для системы с корнем на btrfs:</p>
 <p style="align-self:start; font-size:28px; line-height:1.4; color:#201B10; background:#B6A3FF; padding:2px 12px">root@lab:~# btrfs subvolume snapshot -r / /.snapshots/before-update</p>
 </div>
-
+<aside hidden>Изложение. Традиционная файловая система изменяет блок на месте. Btrfs никогда не перезаписывает используемые данные: новая версия блока записывается в свободное место, после чего обновляется указатель на неё, также копированием, вплоть до корня дерева. Старая версия блока остаётся нетронутой. Отсюда следует механизм снимков: снимок представляет собой сохранённый старый корень дерева. Он создаётся мгновенно и первоначально не занимает места; место расходуется по мере того, как текущая версия расходится со снимком. При обрыве питания посреди записи сохраняется целая старая версия данных.
+Ограничение копирования при записи — фрагментация файлов, часто изменяемых изнутри (базы данных, образы виртуальных машин); для таких каталогов копирование при записи отключается атрибутом chattr +C.
+Для физиков: снимок корня перед обновлением системы или библиотек (в openSUSE его автоматически создаёт snapper) позволяет за минуту вернуть рабочее окружение расчёта. Вместе с тем снимок на том же диске резервной копией не является.</aside>
 </section>
 <section id="sec-fs-config" data-transition="fade" style="background:#FFE2D1; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:row; gap:64px">
 <div style="flex:1; display:flex; flex-direction:column; justify-content:space-between">
@@ -1465,7 +1524,7 @@
 <div style="width:16px; height:16px; background:#FF5F00; border-radius:50%"></div>
 <p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#E85400; background:#FFFFFF; padding:14px 0px; border-radius:20px">LVM</p>
 </div>
-
+<aside hidden>Изложение. Четвёртый раздел посвящён настройке файловой системы. Сильнее всего на скорость дисковых операций влияют кеширование в оперативной памяти и порядок, в котором накопленные запросы передаются устройству; кроме того, рассматриваются утилиты создания, настройки, проверки и отладки файловых систем.</aside>
 </section>
 <section id="cache" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <h2 style="align-self:start; font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#FF5F00; padding:0px 14px">Кеширование</h2>
@@ -1488,7 +1547,9 @@
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#FF5F00; padding:2px 12px">Важно</p>
 <p style="font-size:28px; line-height:1.45; color:#201B10">Завершение команды cp не означает, что данные записаны на флеш-накопитель: перед извлечением выполняется sync или umount.</p>
 </div>
-
+<aside hidden>Изложение. Оперативная память, не занятая программами, используется ядром как кеш файлов (page cache). Прочитанные с диска страницы остаются в памяти, и повторное чтение того же файла выполняется без обращения к диску; поэтому команда free показывает значительный объём в столбце buff/cache, и это нормальное состояние — при нехватке памяти кеш освобождается. Запись также проходит через кеш: системный вызов write возвращает управление, когда данные помещены в память, а на диск их записывают потоки ядра по таймеру (около 30 секунд) или при превышении порогов vm.dirty_background_ratio и vm.dirty_ratio. Изменённые, но не записанные страницы называются грязными; отдельного кеша для них нет — это состояние страниц в том же кеше.
+Демонстрация. Команда free -h показывает объём кеша, sysctl — пороги сброса грязных страниц (по умолчанию 10 и 20 %), sync принудительно записывает грязные страницы на диск.
+Для физиков: при измерении скорости обработки данных первый запуск является «холодным», а повторные читают файл из кеша; для честного сравнения кеш сбрасывается командой echo 3 &gt; /proc/sys/vm/drop_caches. Программам, для которых недопустима потеря последних секунд записи, необходим вызов fsync.</aside>
 </section>
 <section id="scheduler" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1510,7 +1571,8 @@
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Пояснение</p>
 <p style="font-size:28px; line-height:1.45; color:#201B10">Планировщики CFQ, deadline и noop удалены в ядре 5.0; их заменили многоочередные none, mq-deadline, bfq и kyber.</p>
 </div>
-
+<aside hidden>Изложение. Планировщик ввода-вывода определяет, в каком порядке накопленные запросы передаются устройству. Начиная с ядра 5.0 используются только многоочередные планировщики. Планировщик none передаёт запросы без переупорядочивания и является лучшим выбором для NVMe-накопителей, которым перестановка запросов ничего не даёт. Планировщик mq-deadline следит за предельными сроками выполнения запросов, не позволяя им задерживаться, и служит разумным выбором для SATA-дисков. Планировщик bfq справедливо распределяет полосу между процессами и полезен на рабочем столе, где важна отзывчивость. Планировщик kyber ограничивает задержки на быстрых устройствах.
+Демонстрация. Файл /sys/block/&lt;устройство&gt;/queue/scheduler содержит список доступных планировщиков, текущий указан в квадратных скобках; запись имени в этот файл меняет планировщик без перезагрузки.</aside>
 </section>
 <section id="fs-utils" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1528,7 +1590,8 @@
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#FF5F00; padding:2px 12px">Важно</p>
 <p style="font-size:28px; line-height:1.45; color:#201B10">Утилита fsck запускается только на размонтированной ФС; mkfs уничтожает данные раздела без предупреждения, поэтому имя устройства предварительно сверяется по lsblk.</p>
 </div>
-
+<aside hidden>Изложение. Для каждой операции жизненного цикла файловой системы предусмотрена своя утилита. Семейство mkfs создаёт файловые системы любого типа; mke2fs создаёт ext2, ext3 и ext4 с заданными параметрами, например с увеличенным числом инодов (-N) или с профилем для больших файлов (-T largefile). Утилита debugfs позволяет исследовать и отлаживать внутренние структуры ext4, tune2fs — изменять её параметры: резерв блоков для root (-m), UUID (-U), интервал проверок. Утилита fsck проверяет файловую систему и восстанавливает повреждённые структуры; с параметром -b e2fsck использует резервную копию суперблока.
+Предупреждение. Проверка смонтированной файловой системы может её повредить, поэтому fsck запускается после размонтирования или из live-образа. Команда mkfs не запрашивает подтверждения при работе с разделом без файловой системы, поэтому имя устройства сверяется с выводом lsblk непосредственно перед запуском.</aside>
 </section>
 <section id="demo-reserve" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:44px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1545,7 +1608,10 @@
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#2AE881; padding:2px 12px">Для физика</p>
 <p style="font-size:28px; line-height:1.45; color:#201B10">По умолчанию 5 % блоков зарезервированы для root: на 20-ТБ архиве это 1 ТБ. Для тома с данными резерв уменьшают командой tune2fs -m 1.</p>
 </div>
-
+<aside hidden>Демонстрация. Образ disk.img монтируется через loop-устройство; имя устройства запоминается в переменной LOOP, поскольку номера loop-устройств заранее неизвестны. Команда tune2fs -l выводит число зарезервированных блоков: для образа объёмом 1 ГиБ это 13 107 блоков по 4 КиБ, то есть 5 %. После tune2fs -m 0 команда df -m показывает увеличение доступного места примерно на 50 МиБ без размонтирования. Изменение выполняется через loop-устройство, а не через файл образа, чтобы ядро сразу увидело новое значение в суперблоке.
+Изложение. Резерв нужен для того, чтобы при заполнении диска пользователями система и службы, работающие от root, продолжали записывать журналы и на машину можно было войти. Для тома, содержащего только данные, резерв уменьшают до 1 % или до нуля.
+Для физиков: на 20-ТБ диске с архивом эксперимента резерв по умолчанию составляет 1 ТБ, недоступный обычным пользователям.
+Файловая система остаётся смонтированной в /mnt/disk для следующей демонстрации.</aside>
 </section>
 <section id="sec-mount" data-transition="fade" style="background:#F0EDFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:row; gap:64px">
 <div style="flex:1; display:flex; flex-direction:column; justify-content:space-between">
@@ -1576,7 +1642,7 @@
 <div style="width:16px; height:16px; background:#B6A3FF; border-radius:50%"></div>
 <p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#7C62F0; background:#FFFFFF; padding:14px 0px; border-radius:20px">LVM</p>
 </div>
-
+<aside hidden>Изложение. Пятый раздел посвящён монтированию — подключению файловой системы раздела к единому дереву каталогов. Рассматриваются команды mount и umount, файл /etc/fstab, описывающий файловые системы, монтируемые при загрузке, параметры монтирования и юниты systemd, служащие альтернативой fstab.</aside>
 </section>
 <section id="mount" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <h2 style="align-self:start; font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#B6A3FF; padding:0px 14px">Монтирование</h2>
@@ -1600,7 +1666,7 @@
 <p style="align-self:start; font-size:28px; line-height:1.4; color:#201B10; background:#B6A3FF; padding:2px 12px">root@lab:~# findmnt /data</p>
 <p style="align-self:start; font-size:28px; line-height:1.4; color:#201B10; background:#B6A3FF; padding:2px 12px">root@lab:~# umount /data</p>
 </div>
-
+<aside hidden>Изложение. В Linux существует единое дерево каталогов. Файловая система раздела становится доступной, когда её подключают — монтируют — к одному из каталогов, называемому точкой монтирования; прежнее содержимое этого каталога на время монтирования скрывается. Пока раздел не смонтирован, данные на нём для программ недоступны. Команда mount выполняет монтирование, umount — размонтирование, findmnt показывает, какая файловая система смонтирована в заданный каталог и с какими параметрами.</aside>
 </section>
 <section id="fstab" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:44px">
 <h2 style="align-self:start; font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#B6A3FF; padding:0px 14px">/etc/fstab</h2>
@@ -1622,7 +1688,10 @@
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#FF5F00; padding:2px 12px">Важно</p>
 <p style="font-size:28px; line-height:1.45; color:#201B10">Устройство указывается по UUID: имена /dev/sdX меняются при добавлении дисков. Внешним и сетевым дискам нужен nofail, иначе их отсутствие останавливает загрузку.</p>
 </div>
-
+<aside hidden>Изложение. Файл /etc/fstab описывает файловые системы, монтируемые при загрузке. Каждая строка содержит шесть полей: устройство, точку монтирования, тип файловой системы, параметры монтирования, признак для утилиты архивации dump и порядок проверки fsck при загрузке (1 — корень, 2 — остальные, 0 — без проверки).
+Устройство указывается по UUID файловой системы, который показывает команда blkid, а не по имени /dev/sdX: имена назначаются в порядке обнаружения дисков и меняются при их добавлении или отказе.
+Пример из практики: из трёх дисков отказал второй, диск sdc получил имя sdb, и данные смонтировались в общедоступный каталог.
+Для физиков: машина сбора данных после перезагрузки переходит в аварийный режим, если внешний диск с данными описан в fstab без параметра nofail и не подключён. Всё, что может отсутствовать, описывается с nofail, сетевые файловые системы — дополнительно с _netdev.</aside>
 </section>
 <section id="mount-opts" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:44px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1647,7 +1716,7 @@
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Пояснение</p>
 <p style="font-size:28px; line-height:1.45; color:#201B10">Параметр defaults означает rw, suid, dev, exec, auto, nouser, async.</p>
 </div>
-
+<aside hidden>Изложение. Параметры монтирования подбираются в соответствии с назначением тома. Параметр ro запрещает запись и применяется к готовому архиву измерений как защита от случайного удаления. Параметр noatime отключает запись времени последнего доступа при каждом чтении; с ядра 2.6.30 по умолчанию действует компромиссный режим relatime, поэтому выигрыш от noatime невелик, но на томе с миллионами файлов он заметен. Параметры nodev, noexec и nosuid ограничивают возможности файлов на томе и применяются к общедоступным каталогам (/tmp) и чужим носителям. Параметр commit задаёт период записи журнала, sync — немедленную запись без кеширования. Параметр nofail не прерывает загрузку, если устройство отсутствует, и является главным для внешних и сетевых дисков.</aside>
 </section>
 <section id="systemd-mount" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1678,7 +1747,8 @@
 </div>
 </div>
 </div>
-
+<aside hidden>Изложение. Точка монтирования может быть описана не строкой в /etc/fstab, а юнитом systemd типа mount. Имя юнита должно повторять путь точки монтирования (для /data — data.mount); секция [Mount] содержит устройство, точку, тип и параметры, секция [Install] — цель, в составе которой выполняется монтирование при загрузке. На практике systemd при загрузке сам преобразует каждую строку fstab в такой юнит (генератор systemd-fstab-generator), поэтому ошибки монтирования отображаются в systemctl --failed и в журнале.
+Отдельный юнит удобен, когда монтирование необходимо связать зависимостями со службами. Например, служба записи данных, рассмотренная в первой части, с параметром RequiresMountsFor=/data не будет запущена, пока том не смонтирован, и не станет записывать данные на системный диск.</aside>
 </section>
 <section id="demo-mount" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:44px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1695,7 +1765,9 @@
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Что наблюдается</p>
 <p style="font-size:28px; line-height:1.45; color:#201B10">findmnt показывает параметр ro, а попытка записи завершается ошибкой Read-only file system.</p>
 </div>
-
+<aside hidden>Демонстрация. Команда lsblk -f выводит файловые системы всех устройств с их UUID; по этим идентификаторам разделы указаны в /etc/fstab (установщик Ubuntu записывает пути /dev/disk/by-uuid/…, а для тома LVM — /dev/disk/by-id/…). Команда findmnt --verify проверяет fstab на ошибки без перезагрузки и сообщает о несуществующих устройствах и неизвестных параметрах. Затем образ disk.img, смонтированный в предыдущей демонстрации, размонтируется и монтируется повторно с параметром ro; findmnt показывает ro в столбце OPTIONS, а команда touch завершается ошибкой «Read-only file system».
+Вывод для аудитории. После любой правки /etc/fstab выполняются findmnt --verify и mount -a, чтобы ошибка обнаружилась сразу, а не при следующей загрузке.
+Уборка: umount /mnt/disk.</aside>
 </section>
 <section id="sec-raid" data-transition="fade" style="background:#D4FAE6; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:row; gap:64px">
 <div style="flex:1; display:flex; flex-direction:column; justify-content:space-between">
@@ -1731,7 +1803,7 @@
 <div style="width:16px; height:16px; background:#2AE881; border-radius:50%"></div>
 <p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#0F9E50; background:#FFFFFF; padding:14px 0px; border-radius:20px">LVM</p>
 </div>
-
+<aside hidden>Изложение. Шестой раздел посвящён RAID (Redundant Array of Independent Disks) — объединению нескольких физических дисков в один логический массив, который система видит как обычное блочное устройство. Цель объединения состоит либо в том, чтобы пережить отказ диска без потери данных, либо в том, чтобы сложить скорости нескольких дисков, либо в том и другом одновременно.</aside>
 </section>
 <section id="raid-hw-sw" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1756,7 +1828,8 @@
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Пояснение</p>
 <p style="font-size:28px; line-height:1.45; color:#201B10">Для лабораторного сервера программный RAID обычно удобнее: он переносим и не зависит от конкретного контроллера.</p>
 </div>
-
+<aside hidden>Изложение. RAID реализуется аппаратно или программно. Аппаратный RAID-контроллер (в исходной презентации показан контроллер Areca) собирает массив самостоятельно и предоставляет системе одно логическое устройство; кеш с резервной батареей ускоряет запись, а вычисления чётности не нагружают процессор. Недостаток состоит в зависимости от оборудования: формат метаданных у каждого производителя свой, и при отказе контроллера для восстановления массива нужен контроллер той же модели. Программный RAID в Linux собирает драйвер md ядра, а управляет им утилита mdadm; специального оборудования он не требует, а диски можно перенести в другую машину, где массив соберётся автоматически.
+Пример из практики: сгорел аппаратный контроллер, купили контроллер другого производителя — массив не собрался; купили такой же — снова не собрался, поскольку отличалась версия прошивки.</aside>
 </section>
 <section id="raid-levels" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1790,7 +1863,7 @@
 <p style="font-size:24px; line-height:1.5; color:#201B10">надёжность: <span style="color:#0F7A40">высокая</span><br>чтение: <span style="color:#0F7A40">высокое</span><br>запись: <span style="color:#0F7A40">высокая</span><br>восстановление: <span style="color:#0F7A40">быстрое</span><br>объём: N/2</p>
 </div>
 </div>
-
+<aside hidden>Изложение. В RAID 0 блоки данных чередуются между дисками (striping): скорости дисков складываются, а объём равен сумме объёмов, однако отказ любого диска уничтожает весь массив, поэтому RAID 0, строго говоря, избыточным не является; он пригоден только для временных данных, например для рабочего каталога на расчётном узле. В RAID 1 каждый блок записывается на все диски (mirroring): полезный объём равен объёму одного диска, массив переживает отказ всех дисков, кроме одного, а восстановление сводится к копированию с исправного зеркала; именно этот уровень используется в домашнем задании. RAID 10 представляет собой чередование поверх зеркальных пар и сочетает скорость RAID 0 с надёжностью RAID 1 ценой половины объёма; массив гарантированно переживает отказ одного диска и, при удачном стечении обстоятельств, по одному диску в каждой паре.</aside>
 </section>
 <section id="raid-parity" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:44px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1827,7 +1900,8 @@
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#FF5F00; padding:2px 12px">Важно</p>
 <p style="font-size:28px; line-height:1.45; color:#201B10">Пересборка RAID 5 на больших дисках длится часами, и второй отказ в это время приводит к потере массива; для больших архивов выбирают RAID 6 или RAID 10.</p>
 </div>
-
+<aside hidden>Изложение. В RAID 5 в каждой полосе один блок содержит контрольную сумму (чётность) остальных, причём диск с чётностью меняется от полосы к полосе, чтобы запись чётности не упиралась в один диск. Массив переживает отказ любого одного диска, теряя объём одного диска; запись медленнее чтения, поскольку каждое изменение требует пересчёта чётности. RAID 6 хранит две независимые контрольные суммы (p и q) и переживает отказ двух дисков ценой объёма двух дисков и более медленной записи.
+Риск RAID 5 на больших дисках: во время пересборки все оставшиеся диски читаются целиком, что на дисках 16–20 ТБ занимает часы и сутки. Норма нечитаемых битов (URE) составляет порядка одного на 10¹⁴ бит, то есть примерно на 12,5 ТБ прочитанных данных, поэтому второй отказ или нечитаемый сектор во время пересборки вполне вероятны.</aside>
 </section>
 <section id="xor" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1853,13 +1927,15 @@
 <p style="font-size:28px; line-height:1.45; color:#201B10">Потерянный блок восстанавливается как XOR оставшихся; для двух отказов требуется вторая независимая сумма.</p>
 </div>
 </div>
-
+<aside hidden>Изложение. Чётность в RAID 5 вычисляется побитовым исключающим ИЛИ (XOR). Основное свойство операции состоит в том, что X ⊕ X = 0, откуда A ⊕ B ⊕ B = A. Если на диски записаны блоки A, B и их сумма P = A ⊕ B, то при отказе диска с A его содержимое вычисляется из оставшихся: A = P ⊕ B; при отказе диска с P сумма вычисляется заново. Для трёх и более дисков данных рассуждение то же: P = A ⊕ B ⊕ C, и любой один потерянный блок восстанавливается как XOR всех остальных.
+Пример на доске: 1011 ⊕ 0110 = 1101; 1101 ⊕ 0110 = 1011.</aside>
 </section>
 <section id="raid-backup" data-transition="fade" style="background:#FF5F00; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; justify-content:center; gap:48px">
 <h1 style="font-size:96px; font-weight:800; line-height:1.15; color:#201B10">RAID не является резервной копией</h1>
 <p style="width:1500px; font-size:36px; line-height:1.4; color:#201B10">Массив защищает от отказа диска, но не от удаления по ошибке, шифровальщика или пожара в серверной: всё это происходит на всех дисках одновременно.</p>
 <p style="align-self:start; font-size:36px; font-weight:700; line-height:1.4; color:#201B10; background:#FFF9C1; padding:4px 16px">Правило 3-2-1: три копии, два носителя, одна вне здания</p>
-
+<aside hidden>Изложение. RAID обеспечивает доступность данных: система продолжает работать при отказе диска. Однако команда rm -rf, ошибка в скрипте обработки, перезаписавшая исходные данные, шифровальщик, скачок напряжения или пожар действуют на все диски массива одновременно; зеркало добросовестно зеркалирует и удаление. Резервная копия — отдельная копия данных на другом носителе, желательно в другом месте, проверенная восстановлением. Правило 3-2-1 предписывает хранить три копии на двух разных типах носителей, одну из них — вне здания.
+Для физиков: сырые данные эксперимента невосстановимы, их нельзя «посчитать заново», поэтому для них резервное копирование обязательно. Для результатов расчётов достаточно сохранить код, входные параметры и версию окружения. Пример: в ОИЯИ данные ускорителя, читаемые один-два раза, хранятся на лентах в роботизированной библиотеке; ленты LTO остаются основным архивным носителем, в том числе в ЦЕРН.</aside>
 </section>
 <section id="disk-utils" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1878,7 +1954,7 @@
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Пояснение</p>
 <p style="font-size:28px; line-height:1.45; color:#201B10">Утилита cfdisk — интерактивный вариант fdisk, удобный при ручной разметке в домашнем задании.</p>
 </div>
-
+<aside hidden>Изложение. Для работы с дисками используется небольшой набор утилит. Утилиты fdisk, gdisk и parted размечают диски: fdisk работает с MBR и GPT, gdisk — только с GPT, parted, кроме того, изменяет размеры разделов. Утилита lsblk выводит дерево блочных устройств с разделами, массивами и логическими томами, а с параметром -f — типы файловых систем и UUID. Утилита blkid сообщает UUID и тип файловой системы указанного устройства, df — занятое и свободное место на смонтированных файловых системах.</aside>
 </section>
 <section id="mdadm" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1909,7 +1985,9 @@
 </div>
 </div>
 <p style="align-self:start; font-size:28px; line-height:1.4; color:#201B10; background:#2AE881; padding:2px 12px">root@lab:~# cat /proc/mdstat</p>
-
+<aside hidden>Изложение. Программный массив создаётся в несколько шагов: по выводу fdisk -l определяются диски, mdadm --create собирает из них массив /dev/md0, на массиве создаётся файловая система, массив монтируется, а его описание сохраняется в mdadm.conf, чтобы при загрузке массив собирался под тем же именем. Если на массиве размещается корневая файловая система, образ initramfs пересобирается.
+Состояние массивов выводит /proc/mdstat: [2/2] означает, что из двух устройств работают оба, [UU] — состояние каждого (U — в строю, _ — отсутствует), (F) — устройство помечено сбойным. Замена диска выполняется командами mdadm /dev/md0 --remove и mdadm /dev/md0 --add, после чего начинается пересборка, ход которой также виден в /proc/mdstat.
+Мониторинг: mdadm --monitor и smartd уведомляют о деградации массива и признаках отказа дисков; без мониторинга отказ первого диска можно не заметить до отказа второго.</aside>
 </section>
 <section id="demo-mdadm" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1925,7 +2003,10 @@
 <div style="display:flex; flex-direction:column; gap:6px"><p style="font-size:26px; line-height:1.4; color:#6B665C">Замена диска и пересборка:</p><p style="align-self:start; font-size:30px; line-height:1.4; color:#201B10; background:#2AE881; padding:2px 12px">root@lab:~# mdadm /dev/md0 --remove $L1 --add $L1; watch -n1 cat /proc/mdstat</p></div>
 </div>
 <p style="font-size:28px; line-height:1.4; color:#201B10">После отказа массив в состоянии [_U], а файл читается; после замены идёт пересборка до [UU].</p>
-
+<aside hidden>Демонстрация. Зеркало собирается из двух файлов по 256 МиБ, подключённых как loop-устройства; переменные L1 и L2 запоминают имена устройств, поскольку номера заранее неизвестны (в Ubuntu часть устройств loop занята пакетами snap). Массив из 256 МиБ синхронизируется мгновенно, поэтому сразу после создания /proc/mdstat показывает состояние [2/2] [UU]. После --fail устройство помечается (F), массив переходит в состояние [2/1] [_U], однако файл r.txt по-прежнему читается: массив работает на одном диске. После --remove и --add начинается восстановление с отображением процентов, по окончании состояние снова [UU]. Массив объёмом 256 МиБ восстанавливается за секунды; чтобы процесс был виден, перед заменой диска скорость ограничивается командой echo 5000 &gt; /proc/sys/dev/raid/speed_limit_max (восстановление займёт около минуты), а после демонстрации возвращается значение 200000.
+Ключ --run подавляет вопрос «Continue creating array?»: mdadm выводит лишь предупреждение о размещении метаданных в начале устройства, существенное только для загрузочных массивов, и сразу запускает массив.
+Вывод для аудитории. Именно так проверяется требование домашнего задания о работоспособности системы при отказе диска, только там отказ имитируется отключением диска в настройках виртуальной машины.
+Уборка: umount /mnt/raid; mdadm --stop /dev/md0; losetup -d $L1 $L2; rm d1.img d2.img.</aside>
 </section>
 <section id="sec-lvm" data-transition="fade" style="background:#E3F5FF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:row; gap:64px">
 <div style="flex:1; display:flex; flex-direction:column; justify-content:space-between">
@@ -1960,7 +2041,7 @@
 <div style="width:16px; height:16px; background:#73CCFE; border-radius:50%"></div>
 <p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#201B10; background:#73CCFE; padding:14px 0px; border-radius:20px">LVM</p>
 </div>
-
+<aside hidden>Изложение. Последний раздел посвящён менеджеру логических томов LVM (Logical Volume Manager). Он вводит между дисками и файловыми системами дополнительный слой, благодаря которому файловая система перестаёт быть привязанной к конкретному разделу конкретного диска.</aside>
 </section>
 <section id="lvm" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1978,7 +2059,9 @@
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#2AE881; padding:2px 12px">Для физика</p>
 <p style="font-size:28px; line-height:1.45; color:#201B10">Том растёт без переразметки дисков и может быть больше любого из них; снимок тома фиксирует состояние перед рискованной операцией.</p>
 </div>
-
+<aside hidden>Изложение. LVM оперирует тремя вложенными понятиями. Физическим томом (physical volume, PV) называется диск или раздел, переданный под управление LVM. Несколько физических томов объединяются в группу томов (volume group, VG), представляющую собой общий пул пространства всех дисков. Из группы выделяются логические тома (logical volume, LV), которые ведут себя как обычные разделы и на которых создаются файловые системы. Под этой схемой лежит механизм ядра device mapper.
+Мотивация: раздел заполнен, а за ним расположен раздел с важными данными. Новый диск добавил бы ещё одну точку монтирования, а перенос 1 ТБ со скоростью 100 МБ/с занимает около трёх часов в одну сторону. С LVM том увеличивается на ходу за счёт свободного места группы или нового диска.
+Обычная практика — программный RAID на mdadm, а поверх него LVM.</aside>
 </section>
 <section id="lvm-create" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1996,7 +2079,9 @@
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#FF5F00; padding:2px 12px">Важно</p>
 <p style="font-size:28px; line-height:1.45; color:#201B10">Том, растянутый на несколько дисков без RAID, погибает при отказе любого из них: LVM не заменяет RAID, их комбинируют.</p>
 </div>
-
+<aside hidden>Изложение. Порядок создания логического тома повторяет структуру LVM снизу вверх. Разделы с типом Linux LVM создаются утилитой fdisk; pvcreate передаёт их под управление LVM; vgcreate объединяет физические тома в группу; lvcreate выделяет из группы логический том заданного размера; наконец, на томе создаётся файловая система. Для каждого уровня предусмотрены команды просмотра (pvs, vgs, lvs) и изменения: vgextend добавляет в группу новый диск, lvextend -r увеличивает том вместе с файловой системой, lvconvert изменяет тип тома, например добавляет зеркалирование.
+Предупреждение. Логический том, растянутый на несколько дисков без избыточности, теряется при отказе любого из них; поэтому LVM размещают поверх массива RAID или используют собственные средства LVM (lvcreate --type raid1).
+Напоминание о XFS: том с XFS можно только увеличивать, поэтому место под него выделяется постепенно, с запасом свободного пространства в группе.</aside>
 </section>
 <section id="lvm-tasks" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -2014,7 +2099,9 @@
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Пояснение</p>
 <p style="font-size:28px; line-height:1.45; color:#201B10">Снимок содержит файловую систему с тем же UUID; перед монтированием рядом с исходным томом UUID меняют: tune2fs -U random или xfs_admin -U generate.</p>
 </div>
-
+<aside hidden>Изложение. LVM решает пять задач. Он обеспечивает гибкое управление дисками, отвязывая файловые системы от разделов; позволяет распределять пространство динамически, увеличивая тома по мере необходимости; создаёт снимки томов, фиксирующие состояние перед рискованной операцией; масштабирует хранилище добавлением дисков в группу; наконец, умеет зеркалировать тома собственными средствами (lvcreate --type raid1), хотя чаще LVM размещают поверх массива mdadm.
+Особенность классического снимка LVM: перед перезаписью блока исходного тома старый блок копируется в снимок, поэтому запись в исходный том замедляется, а переполненный снимок становится недействительным. На ссылках, как в btrfs, работают тонкие (thin) снимки.
+Затруднение: снимок содержит файловую систему с тем же UUID, что и исходный том. Если монтировать их одновременно или указывать UUID в fstab, возникает конфликт; UUID снимка меняется командой tune2fs -U random (ext4) или xfs_admin -U generate (XFS), либо снимок монтируется по пути /dev/VG/LV (для XFS — с параметром nouuid).</aside>
 </section>
 <section id="demo-lvm" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -2030,7 +2117,10 @@
 <div style="display:flex; flex-direction:column; gap:6px"><p style="font-size:26px; line-height:1.4; color:#6B665C">Тестовый файл, снимок тома и список томов:</p><p style="align-self:start; font-size:30px; line-height:1.4; color:#201B10; background:#2AE881; padding:2px 12px">root@lab:~# echo run42 &gt; /mnt/lv/r.txt; lvcreate -s -n snap -L 64M labvg/data; lvs</p></div>
 <div style="display:flex; flex-direction:column; gap:6px"><p style="font-size:26px; line-height:1.4; color:#6B665C">Удаление файла и чтение его из снимка:</p><p style="align-self:start; font-size:30px; line-height:1.4; color:#201B10; background:#2AE881; padding:2px 12px">root@lab:~# rm /mnt/lv/r.txt; mount -o ro /dev/labvg/snap /mnt/snap; cat /mnt/snap/r.txt</p></div>
 </div>
-
+<aside hidden>Демонстрация. Из двух образов по 256 МиБ создаются физические тома и группа labvg общим объёмом около 500 МиБ, из которой выделяется логический том на 300 МиБ — больше каждого из «дисков». Команда lvextend -r увеличивает смонтированный том на 100 МиБ вместе с файловой системой, и df -h сразу показывает новый размер. После записи файла r.txt создаётся снимок тома объёмом 64 МиБ; lvs показывает тома data (атрибут o — origin) и snap (атрибут s — snapshot) с долей заполнения снимка. Затем файл удаляется с исходного тома, снимок монтируется только для чтения, и команда cat выводит содержимое удалённого файла: снимок зафиксировал состояние тома на момент создания.
+Порядок шагов существен: том, у которого есть классический снимок, увеличивается только в неактивном состоянии (lvextend сообщает «Snapshot origin volumes can be resized only while inactive»), поэтому увеличение показывается до создания снимка.
+Пояснение. Снимок хранит только блоки, изменённые после его создания, поэтому 64 МиБ достаточно, пока изменения невелики. Снимок ext4 монтируется одновременно с исходным томом, хотя UUID у них совпадает; для XFS потребовался бы параметр nouuid.
+Уборка: umount /mnt/snap /mnt/lv; vgremove -y labvg; losetup -d $P1 $P2; rm p1.img p2.img.</aside>
 </section>
 <section id="conclusion" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <h2 style="align-self:start; font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#FCE300; padding:0px 14px">Заключение</h2>
@@ -2041,7 +2131,8 @@
 <div style="display:flex; gap:36px; align-items:center"><p style="width:100px; font-family:'Jersey 10', 'Courier New', monospace; font-size:100px; line-height:0.8; text-align:right; color:#E85400">04</p><p style="flex:1; font-size:30px; line-height:1.4; color:#201B10">Файловая система выбирается под нагрузку: ext4 по умолчанию, XFS для больших файлов, btrfs для снимков.</p></div>
 <div style="display:flex; gap:36px; align-items:center"><p style="width:100px; font-family:'Jersey 10', 'Courier New', monospace; font-size:100px; line-height:0.8; text-align:right; color:#E85400">05</p><p style="flex:1; font-size:30px; line-height:1.4; color:#201B10">RAID защищает от отказа диска, LVM обеспечивает гибкость, но резервной копии не заменяет ни то, ни другое.</p></div>
 </div>
-
+<aside hidden>Изложение. Подведём итоги лекции. Процесс загрузки представляет собой цепочку звеньев, каждое из которых находит следующее и передаёт ему управление, поэтому неисправность локализуется по последнему сообщению на экране. Ограничения разметки MBR являются следствием разрядности её полей и сняты в GPT и UEFI. Файл на диске представлен инодом и блоками данных, имя хранится в каталоге, а число инодов в ext4 ограничено. Файловая система выбирается под ожидаемую нагрузку, а схема дисков продумывается до записи данных, поскольку переразметка заполненного массива обходится значительно дороже предварительного планирования. RAID обеспечивает доступность, LVM — гибкость, однако ни то ни другое не заменяет резервной копии, хранимой отдельно.
+Следующее занятие: инструменты Linux (оболочка, конвейеры, поиск, процессы) — глава «Инструменты» и задание «Настройка окружения и работа с утилитами».</aside>
 </section>
 <section id="hw" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
 <h2 style="align-self:start; font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#FCE300; padding:0px 14px">Домашнее задание</h2>
@@ -2065,7 +2156,11 @@
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#FF5F00; padding:2px 12px">Важно</p>
 <p style="font-size:28px; line-height:1.45; color:#201B10">На Mac с процессором Apple режим Legacy BIOS доступен только при эмуляции x86_64, например в UTM в режиме Emulate.</p>
 </div>
-
+<aside hidden>Изложение. Домашнее задание объединяет обе части лекции. Система Arch Linux устанавливается вручную, без направляемого установщика archinstall; утилиты pacstrap, genfstab и arch-chroot допускаются. Сначала виртуальная машина работает в режиме Legacy BIOS, затем её переключают на UEFI и перенастраивают загрузчик. Корень размещается на программном зеркале RAID1 из двух дисков, а раздел загрузчика создаётся на обоих дисках с отдельной записью efibootmgr для каждого.
+Главное требование сдачи — загрузка с одним диском: первый диск отключается в настройках виртуальной машины, система загружается со второго, cat /proc/mdstat показывает состояние degraded, затем диск возвращается и массив пересобирается. Без этой демонстрации задание не принимается, поскольку RAID1, не проверенный на отказ, ничем не лучше одного диска.
+Для владельцев Mac с процессорами Apple: программы виртуализации запускают на них только ARM-системы с UEFI; режим Legacy BIOS требует эмуляции x86_64, которая работает медленнее, но достаточна для установки. Альтернатива — компьютер с процессором x86_64 в учебном классе.
+Исходные лекции также завершались домашним заданием: установкой Arch Linux (первая часть) и сборкой массива /dev/md0 (вторая часть).
+Срок и форма сдачи называются отдельно.</aside>
 </section>
 <section id="hw-mistakes" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -2080,33 +2175,8 @@
 <div style="background:#FFE2D1; border-radius:20px; padding:24px 28px; display:flex; gap:24px; align-items:start"><p style="width:70px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; color:#E85400">05</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:28px; font-weight:700; line-height:1.3; color:#201B10">В fstab указаны имена /dev/sdX</p><p style="font-size:24px; line-height:1.4; color:#201B10">после смены порядка дисков монтируется не тот раздел; genfstab -U записывает UUID</p></div></div>
 <div style="background:#FFE2D1; border-radius:20px; padding:24px 28px; display:flex; gap:24px; align-items:start"><p style="width:70px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; color:#E85400">06</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:28px; font-weight:700; line-height:1.3; color:#201B10">Отказ диска не проверен</p><p style="font-size:24px; line-height:1.4; color:#201B10">RAID1, не проверенный на отказ, ничем не лучше одного диска</p></div></div>
 </div>
-
-</section>
-<section id="stand" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
-<div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
-<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#FF87FF; padding:0px 14px">Стенд</h2>
-<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10">для демонстраций</h2>
-</div>
-<div style="display:flex; gap:48px; align-items:start">
-<div style="flex:1; display:flex; flex-direction:column; gap:24px">
-<div style="display:flex; gap:24px; align-items:center"><p style="width:70px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; text-align:right; color:#D640D6">01</p><p style="flex:1; font-size:28px; line-height:1.4; color:#201B10">Программа виртуализации UTM (mac.getutm.app) на ноутбуке с Apple M4</p></div>
-<div style="display:flex; gap:24px; align-items:center"><p style="width:70px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; text-align:right; color:#D640D6">02</p><p style="flex:1; font-size:28px; line-height:1.4; color:#201B10">Машина lab: Ubuntu Server 24.04 LTS ARM64, 2 ядра, 4 ГиБ памяти, диск 20 ГиБ</p></div>
-<div style="display:flex; gap:24px; align-items:center"><p style="width:70px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; text-align:right; color:#D640D6">03</p><p style="flex:1; font-size:28px; line-height:1.4; color:#201B10">Пакеты: apt install mdadm lvm2 efibootmgr; пароль root: passwd</p></div>
-<div style="display:flex; gap:24px; align-items:center"><p style="width:70px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; text-align:right; color:#D640D6">04</p><p style="flex:1; font-size:28px; line-height:1.4; color:#201B10">Имя машины lab: после sudo -i приглашение root@lab:~#, как на слайдах</p></div>
-<div style="display:flex; gap:24px; align-items:center"><p style="width:70px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; text-align:right; color:#D640D6">05</p><p style="flex:1; font-size:28px; line-height:1.4; color:#201B10">Копия машины до лекции (Clone в UTM) для отката после демонстраций</p></div>
-</div>
-<div style="width:640px; display:flex; flex-direction:column; gap:24px">
-<div style="background:#FFE2D1; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
-<p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#FF5F00; padding:2px 12px">Важно</p>
-<p style="font-size:28px; line-height:1.45; color:#201B10">Машина ARM64 загружается только через UEFI: схема BIOS и MBR показывается на слайдах; вместо shimx64 и x86_64-efi — shimaa64 и arm64-efi.</p>
-</div>
-<div style="background:#F0EDFF; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
-<p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Пояснение</p>
-<p style="font-size:28px; line-height:1.45; color:#201B10">Без виртуальной машины часть демонстраций ФС выполняется в Docker: docker run --rm -it --privileged ubuntu:24.04.</p>
-</div>
-</div>
-</div>
-
+<aside hidden>Изложение. Приведены шесть ошибок, наиболее часто встречающихся в сданных работах; каждая связана с материалом лекции. Первая: на диске GPT в режиме BIOS у GRUB нет промежутка после MBR, и без раздела BIOS boot установка загрузчика невозможна. Вторая: порядок хуков initramfs существенен, и хук mdadm_udev должен собрать массив раньше, чем хук filesystems попытается смонтировать корень; после правки образ пересобирается командой mkinitcpio -P. Третья: прошивка загружается только с того раздела ESP, на который указывает запись NVRAM, поэтому второй диск без собственной копии ESP и собственной записи бесполезен при отказе первого. Четвёртая: grub.cfg генерируется и не предназначен для ручной правки. Пятая: имена /dev/sdX непостоянны — при отключении первого диска второй получает имя sda. Шестая: проверка отказа является главным критерием приёма работы.
+Совет студентам: перед каждым рискованным шагом сохраняется снимок или копия виртуальной машины; откат занимает секунды.</aside>
 </section>
 <section id="sources" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <h2 style="align-self:start; font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#B6A3FF; padding:0px 14px">Источники</h2>
@@ -2118,7 +2188,7 @@
 <div style="display:flex; gap:28px; align-items:baseline"><p style="width:60px; font-family:'Jersey 10', 'Courier New', monospace; font-size:64px; line-height:0.8; text-align:right; color:#7C62F0">5</p><div style="flex:1; display:flex; flex-direction:column; gap:4px"><p style="font-size:28px; line-height:1.4; color:#201B10">Документация ядра Linux: Ramfs, rootfs and initramfs</p><p style="font-size:24px; color:#6B665C"><a href="https://docs.kernel.org/filesystems/ramfs-rootfs-initramfs.html">docs.kernel.org/filesystems/ramfs-rootfs-initramfs.html</a></p></div></div>
 <div style="display:flex; gap:28px; align-items:baseline"><p style="width:60px; font-family:'Jersey 10', 'Courier New', monospace; font-size:64px; line-height:0.8; text-align:right; color:#7C62F0">6</p><div style="flex:1"><p style="font-size:28px; line-height:1.4; color:#201B10">Страницы руководства: hier(7), fstab(5), mount(8), mdadm(8), lvm(8), systemd.unit(5)</p></div></div>
 </div>
-
+<aside hidden>Изложение. Главы книги курса излагают материал лекции в текстовом виде и содержат задания. Книга Б. Уорда представляет собой систематическое введение в устройство Linux, ArchWiki — наиболее полный практический справочник, применимый и к другим дистрибутивам. Страницы руководства доступны в системе без подключения к сети: man 7 hier, man 5 fstab.</aside>
 </section>
 <section id="end" data-transition="fade" style="background:#FFF9C1; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:row; gap:64px">
 <div style="flex:1; display:flex; flex-direction:column; justify-content:space-between">
@@ -2131,10 +2201,12 @@
 <div style="width:420px; display:flex; flex-direction:column; justify-content:center; align-items:center">
 <div style="width:320px; height:320px; background:#2AE881; border-radius:32px; display:flex; align-items:center; justify-content:center"><p style="font-family:'Jersey 10', 'Courier New', monospace; font-size:200px; line-height:1; color:#201B10">$_</p></div>
 </div>
-
+<aside hidden>Изложение. Лекция завершается ответами на вопросы.
+Следующее занятие посвящено инструментам Linux: оболочке, конвейерам, поиску и процессам.</aside>
 </section>
 </div>
 </div>
+<div class="notes" id="notes" role="region" aria-label="Заметки докладчика" hidden></div>
 <nav class="bar" aria-label="Управление слайдами">
 <span></span>
 <span class="nav">
@@ -2144,6 +2216,7 @@
 </span>
 <span class="tools">
 <a data-go="out" href="#" target="_blank" rel="noopener" aria-label="Открыть в отдельной вкладке" title="Открыть в отдельной вкладке"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+<button type="button" data-go="notes" aria-controls="notes" aria-pressed="false" aria-label="Заметки докладчика" title="Заметки докладчика (N)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18H6zM9 8h6M9 12h6M9 16h4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
 <button type="button" data-go="full" aria-label="Во весь экран" title="Во весь экран (F)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
 </span>
 </nav>

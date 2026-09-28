@@ -132,6 +132,8 @@ body {
 
 .bar button:disabled { opacity: 0.35; cursor: default; background: transparent; }
 
+.bar button[aria-pressed="true"] { background: #3a3834; }
+
 .bar .counter {
   min-width: 88px;
   text-align: center;
@@ -147,13 +149,37 @@ body {
 
 .bar svg { width: 20px; height: 20px; }
 
+/* Заметки докладчика: панель под слайдом */
+
+.notes {
+  flex: none;
+  height: 34%;
+  min-height: 120px;
+  overflow-y: auto;
+  padding: 14px 24px 4px;
+  background: #23221f;
+  color: #e9e6df;
+  border-top: 1px solid #3a3834;
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.notes[hidden] { display: none; }
+.notes p { margin: 0 0 0.7em; max-width: 100ch; }
+.notes strong { color: #ffffff; font-weight: 600; }
+.notes .empty { color: #a7a39a; }
+
+@media (max-width: 700px) {
+  .notes { height: 45%; padding: 10px 14px 2px; font-size: 15px; }
+}
+
 /* Печать: все слайды подряд, по одному на лист */
 
 @media print {
   @page { size: 1920px 1080px; margin: 0; }
   html, body { height: auto; overflow: visible; background: none; }
   body { display: block; }
-  .bar { display: none; }
+  .bar, .notes { display: none; }
   .stage { position: static; overflow: visible; }
   .canvas { position: static; width: auto; height: auto; transform: none !important; }
   .canvas > section { position: relative; break-after: page; }
