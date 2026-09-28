@@ -2,6 +2,10 @@
 // переключает слайды и рисует стрелки <x-connector>: в формате слайдов это
 // элемент редактора презентаций, и браузер сам его не отображает.
 //
+// Записи демонстраций в терминале приходят как <iframe data-srcdoc>.
+// Запись загружается, только пока её слайд на экране: при каждом показе
+// она проигрывается с начала и не расходует процессор на скрытых слайдах.
+//
 // Слайд хранится в адресе (#/id слайда), поэтому из главы книги можно
 // открыть лекцию сразу на нужной части. Косая черта нужна, чтобы адрес не
 // совпадал с id элемента: иначе браузер при загрузке прокручивает к слайду
@@ -152,12 +156,23 @@
   var full = document.querySelector("[data-go='full']");
   var out = document.querySelector("[data-go='out']");
 
+  function embeds(el, on) {
+    Array.prototype.forEach.call(el.querySelectorAll("iframe[data-srcdoc]"), function (f) {
+      if (on) f.srcdoc = f.getAttribute("data-srcdoc");
+      else f.removeAttribute("srcdoc");
+    });
+  }
+
   function show(i) {
     i = Math.max(0, Math.min(slides.length - 1, i));
     if (i === current) return;
-    if (current >= 0) slides[current].classList.remove("current");
+    if (current >= 0) {
+      slides[current].classList.remove("current");
+      embeds(slides[current], false);
+    }
     current = i;
     slides[i].classList.add("current");
+    embeds(slides[i], true);
     counter.textContent = (i + 1) + " / " + slides.length;
     prev.disabled = i === 0;
     next.disabled = i === slides.length - 1;
@@ -214,6 +229,14 @@
     var dx = e.changedTouches[0].clientX - touchX;
     touchX = null;
     if (Math.abs(dx) > 40) show(current + (dx < 0 ? 1 : -1));
+  });
+
+  // при печати на листах нужны все записи, после печати — только текущая
+  window.addEventListener("beforeprint", function () {
+    slides.forEach(function (el) { embeds(el, true); });
+  });
+  window.addEventListener("afterprint", function () {
+    slides.forEach(function (el, i) { if (i !== current) embeds(el, false); });
   });
 
   window.addEventListener("hashchange", function () { show(fromHash()); });
