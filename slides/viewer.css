@@ -1,0 +1,155 @@
+/* Просмотрщик слайдов лекций. Слайд — это <section> на холсте 1920×1080
+   со встроенными стилями; здесь заданы умолчания формата, в котором слайды
+   написаны (у редактора презентаций они те же), и оформление просмотрщика. */
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: #2b2a27;
+  overflow: hidden;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+.stage {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+}
+
+.canvas {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1920px;
+  height: 1080px;
+  transform-origin: 0 0;
+}
+
+/* Умолчания формата слайдов */
+
+.canvas > section {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.canvas * {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.canvas > section {
+  box-sizing: border-box;
+}
+
+.canvas h1 { font-size: 96px; font-weight: 600; line-height: 1.1; }
+.canvas h2 { font-size: 64px; font-weight: 600; line-height: 1.15; }
+.canvas h3 { font-size: 44px; font-weight: 600; line-height: 1.2; }
+
+/* блок без display в формате слайдов — колонка */
+.canvas div:not([style*="display"]) {
+  display: flex;
+  flex-direction: column;
+}
+
+.canvas table { border-collapse: collapse; }
+
+.canvas th,
+.canvas td {
+  padding: 0.35em 0.6em;
+  border: 1px solid color-mix(in srgb, currentColor 35%, transparent);
+}
+
+.canvas a { color: inherit; }
+
+.canvas x-connector { display: block; flex: none; }
+
+/* Показ по одному слайду */
+
+@media screen {
+  .canvas > section:not(.current) { display: none !important; }
+  .canvas > section.current { animation: slide-in 0.15s ease-out; }
+}
+
+@keyframes slide-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Панель управления */
+
+.bar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  height: 44px;
+  padding: 0 8px;
+  background: #1c1b19;
+  color: #e9e6df;
+  font-size: 15px;
+  user-select: none;
+}
+
+.bar button,
+.bar a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 32px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 18px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.bar button:hover,
+.bar a:hover { background: #3a3834; }
+
+.bar button:focus-visible,
+.bar a:focus-visible { outline: 2px solid #73ccfe; outline-offset: 1px; }
+
+.bar button:disabled { opacity: 0.35; cursor: default; background: transparent; }
+
+.bar .counter {
+  min-width: 88px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.bar .nav,
+.bar .tools { display: flex; align-items: center; gap: 4px; }
+
+.bar .tools { justify-self: end; }
+
+.bar [hidden] { display: none; }
+
+.bar svg { width: 20px; height: 20px; }
+
+/* Печать: все слайды подряд, по одному на лист */
+
+@media print {
+  @page { size: 1920px 1080px; margin: 0; }
+  html, body { height: auto; overflow: visible; background: none; }
+  body { display: block; }
+  .bar { display: none; }
+  .stage { position: static; overflow: visible; }
+  .canvas { position: static; width: auto; height: auto; transform: none !important; }
+  .canvas > section { position: relative; break-after: page; }
+}
