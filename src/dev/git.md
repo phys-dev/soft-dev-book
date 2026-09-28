@@ -2,7 +2,7 @@
 
 Git — распределённая система контроля версий (version control system, VCS): она хранит историю изменений файлов, позволяет вернуться к любой прошлой версии и объединяет работу нескольких человек над одним проектом. Для научной работы Git является таким же обязательным инструментом, как Python или LaTeX.
 
-> **Слайды к главе.** Материал главы изложен также во второй половине лекции «ИИ и Git» с демонстрациями в терминале; слайды лекции доступны [на сайте книги](https://phys-dev.github.io/soft-dev-book/slides/lecture-00.html#/sec-git).
+> **Слайды к главе.** Материал главы изложен также во второй половине лекции «ИИ и Git» с демонстрациями в терминале; слайды лекции доступны [на сайте книги](https://phys-dev.github.io/soft-dev-book/slides/lecture-00.html#/sec-git) и [в PDF](https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-00.pdf).
 
 <iframe src="../slides/lecture-00.html#/sec-git" title="Слайды лекции «ИИ и Git»: Git" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
 

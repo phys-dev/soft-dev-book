@@ -8,6 +8,6 @@
 
 **Инструмент усиливает того, кто понимает, что делает, и подводит того, кто не понимает.** Код, который студент не может объяснить, нельзя сдавать независимо от того, кем он написан: ответственность за строку, сгенерированную моделью, остаётся на подписавшем работу.
 
-> **Слайды к главе.** Материал главы и её разделов изложен также в первой половине лекции «ИИ и Git» с демонстрациями в терминале и в редакторе кода; слайды лекции доступны [на сайте книги](https://phys-dev.github.io/soft-dev-book/slides/lecture-00.html#/cover).
+> **Слайды к главе.** Материал главы и её разделов изложен также в первой половине лекции «ИИ и Git» с демонстрациями в терминале и в редакторе кода; слайды лекции доступны [на сайте книги](https://phys-dev.github.io/soft-dev-book/slides/lecture-00.html#/cover) и [в PDF](https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-00.pdf).
 
 <iframe src="../slides/lecture-00.html#/cover" title="Слайды лекции «ИИ и Git»" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>

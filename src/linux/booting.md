@@ -4,7 +4,7 @@
 
 Когда система не загружается, диагноз ставится по тому, **в каком месте** цепочка оборвалась. Экран с ошибкой загрузчика и паника ядра означают разные неисправности, и устраняются они по-разному.
 
-> **Слайды к главе.** Материал главы изложен также в первой части лекции «Как организован Linux» с демонстрациями в терминале; слайды лекции доступны [на сайте книги](https://phys-dev.github.io/soft-dev-book/slides/lecture-01.html#/cover).
+> **Слайды к главе.** Материал главы изложен также в первой части лекции «Как организован Linux» с демонстрациями в терминале; слайды лекции доступны [на сайте книги](https://phys-dev.github.io/soft-dev-book/slides/lecture-01.html#/cover) и [в PDF](https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-01.pdf).
 
 <iframe src="../slides/lecture-01.html#/cover" title="Слайды лекции «Как организован Linux»: загрузка системы" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
 

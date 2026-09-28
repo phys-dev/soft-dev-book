@@ -4,7 +4,7 @@
 
 Для физика, у которого данные эксперимента измеряются терабайтами, от выбора файловой системы и схемы дисков зависит, переживёт ли архив, собранный за годы, отказ оборудования.
 
-> **Слайды к главе.** Материал главы изложен также во второй части лекции «Как организован Linux» с демонстрациями в терминале; слайды лекции доступны [на сайте книги](https://phys-dev.github.io/soft-dev-book/slides/lecture-01.html#/fs-cover).
+> **Слайды к главе.** Материал главы изложен также во второй части лекции «Как организован Linux» с демонстрациями в терминале; слайды лекции доступны [на сайте книги](https://phys-dev.github.io/soft-dev-book/slides/lecture-01.html#/fs-cover) и [в PDF](https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-01.pdf).
 
 <iframe src="../slides/lecture-01.html#/fs-cover" title="Слайды лекции «Как организован Linux»: файловые системы" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
 

@@ -4,7 +4,7 @@
 
 Глава выстроена по нарастающей: сначала рассматривается обустройство рабочего места, затем основы командной строки, далее утилиты, необходимые каждый день, и, наконец, диагностика в ситуации, когда система работает не так, как ожидалось. Запоминать всё подряд не требуется: достаточно знать, что подходящий инструмент существует, а подробности всегда приведены в `man`.
 
-> **Слайды к главе.** Материал главы изложен также в лекции «Инструменты Linux» с демонстрациями в терминале; слайды лекции доступны [на сайте книги](https://phys-dev.github.io/soft-dev-book/slides/lecture-02.html#/cover).
+> **Слайды к главе.** Материал главы изложен также в лекции «Инструменты Linux» с демонстрациями в терминале; слайды лекции доступны [на сайте книги](https://phys-dev.github.io/soft-dev-book/slides/lecture-02.html#/cover) и [в PDF](https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-02.pdf).
 
 <iframe src="../slides/lecture-02.html#/cover" title="Слайды лекции «Инструменты Linux»" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
 

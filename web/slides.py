@@ -23,6 +23,11 @@ src/slides/viewer.js и viewer.css, поэтому страница кладёт
 демонстраций в терминале) становятся изолированными <iframe>: скрипты
 в них разрешены, доступ к странице книги и к сети закрыт.
 
+Кнопка «Скачать PDF» на панели ведёт на файл soft-dev-book-<имя страницы>.pdf
+(для lecture-01.html — soft-dev-book-lecture-01.pdf) в последнем релизе
+на GitHub. PDF печатает из готовой страницы web/slides_pdf.py; файл
+прикладывается к релизу под тем же именем, иначе ссылка не сработает.
+
     python3 web/slides.py <папка с deck.json> src/slides/lecture-01.html [--no-notes]
 
 Страницу не правят вручную: правки вносятся в презентацию, после чего
@@ -49,6 +54,12 @@ PRIVATE_WORDS = os.path.join(os.path.dirname(os.path.abspath(__file__)),
 # встроенные скрипты и стили, сеть закрыта
 EMBED_CSP = ('<meta http-equiv="Content-Security-Policy" content="default-src \'none\'; '
              'script-src \'unsafe-inline\'; style-src \'unsafe-inline\'; font-src data:">')
+# при печати браузер иначе заменяет тёмный фон записи белым, а светлый
+# текст — тёмным
+EMBED_PRINT = ('<style>html{-webkit-print-color-adjust:exact;'
+               'print-color-adjust:exact}</style>')
+# PDF слайдов лежат в последнем релизе книги
+RELEASE = "https://github.com/phys-dev/soft-dev-book/releases/latest/download/"
 
 ICON = ('<svg viewBox="0 0 24 24" aria-hidden="true"><path d="{}" fill="none" '
         'stroke="currentColor" stroke-width="2.2" stroke-linecap="round" '
@@ -60,6 +71,7 @@ ICONS = {
            "a1 1 0 0 1 1-1h5",
     "full": "M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5",
     "notes": "M6 3h12v18H6zM9 8h6M9 12h6M9 16h4",
+    "pdf": "M12 4v11M7 10l5 5 5-5M5 20h14",
 }
 
 PAGE = """<!doctype html>
@@ -89,6 +101,7 @@ PAGE = """<!doctype html>
 </span>
 <span class="tools">
 <a data-go="out" href="#" target="_blank" rel="noopener" aria-label="Открыть в отдельной вкладке" title="Открыть в отдельной вкладке">{out}</a>
+<a data-go="pdf" href="{pdf_href}" target="_blank" rel="noopener" aria-label="Скачать слайды в PDF" title="Скачать слайды в PDF">{pdf}</a>
 <button type="button" data-go="notes" aria-controls="notes" aria-pressed="false" aria-label="Заметки докладчика" title="Заметки докладчика (N)">{notes}</button>
 <button type="button" data-go="full" aria-label="Во весь экран" title="Во весь экран (F)">{full}</button>
 </span>
@@ -111,8 +124,8 @@ def embed(match):
     """Вставка <x-embed> в виде <iframe>. Страницу вставки просмотрщик
     загружает из data-srcdoc, только пока слайд на экране."""
     style, page = match.groups()
-    page = (page.replace("<head>", "<head>" + EMBED_CSP, 1) if "<head>" in page
-            else EMBED_CSP + page)
+    page = (page.replace("<head>", "<head>" + EMBED_CSP + EMBED_PRINT, 1) if "<head>" in page
+            else EMBED_CSP + EMBED_PRINT + page)
     return (f'<iframe class="embed" sandbox="allow-scripts" '
             f'title="Запись демонстрации в терминале" style="{style}" '
             f'data-srcdoc="{html.escape(page)}"></iframe>')
@@ -168,7 +181,12 @@ def slide(folder, slide_id, notes=True):
     return EMBED.sub(embed, text)
 
 
-def build(folder, notes=True):
+def pdf_name(page_path):
+    """Имя PDF в релизе: soft-dev-book-lecture-01.pdf для lecture-01.html."""
+    return "soft-dev-book-" + os.path.splitext(os.path.basename(page_path))[0] + ".pdf"
+
+
+def build(folder, pdf_href, notes=True):
     with open(os.path.join(folder, "deck.json"), encoding="utf-8") as f:
         deck = json.load(f)
     fonts = [f'<link rel="stylesheet" href="{html.escape(face["href"])}">'
@@ -178,7 +196,7 @@ def build(folder, notes=True):
               if slide_id not in PRESENTER_ONLY]
     icons = {name: ICON.format(d) for name, d in ICONS.items()}
     page = PAGE.format(title=html.escape(deck["title"]), fonts="\n".join(fonts),
-                       slides="\n".join(slides), **icons)
+                       slides="\n".join(slides), pdf_href=html.escape(pdf_href), **icons)
     return page, len(slides)
 
 
@@ -186,7 +204,8 @@ def main():
     args = [a for a in sys.argv[1:] if a != "--no-notes"]
     if len(args) != 2:
         sys.exit(__doc__)
-    page, count = build(deck_folder(args[0]), notes="--no-notes" not in sys.argv)
+    page, count = build(deck_folder(args[0]), RELEASE + pdf_name(args[1]),
+                        notes="--no-notes" not in sys.argv)
     check_notes(page)
     with open(args[1], "w", encoding="utf-8") as f:
         f.write(page)
