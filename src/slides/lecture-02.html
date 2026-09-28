@@ -31,7 +31,8 @@
 <div style="width:420px; display:flex; flex-direction:column; justify-content:center; align-items:center">
 <div style="width:320px; height:320px; background:#B6A3FF; border-radius:32px; display:flex; align-items:center; justify-content:center"><p style="font-family:'Jersey 10', 'Courier New', monospace; font-size:220px; line-height:1; color:#201B10">|</p></div>
 </div>
-
+<aside hidden>Изложение. Вторая лекция раздела о Linux посвящена инструментам повседневной работы: рабочему месту в терминале, основам командной строки, утилитам для поиска файлов и управления сессиями, консольным редакторам, потоковой обработке текста и диагностике системы. Символ на титуле — вертикальная черта конвейера, с помощью которой простые утилиты соединяются в цепочки.
+Демонстрации. Слайды с розовым выделением слова «Демонстрация» отмечают места, где изложение прерывается для работы в терминале виртуальной машины lab. На каждом таком слайде справа проигрывается запись тех же команд, снятая на стенде, поэтому демонстрация видна и без живого терминала.</aside>
 </section>
 <section id="plan" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-direction:column; gap:20px">
@@ -46,7 +47,7 @@
 <div style="display:flex; gap:40px; align-items:center"><p style="width:110px; font-family:'Jersey 10', 'Courier New', monospace; font-size:120px; line-height:0.8; text-align:right; color:#E85400">05</p><p style="font-size:44px; color:#201B10">Обработка текста</p></div>
 <div style="display:flex; gap:40px; align-items:center"><p style="width:110px; font-family:'Jersey 10', 'Courier New', monospace; font-size:120px; line-height:0.8; text-align:right; color:#E85400">06</p><p style="font-size:44px; color:#201B10">Диагностика</p></div>
 </div>
-
+<aside hidden>Изложение. Лекция состоит из шести частей. Сначала рассматривается обустройство рабочего места: слепая печать, эмулятор терминала, шрифт и командная оболочка. Затем — основы командной строки: поиск команд, справка man, управление процессами, перенаправление ввода-вывода и простейшие скрипты. Далее следуют утилиты общего назначения (find, xargs, tmux), консольные редакторы, потоковая обработка текста и, наконец, диагностика системы.</aside>
 </section>
 <section id="why" style="background:#73CCFE; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:row; gap:48px">
 <div style="flex:1; display:flex; flex-direction:column; justify-content:center; gap:40px">
@@ -54,7 +55,8 @@
 <p style="font-size:44px; line-height:1.35; color:#201B10">Командная строка как основной интерфейс к системе</p>
 <p style="font-size:32px; line-height:1.45; color:#201B10">Скорость повседневной работы определяется тем, какая доля действий выполняется командами, а не вручную: копирование файлов, просмотр журналов и обработка результатов расчётов укладываются в одну строку.</p>
 </div>
-
+<aside hidden>Изложение. Терминал является основным интерфейсом к системе, и от степени владения им зависит скорость всей повседневной работы. Операции, которые в графическом менеджере выполняются вручную и по одной, — копирование групп файлов, просмотр журналов, обработка результатов — в командной строке укладываются в одну команду. Запоминать все команды не требуется: достаточно знать о существовании подходящего инструмента, а подробности приведены в man.
+Для физиков: на вычислительном кластере графический интерфейс, как правило, отсутствует, и командная строка является единственным способом работы с расчётами и данными.</aside>
 </section>
 <section id="sec-work" data-transition="fade" style="background:#D4FAE6; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:row; gap:64px">
 <div style="flex:1; display:flex; flex-direction:column; justify-content:space-between">
@@ -82,7 +84,7 @@
 <div style="width:16px; height:16px; background:#2AE881; border-radius:50%"></div>
 <p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#0F9E50; background:#FFFFFF; padding:14px 0px; border-radius:20px">Диагностика</p>
 </div>
-
+<aside hidden>Изложение. Первая часть посвящена обустройству рабочего места: умению печатать вслепую, выбору эмулятора терминала и шрифта, а также командной оболочке — программе, которая принимает и выполняет команды.</aside>
 </section>
 <section id="typing" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -113,7 +115,9 @@
 </div>
 </div>
 </div>
-
+<aside hidden>Изложение. Первым навыком является умение печатать, не глядя на клавиатуру. Освоение слепой печати занимает около двух недель тренировки; в первые месяцы после переучивания скорость набора временно ниже прежней, затем превышает её, число ошибок снижается, а внимание постоянно остаётся на экране.
+GNU Typist (gtypist) представляет собой консольный тренажёр с уроками; он позволяет загружать и собственные тексты. Сайты monkeytype и keybr предлагают тренировку в браузере, в том числе на текстах программ, где часты скобки, точки с запятой и тильды.
+Домашнее задание. Прохождение упражнения S3 в gtypist записывается скринкастом; на записи должны быть видны Raw speed, Adjusted speed и процент ошибок.</aside>
 </section>
 <section id="terminals" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -140,7 +144,8 @@
 </table>
 </div>
 </div>
-
+<aside hidden>Изложение. Терминал, поставляемый в комплекте с системой, как правило, только отображает текст. Установка полноценного эмулятора занимает около получаса и упрощает дальнейшую работу: вкладки и панели позволяют одновременно видеть расчёт, журнал и редактор, а копирование выделением и ссылки по щелчку сокращают число действий. Рекомендации по системам приведены в таблице; для macOS стандартом де-факто является iTerm2.
+Домашнее задание. Выбранный эмулятор указывается в отчёте с одной фразой, объясняющей выбор.</aside>
 </section>
 <section id="fonts" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -153,7 +158,7 @@
 <div style="background:#D4FAE6; border-radius:20px; padding:28px; display:flex; flex-direction:column; gap:18px"><p style="font-size:30px; font-weight:800; color:#201B10">JetBrains Mono</p><p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:56px; line-height:1.2; color:#201B10">0O o 1lI</p><p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:40px; line-height:1.25; color:#201B10">{}[]() ;:</p><p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:30px; line-height:1.4; color:#201B10">E = mc^2; x[i] = 0</p></div>
 </div>
 <p style="font-size:30px; line-height:1.4; color:#201B10">Все символы имеют одинаковую ширину: колонки вывода не смещаются, а ноль и буква O, единица и строчная l различимы. К этой группе относится и Anonymous Pro; сравнение шрифтов приведено на programmingfonts.org.</p>
-
+<aside hidden>Изложение. В моноширинном шрифте все символы имеют одинаковую ширину, поэтому колонки, выведенные командой, не смещаются, а отступы в коде различимы визуально. Шрифт, пригодный для терминала, кроме того, делает различимыми сходные по начертанию символы: ноль и заглавную O, единицу, строчную l и заглавную I. На слайде показаны три свободных шрифта; последний, JetBrains Mono, использован и в этой презентации. Сайт programmingfonts.org позволяет сравнить шрифты на одном тексте.</aside>
 </section>
 <section id="shell-term" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -181,7 +186,7 @@
 <p style="font-size:28px; line-height:1.4; color:#201B10; line-height:1.45">Команды одинаково работают в любом терминале: на ноутбуке, по ssh на кластере и в окне tmux.</p>
 </div>
 </div>
-
+<aside hidden>Изложение. Терминал и оболочка — разные программы. Эмулятор терминала отрисовывает окно, отображает символы и передаёт нажатия клавиш через псевдотерминал /dev/pts/N. Оболочка (shell) читает строку из псевдотерминала, разбирает её, находит и запускает нужную программу, а затем выводит приглашение для следующей команды. Поэтому смена терминала не меняет поведения команд, а смена оболочки меняет синтаксис.</aside>
 </section>
 <section id="shells" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -197,7 +202,7 @@
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Пояснение</p>
 <p style="font-size:28px; line-height:1.4; color:#201B10; line-height:1.45">Выбор оболочки: при работе со многими удалёнными серверами — bash, на собственной рабочей машине — zsh или fish; скрипты пишутся для bash или POSIX sh.</p>
 </div>
-
+<aside hidden>Изложение. Оболочка представляет собой интерпретатор команд. bash (Bourne-Again SHell) присутствует почти на любой машине, доступной по ssh, поэтому переносимые скрипты пишутся под него. zsh предоставляет развитое дополнение и обширный набор плагинов, настройку упрощает фреймворк Oh My Zsh; с версии macOS 10.15 zsh является оболочкой по умолчанию. fish обеспечивает подсказки по истории и подсветку без дополнительной настройки, но его синтаксис несовместим с POSIX-оболочками: скрипт, написанный для bash, в fish не запустится.</aside>
 </section>
 <section id="demo-shell" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -241,7 +246,8 @@ paint(S[S.length-1][1],0);
 if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(function(){paint(F0+&quot; &quot;,1);setTimeout(tick,700)},2500);
 &lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
 "></iframe>
-
+<aside hidden>Демонстрация. Все команды выполняются в виртуальной машине lab от имени root (sudo -i). Переменная $SHELL хранит оболочку пользователя, ps -p $$ показывает процесс текущей оболочки ($$ — его PID). Файл /etc/shells перечисляет допустимые оболочки входа: bash, dash, sh, а также screen и tmux; после подготовки стенда к ним добавляются zsh и fish, отсутствующие в записи. Команда tty выводит псевдотерминал сеанса (/dev/pts/N), переменная $TERM — тип терминала, по которому программы определяют доступные цвета и управляющие последовательности.
+Запись справа снята на стенде в окне tmux, поэтому $TERM в ней — xterm-256color, а номер псевдотерминала может отличаться от живого показа.</aside>
 </section>
 <section id="sec-cli" data-transition="fade" style="background:#E3F5FF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:row; gap:64px">
 <div style="flex:1; display:flex; flex-direction:column; justify-content:space-between">
@@ -269,7 +275,7 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 <div style="width:16px; height:16px; background:#73CCFE; border-radius:50%"></div>
 <p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#0B8FD6; background:#FFFFFF; padding:14px 0px; border-radius:20px">Диагностика</p>
 </div>
-
+<aside hidden>Изложение. Вторая часть посвящена основам работы в командной строке: поиску и запуску команд, справочной системе man, управлению процессами, перенаправлению ввода-вывода и простейшим скриптам.</aside>
 </section>
 <section id="lookup" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -304,7 +310,9 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 </table>
 </div>
 </div>
-
+<aside hidden>Изложение. Команда в оболочке почти всегда является именем исполняемого файла. Оболочка разбивает строку на слова (argv), проверяет, не является ли первое слово встроенной командой (cd, [, echo и другие), и, если нет, ищет файл с таким именем в каталогах из переменной $PATH слева направо. Первый найденный файл запускается системным вызовом execve; сам execve по $PATH не ищет, поиск выполняет оболочка, а найденные пути кешируются (команда hash).
+which показывает только файлы, а type — и встроенные команды, и функции, и псевдонимы, поэтому ответ type точнее. which -a выводит все копии команды в $PATH, что позволяет обнаружить собственную сборку, установленную рядом с системной версией.
+Флаги команд не стандартизированы жёстко, но существуют соглашения (POSIX Utility Syntax Guidelines, GNU --help и --version): -h или --help выводит справку, -v — версию или подробный вывод, -y и -f отменяют подтверждение, -- отделяет флаги от аргументов.</aside>
 </section>
 <section id="demo-which" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -349,7 +357,7 @@ paint(S[S.length-1][1],0);
 if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(function(){paint(F0+&quot; &quot;,1);setTimeout(tick,700)},2500);
 &lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
 "></iframe>
-
+<aside hidden>Демонстрация. echo $PATH | tr : '\n' выводит каталоги поиска по одному в строке. type cd ls [ сообщает, что cd и [ встроены в bash, а ls находится в /usr/bin. which -a [ находит два файла, /usr/bin/[ и /bin/[ (в Ubuntu /bin — ссылка на /usr/bin), однако bash их не вызывает, выполняя собственную встроенную команду. ls берёт имя '/usr/bin/[' в кавычки, поскольку оно содержит специальный символ. Последняя команда выводит аргументы процесса cron из /proc/PID/cmdline, где они разделены нулевыми байтами; рядом находится /proc/PID/environ с переменными окружения процесса.</aside>
 </section>
 <section id="man" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -381,7 +389,8 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 <p style="align-self:start; font-size:26px; line-height:1.4; color:#201B10; background:#2AE881; padding:2px 12px">MANPAGER=cat man ls</p>
 </div>
 </div>
-
+<aside hidden>Изложение. Основным источником сведений о команде является man. К нему обращаются раньше, чем к поисковой системе: man устанавливается вместе с командой и описывает именно ту версию, которая установлена в системе, а не версию, описанную на форуме. Справка разбита на разделы: одно имя может встречаться в нескольких, например signal(2) — системный вызов, а signal(7) — обзор сигналов; номер раздела указывается перед именем.
+Страница открывается в пейджере less: поиск — косая черта и слово, n и N — к следующему и предыдущему совпадению, g и G — в начало и в конец. Переменная MANPAGER задаёт другой пейджер; MANPAGER=cat выводит справку целиком. Ключ -P 'less +/СЛОВО' открывает страницу сразу на нужном месте.</aside>
 </section>
 <section id="demo-man" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -426,7 +435,7 @@ paint(S[S.length-1][1],0);
 if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(function(){paint(F0+&quot; &quot;,1);setTimeout(tick,700)},2500);
 &lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
 "></iframe>
-
+<aside hidden>Демонстрация. whatis ls fstab выводит однострочные описания и номера разделов; man -k '^signal' ищет по описаниям всех страниц (то же делает apropos). man 7 signal открывает обзор сигналов; поиск /Standard signals переносит к таблице стандартных сигналов, которая понадобится при рассмотрении сигналов. Клавиша q закрывает страницу.</aside>
 </section>
 <section id="readline" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -456,7 +465,8 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 </div>
 </div>
 </div>
-
+<aside hidden>Изложение. Строку команды редактирует библиотека readline, общая для bash и многих других программ. Ctrl+A и Ctrl+E переносят курсор в начало и конец строки, Alt+B и Alt+F — на слово назад и вперёд, Ctrl+W удаляет слово слева, Ctrl+U и Ctrl+K — всё до начала и до конца строки, Ctrl+Y вставляет последнее удалённое. Клавиша Alt в терминологии readline называется Meta; на macOS ей соответствует Option, который включается как Meta в настройках терминала.
+Страницу man bash рекомендуется прочитать целиком хотя бы один раз: в ней описаны и встроенные команды, и все эти сочетания.</aside>
 </section>
 <section id="jobs" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -484,7 +494,8 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 </div>
 </div>
 <p style="font-size:28px; line-height:1.4; color:#201B10">jobs — список заданий; fg %1, bg %1, kill %1 — по номеру; stty -a — назначение клавиш.</p>
-
+<aside hidden>Изложение. Сочетания клавиш посылают процессу переднего плана сигналы, устройство которых рассматривается в следующей лекции. Ctrl+C посылает SIGINT (прерывание), Ctrl+\ — SIGQUIT (завершение с дампом памяти), Ctrl+Z — SIGTSTP (приостановка). Оба сигнала завершения программа может перехватить: например, JVM по SIGQUIT печатает дамп потоков и продолжает работу; не перехватывается только SIGKILL. Ctrl+D сигналом не является: драйвер терминала завершает текущее чтение, и программа получает конец ввода.
+Приостановленное задание не завершено. Встроенная команда bg продолжает его в фоне, fg возвращает на передний план; обе посылают SIGCONT. jobs выводит задания оболочки с номерами. Назначение клавиш выводит stty -a, а stty с аргументами изменяет его.</aside>
 </section>
 <section id="demo-jobs" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -529,7 +540,7 @@ paint(S[S.length-1][1],0);
 if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(function(){paint(F0+&quot; &quot;,1);setTimeout(tick,700)},2500);
 &lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
 "></iframe>
-
+<aside hidden>Демонстрация. stty -a показывает назначение клавиш: intr = ^C, quit = ^\, susp = ^Z, eof = ^D. sleep 300 запускается на переднем плане; Ctrl+Z приостанавливает его, и оболочка сообщает «[1]+ Stopped». jobs выводит задание, bg продолжает его в фоне (состояние Running), fg возвращает на передний план, Ctrl+C прерывает. При живом показе дополнительно запускается sleep 300 &amp;, окно терминала закрывается, и в новом окне pgrep sleep подтверждает, что процесс завершён сигналом SIGHUP.</aside>
 </section>
 <section id="streams" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -560,7 +571,9 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 </div>
 </div>
 </div>
-
+<aside hidden>Изложение. У каждой запущенной программы открыты три потока: стандартный вход stdin (дескриптор 0), стандартный выход stdout (1) и поток ошибок stderr (2). Конвейер (pipe) соединяет stdout одной программы со stdin другой через буфер в памяти ядра; ни одной из программ не требуются сведения о конвейере, поэтому простые утилиты соединяются в цепочки произвольной длины.
+Конвейер передаёт только stdout: сообщения об ошибках первой программы выводятся на экран, минуя фильтр. Сочетание |&amp; (то же, что 2&gt;&amp;1 |) передаёт оба потока.
+Запись cat file | grep err избыточна (grep читает файл самостоятельно), однако в однострочниках она позволяет легко заменить начало цепочки.</aside>
 </section>
 <section id="redirect" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -596,7 +609,9 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#2AE881; padding:2px 12px">Для физика</p>
 <p style="font-size:28px; line-height:1.4; color:#201B10; line-height:1.45">Долгий расчёт: ./sim &gt; result.dat 2&gt; errors.log — ошибки собираются в отдельном файле и не теряются среди выходных данных.</p>
 </div>
-
+<aside hidden>Изложение. Перенаправление изменяет назначение потоков программы. &gt; записывает stdout в файл, перезаписывая его, &gt;&gt; дописывает в конец, 2&gt; направляет в файл stderr, &amp;&gt; — оба потока. Запись 2&gt;&amp;1 означает «направить stderr туда же, куда в этот момент направлен stdout». Перенаправления применяются слева направо, поэтому порядок важен: cmd &gt; f 2&gt;&amp;1 отправляет в файл оба потока, а cmd 2&gt;&amp;1 &gt; f — только stdout, тогда как ошибки остаются на экране.
+Специальные файлы: /dev/null поглощает всё записанное, /dev/zero выдаёт нули, /dev/urandom — криптографически стойкие случайные байты. Такие файлы применяются для проверок: например, нули архиватор сжимает почти полностью, а случайные байты практически не сжимаются.
+Для физиков: вывод долгого расчёта направляется так, чтобы результаты и ошибки попадали в разные файлы.</aside>
 </section>
 <section id="demo-redirect" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -642,7 +657,7 @@ paint(S[S.length-1][1],0);
 if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(function(){paint(F0+&quot; &quot;,1);setTimeout(tick,700)},2500);
 &lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
 "></iframe>
-
+<aside hidden>Демонстрация. ls /etc /nonexistent &gt; out.txt 2&gt; err.txt разделяет потоки: в out.txt попадает список каталога (194 строки), в err.txt — сообщение об ошибке. С 2&gt;&amp;1 | wc -l в конвейер передаются оба потока (195 строк). Команда ls /etc /nonexistent 2&gt;&amp;1 &gt; /dev/null показывает значение порядка перенаправлений: вывод исчезает, а ошибка остаётся на экране. head -c 16 /dev/urandom | xxd выводит 16 случайных байт в шестнадцатеричном виде; dd if=/dev/zero of=zero.img bs=1M count=10 создаёт файл из 10 МиБ нулей.</aside>
 </section>
 <section id="history" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -668,7 +683,8 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Пояснение</p>
 <p style="font-size:28px; line-height:1.4; color:#201B10; line-height:1.45">Команда с пробелом в начале не попадает в историю (в .bashrc Ubuntu задано HISTCONTROL=ignoreboth); history -a сразу дописывает историю в файл.</p>
 </div>
-
+<aside hidden>Изложение. Автодополнение по Tab сокращает набор и исключает опечатки: одно нажатие дополняет команду, имя файла или флаг, двойное показывает все варианты. Правила дополнения для конкретных команд устанавливаются пакетом bash-completion вместе с программами; у новой версии, собранной вручную, их может не оказаться.
+История хранится в ~/.bash_history и пополняется при выходе из оболочки. Ctrl+R запускает поиск по подстроке в любом месте строки, повторное нажатие переходит к более старому совпадению. !! подставляет предыдущую команду (sudo !! повторяет её с sudo), !$ — последний аргумент предыдущей команды. На общих серверах, где под одной учётной записью работают несколько человек, нужная команда часто находится в общей истории.</aside>
 </section>
 <section id="demo-history" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -712,7 +728,7 @@ paint(S[S.length-1][1],0);
 if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(function(){paint(F0+&quot; &quot;,1);setTimeout(tick,700)},2500);
 &lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
 "></iframe>
-
+<aside hidden>Демонстрация. После ls -ld /var/log команда echo !$ разворачивается в echo /var/log — bash выводит развёрнутый вид перед выполнением. history | tail -n 3 показывает последние записи с номерами. Ctrl+R и набранная подстрока ls -ld находят прежнюю команду; Enter выполнил бы её, Ctrl+G отменяет поиск. При живом показе дополнительно набирается команда с опечаткой в имени файла, которая исправляется без повторного набора — стрелкой вверх и Ctrl+W.</aside>
 </section>
 <section id="scripting" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -738,7 +754,9 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 </div>
 </div>
 </div>
-
+<aside hidden>Изложение. Оболочка является полноценным, хотя и неудобным, языком программирования. ; разделяет команды, for перебирает слова (в том числе вывод seq), while read читает вывод другой команды построчно, if проверяет код возврата команды. $(команда) подставляет вывод команды в строку; ( команда; команда ) выполняется в подоболочке — дочерней копии оболочки со своими переменными и каталогом, так что cd внутри скобок родительский каталог не меняет.
+[ является командой, а не синтаксисом: в bash она встроенная, но существует и файл /usr/bin/[. Отсюда требование ставить пробелы вокруг скобок. Для чисел используются -gt, -ge, -eq; внутри [[ ]] знаки &lt; и &gt; сравнивают строки.
+Для физиков: цикла достаточно, чтобы выполнить расчёт по сотне наборов параметров без редактора. Скрипт длиннее двух-трёх десятков строк целесообразно переписать на Python: поддерживать его на bash труднее.</aside>
 </section>
 <section id="demo-loops" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -784,7 +802,7 @@ paint(S[S.length-1][1],0);
 if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(function(){paint(F0+&quot; &quot;,1);setTimeout(tick,700)},2500);
 &lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
 "></iframe>
-
+<aside hidden>Демонстрация. Цикл for перебирает числа, выводимые seq 1 3. du -sh /var/* | sort -h | tail -n 3 находит три самых больших каталога. while read size path разбирает каждую строку вывода du на две переменные. (cd /etc; pwd); pwd показывает, что смена каталога внутри скобок не влияет на родительскую оболочку, x=1; (x=2); echo $x — что не влияет и присваивание. [ -d /etc ] &amp;&amp; echo … выполняет вторую команду, только если первая завершилась успешно.</aside>
 </section>
 <section id="sec-utils" data-transition="fade" style="background:#F0EDFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:row; gap:64px">
 <div style="flex:1; display:flex; flex-direction:column; justify-content:space-between">
@@ -812,7 +830,7 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 <div style="width:16px; height:16px; background:#B6A3FF; border-radius:50%"></div>
 <p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#7C62F0; background:#FFFFFF; padding:14px 0px; border-radius:20px">Диагностика</p>
 </div>
-
+<aside hidden>Изложение. Третья часть посвящена утилитам, необходимым почти в каждой задаче: поиску файлов по условиям, параллельному запуску команд и сохранению сессии при обрыве связи с сервером.</aside>
 </section>
 <section id="find" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -843,7 +861,8 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 </div>
 </div>
 </div>
-
+<aside hidden>Изложение. find обходит дерево каталогов и отбирает файлы по условиям: имени (-name, шаблон в кавычках, чтобы его не развернула оболочка), типу (-type f — файлы, -type d — каталоги), размеру (-size +100M), времени изменения (-mtime -1 — за последние сутки). К найденному применяется действие: -exec cmd {} + передаёт файлы команде группами, -print0 выводит имена через нулевой байт для безопасной передачи в xargs, -delete удаляет. Перед добавлением -delete команда выполняется без него, и список найденного просматривается.
+Для физиков: find ~/runs -name '*.root' -mtime -1 находит выходные файлы расчётов за последние сутки.</aside>
 </section>
 <section id="xargs" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -877,7 +896,8 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 <p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">Выигрыш ограничен числом ядер (nproc) и скоростью диска. GNU parallel дополнительно сохраняет порядок вывода, ведёт журнал заданий и запускает задания по ssh.</p>
 </div>
 </div>
-
+<aside hidden>Изложение. xargs превращает строки со стандартного входа в аргументы другой команды. -n N передаёт до N аргументов на запуск, -P N запускает до N процессов одновременно (0 — без ограничения), -0 читает имена, разделённые нулевым байтом, и применяется в паре с find -print0; без этих ключей имена с пробелами разбиваются на части. -I{} подставляет строку на место {} и сам ограничивает запуск одной строкой.
+Выигрыш от -P растёт с числом процессов, пока задача ограничена процессором; обработка, ограниченная диском, выходит на насыщение раньше. Число ядер сообщает nproc; часто достаточно -P4, чтобы не занимать весь процессор. GNU parallel является более мощной альтернативой: группирует вывод, сохраняет порядок (--keep-order), ведёт журнал заданий и запускает их по ssh.</aside>
 </section>
 <section id="demo-find" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -921,7 +941,7 @@ paint(S[S.length-1][1],0);
 if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(function(){paint(F0+&quot; &quot;,1);setTimeout(tick,700)},2500);
 &lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
 "></iframe>
-
+<aside hidden>Демонстрация. find /etc -type f -name '*.conf' находит конфигурационные файлы (на стенде их 116). Затем сравниваются два способа выполнить sleep 0, 1, 2, 3 и 4 секунды: цикл while read выполняет их по очереди за 10 с (сумма), а xargs -P0 -n1 sleep запускает все одновременно и завершается за 4 с (самое долгое задание). Тот же опыт с GNU parallel выполняет команда time parallel -j0 sleep ::: 0 1 2 3 4.</aside>
 </section>
 <section id="tmux" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -950,7 +970,9 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 </div>
 </div>
 </div>
-
+<aside hidden>Изложение. Расчёт, запущенный по ssh, завершается вместе с обрывом связи: при закрытии терминала процессу приходит SIGHUP. Мультиплексоры терминала screen и tmux решают эту задачу: сессия работает на сервере независимо от подключения, пользователь отключается от неё (detach) и подключается снова (attach) в любой момент, в том числе с другой машины. Кроме того, мультиплексор делит окно на панели и поддерживает несколько окон в одной сессии. В tmux команды начинаются с префикса Ctrl+B, в screen — с Ctrl+A.
+tmux удобнее в настройке, screen чаще оказывается предустановленным на старых системах. Для iTerm2 существует режим tmux -CC: окна и панели tmux отображаются как собственные вкладки терминала, в том числе при работе по ssh.
+watch -d -n1 'команда' выполняет команду раз в секунду и подсвечивает изменившиеся символы. В соседней панели watch с wc -l по файлу результатов заменяет индикатор выполнения.</aside>
 </section>
 <section id="demo-tmux" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -994,7 +1016,9 @@ paint(S[S.length-1][1],0);
 if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(function(){paint(F0+&quot; &quot;,1);setTimeout(tick,700)},2500);
 &lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
 "></iframe>
-
+<aside hidden>Демонстрация. tmux new -d -s calc 'watch -n1 date' создаёт сессию calc сразу в отключённом состоянии (-d) и запускает в ней watch. tmux ls выводит список сессий, tmux capture-pane -p печатает содержимое экрана сессии без подключения к ней. После kill-session сервер tmux завершается, и tmux ls сообщает, что сервер не запущен.
+При живом показе та же последовательность выполняется интерактивно и по ssh. С хост-машины выполняется вход на lab по ssh, внутри запускаются tmux new -s calc и watch -d -n1 date, затем Ctrl+B, D отключает от сессии. После закрытия окна терминала и повторного входа команда tmux a -t calc возвращает к работающей сессии.
+Запись снята внутри другого сервера tmux, поэтому на слайде показана неинтерактивная форма команд.</aside>
 </section>
 <section id="sec-edit" data-transition="fade" style="background:#FFEAFE; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:row; gap:64px">
 <div style="flex:1; display:flex; flex-direction:column; justify-content:space-between">
@@ -1022,7 +1046,7 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 <div style="width:16px; height:16px; background:#FF87FF; border-radius:50%"></div>
 <p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#D640D6; background:#FFFFFF; padding:14px 0px; border-radius:20px">Диагностика</p>
 </div>
-
+<aside hidden>Изложение. Четвёртая часть посвящена консольным редакторам. Рано или поздно потребуется править конфигурацию на сервере без графической оболочки, поэтому хотя бы одним консольным редактором необходимо владеть. Выйти из незнакомого редактора, открывшегося вместо привычного, обязан уметь каждый.</aside>
 </section>
 <section id="vim" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1056,7 +1080,9 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 </table>
 </div>
 </div>
-
+<aside hidden>Изложение. vim (Vi IMproved) присутствует почти на любой машине, а там, где его нет, обычно есть vi. Главное отличие от привычных редакторов — режимы. В нормальном режиме клавиши являются командами: перемещение, удаление, копирование, поиск. Клавиши i, a, o переводят в режим вставки, где набирается текст; Esc возвращает в нормальный режим. Двоеточие открывает командную строку редактора: :w сохраняет файл, :q выходит, :wq делает и то и другое, :q! выходит без сохранения. v и V включают визуальный режим выделения символов и строк.
+Первой запоминается последовательность выхода без сохранения: Esc, затем :q! и Enter; она позволяет покинуть редактор, не изменив файл.
+Для физиков: конфигурация задачи и скрипт запуска на кластере правятся на месте в vim, без копирования файлов на рабочую машину и обратно.</aside>
 </section>
 <section id="vim-learn" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1080,7 +1106,9 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 <p style="font-size:24px; line-height:1.4; color:#6B665C">Допускался выбор нескольких ответов, поэтому доли не суммируются.</p>
 </div>
 </div>
-
+<aside hidden>Изложение. Основы vim изложены во встроенном учебнике vimtutor: около получаса упражнений в терминале. vimdiff file1 file2 открывает два файла рядом с подсветкой различий и применяется для просмотра изменений в конфигурации. При работе в графической среде разработки переход в терминал не обязателен: расширения Vim для VS Code и сред JetBrains предоставляют те же команды редактирования. Готовые сборки Neovim (LazyVim, AstroNvim, NvChad) превращают редактор в среду разработки с подсветкой, дополнением и LSP.
+По опросу Stack Overflow 2023 года vim используют около 22 % респондентов, Neovim — около 12 %, nano — около 9 %. Допускался выбор нескольких ответов, поэтому доли не суммируются.
+Emacs — другой мощный редактор со своей философией и своими сторонниками. Система контроля версий git рассматривается в отдельной лекции; редактор для сообщения коммита задаётся настройкой core.editor или переменной EDITOR, а без них в Ubuntu открывается nano, в исходной сборке git — vi.</aside>
 </section>
 <section id="demo-vim" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1125,7 +1153,8 @@ paint(S[S.length-1][1],0);
 if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(function(){paint(F0+&quot; &quot;,1);setTimeout(tick,700)},2500);
 &lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
 "></iframe>
-
+<aside hidden>Демонстрация. vim notes.txt открывает новый файл; строка состояния внизу сообщает [New]. Клавиша i включает режим вставки (-- INSERT --), набирается строка, Esc возвращает в нормальный режим, :wq и Enter сохраняют файл и закрывают редактор; cat notes.txt подтверждает, что строка записана.
+При живом показе файл дополнительно открывается снова, строка удаляется командой dd, редактор закрывается без сохранения через :q!, и cat подтверждает, что файл не изменился; затем запускается vimtutor.</aside>
 </section>
 <section id="sec-text" data-transition="fade" style="background:#FFE2D1; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:row; gap:64px">
 <div style="flex:1; display:flex; flex-direction:column; justify-content:space-between">
@@ -1153,7 +1182,7 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 <div style="width:16px; height:16px; background:#FF5F00; border-radius:50%"></div>
 <p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#E85400; background:#FFFFFF; padding:14px 0px; border-radius:20px">Диагностика</p>
 </div>
-
+<aside hidden>Изложение. Пятая часть посвящена потоковой обработке текста. Журналы, выходные файлы расчётов и таблицы данных в Linux являются текстом, и небольшие утилиты, соединённые конвейером, позволяют фильтровать, считать и преобразовывать их одной командной строкой.</aside>
 </section>
 <section id="text-tools" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1173,7 +1202,8 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 <div style="background:#FFE2D1; border-radius:18px; padding:16px 24px; display:flex; gap:24px; align-items:center"><p style="width:110px; font-size:34px; font-weight:800; color:#201B10">sort</p><p style="flex:1; font-size:26px; line-height:1.35; color:#201B10">сортировка строк: -n, -r, -k, -t</p></div>
 <div style="background:#FFE2D1; border-radius:18px; padding:16px 24px; display:flex; gap:24px; align-items:center"><p style="width:110px; font-size:34px; font-weight:800; color:#201B10">uniq</p><p style="flex:1; font-size:26px; line-height:1.35; color:#201B10">удаление соседних повторов; -c — счётчик</p></div>
 </div>
-
+<aside hidden>Изложение. Каждая из утилит выполняет над потоком строк одну операцию, а конвейер соединяет их в цепочку. grep отбирает строки по регулярному выражению, awk представляет собой язык для обработки текста по колонкам, sed — потоковый редактор, выполняющий замену и удаление по мере чтения потока. cut вырезает колонки по разделителю, head и tail выводят начало и конец потока (tail -f показывает строки, дописываемые в файл в настоящий момент), tr заменяет и удаляет символы, wc считает строки, слова и байты, sort сортирует строки, uniq удаляет соседние повторы.
+Разбор журнала, извлечение колонки чисел, подсчёт уникальных значений укладываются в одну строку, набранную по ходу работы. Как только разбор становится частью повторяемой обработки данных, его лучше переписать на Python: цепочку из пяти awk и sed через месяц невозможно ни прочитать, ни отладить.</aside>
 </section>
 <section id="pipeline" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1196,7 +1226,9 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#2AE881; padding:2px 12px">Для физика</p>
 <p style="font-size:28px; line-height:1.4; color:#201B10; line-height:1.45">Тот же приём строит распределение дискретной величины: cut -d, -f3 events.csv | sort -n | uniq -c — число событий по номерам каналов.</p>
 </div>
-
+<aside hidden>Изложение. Классическая задача разбора журнала — частотная таблица: какой код ответа веб-сервер возвращает чаще всего. В формате журнала nginx по умолчанию код ответа является девятым полем строки. awk выводит это поле, sort располагает одинаковые значения подряд, uniq -c объединяет соседние повторы и добавляет перед каждым значением счётчик, sort -rn упорядочивает по убыванию счётчика, head -n 1 оставляет первую строку. Под каждой командой показан её вывод для журнала из шести строк.
+Порядок sort | uniq -c обязателен: uniq сравнивает только соседние строки, и без сортировки несоседние повторы не объединяются.
+Для физиков: тот же приём строит распределение дискретной величины, например номеров каналов детектора в файле событий.</aside>
 </section>
 <section id="grep" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1234,7 +1266,9 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 <p style="align-self:start; font-size:26px; line-height:1.4; color:#201B10; background:#FFE2D1; padding:2px 12px">grep -E '^(ERROR|WARN)' app.log</p>
 <p style="align-self:start; font-size:26px; line-height:1.4; color:#201B10; background:#FFE2D1; padding:2px 12px">grep -v '^#' app.conf</p>
 </div>
-
+<aside hidden>Изложение. grep является наиболее часто применяемой утилитой обработки текста: он выводит строки, в которых найдено совпадение с регулярным выражением. Точка обозначает любой символ, звёздочка — повтор предыдущего символа ноль и более раз, ^ и $ — начало и конец строки, квадратные скобки — класс символов. С флагом -E доступны расширенные выражения: +, ?, альтернатива | и группировка скобками без обратной косой черты. Шаблон заключается в одинарные кавычки, чтобы оболочка не раскрыла в нём * и $.
+Флаги: -i — без учёта регистра, -v — строки без совпадения, -c — число строк, -n — номера строк, -r — рекурсивный поиск по каталогу, -o — только совпавшая часть строки, -F — поиск фиксированной строки без регулярных выражений.
+ripgrep (команда rg) выполняет рекурсивный поиск значительно быстрее и по умолчанию пропускает файлы из .gitignore, но устанавливается отдельно.</aside>
 </section>
 <section id="sed-awk" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1266,7 +1300,9 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Пояснение</p>
 <p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">NF — число полей строки, $NF — последнее поле, $(NF-1) — предпоследнее; NR — номер строки. Блок END выполняется один раз, после последней строки.</p>
 </div>
-
+<aside hidden>Изложение. sed (stream editor) применяет команды редактирования к каждой строке потока. Чаще всего используется замена s/шаблон/замена/, где флаг g заменяет все вхождения в строке, а не только первое; команда p с ключом -n выводит выбранные строки, d удаляет строки, подходящие под адрес. Ключ -i правит файл на месте; с суффиксом (-i.bak) сохраняется копия исходного файла.
+awk разбивает каждую строку на поля по пробелам (или по разделителю из -F) и выполняет для неё программу вида «условие {действие}». $1 — первое поле, NF — число полей, $NF — последнее поле, NR — номер строки. Блок END выполняется один раз после обработки всех строк; в нём выводятся суммы и средние.
+Для физиков: awk считает сумму, среднее или максимум по колонке файла данных одной строкой, без загрузки файла в Python.</aside>
 </section>
 <section id="demo-text" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1309,7 +1345,8 @@ paint(S[S.length-1][1],0);
 if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(function(){paint(F0+&quot; &quot;,1);setTimeout(tick,700)},2500);
 &lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
 "></iframe>
-
+<aside hidden>Демонстрация. На стенде нет веб-сервера, поэтому вместо журнала nginx разбирается системный журнал /var/log/syslog. head -n 2 | cut -c 1-60 показывает начало двух строк: метку времени, имя машины и источник сообщения. grep -c systemd считает строки, в которых встречается systemd. Третья команда повторяет конвейер с предыдущих слайдов: awk выводит третье поле (источник с PID в квадратных скобках), cut -d[ -f1 отрезает PID, sort | uniq -c считает повторы, sort -rn упорядочивает по убыванию, head -n 5 оставляет пять самых частых источников.
+При живом показе дополнительно выполняется tail -f /var/log/syslog | grep --line-buffered CRON до очередного запуска cron: ключ --line-buffered не позволяет grep в середине конвейера накапливать вывод в буфере.</aside>
 </section>
 <section id="demo-data" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1354,7 +1391,8 @@ paint(S[S.length-1][1],0);
 if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(function(){paint(F0+&quot; &quot;,1);setTimeout(tick,700)},2500);
 &lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
 "></iframe>
-
+<aside hidden>Демонстрация. Первая команда создаёт файл данных, аналогичный выходному файлу расчёта: seq выдаёт номера от 1 до 1000, awk для каждого печатает номер и значение синуса с равномерным шумом (srand(42) фиксирует генератор, поэтому числа воспроизводимы). head и wc проверяют результат. Вторая команда awk накапливает сумму и сумму квадратов второй колонки и в блоке END выводит число строк, среднее (0,0798) и стандартное отклонение (0,7011). sort -t, -k2 -g сортирует по второй колонке как по числам с плавающей точкой, и tail -n 1 даёт максимум. sed заменяет запятую табуляцией, например для программы, ожидающей формат TSV.
+Для физиков: так проверяется выходной файл расчёта до построения графиков — число строк, диапазон значений, отсутствие пропусков.</aside>
 </section>
 <section id="text-practice" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1381,7 +1419,8 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#FF5F00; padding:2px 12px">Важно</p>
 <p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">В Ubuntu 23.04 и новее pip install в системный Python запрещён (PEP 668): программы на Python устанавливаются с помощью pipx.</p>
 </div>
-
+<aside hidden>Изложение. Навык обработки текста закрепляется только практикой. Интерактивные тренажёры grepexercises, sedexercises и awkexercises (автор — Sundeep Agarwal, проект learnbyexample) предлагают задачи прямо в терминале и проверяют ответ. The Command Line Murders — детективный квест: в каталоге с тысячами текстовых файлов требуется найти убийцу, пользуясь только утилитами командной строки. Квест входит в домашнее задание.
+В Ubuntu 23.04 и новее pip install в системный Python запрещён (PEP 668, ошибка externally-managed-environment); программы на Python устанавливаются через pipx, который создаёт для каждой отдельное виртуальное окружение.</aside>
 </section>
 <section id="sec-diag" data-transition="fade" style="background:#FFF9C1; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:row; gap:64px">
 <div style="flex:1; display:flex; flex-direction:column; justify-content:space-between">
@@ -1409,7 +1448,7 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 <div style="width:16px; height:16px; background:#FCE300; border-radius:50%"></div>
 <p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#201B10; background:#FCE300; padding:14px 0px; border-radius:20px">Диагностика</p>
 </div>
-
+<aside hidden>Изложение. Последняя часть посвящена ситуации, когда система работает не так, как ожидалось: расчёт стал необъяснимо медленным, место на диске закончилось, сервис не отвечает. Системы мониторинга и экспортёры метрик установлены почти везде, однако могут отказать вместе с наблюдаемой системой; в этом случае диагностика выполняется утилитами, запускаемыми вручную.</aside>
 </section>
 <section id="method" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1435,7 +1474,9 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 <p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">Замедление расчёта проверяется последовательно: top — загрузка процессора, free — использование swap, iostat — загрузка диска.</p>
 </div>
 </div>
-
+<aside hidden>Изложение. Общий принцип диагностики — движение сверху вниз по подсистемам: процессор, память, диск, сеть. На каждом шаге принимается решение, находится ли узкое место здесь или на следующем уровне, и каждое предположение подтверждается измерением на работающей системе, а не догадкой.
+Брендан Грегг формализовал этот обход как метод USE: для каждого ресурса проверяются использование (utilization — доля времени, когда ресурс занят), насыщение (saturation — очередь работы, которую ресурс не успевает обслужить) и ошибки (errors).
+Для физиков: при замедлении расчёта top показывает, занят ли процессор или процесс ожидает диск (столбец wa), free — используется ли swap, iostat — ограничено ли чтение данных скоростью диска.</aside>
 </section>
 <section id="gregg" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1463,7 +1504,8 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 </div>
 </div>
 </div>
-
+<aside hidden>Изложение. Брендан Грегг составил карты инструментов, на которых каждая подсистема ядра подписана утилитами, которыми она измеряется. Слайд повторяет главную из них (Linux Observability Tools) в упрощённом виде: от приложений через системные вызовы и файловые системы к дискам, сети, процессору, памяти и ядру. Всего карт четыре: наблюдение за работающей системой, статическая конфигурация, нагрузочное тестирование и настройка параметров ядра. Первую из них рекомендуется распечатать и держать рядом с рабочим местом.
+Книга того же автора «Systems Performance: Enterprise and the Cloud» (2-е издание, 2020) является справочником по всему, что в Linux измеримо.</aside>
 </section>
 <section id="demo-diag" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1509,7 +1551,8 @@ paint(S[S.length-1][1],0);
 if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(function(){paint(F0+&quot; &quot;,1);setTimeout(tick,700)},2500);
 &lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
 "></iframe>
-
+<aside hidden>Демонстрация. nproc выводит число доступных ядер, lscpu — архитектуру и модель процессора. В виртуальной машине стенда поле Model name пусто, а BIOS Model name сообщает тип виртуальной машины QEMU; в облачной виртуальной машине в этом поле выводится модель процессора хоста. free -h показывает память: available — сколько можно выделить без вытеснения, buff/cache — страничный кеш, который ядро отдаст по требованию. df -h выводит занятое и свободное место по файловым системам. uptime даёт среднюю загрузку за 1, 5 и 15 минут, которую сравнивают с числом ядер. vmstat 1 3 выводит три отчёта с интервалом в секунду: первая строка — средние с момента загрузки, последующие — текущие значения; r — очередь готовых к выполнению процессов, si и so — обмен со swap, us, sy, id, wa — доли времени процессора. iostat -d показывает операции в секунду (tps) и объём чтения и записи по устройствам; долю занятости диска выводит iostat -x.
+Эти сведения составляют часть домашнего задания: в нём они собираются на машине с Ubuntu по ssh, а скорость и загрузка сетевого интерфейса определяются самостоятельно.</aside>
 </section>
 <section id="cpu-mem" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1538,7 +1581,8 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 </div>
 </div>
 </div>
-
+<aside hidden>Изложение. Средняя загрузка (load average) — число процессов, готовых к выполнению или ждущих завершения ввода-вывода, усреднённое за 1, 5 и 15 минут; её сравнивают с числом ядер. Строка %Cpu(s) в top делит время процессора на пользовательский код (us), ядро (sy), простой (id) и ожидание ввода-вывода (wa). Столбец %CPU у процесса отсчитывается от одного ядра: 100 % означает одно ядро целиком, поэтому многопоточный процесс может показывать 400 % и больше. В free главный показатель — available, память, которую можно выделить без вытеснения; buff/cache ядро отдаёт по требованию. Ненулевые si и so в vmstat означают постоянный обмен со swap — признак нехватки памяти.
+Клавиши top: 1 — загрузка по ядрам, P и M — сортировка по процессору и по памяти, c — полная командная строка, d — интервал обновления (по умолчанию 3 с, для диагностики обычно задаётся 1 с). htop показывает загрузку каждого ядра цветными полосами. atop записывает состояние системы в файл (atop -w файл 60) и проигрывает его (atop -r файл, t и T — вперёд и назад), что позволяет исследовать сбой уже после того, как он произошёл.</aside>
 </section>
 <section id="demo-top" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1581,7 +1625,8 @@ paint(S[S.length-1][1],0);
 if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(function(){paint(F0+&quot; &quot;,1);setTimeout(tick,700)},2500);
 &lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
 "></iframe>
-
+<aside hidden>Демонстрация. top -b -n 1 выводит один снимок в пакетном режиме, пригодном для конвейера и файла; ключ -w 80 ограничивает ширину. Верхние строки повторяют uptime (средняя загрузка), число задач по состояниям, распределение времени процессора и память, ниже следует таблица процессов. htop показывает то же интерактивно: полосы загрузки каждого ядра, память, список процессов с полной командной строкой; F5 переключает вид дерева, F6 выбирает столбец сортировки, q закрывает программу.
+При живом показе в соседнем окне запускается нагрузка, например yes &gt; /dev/null; процесс находится в top по клавише P и завершается командой kill по PID.</aside>
 </section>
 <section id="disk-net" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1615,7 +1660,8 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#FF5F00; padding:2px 12px">Важно</p>
 <p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">Свободное место исчерпано, а du не находит занятого: файл удалён, но ещё открыт процессом. lsof +L1 показывает такие файлы; место освобождается после их закрытия.</p>
 </div>
-
+<aside hidden>Изложение. Для дисков: df -h показывает занятое и свободное место по файловым системам, df -ih — иноды, которые могут закончиться раньше места (об этом шла речь в первой лекции). du -sh /var/log/* | sort -h находит каталог, занявший место. iostat -x 1 раз в секунду выводит расширенную статистику: %util — доля времени, когда устройство было занято, await — среднее время обслуживания запроса. Для SSD и NVMe, обрабатывающих запросы параллельно, %util = 100 % ещё не означает насыщения.
+Для сети: ping проверяет связность и задержку, mtr совмещает traceroute и ping и показывает потери на каждом узле маршрута; -T -P 443 отправляет пробные пакеты TCP на порт 443, которые проходят там, где ICMP блокируется. ss -tlnp выводит слушающие TCP-порты с процессами, ss -s — сводку по сокетам (рост их числа указывает на утечку). ethtool eth0 показывает скорость и параметры сетевого интерфейса, tcpdump перехватывает пакеты; на загруженном сервере tcpdump запускается только с фильтром и на конкретном интерфейсе.</aside>
 </section>
 <section id="demo-net" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1658,7 +1704,8 @@ paint(S[S.length-1][1],0);
 if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(function(){paint(F0+&quot; &quot;,1);setTimeout(tick,700)},2500);
 &lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
 "></iframe>
-
+<aside hidden>Демонстрация. ping -c 3 отправляет три эхо-запроса ICMP шлюзу виртуальной сети и выводит время до ответа. mtr -r -c 3 -T -P 443 выполняет трассировку пробными пакетами TCP на порт 443 и печатает отчёт. tcpdump -i enp0s1 -c 6 -nn 'tcp port 443' запускается в фоне, после чего curl обращается к сайту книги: в выводе видны три пакета рукопожатия TCP (флаги [S], [S.] и [.]), затем пакет [P.] длиной 517 байт — приветствие TLS (ClientHello) — и первые данные от сервера.
+В записи трассировка короче обычной из-за сетевых настроек стенда: первый узел mtr не отвечает (???), до GitHub Pages всего два узла, а ответ приходит быстрее миллисекунды. В обычной сети mtr покажет десяток узлов и задержки в единицы и десятки миллисекунд.</aside>
 </section>
 <section id="trace" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1701,7 +1748,8 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 <p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">Программа не находит конфигурацию и не сообщает об этом: strace -e trace=openat показывает все пути, по которым она ищет файл.</p>
 </div>
 </div>
-
+<aside hidden>Изложение. strace перехватывает системные вызовы процесса через механизм ptrace и печатает их с аргументами и результатами. strace -c выводит сводку: какие вызовы выполнялись, сколько раз и сколько времени заняли; -e trace=openat оставляет только открытие файлов; -p PID подключается к уже работающему процессу, -f следует за его потоками и дочерними процессами. Чтение вывода strace требует навыка: основное внимание обращается на вызовы, вернувшие ошибку (-1 ENOENT, EACCES), и на вызовы, в которых процесс долго ждёт.
+lsof выводит открытые файлы: lsof -p PID — файлы и сокеты процесса, lsof -i :порт — процесс, открывший порт, lsof +L1 — удалённые, но ещё открытые файлы. По сути, lsof представляет собой интерфейс к сведениям из /proc. dmesg -T выводит сообщения ядра с календарным временем: отказы дисков, срабатывания OOM killer, ошибки драйверов; sysctl -a выводит параметры ядра.</aside>
 </section>
 <section id="demo-trace" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1745,7 +1793,8 @@ paint(S[S.length-1][1],0);
 if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(function(){paint(F0+&quot; &quot;,1);setTimeout(tick,700)},2500);
 &lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
 "></iframe>
-
+<aside hidden>Демонстрация. strace -c ls /etc выводит сводку системных вызовов: в записи около 150 вызовов, 18 из них вернули ошибку; вывод самой ls отброшен в /dev/null, а сводка strace печатается в stderr. strace -e trace=openat cat /etc/hostname 2&gt;&amp;1 | tail -n 3 оставляет последние строки: открытие /etc/hostname, содержимое файла и код завершения (открытия библиотек отрезаны tail). ss -tlnp выводит слушающие TCP-порты с процессами: sshd на порту 22 и локальный DNS-резолвер systemd-resolved на порту 53. lsof -i :22 показывает, что порт открыт также процессом systemd с PID 1: в Ubuntu 24.04 сервер ssh активируется по сокету (ssh.socket), и слушающий сокет открывает systemd.
+При живом показе strace -p дополнительно подключается к работающему процессу, например к sleep 1000 в соседнем окне, и показывает единственный вызов, в котором процесс ожидает.</aside>
 </section>
 <section id="perf" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1772,7 +1821,8 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 </div>
 </div>
 </div>
-
+<aside hidden>Изложение. perf — профилировщик, входящий в состав ядра Linux. perf top -F 99 в реальном времени показывает, в каких функциях система проводит процессорное время; частота 99 Гц выбрана так, чтобы выборки не совпадали по фазе с периодическими событиями. perf record записывает выборки в файл perf.data, ключ -g сохраняет стеки вызовов; perf report открывает отчёт, где [k] помечает функции ядра, а [.] — пользовательского кода. perf устанавливается пакетом linux-tools для работающего ядра.
+В виртуальной машине аппаратные счётчики процессора обычно недоступны, и perf record без аргументов завершится ошибкой на событии cycles; достаточно программного события cpu-clock. Если отказывает и оно, доступ ограничен параметром kernel.perf_event_paranoid.</aside>
 </section>
 <section id="curl" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1800,7 +1850,10 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 </div>
 </div>
 </div>
-
+<aside hidden>Изложение. curl выполняет из командной строки запросы по HTTP и десяткам других протоколов и применяется для воспроизводимых запросов с точно заданными заголовками, телом и методом. -I запрашивает только заголовки, -v выводит весь обмен, включая установку TLS, -H добавляет заголовок, -d передаёт тело запроса, -o /dev/null отбрасывает тело ответа, -s отключает индикатор выполнения. Ключ -w (--write-out) выводит после запроса заданные переменные: код ответа, размеры, времена отдельных этапов соединения; их полный список приведён в man curl.
+Инструменты разработчика в браузере копируют любой запрос как команду curl (Copy as cURL). При этом браузер может работать по HTTP/3, тогда как curl по умолчанию использует HTTP/2 или HTTP/1.1.
+Запросы в цикле к стороннему сервису выполняются с паузой, иначе они создают на него заметную нагрузку.
+Автор curl Даниэль Стенберг провёл мастер-класс по программе длительностью около 3 ч 40 мин (ссылка в источниках).</aside>
 </section>
 <section id="demo-curl" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1842,7 +1895,8 @@ paint(S[S.length-1][1],0);
 if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(function(){paint(F0+&quot; &quot;,1);setTimeout(tick,700)},2500);
 &lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
 "></iframe>
-
+<aside hidden>Демонстрация. curl -sI запрашивает только заголовки страницы книги: протокол HTTP/2, код 200, сервер GitHub.com, тип содержимого и дата изменения. Вторая команда отбрасывает тело ответа и через -w выводит код ответа и полное время запроса (time_total).
+Демонстрация намеренно ограничена двумя переменными: однострочник из домашнего задания, который раз в секунду выводит метку времени, код ответа, времена установки TCP- и TLS-соединения, первого байта и полное время, составляется самостоятельно по разделу --write-out в man curl.</aside>
 </section>
 <section id="conclusion" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <h2 style="align-self:start; font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#FCE300; padding:0px 14px">Заключение</h2>
@@ -1854,7 +1908,8 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 <div style="display:flex; gap:36px; align-items:center"><p style="width:100px; font-family:'Jersey 10', 'Courier New', monospace; font-size:100px; line-height:0.8; text-align:right; color:#E85400">05</p><p style="flex:1; font-size:30px; line-height:1.4; color:#201B10">Диагностика выполняется сверху вниз по подсистемам, и каждое предположение подтверждается измерением.</p></div>
 </div>
 <p style="font-size:32px; font-weight:700; line-height:1.4; color:#201B10; padding:0px 24px">Мерилом является не число выученных команд, а число действий, выполняемых одной строкой вместо ручной работы.</p>
-
+<aside hidden>Изложение. Осваивать всё сразу не требуется. Рекомендуемый порядок: сначала слепая печать и полноценный терминал, затем привычка обращаться к man вместо поисковой системы, затем tmux, позволяющий не терять расчёты на кластере при обрыве связи, и уже после этого grep, awk и sed. Каждый следующий инструмент осваивается на реальной задаче, а не заранее и впрок. Мерилом является не число выученных команд, а то, сколько действий, прежде выполнявшихся вручную, теперь выполняется одной строкой.
+Следующая лекция, «Внутренности Linux», посвящена процессам, сигналам и межпроцессному взаимодействию.</aside>
 </section>
 <section id="hw" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
 <h2 style="align-self:start; font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#FCE300; padding:0px 14px">Домашнее задание</h2>
@@ -1881,7 +1936,8 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 </div>
 </div>
 <p style="font-size:28px; line-height:1.4; color:#201B10">Репозиторий: <a href="https://github.com/phys-dev/linux-tools-task">github.com/phys-dev/linux-tools-task</a> · глава «Инструменты Linux»</p>
-
+<aside hidden>Изложение. Домашнее задание состоит из двух частей. В первой обустраивается рабочее место: устанавливается эмулятор терминала (в отчёте указывается выбор и одна фраза, объясняющая его), приглашение PS1 оформляется в виде login@your-login-at-nsu: тремя цветами, устанавливается asciinema. Во второй части каждое упражнение записывается скринкастом asciinema: прохождение упражнения S3 в gtypist, решение The Command Line Murders, мониторинг машины с Ubuntu по ssh (ядра и модель процессора, память, место на диске, загрузка диска по IOPS, скорость и загрузка сетевого интерфейса), однострочник на curl, который раз в секунду выводит метку времени, код ответа, времена установки TCP- и TLS-соединения, первого байта и полное время, и запись perf record с просмотром perf report. Задание со звёздочкой состоит в сборке zstd с отладочными символами, снятии профиля с процесса сжатия и поиске в исходниках самой нагруженной функции.
+Отличие от исходного курса: вместо машины в облаке подходит любая виртуальная машина с Ubuntu, доступная по ssh, в том числе локальная.</aside>
 </section>
 <section id="hw-mistakes" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1896,33 +1952,7 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 <div style="background:#FFE2D1; border-radius:20px; padding:24px 28px; display:flex; gap:24px; align-items:start"><p style="width:70px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; color:#E85400">05</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:28px; font-weight:700; line-height:1.3; color:#201B10">На записи нет результата</p><p style="font-size:24px; line-height:1.4; color:#201B10">gtypist закрыт до статистики, у однострочника видна одна строка</p></div></div>
 <div style="background:#FFE2D1; border-radius:20px; padding:24px 28px; display:flex; gap:24px; align-items:start"><p style="width:70px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; color:#E85400">06</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:28px; font-weight:700; line-height:1.3; color:#201B10">ethtool не сообщает Speed</p><p style="font-size:24px; line-height:1.4; color:#201B10">у виртуального интерфейса скорость часто не определена; в отчёте объясняется, как получен ответ</p></div></div>
 </div>
-
-</section>
-<section id="stand" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
-<div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
-<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#FF87FF; padding:0px 14px">Стенд</h2>
-<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10">для демонстраций</h2>
-</div>
-<div style="display:flex; gap:48px; align-items:start">
-<div style="flex:1; display:flex; flex-direction:column; gap:24px">
-<div style="display:flex; gap:24px; align-items:center"><p style="width:70px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; text-align:right; color:#D640D6">01</p><p style="flex:1; font-size:28px; line-height:1.4; color:#201B10">Машина lab из первой лекции: UTM, Ubuntu Server 24.04 ARM64, 2 ядра, 4 ГиБ памяти</p></div>
-<div style="display:flex; gap:24px; align-items:center"><p style="width:70px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; text-align:right; color:#D640D6">02</p><p style="flex:1; font-size:28px; line-height:1.4; color:#201B10">Пакеты: apt install zsh fish gtypist parallel atop ltrace net-tools traceroute asciinema pipx</p></div>
-<div style="display:flex; gap:24px; align-items:center"><p style="width:70px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; text-align:right; color:#D640D6">03</p><p style="flex:1; font-size:28px; line-height:1.4; color:#201B10">perf: apt install linux-tools-$(uname -r)</p></div>
-<div style="display:flex; gap:24px; align-items:center"><p style="width:70px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; text-align:right; color:#D640D6">04</p><p style="flex:1; font-size:28px; line-height:1.4; color:#201B10">tmux с обрывом связи: вход по ssh с ноутбука, адрес машины — ip -br a</p></div>
-<div style="display:flex; gap:24px; align-items:center"><p style="width:70px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; text-align:right; color:#D640D6">05</p><p style="flex:1; font-size:28px; line-height:1.4; color:#201B10">Копия машины до лекции (Clone в UTM) для отката после демонстраций</p></div>
-</div>
-<div style="width:640px; display:flex; flex-direction:column; gap:24px">
-<div style="background:#FFE2D1; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
-<p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#FF5F00; padding:2px 12px">Важно</p>
-<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">Трафик ноутбука идёт через VPN: ICMP наружу не проходит, поэтому ping показан до шлюза 192.168.64.1, а mtr — по TCP на порт 443.</p>
-</div>
-<div style="background:#F0EDFF; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
-<p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Пояснение</p>
-<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">Записи на слайдах сняты на этой машине; при живом показе PID, время и числа будут другими.</p>
-</div>
-</div>
-</div>
-
+<aside hidden>Изложение. На слайде приведены ошибки, наиболее часто допускаемые при выполнении задания. Команды, скопированные из документов с типографскими тире и кавычками, не работают: оболочка воспринимает –P10 как имя файла, поэтому команды набираются вручную. Непечатаемые последовательности цвета в PS1 заключаются в \[ и \], иначе bash неверно считает длину приглашения, и при редактировании длинной строки курсор оказывается не на своём месте. В виртуальной машине perf record использует программное событие cpu-clock. Команда cat /dev/urandom | zstd … из задания со звёздочкой не завершается сама: профиль снимается, пока она работает, затем сжатие прерывается Ctrl+C, а out.zst удаляется. На каждой записи должен быть виден результат. У виртуального сетевого интерфейса ethtool может не сообщить скорость (Speed: Unknown); это ожидаемо, и в отчёте объясняется, каким способом получен ответ.</aside>
 </section>
 <section id="sources" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
 <h2 style="align-self:start; font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#B6A3FF; padding:0px 14px">Источники</h2>
@@ -1935,7 +1965,7 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 <div style="display:flex; gap:28px; align-items:baseline"><p style="width:60px; font-family:'Jersey 10', 'Courier New', monospace; font-size:64px; line-height:0.8; text-align:right; color:#7C62F0">6</p><div style="flex:1; display:flex; flex-direction:column; gap:4px"><p style="font-size:28px; line-height:1.4; color:#201B10">Интерактивные упражнения по grep, sed и awk</p><p style="font-size:24px; color:#6B665C"><a href="https://learnbyexample.github.io/interactive-grep-sed-awk-exercises/">learnbyexample.github.io/interactive-grep-sed-awk-exercises</a></p></div></div>
 <div style="display:flex; gap:28px; align-items:baseline"><p style="width:60px; font-family:'Jersey 10', 'Courier New', monospace; font-size:64px; line-height:0.8; text-align:right; color:#7C62F0">7</p><div style="flex:1"><p style="font-size:28px; line-height:1.4; color:#201B10">Страницы руководства: bash(1), signal(7), xargs(1), tmux(1), curl(1), perf-record(1)</p></div></div>
 </div>
-
+<aside hidden>Изложение. Основой лекции служат глава книги курса «Инструменты Linux» и лекция «Инструменты Linux» курса КИТ 2024 (Young&amp;&amp;Yandex). Для самостоятельного изучения диагностики рекомендуется книга Б. Грегга и его карты инструментов, для curl — мастер-класс автора программы. Для практики обработки текста — квест The Command Line Murders и интерактивные упражнения learnbyexample. Статистика по редакторам взята из Stack Overflow Developer Survey 2023 (survey.stackoverflow.co/2023).</aside>
 </section>
 <section id="end" data-transition="fade" style="background:#FFF9C1; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:row; gap:64px">
 <div style="flex:1; display:flex; flex-direction:column; justify-content:space-between">
@@ -1948,10 +1978,11 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 <div style="width:420px; display:flex; flex-direction:column; justify-content:center; align-items:center">
 <div style="width:320px; height:320px; background:#B6A3FF; border-radius:32px; display:flex; align-items:center; justify-content:center"><p style="font-family:'Jersey 10', 'Courier New', monospace; font-size:200px; line-height:1; color:#201B10">^D</p></div>
 </div>
-
+<aside hidden>Изложение. Символ на последнем слайде — Ctrl+D, конец ввода: оболочка, получив его на пустой строке, завершает работу. Лекция завершается ответами на вопросы по её содержанию и по домашнему заданию.</aside>
 </section>
 </div>
 </div>
+<div class="notes" id="notes" role="region" aria-label="Заметки докладчика" hidden></div>
 <nav class="bar" aria-label="Управление слайдами">
 <span></span>
 <span class="nav">
@@ -1961,6 +1992,7 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 </span>
 <span class="tools">
 <a data-go="out" href="#" target="_blank" rel="noopener" aria-label="Открыть в отдельной вкладке" title="Открыть в отдельной вкладке"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+<button type="button" data-go="notes" aria-controls="notes" aria-pressed="false" aria-label="Заметки докладчика" title="Заметки докладчика (N)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18H6zM9 8h6M9 12h6M9 16h4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
 <button type="button" data-go="full" aria-label="Во весь экран" title="Во весь экран (F)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
 </span>
 </nav>

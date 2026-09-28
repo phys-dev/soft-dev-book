@@ -2,6 +2,10 @@
 // переключает слайды и рисует стрелки <x-connector>: в формате слайдов это
 // элемент редактора презентаций, и браузер сам его не отображает.
 //
+// Заметки докладчика лежат в скрытом <aside> каждого слайда; кнопка
+// «Заметки докладчика» или клавиша N показывает заметки текущего слайда
+// в панели под ним.
+//
 // Записи демонстраций в терминале приходят как <iframe data-srcdoc>.
 // Запись загружается, только пока её слайд на экране: при каждом показе
 // она проигрывается с начала и не расходует процессор на скрытых слайдах.
@@ -163,6 +167,55 @@
     });
   }
 
+  // Заметки докладчика
+
+  var notes = document.querySelector(".notes");
+  var notesButton = document.querySelector("[data-go='notes']");
+  var embedded = window.self !== window.top;
+  // метка раздела заметки в начале абзаца: «Изложение.», «Видео:»,
+  // «Поправка к видео (0:42:42):» — выделяется полужирным
+  var LABEL = /^((?:Время|Изложение|Демонстрации?|Для физиков|Вопросы? аудитории|Поправк[аи]|Уточнение|Замечание|Видео|Если спросят|Вывод для аудитории|Подготовка|Домашнее задание|Источники|Пример докладчика|Рекомендация докладчика)[^.:()]*(?:\([^)]*\))?[.:])(?=\s)/;
+
+  function renderNotes() {
+    if (notes.hidden) return;
+    var aside = slides[current].querySelector("aside");
+    var text = aside ? aside.textContent.trim() : "";
+    notes.textContent = "";
+    if (!text) {
+      var empty = document.createElement("p");
+      empty.className = "empty";
+      empty.textContent = "К этому слайду заметок нет.";
+      notes.appendChild(empty);
+    }
+    text.split("\n").forEach(function (line) {
+      line = line.trim();
+      if (!line) return;
+      var p = document.createElement("p");
+      var m = LABEL.exec(line);
+      if (m) {
+        var label = document.createElement("strong");
+        label.textContent = m[1];
+        p.appendChild(label);
+        line = line.slice(m[1].length);
+      }
+      p.appendChild(document.createTextNode(line));
+      notes.appendChild(p);
+    });
+    notes.scrollTop = 0;
+  }
+
+  function toggleNotes(on) {
+    notes.hidden = !on;
+    notesButton.setAttribute("aria-pressed", String(on));
+    // открытую панель помнит только отдельная страница: во встроенном
+    // окне главы она занимала бы место слайда
+    if (!embedded) {
+      try { localStorage.setItem("slides-notes", on ? "1" : "0"); } catch (e) { /* хранилище недоступно */ }
+    }
+    renderNotes();
+    fit();
+  }
+
   function show(i) {
     i = Math.max(0, Math.min(slides.length - 1, i));
     if (i === current) return;
@@ -180,6 +233,7 @@
     // листала бы слайды во встроенном окне
     history.replaceState(null, "", "#/" + slides[i].id);
     out.href = location.href;
+    renderNotes();
   }
 
   function fromHash() {
@@ -206,16 +260,30 @@
   });
 
   // ссылка на отдельную вкладку нужна только во встроенном окне
-  if (window.self === window.top) out.hidden = true;
+  if (!embedded) out.hidden = true;
+
+  if (!canvas.querySelector("section > aside")) notesButton.hidden = true;
+  notesButton.addEventListener("click", function () { toggleNotes(notes.hidden); });
+  if (!embedded && !notesButton.hidden) {
+    try {
+      if (localStorage.getItem("slides-notes") === "1") {
+        notes.hidden = false;
+        notesButton.setAttribute("aria-pressed", "true");
+      }
+    } catch (e) { /* хранилище недоступно */ }
+  }
 
   document.addEventListener("keydown", function (e) {
     if (e.altKey || e.ctrlKey || e.metaKey) return;
-    switch (e.key) {
+    // буквенные клавиши — по положению, чтобы работали и в русской раскладке
+    var key = e.code === "KeyN" ? "n" : e.code === "KeyF" ? "f" : e.key;
+    switch (key) {
       case "ArrowRight": case "PageDown": case " ": show(current + 1); break;
       case "ArrowLeft": case "PageUp": show(current - 1); break;
       case "Home": show(0); break;
       case "End": show(slides.length - 1); break;
       case "f": case "F": if (!full.hidden) full.click(); return;
+      case "n": case "N": if (!notesButton.hidden) toggleNotes(notes.hidden); return;
       default: return;
     }
     e.preventDefault();
