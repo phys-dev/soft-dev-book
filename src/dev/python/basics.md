@@ -499,7 +499,7 @@ print(d[(1, 2)])
 
 ```python
 def sign(x: float) -> str:
-    '''Function sign''' # строка документации
+    """Function sign.""" # строка документации
     
     if x > 0:
         return 'positive'
@@ -525,7 +525,7 @@ help(sign)
     Help on function sign in module __main__:
     
     sign(x: float) -> str
-        Function sign
+        Function sign.
     
 
 
@@ -533,12 +533,12 @@ help(sign)
 
 
 ```python
-def hello(name: str, loud: bool=False) -> None:
-    '''Function hello
+def hello(name: str, loud: bool = False) -> None:
+    """Function hello.
     
     If loud is True, 
     then the name is printed in capital letters.
-    '''
+    """
     
     if loud:
         print(f'HELLO, {name.upper()}')
@@ -561,7 +561,7 @@ help(hello)
     Help on function hello in module __main__:
     
     hello(name: str, loud: bool = False) -> None
-        Function hello
+        Function hello.
         
         If loud is True, 
         then the name is printed in capital letters.
@@ -575,19 +575,19 @@ help(hello)
 
 ```python
 class Greeter:
-    '''Class Greeter
+    """Class Greeter.
     
     method greet:
     If loud is True, 
     then the name is printed in capital letters.
-    '''
+    """
 
     # Конструктор
     def __init__(self, name):
         self.name = name  # Создаём переменную экземпляра
 
     # Метод экземпляра
-    def greet(self, loud: bool=False) ->None:
+    def greet(self, loud: bool = False) -> None:
         if loud:
             print(f'HELLO, {self.name.upper()}!')
         else:
@@ -612,7 +612,7 @@ help(Greeter)
     class Greeter(builtins.object)
      |  Greeter(name)
      |  
-     |  Class Greeter
+     |  Class Greeter.
      |  
      |  method greet:
      |  If loud is True, 
