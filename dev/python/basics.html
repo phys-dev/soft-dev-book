@@ -493,7 +493,7 @@ print(d[(1, 2)])
 <h2 id="Функции"><a class="header" href="#Функции">Функции</a></h2>
 <p>Функции определяются ключевым словом <code>def</code>.</p>
 <pre><code class="language-python">def sign(x: float) -&gt; str:
-    '''Function sign''' # строка документации
+    """Function sign.""" # строка документации
     
     if x &gt; 0:
         return 'positive'
@@ -514,15 +514,15 @@ positive
 <pre><code>Help on function sign in module __main__:
 
 sign(x: float) -&gt; str
-    Function sign
+    Function sign.
 </code></pre>
 <p>Функция с необязательными именованными аргументами:</p>
-<pre><code class="language-python">def hello(name: str, loud: bool=False) -&gt; None:
-    '''Function hello
+<pre><code class="language-python">def hello(name: str, loud: bool = False) -&gt; None:
+    """Function hello.
     
     If loud is True, 
     then the name is printed in capital letters.
-    '''
+    """
     
     if loud:
         print(f'HELLO, {name.upper()}')
@@ -540,7 +540,7 @@ HELLO, FRED
 <pre><code>Help on function hello in module __main__:
 
 hello(name: str, loud: bool = False) -&gt; None
-    Function hello
+    Function hello.
     
     If loud is True, 
     then the name is printed in capital letters.
@@ -548,19 +548,19 @@ hello(name: str, loud: bool = False) -&gt; None
 <h2 id="Классы"><a class="header" href="#Классы">Классы</a></h2>
 <p>Определение класса:</p>
 <pre><code class="language-python">class Greeter:
-    '''Class Greeter
+    """Class Greeter.
     
     method greet:
     If loud is True, 
     then the name is printed in capital letters.
-    '''
+    """
 
     # Конструктор
     def __init__(self, name):
         self.name = name  # Создаём переменную экземпляра
 
     # Метод экземпляра
-    def greet(self, loud: bool=False) -&gt;None:
+    def greet(self, loud: bool = False) -&gt; None:
         if loud:
             print(f'HELLO, {self.name.upper()}!')
         else:
@@ -580,7 +580,7 @@ HELLO, FRED!
 class Greeter(builtins.object)
  |  Greeter(name)
  |  
- |  Class Greeter
+ |  Class Greeter.
  |  
  |  method greet:
  |  If loud is True, 
