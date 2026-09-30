@@ -18,7 +18,7 @@ Python является высокоуровневым мультипаради�
 !python --version
 ```
 
-    Python 3.7.4
+    Python 3.12.3
 
 
 
