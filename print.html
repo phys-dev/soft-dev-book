@@ -13102,17 +13102,25 @@ prediction = loaded.predict(X_test)   # сырые признаки — пред
 <p>Медленный код на Python почти всегда можно ускорить, не переписывая его целиком на C++. В настоящем разделе последовательно рассматриваются следующие темы:</p>
 <ul>
 <li>глава <a href="perf/../dev/python/optimization.html">«Причины низкой скорости Python»</a> объясняет, откуда берётся разница с C, и вводит инструменты измерения времени: <code>cProfile</code>, <code>line_profiler</code>, <code>py-spy</code>, <code>timeit</code>;</li>
-<li>глава <a href="perf/./python-tricks.html">«Оптимизация средствами самого Python»</a> собирает приёмы, не требующие ничего, кроме самого языка: выбор структуры данных, встроенные функции, экономия памяти;</li>
-<li>глава <a href="perf/./perf.html">«Скорость выполнения программ»</a> последовательно ускоряет один и тот же расчёт: сначала с помощью Numba, затем Cython и в завершение NumPy;</li>
+<li>глава <a href="perf/./python-tricks.html">«Оптимизация средствами самого Python»</a> собирает приёмы, не требующие ничего, кроме самого языка: выбор структуры данных, встроенные функции, измерение и экономия памяти;</li>
+<li>глава <a href="perf/./perf.html">«Скорость выполнения программ»</a> последовательно ускоряет один и тот же расчёт: сначала приёмами самого языка, затем с помощью Numba и Cython и в завершение NumPy, а на расчёте пространственного заряда пучка показывает выигрыш от JIT-компиляции и параллелизма;</li>
 <li>глава <a href="perf/./gil.html">«Многопоточность и GIL»</a> объясняет, почему потоки в Python не ускоряют вычисления, что представляет собой глобальная блокировка интерпретатора и в каких случаях помогают порождённые процессы;</li>
 <li>глава <a href="perf/./async.html">«Асинхронность»</a> рассматривает цикл событий и <code>asyncio</code>, опираясь на корутины из главы «Итераторы, генераторы и корутины», и показывает, как ожидать тысячи одновременно запущенных операций ввода-вывода;</li>
 <li>глава <a href="perf/./cuda.html">«CUDA и вычисления на GPU»</a> показывает, когда и как перенести расчёт на видеокарту с помощью CuPy и Numba.</li>
 </ul>
 <p><strong>Оптимизацию не следует проводить вслепую.</strong> Интуиция почти всегда ошибается относительно того, где программа проводит время; достоверно это показывает только профилировщик.</p>
+<blockquote>
+<p><strong>Слайды к главе.</strong> Основной материал раздела изложен также в лекции «Оптимизация» (причины медленности, измерение и профилирование, приёмы языка, память, Numba и Cython, NumPy, процессы и видеокарта) с демонстрациями в терминале; слайды лекции доступны <a href="https://phys-dev.github.io/soft-dev-book/slides/lecture-09.html#/cover">на сайте книги</a> и <a href="https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-09.pdf">в PDF</a>.</p>
+</blockquote>
+<iframe src="../slides/lecture-09.html#/cover" title="Слайды лекции «Оптимизация»" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="Причины-низкой-скорости-python"><a class="header" href="#Причины-низкой-скорости-python">Причины низкой скорости Python</a></h1>
 <p>Гибкость Python препятствует многим оптимизациям, поскольку всякая оптимизация опирается на предположения и заранее оговорённые ограничения. Чем меньше компилятору позволено считать заранее известным, тем меньше у него возможностей. Рассмотрим три основные причины.</p>
+<blockquote>
+<p><strong>Слайды к главе.</strong> Причины медленности Python и способы измерения времени изложены также в первой и второй частях лекции «Оптимизация» с демонстрациями в терминале; слайды лекции доступны <a href="https://phys-dev.github.io/soft-dev-book/slides/lecture-09.html#/sec-slow">на сайте книги</a> и <a href="https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-09.pdf">в PDF</a>.</p>
+</blockquote>
+<iframe src="../../slides/lecture-09.html#/sec-slow" title="Слайды лекции «Оптимизация»: причины медленности" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
 <h2 id="1-Динамическая-типизация"><a class="header" href="#1-Динамическая-типизация">1. Динамическая типизация</a></h2>
-<p>Тип значения, связанного с именем, становится известен только во время исполнения. Во-первых, интерпретатор проверяет типы на каждом шаге, и эти проверки, повторяющиеся миллионы раз, требуют времени. Во-вторых, он не знает заранее, с какими данными работает, и потому обязан исполнять написанный код буквально, не имея права отбросить заведомо ненужную ветвь или вычислить выражение заранее.</p>
+<p>Тип значения, связанного с именем, становится известен только во время исполнения. Во-первых, интерпретатор проверяет типы на каждом шаге, и эти проверки, повторяющиеся миллионы раз, требуют времени. Во-вторых, он не знает заранее, с какими данными работает, и потому обязан исполнять написанный код почти буквально: заранее вычисляются лишь выражения из литералов, например <code>60 * 60 * 24</code>, и отбрасываются ветви с постоянным условием вроде <code>if False</code>, а выражение с именами вычислить заранее нельзя, поскольку любое имя может быть переопределено.</p>
 <h2 id="2-Изменяемость-всего-и-вся"><a class="header" href="#2-Изменяемость-всего-и-вся">2. Изменяемость всего и вся</a></h2>
 <p>В Python почти всё может быть изменено во время исполнения: встроенные имена, тело уже определённой функции, даже локальные переменные чужого кадра стека.</p>
 <pre><code class="language-python">import builtins
@@ -13160,11 +13168,8 @@ do_smth()
 </code></pre>
 <pre><code>hello
 </code></pre>
-<p>Пример рассчитан на Python до 3.12 включительно: начиная с 3.13
-действует PEP 667. <code>f_locals</code> стал прокси-объектом и записывает непосредственно в переменные кадра, поэтому строки
-с <code>ctypes</code> не нужны, а функция <code>PyFrame_LocalsToFast</code> в C API отсутствует, и
-обращение к ней приводит к <code>AttributeError</code>. Запись в чужой кадр по-прежнему возможна, причём более коротким кодом.</p>
-<p>Интерпретатор обязан выполнять написанное буквально. Он не может вынести проверку <code>i == 0</code> из цикла, поскольку не знает, не изменятся ли <code>a</code>, <code>i</code> или сам <code>range</code> в процессе выполнения, и оптимизацию, разрешённую любому компилятору C, приходится выполнять вручную.</p>
+<p>Строки с <code>ctypes</code> нужны только в Python до 3.12 включительно. Начиная с 3.13 действует PEP 667: атрибут <code>f_locals</code> возвращает прокси-объект, запись в который сразу попадает в переменные кадра, а функция <code>PyFrame_LocalsToFast</code> сохранилась в C API лишь для совместимости и ничего не делает. Пример по-прежнему печатает <code>hello</code>, а запись в чужой кадр сводится к одной строке.</p>
+<p>Поэтому интерпретатор не может отделить от цикла первую итерацию, на которой проверка <code>i == 0</code> истинна: он не знает, не будут ли по ходу выполнения переопределены имена <code>range</code> и <code>len</code>. Оптимизацию, которую выполнил бы любой компилятор C, приходится выполнять вручную.</p>
 <pre><code class="language-python">def do1():
     a = [-1] * 1000
     for i in range(len(a)):
@@ -13182,8 +13187,8 @@ def do2():
 <pre><code class="language-python">%timeit -n100 do1()
 %timeit -n100 do2()
 </code></pre>
-<pre><code>42.2 μs ± 970 ns per loop (mean ± std. dev. of 7 runs, 100 loops each)
-30.6 μs ± 1.14 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>12.6 μs ± 253 ns per loop (mean ± std. dev. of 7 runs, 100 loops each)
+9.57 μs ± 89.7 ns per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
 <h2 id="3-cpython"><a class="header" href="#3-cpython">3. CPython</a></h2>
 <p>Третьей причиной является сама эталонная реализация языка, написанная давно.</p>
@@ -13192,7 +13197,8 @@ def do2():
 <li>Производительность никогда не была его главной целью.</li>
 <li>Совместимость с C API ограничивает изменения внутреннего устройства.</li>
 </ol>
-<p>Начиная с версии 3.11 CPython заметно ускорился, см. <a href="https://docs.python.org/3/whatsnew/3.11.html#summary-release-highlights">обзор нововведений</a> и раздел <a href="https://docs.python.org/3/whatsnew/3.11.html#faster-cpython">Faster CPython</a>. Работа продолжается в проекте <a href="https://github.com/faster-cpython/">faster-cpython</a>, а отдельное направление, <a href="https://docs.google.com/document/d/18CXhDb1ygxg-YXNBJNzfzZsDFosB5e6BfnXLlejd9l0/edit#">Multithreaded Python without the GIL</a>, нацелено на глобальную блокировку GIL, которая рассматривается в отдельной главе.</p>
+<p>Компилятор CPython переводит исходный текст в байт-код, а цикл интерпретатора выполняет инструкции по одной: для выражения <code>a + b</code> это загрузка двух имён и инструкция <code>BINARY_OP</code>, внутри которой выясняются типы операндов и вызывается нужная реализация сложения. Каждая инструкция — ветвь кода на C с проверками, работой со счётчиками ссылок и созданием объектов-результатов.</p>
+<p>Начиная с версии 3.11 CPython заметно ускорился: специализирующий адаптивный интерпретатор (PEP 659) подменяет общие инструкции быстрыми вариантами для встреченных типов и вместе с другими изменениями дал в среднем около 25 % на наборе тестов pyperformance, см. раздел <a href="https://docs.python.org/3/whatsnew/3.11.html#faster-cpython">Faster CPython</a>. В версии 3.13 появились экспериментальный JIT-компилятор (PEP 744, по умолчанию выключен) и сборка без глобальной блокировки интерпретатора (PEP 703), которая с версии 3.14 поддерживается официально (PEP 779) и рассматривается в главе <a href="dev/python/../../perf/gil.html">«Многопоточность и GIL»</a>. С мая 2025 года проект Faster CPython развивается сообществом без прежнего финансирования Microsoft.</p>
 <h2 id="Момент-оптимизации"><a class="header" href="#Момент-оптимизации">Момент оптимизации</a></h2>
 <h3 id="premature-optimization-is-the-root-of-all-evil"><a class="header" href="#premature-optimization-is-the-root-of-all-evil"><em>Premature optimization is the root of all evil</em></a></h3>
 <p>Фразу Кнута обычно понимают следующим образом: сначала пишется работающий код, а быстрым он делается позднее, когда функциональность готова. Следствие: производительность остаётся той, какая получилась случайно, пока кто-либо не обнаружит легко исправимое место, ускоряющее программу без переделки половины кода.</p>
@@ -13201,7 +13207,7 @@ def do2():
 <pre><code>If you think good architecture is expensive, try bad architecture.
 </code></pre>
 <p>Подробнее об этом написано в <a href="http://www.laputan.org/mud/mud.html">эссе Фута и Йодера</a> и в <a href="https://ru.wikipedia.org/wiki/%D0%91%D0%BE%D0%BB%D1%8C%D1%88%D0%BE%D0%B9_%D0%BA%D0%BE%D0%BC%D0%BE%D0%BA_%D0%B3%D1%80%D1%8F%D0%B7%D0%B8">статье Википедии</a>.</p>
-<h3 id="Мантра-оптимизаций"><a class="header" href="#Мантра-оптимизаций">Мантра оптимизаций</a></h3>
+<h3 id="Три-правила-оптимизации"><a class="header" href="#Три-правила-оптимизации">Три правила оптимизации</a></h3>
 <ol>
 <li>Не делать</li>
 <li>Делать это позже</li>
@@ -13213,21 +13219,54 @@ def do2():
 <p>Программисты тратят чудовищно много времени, размышляя о скорости некритичных частей программы, и эти попытки ускорения оказываются вредны, если учесть отладку и сопровождение. Про мелкую эффективность надо забыть в 97 % случаев: <strong>преждевременная оптимизация — корень всех зол</strong>. Но нельзя упускать возможности в тех критических 3 %.</p>
 <p><em>Д. Кнут, <a href="https://dl.acm.org/doi/10.1145/356635.356640">Structured Programming with go to Statements</a>, ACM Computing Surveys, 1974</em></p>
 </blockquote>
-<p>Основная задача заключается в поиске места, к которому имеет смысл прикладывать усилия. Этому служат два правила.</p>
+<p>Основная задача заключается в поиске места, к которому имеет смысл прикладывать усилия. Этому служат три правила.</p>
 <h3 id="Правило-1-Профилирование-кода"><a class="header" href="#Правило-1-Профилирование-кода">Правило 1. Профилирование кода</a></h3>
-<p>Если функция ускорена в десять раз, а исполняется она в одном проценте случаев, выигрыш ничтожен.</p>
 <p>Угадывать, какая часть программы работает дольше всего, бесполезно: профилировщик отвечает на этот вопрос точно, интуиция — почти никогда.</p>
+<p>Количественно цену неверного выбора выражает закон Амдала. Если доля \(p\) времени работы программы ускорена в \(s\) раз, вся программа ускоряется в</p>
+<p>\[
+S = \frac{1}{(1 - p) + p / s}
+\]</p>
+<p>раз. Функция, занимающая 1 % времени и ускоренная в десять раз, даёт выигрыш около одного процента; даже бесконечно быстрая часть, занимающая 90 % времени, ускоряет программу лишь в десять раз.</p>
 <h3 id="Правило-2-Сохранение-корректности"><a class="header" href="#Правило-2-Сохранение-корректности">Правило 2. Сохранение корректности</a></h3>
 <p>Оптимизация легко нарушает корректность кода незаметно, оставляя результат правдоподобным, но неверным. Прежде чем переписывать фрагмент ради скорости, необходимо покрыть его тестами.</p>
+<h3 id="Правило-3-Замер-после-правки"><a class="header" href="#Правило-3-Замер-после-правки">Правило 3. Замер после правки</a></h3>
+<p>Выигрыш подтверждается замером на тех же данных, что и до правки, и без профилировщика: профилировщик сам замедляет программу, причём по-разному для разных конструкций, и сравнение двух версий под ним может ввести в заблуждение. Пример такой ловушки разобран в главе <a href="dev/python/../../perf/perf.html">«Скорость выполнения программ»</a>.</p>
 <h2 id="Профилирование"><a class="header" href="#Профилирование">Профилирование</a></h2>
-<p>Базовый набор почти полностью входит в стандартную поставку: <code>cProfile</code> собирает профиль, <code>pstats</code> разбирает и сортирует собранное, а SnakeViz представляет результат в виде диаграммы в браузере.</p>
-<p>Ниже приведены ещё два инструмента.</p>
+<p>Базовый набор входит в стандартную поставку: <code>cProfile</code> собирает профиль по функциям, а <code>pstats</code> разбирает и сортирует собранное. Профиль удобно сохранить в файл и затем вывести функции с наибольшим собственным временем (<code>tottime</code>):</p>
+<pre><code class="language-bash">python3 -m cProfile -o prof.out matrix.py
+python3 -c "import pstats; pstats.Stats('prof.out').strip_dirs().sort_stats('tottime').print_stats(2)"
+</code></pre>
+<p>Для программы из главы <a href="dev/python/../../perf/perf.html">«Скорость выполнения программ»</a>, шестнадцать раз перемножающей матрицы 64×64, начало отчёта выглядит так:</p>
+<pre><code>         66668 function calls (66640 primitive calls) in 0.309 seconds
+
+   Ordered by: internal time
+   List reduced from 134 to 2 due to restriction &lt;2&gt;
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+       16    0.294    0.018    0.294    0.018 matrix.py:23(matrix_product)
+     8192    0.004    0.000    0.010    0.000 random.py:291(randrange)
+</code></pre>
+<p>Столбец <code>ncalls</code> — число вызовов, <code>tottime</code> — время в самой функции без вложенных вызовов, <code>cumtime</code> — вместе с ними. Метод <code>strip_dirs</code> убирает из имён файлов каталоги. Здесь 95 % времени приходится на <code>matrix_product</code>, и ускорять имеет смысл только её. Сторонний пакет <a href="https://jiffyclub.github.io/snakeviz/">SnakeViz</a> показывает тот же профиль диаграммой в браузере.</p>
+<p><code>cProfile</code> — детерминированный профилировщик: он перехватывает каждый вызов и возврат, поэтому знает точное число вызовов, но заметно замедляет программу и ничего не сообщает о времени отдельных строк. Для других задач служат ещё два инструмента.</p>
 <ol>
-<li><a href="https://github.com/benfred/py-spy">py-spy</a> снимает профиль с уже запущенной программы, не изменяя её код, что необходимо, когда расчёт продолжается третьи сутки и перезапуск недопустим.</li>
-<li><a href="https://github.com/pyutils/line_profiler">line_profiler</a> профилирует построчно и показывает время, приходящееся на каждую строку.</li>
+<li><a href="https://github.com/pyutils/line_profiler">line_profiler</a> профилирует построчно: функция отмечается декоратором <code>@profile</code>, а программа запускается командой <code>kernprof -l -v script.py</code>. Пример построчного профиля приведён в главе <a href="dev/python/../../perf/perf.html">«Скорость выполнения программ»</a>.</li>
+<li><a href="https://github.com/benfred/py-spy">py-spy</a> — сэмплирующий профилировщик: он по умолчанию сто раз в секунду считывает стек работающей программы снаружи, из памяти процесса, почти не замедляя её, и снимает профиль с уже запущенной программы, не изменяя её код. Это необходимо, когда расчёт продолжается третьи сутки и перезапуск недопустим. Команда <code>py-spy dump --pid N</code> печатает текущий стек процесса, <code>py-spy top --pid N</code> — непрерывно обновляемую сводку, <code>py-spy record -o profile.svg --pid N</code> записывает flame graph. В Linux подключение к процессу, запущенному не из py-spy, требует прав root (sudo) или значения <code>kernel.yama.ptrace_scope = 0</code>. Для долгого расчёта <code>beam.py</code>, на каждом шаге вычисляющего силы пространственного заряда, <code>py-spy dump</code> показывает, что процесс занят функцией <code>space_charge</code>:</li>
 </ol>
+<pre><code>Process 12524: python3 beam.py
+Python v3.12.3 (/usr/bin/python3.12)
+
+Thread 12524 (active+gil)
+    space_charge (beam.py:11)
+    simulate (beam.py:19)
+    &lt;module&gt; (beam.py:23)
+</code></pre>
+<p>Расход памяти показывает модуль <code>tracemalloc</code> из стандартной библиотеки, рассмотренный в главе <a href="dev/python/../../perf/python-tricks.html">«Оптимизация средствами самого Python»</a>.</p>
 <h2 id="Измерение-времени"><a class="header" href="#Измерение-времени">Измерение времени</a></h2>
-<p>Когда требуется измерить время одной функции, а не снимать полный профиль, применяется модуль <code>timeit</code> из стандартной библиотеки.</p>
+<p>Когда требуется измерить время одной функции, а не снимать полный профиль, применяется модуль <code>timeit</code> из стандартной библиотеки. Из командной строки он запускается так:</p>
+<pre><code class="language-bash">python3 -m timeit -s "from rev import reverse_loop, s" "reverse_loop(s)"
+</code></pre>
+<p>Ключ <code>-s</code> задаёт подготовку, которая в замер не входит. Число запусков модуль подбирает сам, так чтобы прогон длился не меньше 0,2 секунды, повторяет прогон пять раз и печатает лучшее время одного запуска: <code>500000 loops, best of 5: 527 nsec per loop</code>. Берётся именно минимум: более медленные прогоны замедлены не самим кодом, а другими процессами.</p>
+<p>Из программы вызывается функция <code>timeit.timeit</code>:</p>
 <pre><code class="language-python">import timeit
 
 setup = '''
@@ -13246,14 +13285,14 @@ def reverse_5(s: str) -&gt; str:
 </code></pre>
 <pre><code class="language-python">timeit.timeit('reverse_0(s)', setup, number=10000)
 </code></pre>
-<pre><code>0.020173080999484228
+<pre><code>0.005110418002004735
 </code></pre>
 <pre><code class="language-python">timeit.timeit('reverse_5(s)', setup, number=10000)
 </code></pre>
-<pre><code>0.001456363000215788
+<pre><code>0.000419921001594048
 </code></pre>
-<p>Функция <code>timeit</code> измеряет время по <code>time.perf_counter</code>, на время измерения отключает сборщик мусора и возвращает суммарное время <code>N</code> запусков, а не усреднённое по ним.</p>
-<p>Код передан строками, поскольку внутри <code>timeit</code> устроен как <a href="https://github.com/python/cpython/blob/master/Lib/timeit.py#L69">шаблонная строка</a>, принимающая параметры пользователя, и накладные расходы на вызов функции-обёртки из измерения исключаются. Настоящие функции <code>timeit</code> также принимает, однако в измерение тогда попадает и их вызов.</p>
+<p>Функция <code>timeit</code> измеряет время по <code>time.perf_counter</code>, на время измерения отключает сборщик мусора и возвращает суммарное время <code>N</code> запусков, а не усреднённое по ним; <code>timeit.repeat</code> возвращает список таких сумм по нескольким прогонам. Отключение сборщика мусора делает замеры стабильнее, но если код создаёт много объектов и сборка мусора входит в его цену, сборщик включают первой строкой подготовки: <code>gc.enable()</code>.</p>
+<p>Код передан строками, поскольку внутри <code>timeit</code> устроен как <a href="https://github.com/python/cpython/blob/3.12/Lib/timeit.py#L69">шаблонная строка</a>, принимающая параметры пользователя, и накладные расходы на вызов функции-обёртки из измерения исключаются. Настоящие функции <code>timeit</code> также принимает, однако в измерение тогда попадает и их вызов.</p>
 <p>В IPython для той же цели предусмотрена магическая команда <code>%timeit</code>, выводящая, в отличие от функции, среднее время и стандартное отклонение, вычисленное по семи прогонам.</p>
 <pre><code class="language-python">def reverse_0(s: str) -&gt; str:
     reversed_output = ''
@@ -13264,14 +13303,19 @@ def reverse_5(s: str) -&gt; str:
 
 %timeit -n100 reverse_0('abcdefghijklmnopqrstuvwxyz')
 </code></pre>
-<pre><code>2.09 μs ± 130 ns per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>519 ns ± 60.2 ns per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
+<p>Все замеры этой главы и следующих двух выполнены на виртуальной машине с двумя ядрами под Python 3.12, на которой записаны демонстрации лекции «Оптимизация»; на другой машине числа будут иными.</p>
 <p>В следующей главе рассматривается, чего можно достичь средствами самого языка, не подключая сторонних инструментов, а за ней следует глава про компиляторы и векторизацию.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="Оптимизация-средствами-самого-python"><a class="header" href="#Оптимизация-средствами-самого-python">Оптимизация средствами самого Python</a></h1>
 <blockquote>
 <p>Глава опирается на главу <a href="perf/../dev/python/optimization.html">«Причины низкой скорости Python»</a>: прежде чем ускорять, необходимо измерить, а прежде чем измерять, необходимо понимать, откуда берётся медлительность.</p>
 </blockquote>
 <p>В настоящей главе рассматриваются приёмы, не требующие ничего, кроме самого языка; компиляторы и векторизация рассматриваются в следующей главе. Выигрыш обычно скромнее, зато цена нулевая: код остаётся обычным Python, доступным для чтения любому коллеге.</p>
+<blockquote>
+<p><strong>Слайды к главе.</strong> Приёмы языка и экономия памяти изложены также в третьей и четвёртой частях лекции «Оптимизация» с демонстрациями в терминале; слайды лекции доступны <a href="https://phys-dev.github.io/soft-dev-book/slides/lecture-09.html#/sec-lang">на сайте книги</a> и <a href="https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-09.pdf">в PDF</a>.</p>
+</blockquote>
+<iframe src="../slides/lecture-09.html#/sec-lang" title="Слайды лекции «Оптимизация»: приёмы языка" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
 <h2 id="Объекты-оптимизации"><a class="header" href="#Объекты-оптимизации">Объекты оптимизации</a></h2>
 <p>Оптимизация не сводится к правке кода, так как уровней, пригодных для ускорения уже написанной программы, несколько.</p>
 <h3 id="1-Общая-архитектура"><a class="header" href="#1-Общая-архитектура">1. Общая архитектура</a></h3>
@@ -13305,11 +13349,11 @@ def calc_total(elements):
     
 %timeit calc_total(one_million_elements)
 </code></pre>
-<pre><code>31.6 ms ± 404 μs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+<pre><code>9.67 ms ± 130 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
 <pre><code class="language-python">%timeit len(one_million_elements)
 </code></pre>
-<pre><code>43.6 ns ± 1.03 ns per loop (mean ± std. dev. of 7 runs, 10,000,000 loops each)
+<pre><code>12.4 ns ± 0.0762 ns per loop (mean ± std. dev. of 7 runs, 100,000,000 loops each)
 </code></pre>
 <p>Пример является учебным, однако если необходимое уже присутствует в <code>builtins</code>, почти всегда быстрее использовать готовое: встроенные функции, написанные на C, обходятся без цикла на уровне интерпретатора.</p>
 <h3 id="Совет-2-Правильная-фильтрация"><a class="header" href="#Совет-2-Правильная-фильтрация">Совет 2. Правильная фильтрация</a></h3>
@@ -13326,11 +13370,11 @@ def my_filter2(elements):
 </code></pre>
 <pre><code class="language-python">%timeit my_filter1(one_million_elements)
 </code></pre>
-<pre><code>45.6 ms ± 344 μs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+<pre><code>11.8 ms ± 63.6 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
 <pre><code class="language-python">%timeit my_filter2(one_million_elements)
 </code></pre>
-<pre><code>76.8 ms ± 780 μs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+<pre><code>22.9 ms ± 66.6 μs per loop (mean ± std. dev. of 7 runs, 10 loops each)
 </code></pre>
 <p>Замедление объясняется накладными расходами: <code>filter</code> создаёт итератор, к каждому элементу применяется Python-функция <code>lambda</code>, а полученный итератор ещё необходимо преобразовать в список.</p>
 <p>Запишем то же самое выражением, создающим требуемый список сразу.</p>
@@ -13339,7 +13383,7 @@ def my_filter2(elements):
 
 %timeit my_filter3(one_million_elements)
 </code></pre>
-<pre><code>40.3 ms ± 1.01 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
+<pre><code>10.6 ms ± 40 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
 <pre><code class="language-python">one_million_elements_str = [str(i) for i in range(1000000)]
 
@@ -13351,11 +13395,11 @@ def str_filter2(elements):
 </code></pre>
 <pre><code class="language-python">%timeit str_filter1(one_million_elements_str)
 </code></pre>
-<pre><code>55.3 ms ± 244 μs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+<pre><code>13.4 ms ± 16.4 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
 <pre><code class="language-python">%timeit str_filter2(one_million_elements_str)
 </code></pre>
-<pre><code>49.8 ms ± 166 μs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+<pre><code>12.6 ms ± 242 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
 <p><code>builtins</code> и генераторы не ускоряют код сами по себе: достаточно было заменить <code>lambda</code> на метод <code>str.isdigit</code>, написанный на C, и <code>filter</code> оказался быстрее. Каждый конкретный случай проверяется замером.</p>
 <h3 id="Совет-3-Правильная-проверка-вхождений"><a class="header" href="#Совет-3-Правильная-проверка-вхождений">Совет 3. Правильная проверка вхождений</a></h3>
@@ -13371,31 +13415,31 @@ def str_filter2(elements):
 
 %timeit check_in1(one_million_elements, 500000)
 </code></pre>
-<pre><code>9.02 ms ± 34.1 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>3.56 ms ± 13.2 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
 <pre><code class="language-python">%timeit 500000 in one_million_elements
 </code></pre>
-<pre><code>5.65 ms ± 21.4 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>2.02 ms ± 4.06 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
 <p>Однако время поиска зависит от положения элемента: список просматривается последовательно, пока не будет найдено заданное значение.</p>
 <pre><code class="language-python">%timeit 42 in one_million_elements
 </code></pre>
-<pre><code>492 ns ± 2.24 ns per loop (mean ± std. dev. of 7 runs, 1,000,000 loops each)
+<pre><code>159 ns ± 1.72 ns per loop (mean ± std. dev. of 7 runs, 10,000,000 loops each)
 </code></pre>
 <p>Для такой задачи в Python предусмотрено множество <code>set</code>, проверка вхождения в которое осуществляется по хешу, то есть за \(O(1)\) вместо \(O(n)\).</p>
 <pre><code class="language-python">one_million_elements_set = set(one_million_elements)
 %timeit 500000 in one_million_elements_set
 </code></pre>
-<pre><code>37.3 ns ± 0.345 ns per loop (mean ± std. dev. of 7 runs, 10,000,000 loops each)
+<pre><code>11.3 ns ± 0.00214 ns per loop (mean ± std. dev. of 7 runs, 100,000,000 loops each)
 </code></pre>
 <pre><code class="language-python">%timeit 42 in one_million_elements_set
 </code></pre>
-<pre><code>23.5 ns ± 0.223 ns per loop (mean ± std. dev. of 7 runs, 10,000,000 loops each)
+<pre><code>8.08 ns ± 0.00693 ns per loop (mean ± std. dev. of 7 runs, 100,000,000 loops each)
 </code></pre>
 <p>За это приходится платить временем на построение множества.</p>
 <pre><code class="language-python">%timeit set(one_million_elements)
 </code></pre>
-<pre><code>46.7 ms ± 358 μs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+<pre><code>11 ms ± 23.8 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
 <p>Платить приходится и памятью, поскольку множество содержит хеш-таблицу с запасом, а не уложенные подряд элементы. Строить его ради одной проверки бессмысленно, а ради миллиона проверок необходимо.</p>
 <h3 id="Совет-4-Сортировка"><a class="header" href="#Совет-4-Сортировка">Совет 4. Сортировка</a></h3>
@@ -13404,13 +13448,13 @@ def str_filter2(elements):
 data = [random.random() for _ in range(1_000_000)]
 %timeit sorted(data)
 </code></pre>
-<pre><code>120.7 ms ± 3.1 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
+<pre><code>128 ms ± 199 μs per loop (mean ± std. dev. of 7 runs, 10 loops each)
 </code></pre>
 <pre><code class="language-python">%timeit (lambda a: a.sort())(data[:])
 </code></pre>
-<pre><code>108.5 ms ± 2.8 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
+<pre><code>128 ms ± 191 μs per loop (mean ± std. dev. of 7 runs, 10 loops each)
 </code></pre>
-<p>Данные взяты случайные, и это существенно: на уже отсортированном списке Timsort вырождается в один линейный проход, оба замера снижаются примерно до 13 мс, и разница между ними исчезает. Копирование выполняют оба варианта: <code>sorted</code> создаёт копию внутри себя, а во втором варианте её создаёт срез, стоимость которого составляет около 2 мс. На случайных данных <code>sort</code> опережает на десяток процентов, следовательно, если исходный порядок не требуется, предпочтительнее метод, работающий на месте.</p>
+<p>Данные взяты случайные, и это существенно: на уже отсортированном списке Timsort вырождается в один линейный проход, и время сортировки снижается примерно в семь раз (18 мс против 128 мс). Копирование выполняют оба варианта: <code>sorted</code> создаёт копию внутри себя, а во втором варианте её создаёт срез, стоимость которого составляет около 2 мс. Поэтому на случайных данных варианты совпадают по времени в пределах погрешности: алгоритм один и тот же, и копию делают оба. Метод <code>sort</code> выигрывает, когда исходный порядок не нужен и сортируется сам список, без копии: тогда не тратятся ни время на копирование, ни память под второй список.</p>
 <h3 id="Совет-5-Условия-if"><a class="header" href="#Совет-5-Условия-if">Совет 5. Условия if</a></h3>
 <p>Условие в <code>if</code> можно записать по-разному, и выбор записи влияет на время, затрачиваемое в цикле.</p>
 <pre><code class="language-python">count = 100000
@@ -13432,15 +13476,15 @@ def check_false3(flag):
 </code></pre>
 <pre><code class="language-python">%timeit check_false1(True)
 </code></pre>
-<pre><code>3.7 ms ± 31.6 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>1.14 ms ± 25.9 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </code></pre>
 <pre><code class="language-python">%timeit check_false2(True)
 </code></pre>
-<pre><code>2.6 ms ± 9.39 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>888 μs ± 1.31 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </code></pre>
 <pre><code class="language-python">%timeit check_false3(True)
 </code></pre>
-<pre><code>2.14 ms ± 13.9 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>775 μs ± 799 ns per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </code></pre>
 <p>Сравним три варианта проверки на пустоту и определим, какой из них быстрее.</p>
 <ol>
@@ -13470,19 +13514,19 @@ def check_empty3(elements):
 </code></pre>
 <pre><code class="language-python">%timeit check_empty1(one_million_elements)
 </code></pre>
-<pre><code>5.98 ms ± 38.9 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>1.78 ms ± 600 ns per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </code></pre>
 <pre><code class="language-python">%timeit check_empty2(one_million_elements)
 </code></pre>
-<pre><code>5.54 ms ± 53.1 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>1.78 ms ± 1.45 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </code></pre>
 <pre><code class="language-python">%timeit check_empty2_new(one_million_elements)
 </code></pre>
-<pre><code>8.73 ms ± 33.4 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>2.57 ms ± 11.5 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
 <pre><code class="language-python">%timeit check_empty3(one_million_elements)
 </code></pre>
-<pre><code>2.97 ms ± 43 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>1.02 ms ± 401 ns per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </code></pre>
 <p>Самым быстрым оказался и самый идиоматичный вариант <code>if not elements</code>, рекомендуемый любым руководством по стилю. Такое совпадение встречается нечасто.</p>
 <h3 id="Совет-6-Спрашивать-разрешения-или-обрабатывать-последствия"><a class="header" href="#Совет-6-Спрашивать-разрешения-или-обрабатывать-последствия">Совет 6. Спрашивать разрешения или обрабатывать последствия</a></h3>
@@ -13506,11 +13550,11 @@ def check_attr2(obj):
 </code></pre>
 <pre><code class="language-python">%timeit check_attr1(foo)
 </code></pre>
-<pre><code>8.42 ms ± 70.3 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>2.56 ms ± 13.1 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
 <pre><code class="language-python">%timeit check_attr2(foo)
 </code></pre>
-<pre><code>4.63 ms ± 29.5 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>1.49 ms ± 28.5 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </code></pre>
 <p>Разница становится ещё больше, если атрибутов, требующих проверки, несколько.</p>
 <p>Предположим теперь, что у объектов, поступающих в функцию, требуемый атрибут в основном отсутствует.</p>
@@ -13521,13 +13565,13 @@ bar = Bar()
 </code></pre>
 <pre><code class="language-python">%timeit check_attr1(bar)
 </code></pre>
-<pre><code>5.91 ms ± 74.3 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>1.85 ms ± 668 ns per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </code></pre>
 <pre><code class="language-python">%timeit check_attr2(bar)
 </code></pre>
-<pre><code>59.5 ms ± 897 μs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+<pre><code>16.3 ms ± 74.2 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
-<p>Исключение, возбуждённое один раз, обходится дёшево, а миллион раз подряд — дорого. Выбор между <code>hasattr</code> и <code>try/except</code> определяется тем, какая ситуация встречается чаще.</p>
+<p>Исключение, возбуждённое один раз, обходится дёшево, а сто тысяч раз подряд — дорого. Выбор между <code>hasattr</code> и <code>try/except</code> определяется тем, какая ситуация встречается чаще.</p>
 <h3 id="Совет-7-Особенности-определения-словаря-и-списка"><a class="header" href="#Совет-7-Особенности-определения-словаря-и-списка">Совет 7. Особенности определения словаря и списка</a></h3>
 <p>Словарь и список можно объявить двумя способами, дающими одинаковый результат.</p>
 <pre><code class="language-python">def create_list1():
@@ -13545,25 +13589,35 @@ def create_dict1():
 def create_dict2():
     for i in range(count):
         a = dict()
+
+def create_list3():
+    new_list = list
+    for i in range(count):
+        a = new_list()
 </code></pre>
 <p>Способы через <code>[]</code> и <code>{}</code> быстрее <code>list()</code> и <code>dict()</code> соответственно.</p>
 <pre><code class="language-python">%timeit create_list1()
 </code></pre>
-<pre><code>4.12 ms ± 127 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>1.45 ms ± 2.44 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </code></pre>
 <pre><code class="language-python">%timeit create_list2()
 </code></pre>
-<pre><code>7.16 ms ± 164 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>2.2 ms ± 5.1 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
 <pre><code class="language-python">%timeit create_dict1()
 </code></pre>
-<pre><code>4.04 ms ± 93.6 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>1.53 ms ± 36.4 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </code></pre>
 <pre><code class="language-python">%timeit create_dict2()
 </code></pre>
-<pre><code>7.82 ms ± 115 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>2.35 ms ± 68.4 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
-<p>Разница обусловлена обращением к имени: интерпретатору необходимо выяснить, на что указывает <code>list</code>, тогда как литерал компилируется в одну инструкцию. Это подтверждается байт-кодом, разобранным модулем <code>dis</code>.</p>
+<p>Разница обусловлена в основном вызовом: литерал компилируется в одну инструкцию <code>BUILD_LIST</code>, тогда как <code>list()</code> требует найти имя и вызвать тип через общий механизм вызова. Поиск имени в версиях 3.11 и новее обходится дёшево благодаря специализированной инструкции, поэтому вызов через локальную переменную почти не быстрее:</p>
+<pre><code class="language-python">%timeit create_list3()
+</code></pre>
+<pre><code>2.18 ms ± 12.2 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+</code></pre>
+<p>Различие в составе инструкций показывает байт-код, разобранный модулем <code>dis</code>.</p>
 <pre><code class="language-python">import dis
 
 dis.dis("[]")
@@ -13591,11 +13645,11 @@ dis.dis("list()")
 </code></pre>
 <pre><code class="language-python">%timeit [square(num) for num in range(10000)]
 </code></pre>
-<pre><code>1.05 ms ± 6.03 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
+<pre><code>307 μs ± 2.64 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </code></pre>
 <pre><code class="language-python">%timeit [num ** 2 for num in range(10000)]
 </code></pre>
-<pre><code>694 μs ± 6.45 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
+<pre><code>215 μs ± 1.27 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </code></pre>
 <h3 id="Совет-9-Отказ-от-активной-работы-с-глобальными-переменными"><a class="header" href="#Совет-9-Отказ-от-активной-работы-с-глобальными-переменными">Совет 9. Отказ от активной работы с глобальными переменными</a></h3>
 <pre><code class="language-python">count = 100000
@@ -13613,11 +13667,11 @@ def work_with_local():
 </code></pre>
 <pre><code class="language-python">%timeit work_with_global()
 </code></pre>
-<pre><code>6.98 ms ± 56.6 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>2.34 ms ± 56.2 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
 <pre><code class="language-python">%timeit work_with_local()
 </code></pre>
-<pre><code>4.16 ms ± 41.8 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>1.5 ms ± 4.68 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </code></pre>
 <pre><code class="language-python">some_global = 0
 def work_with_global_optimized():
@@ -13629,7 +13683,7 @@ def work_with_global_optimized():
 </code></pre>
 <pre><code class="language-python">%timeit work_with_global_optimized()
 </code></pre>
-<pre><code>4.14 ms ± 75.4 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>1.5 ms ± 496 ns per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </code></pre>
 <h3 id="Совет-10-Специализированные-библиотеки-для-математики"><a class="header" href="#Совет-10-Специализированные-библиотеки-для-математики">Совет 10. Специализированные библиотеки для математики</a></h3>
 <p>Численные расчёты нецелесообразно записывать циклами на Python, поскольку для этого существуют библиотеки на C и Фортране, дающие разницу в десятки раз.</p>
@@ -13639,7 +13693,7 @@ def work_with_global_optimized():
 
 %timeit list_slow()
 </code></pre>
-<pre><code>658 μs ± 4.81 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
+<pre><code>214 μs ± 859 ns per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </code></pre>
 <pre><code class="language-python">import numpy as np
 
@@ -13649,9 +13703,9 @@ def list_fast():
 
 %timeit list_fast()
 </code></pre>
-<pre><code>10.4 μs ± 32.3 ns per loop (mean ± std. dev. of 7 runs, 100,000 loops each)
+<pre><code>5.57 μs ± 15.9 ns per loop (mean ± std. dev. of 7 runs, 100,000 loops each)
 </code></pre>
-<h3 id="Опасная-зона"><a class="header" href="#Опасная-зона">Опасная зона</a></h3>
+<h3 id="Приёмы-ценой-читаемости"><a class="header" href="#Приёмы-ценой-читаемости">Приёмы ценой читаемости</a></h3>
 <p>Приёмы, приведённые ниже, ухудшают читаемость кода ради нескольких процентов; применять их имеет смысл только в том случае, если профилировщик показал, что эти проценты необходимы.</p>
 <h3 id="Совет-11-Множественное-присваивание"><a class="header" href="#Совет-11-Множественное-присваивание">Совет 11. Множественное присваивание</a></h3>
 <pre><code class="language-python">def create_variables1():
@@ -13673,45 +13727,48 @@ def create_variables2():
 </code></pre>
 <pre><code class="language-python">%timeit create_variables1()
 </code></pre>
-<pre><code>616 μs ± 5.26 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
+<pre><code>174 μs ± 239 ns per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
 </code></pre>
 <pre><code class="language-python">%timeit create_variables2()
 </code></pre>
-<pre><code>503 μs ± 8.69 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
+<pre><code>149 μs ± 1.37 μs per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
 </code></pre>
-<p>Объявление в одну строку быстрее: распаковка кортежа обходится дешевле десяти отдельных присваиваний. Однако читаемость такой строки крайне низка, и выигрыш в сотню микросекунд её не оправдывает.</p>
+<p>Объявление в одну строку быстрее: распаковка кортежа обходится дешевле десяти отдельных присваиваний. Однако читаемость такой строки крайне низка, и выигрыш в 25 микросекунд на десять тысяч итераций её не оправдывает.</p>
 <h3 id="Совет-12-Поиск-функций-и-атрибутов"><a class="header" href="#Совет-12-Поиск-функций-и-атрибутов">Совет 12. Поиск функций и атрибутов</a></h3>
-<p>Поиск атрибута в Python не является бесплатным: за ним стоит <code>__getattribute__</code>, а если тот не нашёл атрибута, то и <code>__getattr__</code>. Естественным решением представляется найти атрибут один раз и сохранить его в локальную переменную, не разыскивая заново на каждой итерации.</p>
-<pre><code class="language-python">def squares1(elements):
+<p>Поиск атрибута в Python не является бесплатным: за ним стоит <code>__getattribute__</code>, а если тот не нашёл атрибута, то и <code>__getattr__</code>. Естественным решением представляется найти атрибут один раз и сохранить его в локальную переменную, не разыскивая заново на каждой итерации. Функции ниже копируют список поэлементно: первая вызывает метод <code>append</code> на каждой итерации, вторая заранее сохраняет его в локальную переменную.</p>
+<pre><code class="language-python">def copy_append(elements):
     result = []
     for item in elements:
         result.append(item)
+    return result
 
-def squares2(elements):
+def copy_cached(elements):
     result = []
     append = result.append
     for item in elements:
         append(item)
+    return result
 </code></pre>
-<pre><code class="language-python">%timeit squares1(one_million_elements)
+<pre><code class="language-python">%timeit copy_append(one_million_elements)
 </code></pre>
-<pre><code>24.6 ms ± 255 μs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+<pre><code>6.18 ms ± 12.5 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
-<pre><code class="language-python">%timeit squares2(one_million_elements)
+<pre><code class="language-python">%timeit copy_cached(one_million_elements)
 </code></pre>
-<pre><code>29 ms ± 367 μs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+<pre><code>7.7 ms ± 10.6 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
-<p>Рекомендация, годами переходящая из одной подборки об оптимизации в другую, проигрывает: начиная с версии 3.11 CPython специализирует вызов метода в байт-коде, и обычный <code>result.append(item)</code> оказывается быстрее заранее сохранённой ссылки.</p>
+<p>Рекомендация, годами переходящая из одной подборки об оптимизации в другую, проигрывает: начиная с версии 3.11 CPython специализирует вызов метода списка в байт-коде, и обычный <code>result.append(item)</code> оказывается быстрее вызова через заранее сохранённую ссылку.</p>
 <p>Подобные рекомендации необходимо проверять замером на используемой версии интерпретатора.</p>
 <h3 id="Прочее"><a class="header" href="#Прочее">Прочее</a></h3>
 <p>Три проекта за пределами CPython решают ту же задачу иначе.</p>
 <ol>
 <li><a href="https://github.com/yglukhov/nimpy">nimpy</a> позволяет вызывать функции на языке Nim из Python.</li>
 <li><a href="https://pythran.readthedocs.io/en/latest/">Pythran</a> предлагает ещё один подход к компиляции Python-кода.</li>
-<li><a href="https://github.com/pyston/pyston">Pyston</a> представляет собой альтернативный интерпретатор, снабжённый JIT-компилятором.</li>
+<li><a href="https://github.com/pyston/pyston">Pyston</a> — альтернативный интерпретатор с JIT-компилятором, начатый в Dropbox; с 2022 года проект не развивается. Действующей альтернативой CPython с JIT-компилятором остаётся <a href="https://pypy.org/">PyPy</a>.</li>
 </ol>
 <h2 id="Оптимизация-памяти"><a class="header" href="#Оптимизация-памяти">Оптимизация памяти</a></h2>
-<p>Расчёт, не помещающийся в оперативную память, не спасёт никакая векторизация: он не запустится.</p>
+<p>Расчёт, не помещающийся в оперативную память, не выполняется вовсе или многократно замедляется: выделение памяти завершается ошибкой <code>MemoryError</code>, а при подкачке данные читаются с диска.</p>
+<iframe src="../slides/lecture-09.html#/sec-mem" title="Слайды лекции «Оптимизация»: память" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
 <h3 id="Измерение-памяти"><a class="header" href="#Измерение-памяти">Измерение памяти</a></h3>
 <p>Измерение памяти в Python затруднено, и первый способ, подсказанный документацией, вводит в заблуждение.</p>
 <pre><code class="language-python">import sys
@@ -13733,26 +13790,32 @@ sys.getsizeof([SomeClass(i) for i in range(1000000)])
 <pre><code>8448728
 </code></pre>
 <p>Список объектов <code>SomeClass</code> занимает столько же, сколько список целых чисел: <code>sys.getsizeof</code> измеряет размер самого списка, то есть массива указателей, а не объектов, на которые эти указатели ведут, и надёжно работает только для простых типов и встроенных структур, размещённых в непрерывном участке памяти.</p>
-<p>Остаётся воспользоваться профилировщиком памяти.</p>
-<pre><code class="language-python">%load_ext memory_profiler
-%memit
+<p>Остаётся воспользоваться трассировкой выделений памяти. В стандартной библиотеке для этого предусмотрен модуль <code>tracemalloc</code>: он учитывает каждое выделение памяти интерпретатором, в том числе буферы массивов NumPy, и сообщает текущий и пиковый объём. Определим вспомогательную функцию, возвращающую объём памяти, выделенной при создании объекта:</p>
+<pre><code class="language-python">import tracemalloc
+
+def traced_mib(make):
+    """Объём памяти, выделенной при вызове make(), в МиБ."""
+    tracemalloc.start()
+    obj = make()
+    size = tracemalloc.get_traced_memory()[0]
+    tracemalloc.stop()
+    return round(size / 2**20, 1)
+
+traced_mib(lambda: [SomeClass(i) for i in range(1000000)])
 </code></pre>
-<pre><code>peak memory: 625.96 MiB, increment: 0.00 MiB
+<pre><code>145.4
 </code></pre>
-<p>Этот подход также не идеален: он наблюдает потребление памяти процессом в отдельные моменты времени, учитывает не всё, а результаты заметно меняются от запуска к запуску.</p>
-<pre><code class="language-python">%memit [n for n in range(10000000)]
+<pre><code class="language-python">traced_mib(lambda: [n for n in range(1000000)])
 </code></pre>
-<pre><code>peak memory: 1007.02 MiB, increment: 377.12 MiB
+<pre><code>38.6
 </code></pre>
-<pre><code class="language-python">%memit [n for n in range(1000000)]
-</code></pre>
-<pre><code>peak memory: 632.71 MiB, increment: 0.07 MiB
-</code></pre>
+<p>Вместе с объектами список экземпляров <code>SomeClass</code> занимает 145 МиБ, почти в двадцать раз больше, чем показывает <code>getsizeof</code>, а список целых чисел — 38,6 МиБ, почти впятеро больше: каждое число является отдельным объектом (<code>sys.getsizeof(1)</code> даёт 28 байт, а аллокатор выделяет под него 32), к которому добавляется 8-байтовая ссылка из списка.</p>
+<p>Пакет <code>memory_profiler</code> с магической командой <code>%memit</code>, встречающийся в старых руководствах, с 2022 года не сопровождается и требует отдельной установки. Он наблюдает потребление памяти процессом целиком в отдельные моменты времени, и его результаты заметно меняются от запуска к запуску: интерпретатор и аллокатор удерживают освобождённые страницы про запас и размещают в них новые объекты.</p>
 <h3 id="Утечки-памяти-в-python"><a class="header" href="#Утечки-памяти-в-python">Утечки памяти в Python</a></h3>
 <blockquote>
 <p>Подсчёт ссылок, циклические ссылки и поколенческий сборщик разбирались в главе <a href="perf/../dev/python/objects.html">«Объекты и память»</a>; там же рассмотрена ловушка с изменяемым аргументом по умолчанию. Здесь речь идёт о том, что утекает в долго живущей программе.</p>
 </blockquote>
-<p>В смысле C++ утечек в Python почти нет: за освобождением следит сборщик мусора, и потерять память можно разве что нарушив счётчик ссылок в расширении, написанном на C. Подробнее об этом рассказано в <a href="https://rushter.com/blog/python-garbage-collector/">разборе устройства сборщика</a>.</p>
+<p>В смысле C++ утечек в Python почти нет: объект освобождается, как только на него не остаётся ссылок, а недостижимые циклы находит сборщик мусора; потерять память можно разве что нарушив счётчик ссылок в расширении, написанном на C. Подробнее об этом рассказано в <a href="https://rushter.com/blog/python-garbage-collector/">разборе устройства сборщика</a>.</p>
 <p>Долгоживущие бесполезные объекты получить легко, и на практике утечкой обычно называют именно их. Классических способов три: изменяемый аргумент по умолчанию, забытая переменная, живущая всё время работы длинной функции, и заведённый на атрибуте класса кеш, из которого ничего не удаляется.</p>
 <pre><code class="language-python">def mutable_argument(arr=[]):
     arr.append(42)
@@ -13769,7 +13832,7 @@ sys.getsizeof([SomeClass(i) for i in range(1000000)])
         if result is not None:
             return result
         result = do_calc(arg)
-        self.cache[arg] = result    # растёт вечно: удалять отсюда некому
+        self.cache[arg] = result    # записи отсюда никто не удаляет
         return result
 </code></pre>
 <p>В старых версиях Python (2.7 и все версии до 3.4) сборщик не умел разбирать циклические ссылки между объектами с <code>__del__</code>, и образованные ими циклы существовали до конца работы программы.</p>
@@ -13777,23 +13840,22 @@ sys.getsizeof([SomeClass(i) for i in range(1000000)])
 <p>Модуль <code>array</code> хранит числа примитивных типов подряд, без отдельного объекта на каждый элемент.</p>
 <pre><code class="language-python">import array
 
-%memit array.array('q', range(10000000))
+traced_mib(lambda: array.array('q', range(10000000)))
 </code></pre>
-<pre><code>peak memory: 702.93 MiB, increment: 70.22 MiB
+<pre><code>78.1
 </code></pre>
 <p><a href="https://docs.python.org/3/library/array.html">Полный список кодов типов</a> приведён в документации.</p>
 <h3 id="nparray"><a class="header" href="#nparray">np.array</a></h3>
 <p><code>np.array</code> устроен аналогично, с фиксированным типом и уложенными подряд элементами, и занимает существенно меньше памяти, чем стандартный список. В отличие от <code>array</code>, он поддерживает вычисления.</p>
 <pre><code class="language-python">np.arange(10000000).nbytes / 2**20
 </code></pre>
-<pre><code>76.29
+<pre><code>76.2939453125
 </code></pre>
-<p>Здесь <code>%memit</code> не подходит: он измеряет
-прирост потребления процессом, а интерпретатор с аллокатором удерживают уже освобождённые
-страницы про запас и размещают в них вновь созданный массив. В таком случае <code>%memit</code>
-покажет <code>increment: 0.00 MiB</code> для восьмидесяти мегабайт данных, и это не
-экономия, а несостоявшееся измерение. У NumPy размер известен точно и без
-замеров: <code>nbytes</code> возвращает <code>len * itemsize</code>.</p>
+<pre><code class="language-python">traced_mib(lambda: np.arange(10000000))
+</code></pre>
+<pre><code>76.3
+</code></pre>
+<p><code>tracemalloc</code> учитывает и буфер массива NumPy, а точный размер данных известен и без замеров: атрибут <code>nbytes</code> возвращает <code>len * itemsize</code>.</p>
 <h3 id="tuple-vs-list"><a class="header" href="#tuple-vs-list">tuple vs list</a></h3>
 <p>Кортеж несколько компактнее списка: ему не требуется запас под рост. Разница невелика, зато видно, во что обходится списковое включение, создающее список с запасом места под будущие <code>append</code>.</p>
 <pre><code class="language-python">sys.getsizeof([i for i in one_million_elements])
@@ -13818,9 +13880,9 @@ sys.getsizeof([SomeClass(i) for i in range(1000000)])
         self.d = 4 * i
         self.e = 5 * i
 </code></pre>
-<pre><code class="language-python">%memit [SomeClass(i) for i in range(1000000)]
+<pre><code class="language-python">traced_mib(lambda: [SomeClass(i) for i in range(1000000)])
 </code></pre>
-<pre><code>peak memory: 880.38 MiB, increment: 247.62 MiB
+<pre><code>259.8
 </code></pre>
 <pre><code class="language-python">class SomeClassSlots:
     __slots__ = ('a', 'b', 'c', 'd', 'e',)
@@ -13831,10 +13893,11 @@ sys.getsizeof([SomeClass(i) for i in range(1000000)])
         self.d = 4 * i
         self.e = 5 * i
                 
-%memit [SomeClassSlots(i) for i in range(1000000)]
+traced_mib(lambda: [SomeClassSlots(i) for i in range(1000000)])
 </code></pre>
-<pre><code>peak memory: 853.01 MiB, increment: 217.66 MiB
+<pre><code>229.3
 </code></pre>
+<p>Экономия здесь около 12 %: большую часть памяти занимают пять целых чисел каждого экземпляра, а не сам экземпляр. Чем меньше памяти занимают значения полей, тем заметнее выигрыш от <code>__slots__</code>.</p>
 <p>Обычно <code>__slots__</code> ускоряет и обращение к атрибуту, но не всегда.</p>
 <pre><code class="language-python">d1 = SomeClass(0)
 d2 = SomeClassSlots(0)
@@ -13846,11 +13909,11 @@ def attr_work(obj):
 </code></pre>
 <pre><code class="language-python">%timeit attr_work(d1)
 </code></pre>
-<pre><code>824 μs ± 20.2 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
+<pre><code>265 μs ± 886 ns per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </code></pre>
 <pre><code class="language-python">%timeit attr_work(d2)
 </code></pre>
-<pre><code>845 μs ± 7.76 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
+<pre><code>260 μs ± 760 ns per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </code></pre>
 <p>Здесь разница оказалась в пределах шума: современный CPython кеширует поиск атрибута и в обычном <code>__dict__</code>.</p>
 <p>С наследованием <code>__slots__</code> неудобен: указывать его приходится в каждом классе иерархии, иначе <code>__dict__</code> возвращается и экономия исчезает.</p>
@@ -13860,11 +13923,11 @@ def attr_work(obj):
 
 bu.zeros(10000000).nbytes / 2**20
 </code></pre>
-<pre><code>1.19
+<pre><code>1.1920928955078125
 </code></pre>
-<pre><code class="language-python">%memit [False for i in range(10000000)]
+<pre><code class="language-python">traced_mib(lambda: [False for i in range(10000000)])
 </code></pre>
-<pre><code>peak memory: 701.93 MiB, increment: 67.81 MiB
+<pre><code>85.0
 </code></pre>
 <p>Платой является время: упакованный флаг необходимо извлечь из байта.</p>
 <h3 id="range-и-вычисление-вместо-хранения"><a class="header" href="#range-и-вычисление-вместо-хранения"><code>range</code> и вычисление вместо хранения</a></h3>
@@ -13892,9 +13955,13 @@ print(len(a))
 <li><strong>Сначала правильно, потом быстро.</strong> Ускоренный неверный расчёт остаётся неверным.</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="Скорость-выполнения-программ"><a class="header" href="#Скорость-выполнения-программ">Скорость выполнения программ</a></h1>
-<p>В настоящей главе рассматривается последовательное ускорение одной задачи, при котором результат измеряется на каждом шаге.</p>
+<p>В настоящей главе рассматривается последовательное ускорение одной задачи, при котором результат проверяется и измеряется на каждом шаге.</p>
 <p>В качестве задачи выбрано умножение матриц — операция, встречающаяся в любом физическом расчёте, на которой видны все типичные способы оптимизации.</p>
-<p>Начнём с наивной реализации на чистом Python, измерим её, найдём с помощью профилировщика узкое место, а затем последовательно применим четыре подхода: перестановку циклов, компиляцию через Numba, компиляцию через Cython и готовую библиотеку. Разница между первой и последней версией составит несколько порядков.</p>
+<p>Начнём с наивной реализации на чистом Python, измерим её, найдём с помощью профилировщика узкое место, а затем последовательно применим четыре подхода: приёмы самого языка, компиляцию через Numba, компиляцию через Cython и готовую библиотеку. Разница между первой и последней версией составит несколько порядков. Все замеры выполнены в IPython на одной машине — виртуальной машине с двумя ядрами под Python 3.12, на которой записаны демонстрации лекции «Оптимизация».</p>
+<blockquote>
+<p><strong>Слайды к главе.</strong> Компиляция через Numba и Cython, пространственный заряд и NumPy изложены также в пятой и шестой частях лекции «Оптимизация» с демонстрациями в терминале; слайды лекции доступны <a href="https://phys-dev.github.io/soft-dev-book/slides/lecture-09.html#/sec-jit">на сайте книги</a> и <a href="https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-09.pdf">в PDF</a>.</p>
+</blockquote>
+<iframe src="../slides/lecture-09.html#/sec-jit" title="Слайды лекции «Оптимизация»: компиляция" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
 <h2 id="Класс-matrix"><a class="header" href="#Класс-matrix">Класс <code>Matrix</code></a></h2>
 <p>Матрица описана как список списков с парой конструкторов:</p>
 <pre><code class="language-python">import random
@@ -13914,7 +13981,6 @@ class Matrix(list):
         return M
 
     def transpose(self):
-        n_rows, n_cols = self.shape
         return self.__class__(zip(*self))
 
     @property
@@ -13942,48 +14008,68 @@ class Matrix(list):
                 Z[i][k] += X[i][j] * Y[j][k]
     return Z
 </code></pre>
-<pre><code class="language-python">%doctest_mode
-</code></pre>
-<pre><code>Exception reporting mode: Plain
-Doctest mode is: ON
-</code></pre>
-<pre><code class="language-python">&gt;&gt;&gt; X = Matrix([[1], [2], [3]])
-&gt;&gt;&gt; Y = Matrix([[4, 5, 6]])
-&gt;&gt;&gt; matrix_product(X, Y)
-[[4, 5, 6], [8, 10, 12], [12, 15, 18]]
-&gt;&gt;&gt; matrix_product(Y, X)
+<p>Примеры из строки документации проверяются модулем <code>doctest</code>: он выполняет каждую строку с приглашением <code>&gt;&gt;&gt;</code> и сравнивает напечатанное с ожидаемым.</p>
+<pre><code class="language-python">import doctest
 
-[[32]]
+test = doctest.DocTestFinder().find(matrix_product, globs=globals())[0]
+doctest.DocTestRunner().run(test)
 </code></pre>
-<pre><code>[[32]]
+<pre><code>TestResults(failed=0, attempted=4)
 </code></pre>
-<pre><code class="language-python">%doctest_mode
-</code></pre>
-<pre><code>Exception reporting mode: Context
-Doctest mode is: OFF
-</code></pre>
+<p>Все четыре проверки прошли. Корректность проверяется и после каждого шага ускорения: быстрая, но неверная функция бесполезна. Для этого результат первой версии сохраняется как эталон, и каждая следующая версия сравнивается с ним.</p>
 <h2 id="Измерение-времени-выполнения"><a class="header" href="#Измерение-времени-выполнения">Измерение времени выполнения</a></h2>
-<p>Реализация работает корректно; её скорость измеряется магической командой <code>%%timeit</code>, описанной в главе <a href="perf/../dev/python/optimization.html">«Причины низкой скорости Python»</a>.</p>
-<pre><code class="language-python">%%timeit shape = 64, 64; X = Matrix.random(shape); Y = Matrix.random(shape)
-matrix_product(X, Y)
+<p>Скорость измеряется магической командой <code>%timeit</code>, описанной в главе <a href="perf/../dev/python/optimization.html">«Причины низкой скорости Python»</a>.</p>
+<pre><code class="language-python">shape = 64, 64
+X, Y = Matrix.random(shape), Matrix.random(shape)
+reference = matrix_product(X, Y)
+
+%timeit matrix_product(X, Y)
 </code></pre>
-<pre><code>86.6 ms ± 1.52 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
+<pre><code>17.7 ms ± 17.6 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
-<p>Умножение двух матриц 64×64 занимает 87 миллисекунд, почти десятую долю секунды. Найдём причину.</p>
+<p>Умножение двух матриц 64×64 занимает около 18 миллисекунд: за секунду выполняется лишь около 56 таких умножений. Найдём причину.</p>
 <p>Определим вспомогательную функцию <code>bench</code>, генерирующую случайные матрицы указанного размера и <code>n_iter</code> раз перемножающую их в цикле.</p>
 <pre><code class="language-python">def bench(shape=(64, 64), n_iter=16):
     X = Matrix.random(shape)
     Y = Matrix.random(shape)
-    for iter in range(n_iter):
-        matrix_product(X, Y)    
+    for _ in range(n_iter):
+        matrix_product(X, Y)
 </code></pre>
-<p>Рассмотрим происходящее подробнее с помощью <code>line_profiler</code>, описанного в той же главе.</p>
-<pre><code class="language-python">#!pip install line_profiler
-</code></pre>
+<p>Рассмотрим происходящее подробнее с помощью <code>line_profiler</code>, описанного в той же главе. Пакет устанавливается отдельно (<code>pip install line_profiler</code>), а в IPython подключается как расширение: команда <code>%lprun -f функция выражение</code> выполняет выражение и печатает время каждой строки указанной функции.</p>
 <pre><code class="language-python">%load_ext line_profiler
 %lprun -f matrix_product bench()
 </code></pre>
-<p>Операция <code>list.__getitem__</code> не является бесплатной, поэтому поменяем местами вложенные циклы <code>for</code>, чтобы код выполнял меньше обращений по индексу.</p>
+<pre><code>Timer unit: 1e-09 s
+
+Total time: 1.27521 s
+File: &lt;ipython-input-2-29ee3956b63c&gt;
+Function: matrix_product at line 1
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+     1                                           def matrix_product(X, Y):
+     2                                               """Вычисляет матричное произведение X и Y.
+     3                                           
+     4                                               &gt;&gt;&gt; X = Matrix([[1], [2], [3]])
+     5                                               &gt;&gt;&gt; Y = Matrix([[4, 5, 6]])
+     6                                               &gt;&gt;&gt; matrix_product(X, Y)
+     7                                               [[4, 5, 6], [8, 10, 12], [12, 15, 18]]
+     8                                               &gt;&gt;&gt; matrix_product(Y, X)
+     9                                               [[32]]
+    10                                               """
+    11        16      21915.0   1369.7      0.0      n_xrows, n_xcols = X.shape
+    12        16      11210.0    700.6      0.0      n_yrows, n_ycols = Y.shape
+    13                                               # верим, что с размерностями всё хорошо
+    14        16      79334.0   4958.4      0.0      Z = Matrix.zeros((n_xrows, n_ycols))
+    15      1040     117873.0    113.3      0.0      for i in range(n_xrows):
+    16     66560    7629317.0    114.6      0.6          for j in range(n_xcols):
+    17   4259840  487990774.0    114.6     38.3              for k in range(n_ycols):
+    18   4194304  779354293.0    185.8     61.1                  Z[i][k] += X[i][j] * Y[j][k]
+    19        16       9794.0    612.1      0.0      return Z
+</code></pre>
+<p>Время в отчёте дано в наносекундах (<code>Timer unit: 1e-09 s</code>). Почти всё оно приходится на две строки внутреннего цикла: тело <code>Z[i][k] += X[i][j] * Y[j][k]</code> и сам цикл <code>for k</code>, выполненные по четыре миллиона раз. Под профилировщиком функция работает в несколько раз медленнее, чем без него, поэтому абсолютные значения из отчёта не сравнивают с замерами <code>%timeit</code>, сравнивают только доли.</p>
+<h2 id="Ускорение-средствами-языка"><a class="header" href="#Ускорение-средствами-языка">Ускорение средствами языка</a></h2>
+<p>Операция <code>list.__getitem__</code> не является бесплатной, поэтому поменяем местами вложенные циклы <code>for</code> и будем накапливать сумму в локальной переменной, чтобы код выполнял меньше обращений по индексу.</p>
 <pre><code class="language-python">def matrix_product(X, Y):
     n_xrows, n_xcols = X.shape
     n_yrows, n_ycols = Y.shape
@@ -13996,10 +14082,36 @@ matrix_product(X, Y)
                 acc += Xi[j] * Y[j][k]
             Z[i][k] = acc
     return Z
+
+assert matrix_product(X, Y) == reference
+%timeit matrix_product(X, Y)
+</code></pre>
+<pre><code>11.2 ms ± 6.02 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
 <pre><code class="language-python">%lprun -f matrix_product bench()
 </code></pre>
-<p>Выполнение ускорилось на две секунды, однако более 30 % времени по-прежнему уходит на итерацию по индексам во внутреннем цикле. Устраним и этот недостаток.</p>
+<pre><code>Timer unit: 1e-09 s
+
+Total time: 1.20595 s
+File: &lt;ipython-input-7-003c7298659e&gt;
+Function: matrix_product at line 1
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+     1                                           def matrix_product(X, Y):
+     2        16      22251.0   1390.7      0.0      n_xrows, n_xcols = X.shape
+     3        16      11126.0    695.4      0.0      n_yrows, n_ycols = Y.shape
+     4        16      79626.0   4976.6      0.0      Z = Matrix.zeros((n_xrows, n_ycols))
+     5      1040     120653.0    116.0      0.0      for i in range(n_xrows):
+     6      1024     148625.0    145.1      0.0          Xi = X[i]
+     7     66560    7746232.0    116.4      0.6          for k in range(n_ycols):
+     8     65536    8092070.0    123.5      0.7              acc = 0
+     9   4259840  493775272.0    115.9     40.9              for j in range(n_xcols):
+    10   4194304  686977762.0    163.8     57.0                  acc += Xi[j] * Y[j][k]
+    11     65536    8971998.0    136.9      0.7              Z[i][k] = acc
+    12        16       8211.0    513.2      0.0      return Z
+</code></pre>
+<p>Время сократилось примерно на треть, однако заметная доля по-прежнему уходит на строку внутреннего цикла <code>for j in range(n_xcols)</code>: на каждой итерации интерпретатор получает следующее число из <code>range</code> и связывает его с именем. Заменим внутренний цикл выражением <code>sum</code> по генератору.</p>
 <pre><code class="language-python">def matrix_product(X, Y):
     n_xrows, n_xcols = X.shape
     n_yrows, n_ycols = Y.shape
@@ -14009,27 +14121,76 @@ matrix_product(X, Y)
         for k in range(n_ycols):
             Zi[k] = sum(Xi[j] * Y[j][k] for j in range(n_xcols))
     return Z
+
+assert matrix_product(X, Y) == reference
+%timeit matrix_product(X, Y)
+</code></pre>
+<pre><code>12.4 ms ± 331 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
 <pre><code class="language-python">%lprun -f matrix_product bench()
 </code></pre>
-<p>Уберём лишние обращения по индексу и из самого внутреннего цикла.</p>
-<pre><code class="language-python">def matrix_product(X, Y):
-    n_xrows, n_xcols = X.shape
-    n_yrows, n_ycols = Y.shape
-    Z = Matrix.zeros((n_xrows, n_ycols))
-    Yt = Y.transpose()  # &lt;--
-    for i, (Xi, Zi) in enumerate(zip(X, Z)):
-        for k, Ytk in enumerate(Yt):
-            Zi[k] = sum(Xi[j] * Ytk[j] for j in range(n_xcols))
-    return Z
+<pre><code>Timer unit: 1e-09 s
+
+Total time: 0.793878 s
+File: &lt;ipython-input-9-a5e1d26d5e4a&gt;
+Function: matrix_product at line 1
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+     1                                           def matrix_product(X, Y):
+     2        16      17875.0   1117.2      0.0      n_xrows, n_xcols = X.shape
+     3        16      10917.0    682.3      0.0      n_yrows, n_ycols = Y.shape
+     4        16      70000.0   4375.0      0.0      Z = Matrix.zeros((n_xrows, n_ycols))
+     5      1040     118811.0    114.2      0.0      for i in range(n_xrows):
+     6      1024     164327.0    160.5      0.0          Xi, Zi = X[i], Z[i]
+     7     66560    7997148.0    120.1      1.0          for k in range(n_ycols):
+     8     65536  785492252.0  11985.7     98.9              Zi[k] = sum(Xi[j] * Y[j][k] for j in range(n_xcols))
+     9        16       6457.0    403.6      0.0      return Z
 </code></pre>
+<p>Под профилировщиком эта версия выглядит быстрее предыдущей, но доверять этому нельзя: строки генераторного выражения <code>line_profiler</code> не отслеживает и своих накладных расходов на них не начисляет. Замер <code>%timeit</code> без профилировщика показывает обратное: функция стала медленнее. Тело генератора по-прежнему исполняется интерпретатором для каждого элемента, а к нему добавляется возобновление генератора. Отсюда правило: версии сравнивают замером без профилировщика, а профилировщик применяют для поиска места, требующего внимания.</p>
+<p>Обращения по индексу во внутреннем цикле убирает транспонирование второй матрицы: строки <code>X</code> и строки транспонированной <code>Y</code> перебираются парами через <code>zip</code>.</p>
+<pre><code class="language-python">def matrix_product(X, Y):
+    Yt = Y.transpose()
+    return Matrix([[sum(x * y for x, y in zip(Xi, Ytk)) for Ytk in Yt]
+                   for Xi in X])
+
+assert matrix_product(X, Y) == reference
+%timeit matrix_product(X, Y)
+</code></pre>
+<pre><code>8.99 ms ± 15.4 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+</code></pre>
+<p>Генератор остаётся и здесь. Ускорение даёт только перенос всего внутреннего цикла в код на C: функция <code>operator.mul</code>, применённая через <code>map</code>, и <code>sum</code> работают без единой инструкции байт-кода на элемент, а в Python 3.12 и новее для скалярного произведения есть готовая функция <code>math.sumprod</code>.</p>
+<pre><code class="language-python">import operator
+
+def matrix_product(X, Y):
+    Yt = Y.transpose()
+    return Matrix([[sum(map(operator.mul, Xi, Ytk)) for Ytk in Yt]
+                   for Xi in X])
+
+assert matrix_product(X, Y) == reference
+%timeit matrix_product(X, Y)
+</code></pre>
+<pre><code>6.38 ms ± 7.01 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+</code></pre>
+<pre><code class="language-python">import math
+
+def matrix_product(X, Y):
+    Yt = Y.transpose()
+    return Matrix([[math.sumprod(Xi, Ytk) for Ytk in Yt] for Xi in X])
+
+assert matrix_product(X, Y) == reference
+%timeit matrix_product(X, Y)
+</code></pre>
+<pre><code>3.25 ms ± 10.9 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+</code></pre>
+<p>Приёмы самого языка ускорили умножение в несколько раз, однако каждое число по-прежнему остаётся объектом, а каждое умножение проходит через общий механизм выбора операции по типам. Дальше этот путь не ведёт.</p>
 <h2 id="numba"><a class="header" href="#numba">Numba</a></h2>
-<p>Со встроенными списками Python компилятор Numba работать не способен: для генерации машинного кода ему необходим массив известного типа. Перепишем <code>matrix_product</code> через ndarray, хранящий числа одного типа подряд.</p>
+<p>Списки Python Numba поддерживает лишь частично: однородный плоский список принимается с предупреждением об устаревании этого механизма, а список списков, как в классе <code>Matrix</code>, и список с элементами разных типов приводят к ошибке <code>TypeError</code>. Для генерации машинного кода необходим массив известного типа, поэтому перепишем <code>matrix_product</code> через ndarray, хранящий числа одного типа подряд.</p>
 <pre><code class="language-python">import numba
 import numpy as np
 
 
-@numba.jit
+@numba.njit
 def jit_matrix_product(X, Y):
     n_xrows, n_xcols = X.shape
     n_yrows, n_ycols = Y.shape
@@ -14040,28 +14201,27 @@ def jit_matrix_product(X, Y):
                 Z[i, k] += X[i, j] * Y[j, k]
     return Z
 </code></pre>
-<p>Рассмотрим полученный результат.</p>
-<pre><code class="language-python">shape = 64, 64
-X = np.random.randint(-255, 255, shape)
-Y = np.random.randint(-255, 255, shape)
+<p>Декоратор <code>@numba.njit</code> компилирует функцию при первом вызове под типы аргументов. Матрицы создаются генератором случайных чисел NumPy, <code>integers</code> которого по умолчанию возвращает 64-битные целые на любой платформе.</p>
+<pre><code class="language-python">import time
 
-jit_matrix_product(X, Y)          # прогрев: здесь идёт компиляция
-%timeit -n100 jit_matrix_product(X, Y)
+rng = np.random.default_rng(0)
+Xa = rng.integers(-255, 255, shape)
+Ya = rng.integers(-255, 255, shape)
+
+t0 = time.perf_counter()
+jit_matrix_product(Xa, Ya)                 # первый вызов: компиляция
+print(f"первый вызов: {time.perf_counter() - t0:.3f} с")
+
+assert (jit_matrix_product(np.array(X), np.array(Y)) == np.array(reference)).all()
+%timeit jit_matrix_product(Xa, Ya)
 </code></pre>
-<pre><code>107 µs ± 1 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>первый вызов: 0.165 с
+79.7 μs ± 53.1 ns per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
 </code></pre>
-<p>Numba компилирует функцию при первом вызове
-под конкретные типы аргументов, и на этой машине компиляция занимает около 360 мс,
-что в три тысячи раз дольше самого счёта. Без прогрева она попадает в измерение,
-и <code>%timeit</code> выдаёт 495 мкс со среднеквадратичным отклонением 900 мкс, то есть
-разброс превышает среднее. По такому разбросу и распознаётся измерение, искажённое компиляцией. IPython
-в таком случае предупреждает, что самый медленный прогон оказался в двадцать
-раз дольше самого быстрого. После прогрева разброс снижается до одной микросекунды.</p>
+<p>Первый вызов длится в тысячи раз дольше последующих: в него входит компиляция. Команда <code>%timeit</code> без ключей сначала подбирает число запусков, и компиляция приходится на этот подбор, а не на замер. Если же число запусков задано ключом <code>-n</code> или время одного вызова измеряется вручную, компиляция попадает в результат: среднее завышается, среднеквадратичное отклонение превышает само среднее, а IPython предупреждает, что самый медленный прогон оказался во много раз дольше самого быстрого. Поэтому функцию Numba перед замерами вызывают один раз. Параметр <code>cache=True</code> сохраняет скомпилированный код на диск, и при следующем запуске программы компиляция не повторяется.</p>
 <h2 id="Настоящая-задача-пространственный-заряд"><a class="header" href="#Настоящая-задача-пространственный-заряд">Настоящая задача: пространственный заряд</a></h2>
 <p>Умножение матриц является учебным примером; рассмотрим, что Numba даёт на реальной задаче. В коде REDPIC, которому посвящена <a href="perf/../examples/redpic.html">отдельная глава</a>, пучок представлен ансамблем макрочастиц, а наиболее затратной функцией расчёта является суммирование кулоновских сил между частицами. Это эффект пространственного заряда, из-за которого сильноточный пучок расталкивает сам себя:</p>
-<p>$$
-\vec{F}<em>i = \sum</em>{j \ne i} \frac{\vec{r}_i - \vec{r}_j}{|\vec{r}_i - \vec{r}_j|^3}.
-$$</p>
+<p>\[ \vec F_i = \sum_{j \ne i} \frac{\vec r_i - \vec r_j}{|\vec r_i - \vec r_j|^3}. \]</p>
 <p>Каждая частица взаимодействует с каждой, поэтому сложность составляет \(O(N^2)\), где \(N\) — число частиц. Цикл, записанный напрямую, допускает и JIT-компиляцию, и распараллеливание, поскольку слагаемые для разных \(i\) вычисляются независимо.</p>
 <pre><code class="language-python">import numpy as np
 from numba import njit, prange
@@ -14088,75 +14248,67 @@ def space_charge(x, y, z, Fx, Fy, Fz):
 jit_version = njit(space_charge)                      # JIT
 par_version = njit(parallel=True)(space_charge_par)   # JIT + ядра CPU
 </code></pre>
-<p>Запись <code>njit(func)</code> вместо <code>@njit</code> над определением удобна, когда одну функцию необходимо измерить в нескольких режимах: исходный код один, обёрток несколько.</p>
-<p>Результаты измерения (Apple M4, 10 ядер; первый вызов каждой скомпилированной версии выполнен заранее, чтобы в измерение не попало время компиляции):</p>
-<pre><code>      N | чистый Python |     @njit | @njit parallel | ускорение
-   256 |       53.0 мс |   0.40 мс |        0.20 мс |   131x /   271x
-   512 |      219.0 мс |   1.67 мс |        0.48 мс |   131x /   454x
-  1024 |      865.7 мс |   6.88 мс |        1.68 мс |   126x /   514x
-  2048 |     3503.4 мс |  28.19 мс |        6.69 мс |   124x /   524x
-  4096 |    14076.2 мс | 114.68 мс |       24.80 мс |   123x /   567x
+<p>Запись <code>njit(func)</code> вместо <code>@njit</code> над определением удобна, когда одну функцию необходимо измерить в нескольких режимах: исходный код один, обёрток несколько. Функция <code>space_charge</code> без обёртки работает и со списками, и с массивами NumPy; измерим её в обоих случаях вместе с двумя скомпилированными версиями. Обе версии Numba компилируются заранее, вызовом на двух частицах, чтобы компиляция не попала в замер.</p>
+<pre><code class="language-python">def clock(f, n, lists=False):
+    """Время одного вызова f для n случайных частиц, мс."""
+    rng = np.random.default_rng(0)
+    x, y, z = rng.random((3, n))
+    F = np.zeros((3, n))
+    if lists:
+        x, y, z, F = x.tolist(), y.tolist(), z.tolist(), F.tolist()
+    t0 = time.perf_counter()
+    f(x, y, z, *F)
+    return (time.perf_counter() - t0) * 1e3
+
+warm = np.random.default_rng(1).random((3, 2))
+jit_version(*warm, *np.zeros((3, 2)))
+par_version(*warm, *np.zeros((3, 2)))
+
+print("    N  списки, мс  массивы, мс  @njit, мс  parallel, мс")
+for n in (256, 512, 1024, 2048, 4096):
+    tl = f"{clock(space_charge, n, lists=True):11.1f}" if n &lt;= 2048 else f"{'—':&gt;11}"
+    ta = f"{clock(space_charge, n):12.1f}" if n &lt;= 1024 else f"{'—':&gt;12}"
+    print(f"{n:5d} {tl} {ta} {clock(jit_version, n):10.2f} "
+          f"{clock(par_version, n):13.2f}")
+</code></pre>
+<pre><code>    N  списки, мс  массивы, мс  @njit, мс  parallel, мс
+  256        12.4         64.4       0.41          0.23
+  512        51.6        276.5       1.64          0.88
+ 1024       233.4       1108.5       6.52          3.35
+ 2048       841.5            —      26.10         13.28
+ 4096           —            —     106.91         53.39
 </code></pre>
 <p>Из таблицы следуют три вывода.</p>
-<p>Квадратичность видна в числах. При каждом удвоении \(N\) время растёт вчетверо, что и означает \(O(N^2)\). JIT-компиляция сложность не меняет: она сокращает время более чем в сто раз, но кривая остаётся квадратичной. Ускорение констант и улучшение асимптотики являются разными вещами.</p>
-<p>Один декоратор даёт ускорение более чем в сто раз: примерно настолько интерпретатор Python уступает машинному коду на арифметике в тесном цикле. Переписывать не потребовалось ни одной строки, функция как была написана на Python, так и осталась.</p>
-<p>Параллелизм добавляет ещё в 4–5 раз, но не в 10, хотя ядер десять. Часть из них производительные, часть — энергоэффективные; к этому добавляются накладные расходы на распределение работы, поглощающие на малых \(N\) почти весь выигрыш: при \(N = 256\) параллельная версия опережает последовательную лишь вдвое. Линейного масштабирования по числу ядер на практике почти не встречается.</p>
-<p>С точки зрения физики важно следующее. Расчёт с 4096 макрочастицами на чистом Python занимает 14 секунд на один вызов функции, а в моделировании таких вызовов десятки тысяч, по одному на каждый шаг интегрирования. Разница между 14 секундами и 25 миллисекундами — это разница между расчётом, не сходящимся за ночь, и расчётом, готовым за часы. Именно она делает возможным численное моделирование динамики пучка на обычном сервере, без суперкомпьютера.</p>
+<p>Квадратичность видна в числах. При каждом удвоении \(N\) время растёт вчетверо, что и означает \(O(N^2)\). JIT-компиляция сложность не меняет: она сокращает время в десятки раз, но кривая остаётся квадратичной. Ускорение констант и улучшение асимптотики являются разными вещами.</p>
+<p>Один декоратор даёт ускорение примерно в тридцать раз относительно цикла Python над списками и более чем в сто раз относительно того же цикла над массивами NumPy. Цикл над массивами в Python медленнее, чем над списками: каждое обращение <code>x[j]</code> создаёт объект <code>numpy.float64</code>, арифметика над которым дороже, чем над <code>float</code>. Переписывать не потребовалось ни одной строки: функция как была написана на Python, так и осталась.</p>
+<p>Параллелизм на двух ядрах виртуальной машины добавляет ещё вдвое; на десятиядерном процессоре Apple M4 та же версия опережает последовательную в 4–5 раз, но не в десять. Часть ядер такого процессора производительные, часть — энергоэффективные; к этому добавляются накладные расходы на распределение работы, поглощающие на малых \(N\) почти весь выигрыш. Линейного масштабирования по числу ядер на практике почти не встречается.</p>
+<p>С точки зрения физики важно следующее. Расчёт с 4096 макрочастицами на чистом Python занимает несколько секунд на один вызов функции, а в моделировании таких вызовов десятки тысяч, по одному на каждый шаг интегрирования. При двадцати тысячах шагов это около двадцати часов счёта против получаса у версии с <code>@njit</code>. Именно эта разница делает возможным численное моделирование динамики пучка на обычном сервере, без суперкомпьютера.</p>
 <h2 id="cython"><a class="header" href="#cython">Cython</a></h2>
-<p>Второй путь к машинному коду — Cython, представляющий собой Python с аннотациями типов: код транслируется в C и компилируется. Ручной работы больше, однако и контроля больше.</p>
+<p>Второй путь к машинному коду — Cython, язык, представляющий собой Python с объявлениями типов C: код транслируется в C и компилируется в модуль расширения. Ручной работы больше, однако и контроля больше. В IPython ячейку компилирует магическая команда <code>%%cython</code>, вне IPython — команда <code>cythonize -i файл.pyx</code>; в обоих случаях нужен компилятор C, а в Python 3.12 и новее — ещё и пакет setuptools.</p>
 <pre><code class="language-python">%load_ext cython
 </code></pre>
-<pre><code class="language-python">%%capture
-%%cython -a
-import random
-
-class Matrix(list):
-    @classmethod
-    def zeros(cls, shape):
-        n_rows, n_cols = shape
-        return cls([[0] * n_cols for i in range(n_rows)])
-
-    @classmethod
-    def random(cls, shape):
-        M, (n_rows, n_cols) = cls(), shape
-        for i in range(n_rows):
-            M.append([random.randint(-255, 255)
-                      for j in range(n_cols)])
-        return M
-
-    def transpose(self):
-        n_rows, n_cols = self.shape
-        return self.__class__(zip(*self))
-
-    @property
-    def shape(self):
-        return ((0, 0) if not self else
-                (int(len(self)), int(len(self[0]))))
-
-    
+<p>Скомпилируем без изменений версию с перестановкой циклов и накопителем, работающую со списками.</p>
+<pre><code class="language-python">%%cython
 def cy_matrix_product(X, Y):
-    n_xrows, n_xcols = X.shape
-    n_yrows, n_ycols = Y.shape
-    Z = Matrix.zeros((n_xrows, n_ycols))
-    Yt = Y.transpose()
-    for i, Xi in enumerate(X):
-        for k, Ytk in enumerate(Yt):
-            Z[i][k] = sum(Xi[j] * Ytk[j] for j in range(n_xcols))
+    n_xrows, n_xcols = len(X), len(X[0])
+    n_ycols = len(Y[0])
+    Z = [[0] * n_ycols for i in range(n_xrows)]
+    for i in range(n_xrows):
+        Xi = X[i]
+        for k in range(n_ycols):
+            acc = 0
+            for j in range(n_xcols):
+                acc += Xi[j] * Y[j][k]
+            Z[i][k] = acc
     return Z
 </code></pre>
-<pre><code class="language-python">X = Matrix.random(shape)
-Y = Matrix.random(shape)
+<pre><code class="language-python">assert cy_matrix_product(X, Y) == reference
+%timeit cy_matrix_product(X, Y)
 </code></pre>
-<pre><code class="language-python">%timeit -n100 cy_matrix_product(X, Y)
+<pre><code>9.44 ms ± 14.9 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
-<pre><code>21.4 ms ± 1.36 ms per loop (mean ± std. dev. of 7 runs, 100 loops each)
-</code></pre>
-<p>Cython не способен эффективно оптимизировать работу со списками, в которых могут находиться элементы разных типов, поэтому перепишем <code>matrix_product</code> через <em>ndarray</em>.</p>
-<pre><code class="language-python">X = np.random.randint(-255, 255, size=shape)
-Y = np.random.randint(-255, 255, size=shape)
-</code></pre>
-<pre><code class="language-python">%%capture
-%%cython -a
+<p>Без объявлений типов Cython ускоряет код лишь на полтора десятка процентов (9,4 мс против 11,2 мс у той же функции на Python): каждая операция по-прежнему выполняется через C API интерпретатора, с объектами чисел и проверкой типов. Перепишем функцию для массивов NumPy, пока без типов.</p>
+<pre><code class="language-python">%%cython
 import numpy as np
 
 def cy_matrix_product(X, Y):
@@ -14169,101 +14321,79 @@ def cy_matrix_product(X, Y):
                 Z[i, k] += X[i, j] * Y[j, k]
     return Z
 </code></pre>
-<pre><code class="language-python">%timeit -n100 cy_matrix_product(X, Y)
+<pre><code class="language-python">%timeit cy_matrix_product(Xa, Ya)
 </code></pre>
-<pre><code>176 ms ± 4.65 ms per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>68.8 ms ± 1.52 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
 </code></pre>
-<p>Результат ухудшился: большая часть кода по-прежнему использует вызовы Python. Избавимся от них, аннотировав код типами.</p>
-<pre><code class="language-python">%%capture
-%%cython -a
+<p>Результат ухудшился: каждое обращение <code>X[i, j]</code> к массиву из скомпилированного кода по-прежнему идёт через Python и создаёт объект числа. Объявим типы. Современный способ работы с массивами в Cython — типизированные представления памяти (memoryviews): запись <code>const long long[:, ::1]</code> объявляет двумерный непрерывный массив 64-битных целых, доступный только для чтения. Такой код не требует <code>cimport numpy</code> и заголовков NumPy при сборке и принимает любой объект с буферным протоколом.</p>
+<pre><code class="language-python">%%cython
 import numpy as np
-cimport numpy as np
 
-def cy_matrix_product(np.ndarray X, np.ndarray Y):
-    cdef int n_xrows = X.shape[0]
-    cdef int n_xcols = X.shape[1]
-    cdef int n_yrows = Y.shape[0]
-    cdef int n_ycols = Y.shape[1]
-    cdef np.ndarray Z
-    Z = np.zeros((n_xrows, n_ycols), dtype=X.dtype)
-    for i in range(n_xrows):
-        for k in range(n_ycols):
-            for j in range(n_xcols):
-                Z[i, k] += X[i, j] * Y[j, k]
+def cy_matrix_product(const long long[:, ::1] X, const long long[:, ::1] Y):
+    cdef Py_ssize_t n = X.shape[0], m = X.shape[1], p = Y.shape[1]
+    cdef Py_ssize_t i, j, k
+    cdef long long acc
+    Z = np.zeros((n, p), dtype=np.int64)
+    cdef long long[:, ::1] Zv = Z
+    for i in range(n):
+        for k in range(p):
+            acc = 0
+            for j in range(m):
+                acc += X[i, j] * Y[j, k]
+            Zv[i, k] = acc
     return Z
 </code></pre>
-<pre><code class="language-python">%timeit -n100 cy_matrix_product(X, Y)
+<pre><code class="language-python">assert (cy_matrix_product(Xa, Ya) == jit_matrix_product(Xa, Ya)).all()
+%timeit cy_matrix_product(Xa, Ya)
 </code></pre>
-<pre><code>173 ms ± 4 ms per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>122 μs ± 73.9 ns per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
 </code></pre>
-<p>Аннотации типов не изменили время работы: тело вложенного цикла Cython так и не смог оптимизировать. Укажем тип элементов в <em>ndarray</em>.</p>
-<pre><code class="language-python">%%capture
-%%cython -a
+<p>Объявленные типы позволяют Cython обращаться к числам напрямую, без объектов, и функция ускоряется в сотни раз по сравнению с версией без типов и в 27 раз — по сравнению с самой быстрой версией на чистом Python, использующей <code>math.sumprod</code>. Переменные цикла <code>i</code>, <code>j</code>, <code>k</code> объявлены типом <code>Py_ssize_t</code>, и цикл по <code>range</code> превращается в обычный цикл на C. В старых руководствах вместо представлений памяти встречается буферный синтаксис <code>np.ndarray[np.int64_t, ndim=2]</code> с <code>cimport numpy</code>; он работает, но документация Cython рекомендует представления памяти.</p>
+<p>Отключим проверку выхода за границы массива и поддержку отрицательных индексов. Проверку переполнения целых отключать не требуется: в Cython она и так выключена по умолчанию.</p>
+<pre><code class="language-python">%%cython
 import numpy as np
-cimport numpy as np
-
-def cy_matrix_product(np.ndarray[np.int64_t, ndim=2] X,
-                      np.ndarray[np.int64_t, ndim=2] Y):
-    cdef int n_xrows = X.shape[0]
-    cdef int n_xcols = X.shape[1]
-    cdef int n_yrows = Y.shape[0]
-    cdef int n_ycols = Y.shape[1]
-    cdef np.ndarray[np.int64_t, ndim=2] Z = \
-        np.zeros((n_xrows, n_ycols), dtype=np.int64)
-    for i in range(n_xrows):
-        for k in range(n_ycols):
-            for j in range(n_xcols):
-                Z[i, k] += X[i, j] * Y[j, k]
-    return Z
-</code></pre>
-<pre><code class="language-python">%timeit -n100 cy_matrix_product(X, Y)
-</code></pre>
-<pre><code>541 µs ± 5.14 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
-</code></pre>
-<p>Отключим проверку выхода за границы массива. Проверку переполнения целых отключать не требуется: в Cython она и так выключена по умолчанию, а весь выигрыш даёт <code>boundscheck</code>. Взамен ошибка в индексе перестанет возбуждать <code>IndexError</code> и приведёт к обращению в чужую память без какого-либо сообщения, поэтому границы такого цикла необходимо выверять вручную.</p>
-<pre><code class="language-python">%%capture
-%%cython -a
-import numpy as np
-
 cimport cython
-cimport numpy as np
 
 @cython.boundscheck(False)
-def cy_matrix_product(np.ndarray[np.int64_t, ndim=2] X, 
-                      np.ndarray[np.int64_t, ndim=2] Y):
-    cdef int n_xrows = X.shape[0]
-    cdef int n_xcols = X.shape[1]
-    cdef int n_yrows = Y.shape[0]
-    cdef int n_ycols = Y.shape[1]
-    cdef np.ndarray[np.int64_t, ndim=2] Z = \
-        np.zeros((n_xrows, n_ycols), dtype=np.int64)
-    for i in range(n_xrows):        
-        for k in range(n_ycols):
-            for j in range(n_xcols):
-                Z[i, k] += X[i, j] * Y[j, k]
+@cython.wraparound(False)
+def cy_matrix_product(const long long[:, ::1] X, const long long[:, ::1] Y):
+    cdef Py_ssize_t n = X.shape[0], m = X.shape[1], p = Y.shape[1]
+    cdef Py_ssize_t i, j, k
+    cdef long long acc
+    Z = np.zeros((n, p), dtype=np.int64)
+    cdef long long[:, ::1] Zv = Z
+    for i in range(n):
+        for k in range(p):
+            acc = 0
+            for j in range(m):
+                acc += X[i, j] * Y[j, k]
+            Zv[i, k] = acc
     return Z
 </code></pre>
-<pre><code class="language-python">%timeit -n100 cy_matrix_product(X, Y)
+<pre><code class="language-python">assert (cy_matrix_product(Xa, Ya) == jit_matrix_product(Xa, Ya)).all()
+%timeit cy_matrix_product(Xa, Ya)
 </code></pre>
-<pre><code>226 µs ± 2.84 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>70.9 μs ± 83.3 ns per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
 </code></pre>
+<p>Взамен ошибка в индексе перестанет возбуждать <code>IndexError</code> и приведёт к обращению в чужую память без какого-либо сообщения, поэтому границы такого цикла необходимо выверять вручную. Какие строки по-прежнему обращаются к C API интерпретатора, показывает HTML-отчёт: <code>%%cython -a</code> в IPython или <code>cython -a файл.pyx</code> в терминале отмечают такие строки жёлтым.</p>
 <h2 id="numpy-1"><a class="header" href="#numpy-1">NumPy</a></h2>
-<pre><code class="language-python">import numpy as np
+<pre><code class="language-python">Xf, Yf = Xa.astype(np.float64), Ya.astype(np.float64)
 
-X = np.random.randint(-255, 255, shape).astype(np.float64)
-Y = np.random.randint(-255, 255, shape).astype(np.float64)
+%timeit Xf @ Yf
 </code></pre>
-<pre><code class="language-python">%timeit -n100 X.dot(Y)
+<pre><code>21 μs ± 689 ns per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
 </code></pre>
-<pre><code>2.7 µs ± 0.0 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code class="language-python">%timeit Xf.dot(Yf)
 </code></pre>
-<pre><code class="language-python">%timeit -n100 X@Y
+<pre><code>21 μs ± 657 ns per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
 </code></pre>
-<pre><code>2.7 µs ± 0.0 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code class="language-python">%timeit Xa @ Ya
 </code></pre>
-<p>Оператор <code>@</code> выполняет то же матричное умножение, что и <code>X.dot(Y)</code>. За обеими записями стоит один и тот же вызов, и измерения это подтверждают.</p>
-<p>Приведение к <code>float64</code> в первой строке является существенным. <code>np.random.randint</code> возвращает <code>int64</code>, а BLAS поддерживает только <code>float32</code>, <code>float64</code> и комплексные типы; на целых матрицах NumPy выполняет расчёт собственным циклом и выдаёт около 70 мкс вместо 2.7. Тип данных на входе определяет больше, чем выбор между <code>dot</code> и <code>@</code>.</p>
-<p>Наивная реализация на чистом Python вычисляла произведение матриц 64×64 около 0.1 секунды, NumPy справляется за единицы микросекунд: ускорение в десятки тысяч раз без единой строки на C со стороны разработчика. Внутри NumPy вызывает BLAS, библиотеку линейной алгебры, использующую векторные инструкции процессора и оптимально работающую с кешем.</p>
+<pre><code>79 μs ± 109 ns per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
+</code></pre>
+<p>Оператор <code>@</code> вызывает функцию <code>np.matmul</code>, а <code>X.dot(Y)</code> — функцию <code>np.dot</code>. Для двумерных массивов их результаты совпадают, и обе функции передают вычисление одной и той же процедуре BLAS — библиотеки линейной алгебры, использующей векторные инструкции процессора и оптимально работающей с кешем, — поэтому совпадают и замеры. Различия проявляются в других случаях: <code>matmul</code> не допускает умножения на скаляр и для массивов большей размерности перемножает стопки матриц, тогда как <code>dot</code> суммирует произведения по последней оси первого аргумента и предпоследней оси второго.</p>
+<p>Тип данных на входе определяет больше, чем выбор между <code>dot</code> и <code>@</code>. BLAS поддерживает только вещественные и комплексные типы; на целых матрицах NumPy выполняет расчёт собственным циклом, без блочной обработки и без нескольких ядер, и тратит на то же умножение в несколько раз больше времени, а с ростом размера матриц разрыв увеличивается.</p>
+<p>Наивная реализация на чистом Python вычисляла произведение матриц 64×64 около 18 миллисекунд, NumPy с BLAS справляется за 21 микросекунду: ускорение более чем в восемьсот раз без единой строки на C со стороны разработчика.</p>
 <p><strong>Прежде чем компилировать Python, имеет смысл попытаться не писать циклы вообще.</strong> Numba и Cython необходимы там, где задача не векторизуется; в остальных случаях правильно применённый NumPy опережает их без сборки и объявленных типов.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="Многопоточность-и-gil"><a class="header" href="#Многопоточность-и-gil">Многопоточность и GIL</a></h1>
 <p>Следующим шагом после профилирования, векторизации и JIT-компиляции является использование всех ядер процессора, а не одного. В Python это непросто, и рассмотрение необходимо начать с основ: что представляет собой процесс, что представляет собой поток и почему в Python второе не даёт ожидаемого результата.</p>
@@ -15329,7 +15459,7 @@ print(f"CPU: {t_cpu:.3f} c, GPU: {t_gpu:.4f} c, ускорение x{t_cpu / t_g
 </ul>
 <p>Функция <code>cp.get_array_module(x)</code> возвращает <code>numpy</code> или <code>cupy</code> в зависимости от того, где размещён массив <code>x</code>. Так пишутся библиотечные функции, одинаково работающие и на CPU, и на GPU.</p>
 <h2 id="numba-cuda-собственное-ядро"><a class="header" href="#numba-cuda-собственное-ядро">Numba CUDA: собственное ядро</a></h2>
-<p>CuPy покрывает всё, что выражается операциями над целыми массивами. Иногда алгоритм в них не укладывается: нестандартная поэлементная логика или собственный обход данных. В главе про профилирование в такой ситуации применялся декоратор <code>@numba.jit</code> к функции с циклами. У Numba есть и второй бэкенд: декоратор <code>@cuda.jit</code> компилирует Python-функцию в CUDA-ядро.</p>
+<p>CuPy покрывает всё, что выражается операциями над целыми массивами. Иногда алгоритм в них не укладывается: нестандартная поэлементная логика или собственный обход данных. В главе <a href="perf/./perf.html">«Скорость выполнения программ»</a> в такой ситуации применялся декоратор <code>@numba.njit</code> к функции с циклами. У Numba есть и второй бэкенд: декоратор <code>@cuda.jit</code> компилирует Python-функцию в CUDA-ядро. Начиная с Numba 0.61 этот бэкенд развивается в отдельном пакете NVIDIA numba-cuda, а встроенный <code>numba.cuda</code> объявлен устаревшим и будет удалён; импорт <code>from numba import cuda</code> при установленном пакете не меняется. Пакет устанавливается командой <code>pip install "numba-cuda[cu12]"</code>, для CUDA 13 — с <code>[cu13]</code>.</p>
 <p>Каноническим примером является сложение векторов.</p>
 <pre><code class="language-python">import numpy as np
 from numba import cuda
@@ -15464,7 +15594,7 @@ print(f"скорость дрейфа: {v_drift:.3e} м/с (теория: {-E0 /
 <ul>
 <li><a href="https://docs.nvidia.com/cuda/cuda-c-programming-guide/">CUDA C++ Programming Guide</a>, первоисточник: модель исполнения, иерархия памяти, все детали.</li>
 <li><a href="https://docs.cupy.dev/">Документация CuPy</a>, включая таблицу соответствия функций NumPy ↔ CuPy и советы по производительности.</li>
-<li><a href="https://numba.readthedocs.io/en/stable/cuda/index.html">Numba for CUDA GPUs</a>, справочник по <code>@cuda.jit</code>: ядра, разделяемая память, атомарные операции.</li>
+<li><a href="https://nvidia.github.io/numba-cuda/">Документация numba-cuda</a>, справочник по <code>@cuda.jit</code>: ядра, разделяемая память, атомарные операции.</li>
 <li><a href="https://www.nvidia.com/en-us/training/">NVIDIA Deep Learning Institute</a>, курс «Fundamentals of Accelerated Computing with CUDA Python» про Numba и CuPy.</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="Коды-и-скрипты"><a class="header" href="#Коды-и-скрипты">Коды и скрипты</a></h1>

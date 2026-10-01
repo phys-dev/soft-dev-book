@@ -183,6 +183,10 @@
 <p>Глава опирается на главу <a href="../dev/python/optimization.html">«Причины низкой скорости Python»</a>: прежде чем ускорять, необходимо измерить, а прежде чем измерять, необходимо понимать, откуда берётся медлительность.</p>
 </blockquote>
 <p>В настоящей главе рассматриваются приёмы, не требующие ничего, кроме самого языка; компиляторы и векторизация рассматриваются в следующей главе. Выигрыш обычно скромнее, зато цена нулевая: код остаётся обычным Python, доступным для чтения любому коллеге.</p>
+<blockquote>
+<p><strong>Слайды к главе.</strong> Приёмы языка и экономия памяти изложены также в третьей и четвёртой частях лекции «Оптимизация» с демонстрациями в терминале; слайды лекции доступны <a href="https://phys-dev.github.io/soft-dev-book/slides/lecture-09.html#/sec-lang">на сайте книги</a> и <a href="https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-09.pdf">в PDF</a>.</p>
+</blockquote>
+<iframe src="../slides/lecture-09.html#/sec-lang" title="Слайды лекции «Оптимизация»: приёмы языка" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
 <h2 id="Объекты-оптимизации"><a class="header" href="#Объекты-оптимизации">Объекты оптимизации</a></h2>
 <p>Оптимизация не сводится к правке кода, так как уровней, пригодных для ускорения уже написанной программы, несколько.</p>
 <h3 id="1-Общая-архитектура"><a class="header" href="#1-Общая-архитектура">1. Общая архитектура</a></h3>
@@ -216,11 +220,11 @@ def calc_total(elements):
     
 %timeit calc_total(one_million_elements)
 </code></pre>
-<pre><code>31.6 ms ± 404 μs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+<pre><code>9.67 ms ± 130 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
 <pre><code class="language-python">%timeit len(one_million_elements)
 </code></pre>
-<pre><code>43.6 ns ± 1.03 ns per loop (mean ± std. dev. of 7 runs, 10,000,000 loops each)
+<pre><code>12.4 ns ± 0.0762 ns per loop (mean ± std. dev. of 7 runs, 100,000,000 loops each)
 </code></pre>
 <p>Пример является учебным, однако если необходимое уже присутствует в <code>builtins</code>, почти всегда быстрее использовать готовое: встроенные функции, написанные на C, обходятся без цикла на уровне интерпретатора.</p>
 <h3 id="Совет-2-Правильная-фильтрация"><a class="header" href="#Совет-2-Правильная-фильтрация">Совет 2. Правильная фильтрация</a></h3>
@@ -237,11 +241,11 @@ def my_filter2(elements):
 </code></pre>
 <pre><code class="language-python">%timeit my_filter1(one_million_elements)
 </code></pre>
-<pre><code>45.6 ms ± 344 μs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+<pre><code>11.8 ms ± 63.6 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
 <pre><code class="language-python">%timeit my_filter2(one_million_elements)
 </code></pre>
-<pre><code>76.8 ms ± 780 μs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+<pre><code>22.9 ms ± 66.6 μs per loop (mean ± std. dev. of 7 runs, 10 loops each)
 </code></pre>
 <p>Замедление объясняется накладными расходами: <code>filter</code> создаёт итератор, к каждому элементу применяется Python-функция <code>lambda</code>, а полученный итератор ещё необходимо преобразовать в список.</p>
 <p>Запишем то же самое выражением, создающим требуемый список сразу.</p>
@@ -250,7 +254,7 @@ def my_filter2(elements):
 
 %timeit my_filter3(one_million_elements)
 </code></pre>
-<pre><code>40.3 ms ± 1.01 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
+<pre><code>10.6 ms ± 40 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
 <pre><code class="language-python">one_million_elements_str = [str(i) for i in range(1000000)]
 
@@ -262,11 +266,11 @@ def str_filter2(elements):
 </code></pre>
 <pre><code class="language-python">%timeit str_filter1(one_million_elements_str)
 </code></pre>
-<pre><code>55.3 ms ± 244 μs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+<pre><code>13.4 ms ± 16.4 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
 <pre><code class="language-python">%timeit str_filter2(one_million_elements_str)
 </code></pre>
-<pre><code>49.8 ms ± 166 μs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+<pre><code>12.6 ms ± 242 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
 <p><code>builtins</code> и генераторы не ускоряют код сами по себе: достаточно было заменить <code>lambda</code> на метод <code>str.isdigit</code>, написанный на C, и <code>filter</code> оказался быстрее. Каждый конкретный случай проверяется замером.</p>
 <h3 id="Совет-3-Правильная-проверка-вхождений"><a class="header" href="#Совет-3-Правильная-проверка-вхождений">Совет 3. Правильная проверка вхождений</a></h3>
@@ -282,31 +286,31 @@ def str_filter2(elements):
 
 %timeit check_in1(one_million_elements, 500000)
 </code></pre>
-<pre><code>9.02 ms ± 34.1 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>3.56 ms ± 13.2 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
 <pre><code class="language-python">%timeit 500000 in one_million_elements
 </code></pre>
-<pre><code>5.65 ms ± 21.4 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>2.02 ms ± 4.06 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
 <p>Однако время поиска зависит от положения элемента: список просматривается последовательно, пока не будет найдено заданное значение.</p>
 <pre><code class="language-python">%timeit 42 in one_million_elements
 </code></pre>
-<pre><code>492 ns ± 2.24 ns per loop (mean ± std. dev. of 7 runs, 1,000,000 loops each)
+<pre><code>159 ns ± 1.72 ns per loop (mean ± std. dev. of 7 runs, 10,000,000 loops each)
 </code></pre>
 <p>Для такой задачи в Python предусмотрено множество <code>set</code>, проверка вхождения в которое осуществляется по хешу, то есть за \(O(1)\) вместо \(O(n)\).</p>
 <pre><code class="language-python">one_million_elements_set = set(one_million_elements)
 %timeit 500000 in one_million_elements_set
 </code></pre>
-<pre><code>37.3 ns ± 0.345 ns per loop (mean ± std. dev. of 7 runs, 10,000,000 loops each)
+<pre><code>11.3 ns ± 0.00214 ns per loop (mean ± std. dev. of 7 runs, 100,000,000 loops each)
 </code></pre>
 <pre><code class="language-python">%timeit 42 in one_million_elements_set
 </code></pre>
-<pre><code>23.5 ns ± 0.223 ns per loop (mean ± std. dev. of 7 runs, 10,000,000 loops each)
+<pre><code>8.08 ns ± 0.00693 ns per loop (mean ± std. dev. of 7 runs, 100,000,000 loops each)
 </code></pre>
 <p>За это приходится платить временем на построение множества.</p>
 <pre><code class="language-python">%timeit set(one_million_elements)
 </code></pre>
-<pre><code>46.7 ms ± 358 μs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+<pre><code>11 ms ± 23.8 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
 <p>Платить приходится и памятью, поскольку множество содержит хеш-таблицу с запасом, а не уложенные подряд элементы. Строить его ради одной проверки бессмысленно, а ради миллиона проверок необходимо.</p>
 <h3 id="Совет-4-Сортировка"><a class="header" href="#Совет-4-Сортировка">Совет 4. Сортировка</a></h3>
@@ -315,13 +319,13 @@ def str_filter2(elements):
 data = [random.random() for _ in range(1_000_000)]
 %timeit sorted(data)
 </code></pre>
-<pre><code>120.7 ms ± 3.1 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
+<pre><code>128 ms ± 199 μs per loop (mean ± std. dev. of 7 runs, 10 loops each)
 </code></pre>
 <pre><code class="language-python">%timeit (lambda a: a.sort())(data[:])
 </code></pre>
-<pre><code>108.5 ms ± 2.8 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
+<pre><code>128 ms ± 191 μs per loop (mean ± std. dev. of 7 runs, 10 loops each)
 </code></pre>
-<p>Данные взяты случайные, и это существенно: на уже отсортированном списке Timsort вырождается в один линейный проход, оба замера снижаются примерно до 13 мс, и разница между ними исчезает. Копирование выполняют оба варианта: <code>sorted</code> создаёт копию внутри себя, а во втором варианте её создаёт срез, стоимость которого составляет около 2 мс. На случайных данных <code>sort</code> опережает на десяток процентов, следовательно, если исходный порядок не требуется, предпочтительнее метод, работающий на месте.</p>
+<p>Данные взяты случайные, и это существенно: на уже отсортированном списке Timsort вырождается в один линейный проход, и время сортировки снижается примерно в семь раз (18 мс против 128 мс). Копирование выполняют оба варианта: <code>sorted</code> создаёт копию внутри себя, а во втором варианте её создаёт срез, стоимость которого составляет около 2 мс. Поэтому на случайных данных варианты совпадают по времени в пределах погрешности: алгоритм один и тот же, и копию делают оба. Метод <code>sort</code> выигрывает, когда исходный порядок не нужен и сортируется сам список, без копии: тогда не тратятся ни время на копирование, ни память под второй список.</p>
 <h3 id="Совет-5-Условия-if"><a class="header" href="#Совет-5-Условия-if">Совет 5. Условия if</a></h3>
 <p>Условие в <code>if</code> можно записать по-разному, и выбор записи влияет на время, затрачиваемое в цикле.</p>
 <pre><code class="language-python">count = 100000
@@ -343,15 +347,15 @@ def check_false3(flag):
 </code></pre>
 <pre><code class="language-python">%timeit check_false1(True)
 </code></pre>
-<pre><code>3.7 ms ± 31.6 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>1.14 ms ± 25.9 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </code></pre>
 <pre><code class="language-python">%timeit check_false2(True)
 </code></pre>
-<pre><code>2.6 ms ± 9.39 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>888 μs ± 1.31 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </code></pre>
 <pre><code class="language-python">%timeit check_false3(True)
 </code></pre>
-<pre><code>2.14 ms ± 13.9 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>775 μs ± 799 ns per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </code></pre>
 <p>Сравним три варианта проверки на пустоту и определим, какой из них быстрее.</p>
 <ol>
@@ -381,19 +385,19 @@ def check_empty3(elements):
 </code></pre>
 <pre><code class="language-python">%timeit check_empty1(one_million_elements)
 </code></pre>
-<pre><code>5.98 ms ± 38.9 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>1.78 ms ± 600 ns per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </code></pre>
 <pre><code class="language-python">%timeit check_empty2(one_million_elements)
 </code></pre>
-<pre><code>5.54 ms ± 53.1 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>1.78 ms ± 1.45 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </code></pre>
 <pre><code class="language-python">%timeit check_empty2_new(one_million_elements)
 </code></pre>
-<pre><code>8.73 ms ± 33.4 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>2.57 ms ± 11.5 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
 <pre><code class="language-python">%timeit check_empty3(one_million_elements)
 </code></pre>
-<pre><code>2.97 ms ± 43 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>1.02 ms ± 401 ns per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </code></pre>
 <p>Самым быстрым оказался и самый идиоматичный вариант <code>if not elements</code>, рекомендуемый любым руководством по стилю. Такое совпадение встречается нечасто.</p>
 <h3 id="Совет-6-Спрашивать-разрешения-или-обрабатывать-последствия"><a class="header" href="#Совет-6-Спрашивать-разрешения-или-обрабатывать-последствия">Совет 6. Спрашивать разрешения или обрабатывать последствия</a></h3>
@@ -417,11 +421,11 @@ def check_attr2(obj):
 </code></pre>
 <pre><code class="language-python">%timeit check_attr1(foo)
 </code></pre>
-<pre><code>8.42 ms ± 70.3 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>2.56 ms ± 13.1 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
 <pre><code class="language-python">%timeit check_attr2(foo)
 </code></pre>
-<pre><code>4.63 ms ± 29.5 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>1.49 ms ± 28.5 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </code></pre>
 <p>Разница становится ещё больше, если атрибутов, требующих проверки, несколько.</p>
 <p>Предположим теперь, что у объектов, поступающих в функцию, требуемый атрибут в основном отсутствует.</p>
@@ -432,13 +436,13 @@ bar = Bar()
 </code></pre>
 <pre><code class="language-python">%timeit check_attr1(bar)
 </code></pre>
-<pre><code>5.91 ms ± 74.3 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>1.85 ms ± 668 ns per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </code></pre>
 <pre><code class="language-python">%timeit check_attr2(bar)
 </code></pre>
-<pre><code>59.5 ms ± 897 μs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+<pre><code>16.3 ms ± 74.2 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
-<p>Исключение, возбуждённое один раз, обходится дёшево, а миллион раз подряд — дорого. Выбор между <code>hasattr</code> и <code>try/except</code> определяется тем, какая ситуация встречается чаще.</p>
+<p>Исключение, возбуждённое один раз, обходится дёшево, а сто тысяч раз подряд — дорого. Выбор между <code>hasattr</code> и <code>try/except</code> определяется тем, какая ситуация встречается чаще.</p>
 <h3 id="Совет-7-Особенности-определения-словаря-и-списка"><a class="header" href="#Совет-7-Особенности-определения-словаря-и-списка">Совет 7. Особенности определения словаря и списка</a></h3>
 <p>Словарь и список можно объявить двумя способами, дающими одинаковый результат.</p>
 <pre><code class="language-python">def create_list1():
@@ -456,25 +460,35 @@ def create_dict1():
 def create_dict2():
     for i in range(count):
         a = dict()
+
+def create_list3():
+    new_list = list
+    for i in range(count):
+        a = new_list()
 </code></pre>
 <p>Способы через <code>[]</code> и <code>{}</code> быстрее <code>list()</code> и <code>dict()</code> соответственно.</p>
 <pre><code class="language-python">%timeit create_list1()
 </code></pre>
-<pre><code>4.12 ms ± 127 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>1.45 ms ± 2.44 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </code></pre>
 <pre><code class="language-python">%timeit create_list2()
 </code></pre>
-<pre><code>7.16 ms ± 164 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>2.2 ms ± 5.1 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
 <pre><code class="language-python">%timeit create_dict1()
 </code></pre>
-<pre><code>4.04 ms ± 93.6 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>1.53 ms ± 36.4 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </code></pre>
 <pre><code class="language-python">%timeit create_dict2()
 </code></pre>
-<pre><code>7.82 ms ± 115 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>2.35 ms ± 68.4 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
-<p>Разница обусловлена обращением к имени: интерпретатору необходимо выяснить, на что указывает <code>list</code>, тогда как литерал компилируется в одну инструкцию. Это подтверждается байт-кодом, разобранным модулем <code>dis</code>.</p>
+<p>Разница обусловлена в основном вызовом: литерал компилируется в одну инструкцию <code>BUILD_LIST</code>, тогда как <code>list()</code> требует найти имя и вызвать тип через общий механизм вызова. Поиск имени в версиях 3.11 и новее обходится дёшево благодаря специализированной инструкции, поэтому вызов через локальную переменную почти не быстрее:</p>
+<pre><code class="language-python">%timeit create_list3()
+</code></pre>
+<pre><code>2.18 ms ± 12.2 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+</code></pre>
+<p>Различие в составе инструкций показывает байт-код, разобранный модулем <code>dis</code>.</p>
 <pre><code class="language-python">import dis
 
 dis.dis("[]")
@@ -502,11 +516,11 @@ dis.dis("list()")
 </code></pre>
 <pre><code class="language-python">%timeit [square(num) for num in range(10000)]
 </code></pre>
-<pre><code>1.05 ms ± 6.03 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
+<pre><code>307 μs ± 2.64 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </code></pre>
 <pre><code class="language-python">%timeit [num ** 2 for num in range(10000)]
 </code></pre>
-<pre><code>694 μs ± 6.45 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
+<pre><code>215 μs ± 1.27 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </code></pre>
 <h3 id="Совет-9-Отказ-от-активной-работы-с-глобальными-переменными"><a class="header" href="#Совет-9-Отказ-от-активной-работы-с-глобальными-переменными">Совет 9. Отказ от активной работы с глобальными переменными</a></h3>
 <pre><code class="language-python">count = 100000
@@ -524,11 +538,11 @@ def work_with_local():
 </code></pre>
 <pre><code class="language-python">%timeit work_with_global()
 </code></pre>
-<pre><code>6.98 ms ± 56.6 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>2.34 ms ± 56.2 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
 <pre><code class="language-python">%timeit work_with_local()
 </code></pre>
-<pre><code>4.16 ms ± 41.8 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>1.5 ms ± 4.68 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </code></pre>
 <pre><code class="language-python">some_global = 0
 def work_with_global_optimized():
@@ -540,7 +554,7 @@ def work_with_global_optimized():
 </code></pre>
 <pre><code class="language-python">%timeit work_with_global_optimized()
 </code></pre>
-<pre><code>4.14 ms ± 75.4 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>1.5 ms ± 496 ns per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </code></pre>
 <h3 id="Совет-10-Специализированные-библиотеки-для-математики"><a class="header" href="#Совет-10-Специализированные-библиотеки-для-математики">Совет 10. Специализированные библиотеки для математики</a></h3>
 <p>Численные расчёты нецелесообразно записывать циклами на Python, поскольку для этого существуют библиотеки на C и Фортране, дающие разницу в десятки раз.</p>
@@ -550,7 +564,7 @@ def work_with_global_optimized():
 
 %timeit list_slow()
 </code></pre>
-<pre><code>658 μs ± 4.81 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
+<pre><code>214 μs ± 859 ns per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </code></pre>
 <pre><code class="language-python">import numpy as np
 
@@ -560,9 +574,9 @@ def list_fast():
 
 %timeit list_fast()
 </code></pre>
-<pre><code>10.4 μs ± 32.3 ns per loop (mean ± std. dev. of 7 runs, 100,000 loops each)
+<pre><code>5.57 μs ± 15.9 ns per loop (mean ± std. dev. of 7 runs, 100,000 loops each)
 </code></pre>
-<h3 id="Опасная-зона"><a class="header" href="#Опасная-зона">Опасная зона</a></h3>
+<h3 id="Приёмы-ценой-читаемости"><a class="header" href="#Приёмы-ценой-читаемости">Приёмы ценой читаемости</a></h3>
 <p>Приёмы, приведённые ниже, ухудшают читаемость кода ради нескольких процентов; применять их имеет смысл только в том случае, если профилировщик показал, что эти проценты необходимы.</p>
 <h3 id="Совет-11-Множественное-присваивание"><a class="header" href="#Совет-11-Множественное-присваивание">Совет 11. Множественное присваивание</a></h3>
 <pre><code class="language-python">def create_variables1():
@@ -584,45 +598,48 @@ def create_variables2():
 </code></pre>
 <pre><code class="language-python">%timeit create_variables1()
 </code></pre>
-<pre><code>616 μs ± 5.26 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
+<pre><code>174 μs ± 239 ns per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
 </code></pre>
 <pre><code class="language-python">%timeit create_variables2()
 </code></pre>
-<pre><code>503 μs ± 8.69 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
+<pre><code>149 μs ± 1.37 μs per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
 </code></pre>
-<p>Объявление в одну строку быстрее: распаковка кортежа обходится дешевле десяти отдельных присваиваний. Однако читаемость такой строки крайне низка, и выигрыш в сотню микросекунд её не оправдывает.</p>
+<p>Объявление в одну строку быстрее: распаковка кортежа обходится дешевле десяти отдельных присваиваний. Однако читаемость такой строки крайне низка, и выигрыш в 25 микросекунд на десять тысяч итераций её не оправдывает.</p>
 <h3 id="Совет-12-Поиск-функций-и-атрибутов"><a class="header" href="#Совет-12-Поиск-функций-и-атрибутов">Совет 12. Поиск функций и атрибутов</a></h3>
-<p>Поиск атрибута в Python не является бесплатным: за ним стоит <code>__getattribute__</code>, а если тот не нашёл атрибута, то и <code>__getattr__</code>. Естественным решением представляется найти атрибут один раз и сохранить его в локальную переменную, не разыскивая заново на каждой итерации.</p>
-<pre><code class="language-python">def squares1(elements):
+<p>Поиск атрибута в Python не является бесплатным: за ним стоит <code>__getattribute__</code>, а если тот не нашёл атрибута, то и <code>__getattr__</code>. Естественным решением представляется найти атрибут один раз и сохранить его в локальную переменную, не разыскивая заново на каждой итерации. Функции ниже копируют список поэлементно: первая вызывает метод <code>append</code> на каждой итерации, вторая заранее сохраняет его в локальную переменную.</p>
+<pre><code class="language-python">def copy_append(elements):
     result = []
     for item in elements:
         result.append(item)
+    return result
 
-def squares2(elements):
+def copy_cached(elements):
     result = []
     append = result.append
     for item in elements:
         append(item)
+    return result
 </code></pre>
-<pre><code class="language-python">%timeit squares1(one_million_elements)
+<pre><code class="language-python">%timeit copy_append(one_million_elements)
 </code></pre>
-<pre><code>24.6 ms ± 255 μs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+<pre><code>6.18 ms ± 12.5 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
-<pre><code class="language-python">%timeit squares2(one_million_elements)
+<pre><code class="language-python">%timeit copy_cached(one_million_elements)
 </code></pre>
-<pre><code>29 ms ± 367 μs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+<pre><code>7.7 ms ± 10.6 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
-<p>Рекомендация, годами переходящая из одной подборки об оптимизации в другую, проигрывает: начиная с версии 3.11 CPython специализирует вызов метода в байт-коде, и обычный <code>result.append(item)</code> оказывается быстрее заранее сохранённой ссылки.</p>
+<p>Рекомендация, годами переходящая из одной подборки об оптимизации в другую, проигрывает: начиная с версии 3.11 CPython специализирует вызов метода списка в байт-коде, и обычный <code>result.append(item)</code> оказывается быстрее вызова через заранее сохранённую ссылку.</p>
 <p>Подобные рекомендации необходимо проверять замером на используемой версии интерпретатора.</p>
 <h3 id="Прочее"><a class="header" href="#Прочее">Прочее</a></h3>
 <p>Три проекта за пределами CPython решают ту же задачу иначе.</p>
 <ol>
 <li><a href="https://github.com/yglukhov/nimpy">nimpy</a> позволяет вызывать функции на языке Nim из Python.</li>
 <li><a href="https://pythran.readthedocs.io/en/latest/">Pythran</a> предлагает ещё один подход к компиляции Python-кода.</li>
-<li><a href="https://github.com/pyston/pyston">Pyston</a> представляет собой альтернативный интерпретатор, снабжённый JIT-компилятором.</li>
+<li><a href="https://github.com/pyston/pyston">Pyston</a> — альтернативный интерпретатор с JIT-компилятором, начатый в Dropbox; с 2022 года проект не развивается. Действующей альтернативой CPython с JIT-компилятором остаётся <a href="https://pypy.org/">PyPy</a>.</li>
 </ol>
 <h2 id="Оптимизация-памяти"><a class="header" href="#Оптимизация-памяти">Оптимизация памяти</a></h2>
-<p>Расчёт, не помещающийся в оперативную память, не спасёт никакая векторизация: он не запустится.</p>
+<p>Расчёт, не помещающийся в оперативную память, не выполняется вовсе или многократно замедляется: выделение памяти завершается ошибкой <code>MemoryError</code>, а при подкачке данные читаются с диска.</p>
+<iframe src="../slides/lecture-09.html#/sec-mem" title="Слайды лекции «Оптимизация»: память" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
 <h3 id="Измерение-памяти"><a class="header" href="#Измерение-памяти">Измерение памяти</a></h3>
 <p>Измерение памяти в Python затруднено, и первый способ, подсказанный документацией, вводит в заблуждение.</p>
 <pre><code class="language-python">import sys
@@ -644,26 +661,32 @@ sys.getsizeof([SomeClass(i) for i in range(1000000)])
 <pre><code>8448728
 </code></pre>
 <p>Список объектов <code>SomeClass</code> занимает столько же, сколько список целых чисел: <code>sys.getsizeof</code> измеряет размер самого списка, то есть массива указателей, а не объектов, на которые эти указатели ведут, и надёжно работает только для простых типов и встроенных структур, размещённых в непрерывном участке памяти.</p>
-<p>Остаётся воспользоваться профилировщиком памяти.</p>
-<pre><code class="language-python">%load_ext memory_profiler
-%memit
+<p>Остаётся воспользоваться трассировкой выделений памяти. В стандартной библиотеке для этого предусмотрен модуль <code>tracemalloc</code>: он учитывает каждое выделение памяти интерпретатором, в том числе буферы массивов NumPy, и сообщает текущий и пиковый объём. Определим вспомогательную функцию, возвращающую объём памяти, выделенной при создании объекта:</p>
+<pre><code class="language-python">import tracemalloc
+
+def traced_mib(make):
+    """Объём памяти, выделенной при вызове make(), в МиБ."""
+    tracemalloc.start()
+    obj = make()
+    size = tracemalloc.get_traced_memory()[0]
+    tracemalloc.stop()
+    return round(size / 2**20, 1)
+
+traced_mib(lambda: [SomeClass(i) for i in range(1000000)])
 </code></pre>
-<pre><code>peak memory: 625.96 MiB, increment: 0.00 MiB
+<pre><code>145.4
 </code></pre>
-<p>Этот подход также не идеален: он наблюдает потребление памяти процессом в отдельные моменты времени, учитывает не всё, а результаты заметно меняются от запуска к запуску.</p>
-<pre><code class="language-python">%memit [n for n in range(10000000)]
+<pre><code class="language-python">traced_mib(lambda: [n for n in range(1000000)])
 </code></pre>
-<pre><code>peak memory: 1007.02 MiB, increment: 377.12 MiB
+<pre><code>38.6
 </code></pre>
-<pre><code class="language-python">%memit [n for n in range(1000000)]
-</code></pre>
-<pre><code>peak memory: 632.71 MiB, increment: 0.07 MiB
-</code></pre>
+<p>Вместе с объектами список экземпляров <code>SomeClass</code> занимает 145 МиБ, почти в двадцать раз больше, чем показывает <code>getsizeof</code>, а список целых чисел — 38,6 МиБ, почти впятеро больше: каждое число является отдельным объектом (<code>sys.getsizeof(1)</code> даёт 28 байт, а аллокатор выделяет под него 32), к которому добавляется 8-байтовая ссылка из списка.</p>
+<p>Пакет <code>memory_profiler</code> с магической командой <code>%memit</code>, встречающийся в старых руководствах, с 2022 года не сопровождается и требует отдельной установки. Он наблюдает потребление памяти процессом целиком в отдельные моменты времени, и его результаты заметно меняются от запуска к запуску: интерпретатор и аллокатор удерживают освобождённые страницы про запас и размещают в них новые объекты.</p>
 <h3 id="Утечки-памяти-в-python"><a class="header" href="#Утечки-памяти-в-python">Утечки памяти в Python</a></h3>
 <blockquote>
 <p>Подсчёт ссылок, циклические ссылки и поколенческий сборщик разбирались в главе <a href="../dev/python/objects.html">«Объекты и память»</a>; там же рассмотрена ловушка с изменяемым аргументом по умолчанию. Здесь речь идёт о том, что утекает в долго живущей программе.</p>
 </blockquote>
-<p>В смысле C++ утечек в Python почти нет: за освобождением следит сборщик мусора, и потерять память можно разве что нарушив счётчик ссылок в расширении, написанном на C. Подробнее об этом рассказано в <a href="https://rushter.com/blog/python-garbage-collector/">разборе устройства сборщика</a>.</p>
+<p>В смысле C++ утечек в Python почти нет: объект освобождается, как только на него не остаётся ссылок, а недостижимые циклы находит сборщик мусора; потерять память можно разве что нарушив счётчик ссылок в расширении, написанном на C. Подробнее об этом рассказано в <a href="https://rushter.com/blog/python-garbage-collector/">разборе устройства сборщика</a>.</p>
 <p>Долгоживущие бесполезные объекты получить легко, и на практике утечкой обычно называют именно их. Классических способов три: изменяемый аргумент по умолчанию, забытая переменная, живущая всё время работы длинной функции, и заведённый на атрибуте класса кеш, из которого ничего не удаляется.</p>
 <pre><code class="language-python">def mutable_argument(arr=[]):
     arr.append(42)
@@ -680,7 +703,7 @@ sys.getsizeof([SomeClass(i) for i in range(1000000)])
         if result is not None:
             return result
         result = do_calc(arg)
-        self.cache[arg] = result    # растёт вечно: удалять отсюда некому
+        self.cache[arg] = result    # записи отсюда никто не удаляет
         return result
 </code></pre>
 <p>В старых версиях Python (2.7 и все версии до 3.4) сборщик не умел разбирать циклические ссылки между объектами с <code>__del__</code>, и образованные ими циклы существовали до конца работы программы.</p>
@@ -688,23 +711,22 @@ sys.getsizeof([SomeClass(i) for i in range(1000000)])
 <p>Модуль <code>array</code> хранит числа примитивных типов подряд, без отдельного объекта на каждый элемент.</p>
 <pre><code class="language-python">import array
 
-%memit array.array('q', range(10000000))
+traced_mib(lambda: array.array('q', range(10000000)))
 </code></pre>
-<pre><code>peak memory: 702.93 MiB, increment: 70.22 MiB
+<pre><code>78.1
 </code></pre>
 <p><a href="https://docs.python.org/3/library/array.html">Полный список кодов типов</a> приведён в документации.</p>
 <h3 id="nparray"><a class="header" href="#nparray">np.array</a></h3>
 <p><code>np.array</code> устроен аналогично, с фиксированным типом и уложенными подряд элементами, и занимает существенно меньше памяти, чем стандартный список. В отличие от <code>array</code>, он поддерживает вычисления.</p>
 <pre><code class="language-python">np.arange(10000000).nbytes / 2**20
 </code></pre>
-<pre><code>76.29
+<pre><code>76.2939453125
 </code></pre>
-<p>Здесь <code>%memit</code> не подходит: он измеряет
-прирост потребления процессом, а интерпретатор с аллокатором удерживают уже освобождённые
-страницы про запас и размещают в них вновь созданный массив. В таком случае <code>%memit</code>
-покажет <code>increment: 0.00 MiB</code> для восьмидесяти мегабайт данных, и это не
-экономия, а несостоявшееся измерение. У NumPy размер известен точно и без
-замеров: <code>nbytes</code> возвращает <code>len * itemsize</code>.</p>
+<pre><code class="language-python">traced_mib(lambda: np.arange(10000000))
+</code></pre>
+<pre><code>76.3
+</code></pre>
+<p><code>tracemalloc</code> учитывает и буфер массива NumPy, а точный размер данных известен и без замеров: атрибут <code>nbytes</code> возвращает <code>len * itemsize</code>.</p>
 <h3 id="tuple-vs-list"><a class="header" href="#tuple-vs-list">tuple vs list</a></h3>
 <p>Кортеж несколько компактнее списка: ему не требуется запас под рост. Разница невелика, зато видно, во что обходится списковое включение, создающее список с запасом места под будущие <code>append</code>.</p>
 <pre><code class="language-python">sys.getsizeof([i for i in one_million_elements])
@@ -729,9 +751,9 @@ sys.getsizeof([SomeClass(i) for i in range(1000000)])
         self.d = 4 * i
         self.e = 5 * i
 </code></pre>
-<pre><code class="language-python">%memit [SomeClass(i) for i in range(1000000)]
+<pre><code class="language-python">traced_mib(lambda: [SomeClass(i) for i in range(1000000)])
 </code></pre>
-<pre><code>peak memory: 880.38 MiB, increment: 247.62 MiB
+<pre><code>259.8
 </code></pre>
 <pre><code class="language-python">class SomeClassSlots:
     __slots__ = ('a', 'b', 'c', 'd', 'e',)
@@ -742,10 +764,11 @@ sys.getsizeof([SomeClass(i) for i in range(1000000)])
         self.d = 4 * i
         self.e = 5 * i
                 
-%memit [SomeClassSlots(i) for i in range(1000000)]
+traced_mib(lambda: [SomeClassSlots(i) for i in range(1000000)])
 </code></pre>
-<pre><code>peak memory: 853.01 MiB, increment: 217.66 MiB
+<pre><code>229.3
 </code></pre>
+<p>Экономия здесь около 12 %: большую часть памяти занимают пять целых чисел каждого экземпляра, а не сам экземпляр. Чем меньше памяти занимают значения полей, тем заметнее выигрыш от <code>__slots__</code>.</p>
 <p>Обычно <code>__slots__</code> ускоряет и обращение к атрибуту, но не всегда.</p>
 <pre><code class="language-python">d1 = SomeClass(0)
 d2 = SomeClassSlots(0)
@@ -757,11 +780,11 @@ def attr_work(obj):
 </code></pre>
 <pre><code class="language-python">%timeit attr_work(d1)
 </code></pre>
-<pre><code>824 μs ± 20.2 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
+<pre><code>265 μs ± 886 ns per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </code></pre>
 <pre><code class="language-python">%timeit attr_work(d2)
 </code></pre>
-<pre><code>845 μs ± 7.76 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
+<pre><code>260 μs ± 760 ns per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 </code></pre>
 <p>Здесь разница оказалась в пределах шума: современный CPython кеширует поиск атрибута и в обычном <code>__dict__</code>.</p>
 <p>С наследованием <code>__slots__</code> неудобен: указывать его приходится в каждом классе иерархии, иначе <code>__dict__</code> возвращается и экономия исчезает.</p>
@@ -771,11 +794,11 @@ def attr_work(obj):
 
 bu.zeros(10000000).nbytes / 2**20
 </code></pre>
-<pre><code>1.19
+<pre><code>1.1920928955078125
 </code></pre>
-<pre><code class="language-python">%memit [False for i in range(10000000)]
+<pre><code class="language-python">traced_mib(lambda: [False for i in range(10000000)])
 </code></pre>
-<pre><code>peak memory: 701.93 MiB, increment: 67.81 MiB
+<pre><code>85.0
 </code></pre>
 <p>Платой является время: упакованный флаг необходимо извлечь из байта.</p>
 <h3 id="range-и-вычисление-вместо-хранения"><a class="header" href="#range-и-вычисление-вместо-хранения"><code>range</code> и вычисление вместо хранения</a></h3>

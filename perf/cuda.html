@@ -291,7 +291,7 @@ print(f"CPU: {t_cpu:.3f} c, GPU: {t_gpu:.4f} c, ускорение x{t_cpu / t_g
 </ul>
 <p>Функция <code>cp.get_array_module(x)</code> возвращает <code>numpy</code> или <code>cupy</code> в зависимости от того, где размещён массив <code>x</code>. Так пишутся библиотечные функции, одинаково работающие и на CPU, и на GPU.</p>
 <h2 id="numba-cuda-собственное-ядро"><a class="header" href="#numba-cuda-собственное-ядро">Numba CUDA: собственное ядро</a></h2>
-<p>CuPy покрывает всё, что выражается операциями над целыми массивами. Иногда алгоритм в них не укладывается: нестандартная поэлементная логика или собственный обход данных. В главе про профилирование в такой ситуации применялся декоратор <code>@numba.jit</code> к функции с циклами. У Numba есть и второй бэкенд: декоратор <code>@cuda.jit</code> компилирует Python-функцию в CUDA-ядро.</p>
+<p>CuPy покрывает всё, что выражается операциями над целыми массивами. Иногда алгоритм в них не укладывается: нестандартная поэлементная логика или собственный обход данных. В главе <a href="./perf.html">«Скорость выполнения программ»</a> в такой ситуации применялся декоратор <code>@numba.njit</code> к функции с циклами. У Numba есть и второй бэкенд: декоратор <code>@cuda.jit</code> компилирует Python-функцию в CUDA-ядро. Начиная с Numba 0.61 этот бэкенд развивается в отдельном пакете NVIDIA numba-cuda, а встроенный <code>numba.cuda</code> объявлен устаревшим и будет удалён; импорт <code>from numba import cuda</code> при установленном пакете не меняется. Пакет устанавливается командой <code>pip install "numba-cuda[cu12]"</code>, для CUDA 13 — с <code>[cu13]</code>.</p>
 <p>Каноническим примером является сложение векторов.</p>
 <pre><code class="language-python">import numpy as np
 from numba import cuda
@@ -426,7 +426,7 @@ print(f"скорость дрейфа: {v_drift:.3e} м/с (теория: {-E0 /
 <ul>
 <li><a href="https://docs.nvidia.com/cuda/cuda-c-programming-guide/">CUDA C++ Programming Guide</a>, первоисточник: модель исполнения, иерархия памяти, все детали.</li>
 <li><a href="https://docs.cupy.dev/">Документация CuPy</a>, включая таблицу соответствия функций NumPy ↔ CuPy и советы по производительности.</li>
-<li><a href="https://numba.readthedocs.io/en/stable/cuda/index.html">Numba for CUDA GPUs</a>, справочник по <code>@cuda.jit</code>: ядра, разделяемая память, атомарные операции.</li>
+<li><a href="https://nvidia.github.io/numba-cuda/">Документация numba-cuda</a>, справочник по <code>@cuda.jit</code>: ядра, разделяемая память, атомарные операции.</li>
 <li><a href="https://www.nvidia.com/en-us/training/">NVIDIA Deep Learning Institute</a>, курс «Fundamentals of Accelerated Computing with CUDA Python» про Numba и CuPy.</li>
 </ul>
 
