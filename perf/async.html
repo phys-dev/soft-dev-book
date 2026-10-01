@@ -182,6 +182,10 @@
 <p>Сколько бы потоков ни было запущено, GIL пропускает через интерпретатор только один из них, а запускать больше одновременно вычисляющих процессов, чем ядер, не имеет смысла.</p>
 <p>Существует класс задач, в которых процессор не является узким местом. Программа, скачивающая тысячу файлов или опрашивающая сотню приборов по сети, почти всё время <strong>ожидает</strong>. Запрос, отправленный по сети, ушёл, ответ не пришёл, работы нет. Выделять под каждое такое ожидание отдельный поток расточительно, поскольку поток, отданный под простой, требует памяти и переключений контекста, а полезной работы не выполняет.</p>
 <p>Асинхронность поручает одному потоку тысячу ожиданий сразу: пока один запрос ожидает ответа, выполняется другой. Механику обеспечивают генераторы и корутины, разобранные в главе <a href="../dev/python/async.html">«Итераторы, генераторы и корутины»</a>: планировщику необходима функция, способная приостановиться и продолжить с того же места.</p>
+<blockquote>
+<p><strong>Слайды к главе.</strong> Основы асинхронности изложены также в пятой части лекции «Итераторы, генераторы и корутины» (цикл событий на генераторах, async и await, задачи и тайм-ауты, асинхронная итерация) с демонстрациями в интерактивной оболочке; слайды лекции доступны <a href="https://phys-dev.github.io/soft-dev-book/slides/lecture-07.html#/sec-aio">на сайте книги</a> и <a href="https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-07.pdf">в PDF</a>.</p>
+</blockquote>
+<iframe src="../slides/lecture-07.html#/sec-aio" title="Слайды лекции «Итераторы, генераторы и корутины»: async и await" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
 <h2 id="Работа-с-разными-типами-задач"><a class="header" href="#Работа-с-разными-типами-задач">Работа с разными типами задач</a></h2>
 <p>Долгое время природу нагрузки внутри программы можно было не учитывать, поскольку приложения писались большими и монолитными, а проблемы с производительностью решались грубой силой: добавленными потоками, дополнительными процессами или ещё одной машиной, установленной в стойку.</p>
 <p>Сегодня одних процессов и потоков недостаточно, и выбор инструмента начинается с вопроса, чем занята программа. Задачи разделяют на три типа:</p>
@@ -243,14 +247,13 @@ save_to_database(processed_data)
 <p>Планировщик принимает задачи и справедливо обрабатывает накопленный список.</p>
 <pre><code class="language-python">from __future__ import annotations
 
-import logging
-from typing import Generator
-from queue import Queue
+from collections import deque
+from collections.abc import Generator
 
 
 class Scheduler:
     def __init__(self):
-        self.ready = Queue()
+        self.ready = deque()
         self.task_map = {}
 
     def add_task(self, coroutine: Generator) -&gt; int:
@@ -263,10 +266,10 @@ class Scheduler:
         del self.task_map[task.tid]
 
     def schedule(self, task: Task):
-        self.ready.put(task)
+        self.ready.append(task)
 
     def _run_once(self):
-        task = self.ready.get()
+        task = self.ready.popleft()
         try:
             result = task.run()
         except StopIteration:
@@ -278,11 +281,11 @@ class Scheduler:
         while self.task_map:
             self._run_once()
 </code></pre>
-<p>Вся работа происходит в функции <code>event_loop()</code>, извлекающей задачи одну за другой. В функции <code>_run_once()</code> осуществляется обработка одной итерации цикла событий, где поочерёдно извлекаются и запускаются задачи, поставленные в очередь. Если задача не завершилась, то она возвращается в очередь <code>self.ready</code>. Выполненные задачи удаляет из планировщика функция <code>exit()</code>.</p>
+<p>Вся работа происходит в функции <code>event_loop()</code>, извлекающей задачи одну за другой. В функции <code>_run_once()</code> осуществляется обработка одной итерации цикла событий, где поочерёдно извлекаются и запускаются задачи, поставленные в очередь. Если задача не завершилась, то она возвращается в очередь <code>self.ready</code>. Очередь — <code>collections.deque</code>: планировщик работает в одном потоке, и синхронизированная <code>queue.Queue</code> с блокирующим <code>get</code> здесь не нужна. Выполненные задачи удаляет из планировщика функция <code>exit()</code>.</p>
 <p>Задачу добавляет функция <code>add_task()</code>: она принимает корутину и создаёт с ней задачу в планировщике. Уже созданную задачу ставит в планировщик функция <code>schedule()</code>.</p>
 <p>Устройство задачи:</p>
 <pre><code class="language-python">import types
-from typing import Generator, Union
+from collections.abc import Generator
 
 class Task:
     task_id = 0
@@ -338,8 +341,8 @@ task.run()
 <p>Аналогично выполняются и остальные корутины, вложенные в цепочку. Остаётся научить планировщик работать с вводом-выводом.</p>
 <p>Для этого ему потребуется селектор, обёртка над механизмом операционной системы, способным ожидать событий одновременно на многих файловых дескрипторах, зарегистрированных программой.</p>
 <pre><code class="language-python">import logging
-from typing import Generator, Union
-from queue import Queue
+from collections import deque
+from collections.abc import Generator
 from selectors import DefaultSelector, EVENT_READ, EVENT_WRITE
 
 
@@ -348,7 +351,7 @@ logger = logging.getLogger(__name__)
 
 class Scheduler:
     def __init__(self):
-        self.ready = Queue()
+        self.ready = deque()
         self.selector = DefaultSelector()
         self.task_map = {}
 
@@ -409,7 +412,9 @@ class Scheduler:
             else:
                 self.selector.modify(fd, mask, (reader, None))
 
-    def io_poll(self, timeout: Union[None, float]):
+    def io_poll(self, timeout: float | None):
+        if not self.selector.get_map():
+            return              # ожидающих ввода-вывода нет: блокироваться не на чем
         events = self.selector.select(timeout)
         for key, mask in events:
             fileobj, (reader, writer) = key.fileobj, key.data
@@ -422,17 +427,17 @@ class Scheduler:
 
     def io_task(self) -&gt; Generator:
         while True:
-            if self.ready.empty():
+            if not self.ready:
                 self.io_poll(None)
             else:
                 self.io_poll(0)
             yield
 
     def schedule(self, task: Task):
-        self.ready.put(task)
+        self.ready.append(task)
 
     def _run_once(self):
-        task = self.ready.get()
+        task = self.ready.popleft()
         try:
             result = task.run()
         except StopIteration:
@@ -442,11 +447,11 @@ class Scheduler:
 
     def event_loop(self):
         self.add_task(self.io_task())
-        while self.task_map:
+        while len(self.task_map) &gt; 1:   # кроме самой io_task
             self._run_once()
 </code></pre>
-<p>Перед стартом цикла событий планировщик создаёт одну особую, бесконечную задачу <code>io_task</code>. Её бесконечный цикл забирает у селектора накопившиеся события и немедленно возвращает управление планировщику.</p>
-<p>Если очередь задач пуста, селектор ожидает событий без таймаута, до появления новых. В противном случае таймаут равен 0, чтобы сразу забрать все события, накопленные операционной системой.</p>
+<p>Перед стартом цикла событий планировщик создаёт одну особую, бесконечную задачу <code>io_task</code>. Её бесконечный цикл забирает у селектора накопившиеся события и немедленно возвращает управление планировщику. Цикл событий работает, пока кроме <code>io_task</code> остаются другие задачи; сама она никогда не завершается, поэтому условие <code>while self.task_map</code> не остановилось бы никогда.</p>
+<p>Если очередь задач пуста, селектор ожидает событий без таймаута, до появления новых. В противном случае таймаут равен 0, чтобы сразу забрать все события, накопленные операционной системой. Когда ни один дескриптор не зарегистрирован, <code>io_poll</code> сразу возвращается: ожидание без таймаута на пустом селекторе заблокировало бы программу навсегда.</p>
 <p>Поступившие из селектора события обрабатываются, а отработанные файловые дескрипторы удаляются. Одна и та же задача может ожидать присланных данных и одновременно пытаться записать свои, поэтому в поле <code>data</code> хранится кортеж <code>(reader, writer)</code>.</p>
 <p><code>event_loop</code> предоставляет интерфейс для работы с сокетами, четыре метода:</p>
 <ul>
@@ -488,10 +493,7 @@ class NewTask(SystemCall):
         self.schedule(task)
 </code></pre>
 <p>А в <code>Task</code> — условие при выполнении корутин:</p>
-<pre><code class="language-python">import types
-from typing import Generator, Union
-
-class Task:
+<pre><code class="language-python">class Task:
     ...
     def run(self):
         while True:
@@ -505,7 +507,7 @@ class Task:
 <p>Последней проблемой являются блокирующие операции. Пока запущенная операция не завершится, цикл событий останавливается вместе с ней. Решается это на уровне сокетов: вызов <code>socket.setblocking(False)</code> переводит сокет в неблокирующий режим, и вместо ожидания он немедленно сообщает, что данных пока нет. Ожидать их будет селектор, сразу за всех.</p>
 <h2 id="asyncio"><a class="header" href="#asyncio">Asyncio</a></h2>
 <p><code>asyncio</code> является основной встроенной библиотекой для асинхронного программирования.</p>
-<p>С версии Python 3.5 в языке присутствует синтаксис async/await. Он предоставляет «нативные» корутины — отдельную сущность языка, а не повторно использованный генератор. Благодаря разделению появились асинхронные генераторы, и асинхронный код стал работать быстрее.</p>
+<p>С версии Python 3.5 в языке присутствует синтаксис async/await (PEP 492). Он предоставляет «нативные» корутины — отдельную сущность языка, а не повторно использованный генератор: вызов <code>async def</code> возвращает объект типа <code>coroutine</code>, перебрать который циклом <code>for</code> нельзя, а <code>await</code> допустим только внутри <code>async def</code>. Разделение позволило отличать корутины от генераторов на уровне синтаксиса и типов; в Python 3.6 к ним добавились асинхронные генераторы (PEP 525) и асинхронные включения (PEP 530), а генераторные корутины с декоратором <code>@asyncio.coroutine</code> удалены в Python 3.11.</p>
 <p>Простая программа с async/await:</p>
 <pre><code class="language-python">import random
 import asyncio
@@ -528,15 +530,15 @@ if __name__ == '__main__':
 <p>Функция <code>asyncio.run</code> создаёт планировщик задач, устроенный по разобранным выше принципам, и закрывает его по завершении. Переключением между корутинами управляет <code>await</code>.</p>
 <p>Основные функции <code>asyncio</code>:</p>
 <ul>
-<li><code>gather</code> выполняет переданный список корутин одновременно и дожидается результатов от всех.</li>
-<li><code>sleep</code> приостанавливает корутину на определённое количество секунд.</li>
-<li><code>wait</code>/<code>wait_for</code> дожидаются выполнения уже запущенной корутины.</li>
+<li><code>gather(*aws)</code> запускает переданные корутины как задачи и ожидает все, возвращая результаты в порядке аргументов; корутины передаются отдельными аргументами, список — через распаковку <code>gather(*coros)</code>, иначе возникает <code>TypeError</code>. Выполнение конкурентное: ожидания перекрываются в одном потоке.</li>
+<li><code>sleep</code> приостанавливает корутину на определённое количество секунд, отдавая управление циклу событий.</li>
+<li><code>wait_for(aw, timeout)</code> ограничивает время ожидания одного объекта и отменяет его по истечении (с Python 3.11 для этого служит <code>asyncio.timeout</code>); <code>wait</code> ожидает набор задач по условию <code>return_when</code> и с Python 3.11 принимает только задачи и <code>Future</code>, но не корутины.</li>
 </ul>
 <p>Основные функции <code>event_loop</code>:</p>
 <ul>
-<li><code>get_event_loop</code> возвращает цикл событий текущего потока, создавая его при необходимости. В новом коде вместо связки <code>get_event_loop</code> и <code>run_until_complete</code> используется одна строка <code>asyncio.run(...)</code>.</li>
-<li><code>run_until_complete</code>/<code>run</code> запускают и проверяют асинхронные функции.</li>
-<li><code>shutdown_asyncgens</code> корректно завершает выполнение цикла событий и всех корутин; о ней часто забывают.</li>
+<li><code>get_event_loop</code> возвращает цикл событий текущего потока; с Python 3.12 вызов без текущего цикла выдаёт <code>DeprecationWarning</code> и создаёт цикл, а если цикл уже снят, например после <code>asyncio.run</code>, возбуждает <code>RuntimeError</code>; в 3.14 неявное создание цикла убрано. Внутри корутины цикл получают функцией <code>get_running_loop</code>, а в новом коде вместо связки <code>get_event_loop</code> и <code>run_until_complete</code> используется одна строка <code>asyncio.run(...)</code>.</li>
+<li><code>run_until_complete</code> выполняет цикл до завершения переданной корутины или <code>Future</code>; <code>asyncio.run</code> (Python 3.7) — точка входа программы: создаёт цикл, выполняет корутину и закрывает цикл.</li>
+<li><code>shutdown_asyncgens</code> закрывает незавершённые асинхронные генераторы вызовом <code>aclose</code>; <code>asyncio.run</code> вызывает его сам, а при ручном управлении циклом о нём часто забывают.</li>
 <li><code>call_soon</code> ставит обычную функцию (не корутину) в очередь на ближайшую итерацию цикла и не ожидает её выполнения. Поставленная таким образом функция может бесконечно переставлять саму себя.</li>
 </ul>
 <p>Ключевым отличием asyncio от предложенной реализации является то, что asyncio работает на функциях обратного вызова, колбэках (callback). Этот механизм распределяет время между задачами справедливее. Каждая корутина встаёт в очередь и дожидается исполнения, тогда как в простом планировщике переключения не произойдёт, пока вся цепочка корутин не выполнится, а остальные задачи, поставленные в очередь, всё это время простаивают. Недостатком колбэков является callback hell, когда после вызова каждой функции необходимо вызвать ещё одну функцию и ещё одну:</p>
@@ -553,6 +555,76 @@ await func2()
 await func1() 
 </code></pre>
 <p>Это возможно благодаря классу <code>Future</code>, скрывающему колбэки и делающему код линейным. Создавать <code>Future</code> вручную в современном коде почти не приходится: это выполняют <code>create_task</code> и <code>gather</code>.</p>
+<h3 id="Задачи-тайм-ауты-и-группы-задач"><a class="header" href="#Задачи-тайм-ауты-и-группы-задач">Задачи, тайм-ауты и группы задач</a></h3>
+<p>Корутины выполняются одновременно, только если каждая обёрнута в задачу (<code>Task</code>): последовательные <code>await a()</code> и <code>await b()</code> выполняют их по очереди. Задачи создают <code>gather</code>, <code>create_task</code> и группы задач.</p>
+<div class="table-wrapper"><table><thead><tr><th>Средство <code>asyncio</code></th><th>Назначение</th></tr></thead><tbody>
+<tr><td><code>run(main())</code></td><td>цикл событий для программы</td></tr>
+<tr><td><code>await gather(a, b, c)</code></td><td>одновременное ожидание; результаты в порядке аргументов</td></tr>
+<tr><td><code>create_task(c)</code></td><td>запуск корутины в фоне; ссылку на задачу сохраняют</td></tr>
+<tr><td><code>TaskGroup()</code> (Python 3.11)</td><td>группа задач; при ошибке одной отменяются остальные</td></tr>
+<tr><td><code>timeout(s)</code> (Python 3.11)</td><td>ограничение времени блока: <code>TimeoutError</code></td></tr>
+<tr><td><code>to_thread(f, ...)</code> (Python 3.9)</td><td>блокирующая функция в отдельном потоке</td></tr>
+</tbody></table>
+</div>
+<p><code>create_task</code> ставит корутину в цикл событий и возвращает объект <code>Task</code>, который можно ожидать позже; ссылку на задачу сохраняют, иначе её может уничтожить сборщик мусора. С Python 3.11 предпочтительна группа задач <code>TaskGroup</code>: задачи, созданные в блоке <code>async with</code>, ожидаются при выходе из блока, а ошибка одной из них отменяет остальные и выходит наружу как <code>ExceptionGroup</code>, которую разбирает конструкция <code>except*</code>. После выхода из блока незавершённых задач не остаётся. Опрос нескольких приборов с отказом одного:</p>
+<pre><code class="language-python">import asyncio
+
+async def poll(name, delay):
+    await asyncio.sleep(delay)
+    return name, delay
+
+async def broken(name, delay):
+    await asyncio.sleep(delay)
+    raise ConnectionError(f'{name}: нет ответа')
+
+async def survey():
+    try:
+        async with asyncio.TaskGroup() as tg:
+            a = tg.create_task(poll('A', 0.3))
+            tg.create_task(broken('B', 0.1))
+    except* ConnectionError as eg:
+        print('ошибки:', [str(e) for e in eg.exceptions])
+    print('A отменена:', a.cancelled())
+
+asyncio.run(survey())
+</code></pre>
+<pre><code class="language-text">ошибки: ['B: нет ответа']
+A отменена: True
+</code></pre>
+<p><code>asyncio.timeout</code> ограничивает время блока: при превышении отменяется текущая задача, а вместе с ней — задачи, которые она ожидает через <code>gather</code> или <code>TaskGroup</code>, и блок завершается <code>TimeoutError</code>.</p>
+<pre><code class="language-python">async def limited():
+    try:
+        async with asyncio.timeout(0.6):
+            return await asyncio.gather(poll('A', 0.3), poll('C', 0.8))
+    except TimeoutError:
+        return 'тайм-аут 0,6 с'
+
+asyncio.run(limited())   # 'тайм-аут 0,6 с'
+</code></pre>
+<p>Блокирующую функцию из синхронной библиотеки, которую нельзя ожидать, выполняют в отдельном потоке через <code>asyncio.to_thread</code>, не останавливая цикл событий. Так же поступают с чтением и записью обычных файлов: асинхронного доступа к ним у <code>asyncio</code> нет, и даже сторонние пакеты вроде <code>aiofiles</code> работают через пул потоков. Общее время опроса нескольких приборов с общим тайм-аутом равно времени самого медленного прибора, а не сумме задержек.</p>
+<h3 id="Асинхронная-итерация"><a class="header" href="#Асинхронная-итерация">Асинхронная итерация</a></h3>
+<p>Протокол итерации имеет асинхронный вариант для источников, следующий элемент которых приходится ожидать: сообщений из сети, отсчётов прибора, строк из базы данных.</p>
+<div class="table-wrapper"><table><thead><tr><th>Синхронно</th><th>Асинхронно</th></tr></thead><tbody>
+<tr><td><code>__iter__</code>, <code>__next__</code></td><td><code>__aiter__</code>, <code>__anext__</code></td></tr>
+<tr><td><code>StopIteration</code></td><td><code>StopAsyncIteration</code></td></tr>
+<tr><td><code>for</code>, <code>with</code></td><td><code>async for</code>, <code>async with</code></td></tr>
+<tr><td><code>iter()</code>, <code>next()</code></td><td><code>aiter()</code>, <code>anext()</code> (Python 3.10)</td></tr>
+<tr><td><code>def</code> с <code>yield</code></td><td><code>async def</code> с <code>yield</code> (Python 3.6)</td></tr>
+</tbody></table>
+</div>
+<p>Асинхронный итерируемый объект определяет <code>__aiter__</code>, асинхронный итератор — <code>__anext__</code>, возвращающий ожидаемый объект, а окончание сообщается исключением <code>StopAsyncIteration</code>. Цикл <code>async for</code> вызывает эти методы и ожидает результат <code>__anext__</code>; если источник при этом ожидает данных, цикл событий тем временем выполняет другие задачи, а источник без <code>await</code> управление не отдаёт. Асинхронный генератор (PEP 525) — функция <code>async def</code> с <code>yield</code> — реализует протокол автоматически, как обычный генератор реализует синхронный.</p>
+<pre><code class="language-python">async def readings(dt, n):
+    for i in range(n):
+        await asyncio.sleep(dt)
+        yield round((i + 1) * dt, 1)
+
+async def consume():
+    async for t in readings(0.1, 3):
+        print('отсчёт', t)       # отсчёт 0.1, отсчёт 0.2, отсчёт 0.3
+
+asyncio.run(consume())
+</code></pre>
+<p>Поток отсчётов прибора, поступающих с заданным интервалом, описывается асинхронным генератором, а потребитель обрабатывает отсчёты по мере поступления, не блокируя опрос других устройств. Асинхронное включение <code>[x async for x in source]</code> собирает элементы асинхронного источника внутри <code>async def</code>.</p>
 <h2 id="Асинхронные-фреймворки"><a class="header" href="#Асинхронные-фреймворки">Асинхронные фреймворки</a></h2>
 <p>Поверх <code>asyncio</code> (а иногда и в обход него) сформировалась экосистема. Физику она необходима, когда вокруг готового расчёта требуется построить сервис: принимать данные с прибора, передавать результаты коллегам, обращаться к базе лаборатории. Ниже приведены три характерных представителя.</p>
 <h3 id="twisted"><a class="header" href="#twisted">Twisted</a></h3>
@@ -639,7 +711,7 @@ async def create_item(item: Add):
 <p>Асинхронность не является универсальным ускорителем; это инструмент, предназначенный для задач, в которых программа ожидает. Для расчётов она бесполезна. Одна корутина, надолго занявшая процессор, остановит весь цикл событий вместе с очередью, накопленной к этому моменту: поток по-прежнему один.</p>
 <p>Выбор инструмента определяется следующим образом:</p>
 <ul>
-<li><strong>задача ожидает сеть, диск или прибор</strong> — применяется асинхронность, выигрыш может составлять десятки раз;</li>
+<li><strong>задача ожидает сеть или прибор</strong> — применяется асинхронность, выигрыш может составлять десятки раз; чтение и запись файлов выносятся в поток через <code>asyncio.to_thread</code>, поскольку асинхронного доступа к обычным файлам у <code>asyncio</code> нет;</li>
 <li><strong>задача вычисляет</strong> — применяются процессы (<code>multiprocessing</code>), векторизация NumPy или компиляция, разобранные в предыдущих главах;</li>
 <li><strong>и то и другое</strong> — применяется цикл событий для ожиданий в сочетании с пулом процессов для расчётов через <code>loop.run_in_executor</code>.</li>
 </ul>

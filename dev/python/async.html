@@ -179,152 +179,577 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="Итераторы-генераторы-и-корутины"><a class="header" href="#Итераторы-генераторы-и-корутины">Итераторы, генераторы и корутины</a></h1>
-<p>В настоящей главе рассматриваются три родственных механизма языка, связанных одной идеей — <strong>не вычислять всё сразу</strong>. Итератор выдаёт элементы по одному, генератор позволяет приостанавливать выполнение функции и возвращаться в неё, а корутина, кроме того, способна принимать значения, переданные извне.</p>
-<p>Эти механизмы позволяют обрабатывать файлы, не помещающиеся в память, и описывать бесконечные последовательности; на генераторах построена вся асинхронность Python — <code>asyncio</code> рассматривается в главе, посвящённой <a href="../../perf/async.html">асинхронности</a>.</p>
+<p>В настоящей главе рассматриваются три родственных механизма языка, связанных одной идеей — <strong>не вычислять всё сразу</strong>. Итератор выдаёт элементы по одному, генератор позволяет приостанавливать выполнение функции и возвращаться в неё, а корутина, кроме того, принимает значения, переданные извне.</p>
+<p>Эти механизмы позволяют обрабатывать файлы, не помещающиеся в память, и описывать бесконечные последовательности. Из генераторов выросла и асинхронность Python: первые корутины <code>asyncio</code> были генераторами, а нативные корутины <code>async def</code> используют тот же механизм приостановки функции. Сам <code>asyncio</code> рассматривается в главе, посвящённой <a href="../../perf/async.html">асинхронности</a>.</p>
+<blockquote>
+<p><strong>Слайды к главе.</strong> Материал главы изложен также в лекции «Итераторы, генераторы и корутины» (итераторы, генераторы, модуль itertools, сопрограммы, async и await) с демонстрациями в интерактивной оболочке; слайды лекции доступны <a href="https://phys-dev.github.io/soft-dev-book/slides/lecture-07.html#/cover">на сайте книги</a> и <a href="https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-07.pdf">в PDF</a>.</p>
+</blockquote>
+<iframe src="../../slides/lecture-07.html#/cover" title="Слайды лекции «Итераторы, генераторы и корутины»" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
 <h2 id="Итераторы"><a class="header" href="#Итераторы">Итераторы</a></h2>
-<p>Любая коллекция, встроенная в язык (списки, словари, множества, строки, файлы), является итерируемой.</p>
-<p>Итератор представляет собой объект с методом <code>__next__</code>, который при каждом вызове возвращает следующий элемент, а по исчерпании элементов возбуждает <code>StopIteration</code>. <em>Итерируемый</em> объект обладает методом <code>__iter__</code>, возвращающим итератор. Список является итерируемым, но не итератором, поэтому по нему можно пройти дважды, а по итератору — лишь один раз.</p>
-<p>Рассмотрим собственный аналог <code>range</code>, в котором обе роли разделены явно. Контейнер <code>Range</code> способен только выдать итератор, а сам обход осуществляется классом <code>RangeIterator</code>.</p>
-<pre><code class="language-python">class Range:
-    def __init__(self, stop_value: int):
-        self.stop_value = stop_value - 1
+<h3 id="Устройство-цикла-for"><a class="header" href="#Устройство-цикла-for">Устройство цикла for</a></h3>
+<p>Цикл <code>for</code> в Python не перебирает индексы: он получает у объекта итератор функцией <code>iter</code> и вызывает для него <code>next</code>, пока тот не сообщит об окончании исключением <code>StopIteration</code>. Исключение перехватывает сам цикл, поэтому в коде оно не видно. Тот же цикл, записанный явно:</p>
+<pre><code class="language-python">xs = [1.5, 2.5, 4.0]
+
+it = iter(xs)
+while True:
+    try:
+        x = next(it)
+    except StopIteration:
+        break
+    print(x)
+</code></pre>
+<p>Встроенные функции <code>iter</code> и <code>next</code> вызывают специальные методы <code>__iter__</code> и <code>__next__</code>, как <code>len</code> вызывает <code>__len__</code>. По тому же протоколу работают распаковка, списковые включения, функции <code>sum</code>, <code>max</code>, <code>sorted</code> и <code>list</code> и конструкторы коллекций. В байт-коде цикл представлен двумя инструкциями: <code>GET_ITER</code> вызывает <code>iter</code> для перебираемого объекта, <code>FOR_ITER</code> на каждом шаге вызывает <code>next</code> и при окончании элементов переходит за конец цикла.</p>
+<pre><code class="language-python">import dis
+
+dis.dis('for x in xs: pass')
+</code></pre>
+<pre><code class="language-text">  0           0 RESUME                   0
+
+  1           2 LOAD_NAME                0 (xs)
+              4 GET_ITER
+        &gt;&gt;    6 FOR_ITER                 2 (to 14)
+             10 STORE_NAME               1 (x)
+             12 JUMP_BACKWARD            4 (to 6)
+        &gt;&gt;   14 END_FOR
+             16 RETURN_CONST             0 (None)
+</code></pre>
+<p>Вывод получен в Python 3.12; набор инструкций меняется от версии к версии, но пара <code>GET_ITER</code> и <code>FOR_ITER</code> присутствует во всех.</p>
+<h3 id="Итерируемый-объект-и-итератор"><a class="header" href="#Итерируемый-объект-и-итератор">Итерируемый объект и итератор</a></h3>
+<p>Протокол итерации разделяет две роли. <strong>Итерируемый объект</strong> (iterable) обладает методом <code>__iter__</code>, который при каждом вызове возвращает новый итератор. <strong>Итератор</strong> (iterator) обладает методом <code>__next__</code>, возвращающим следующий элемент или возбуждающим <code>StopIteration</code>, когда элементы закончились, и методом <code>__iter__</code>, возвращающим сам итератор. Итератор обязан быть и итерируемым, поэтому его можно передать в цикл <code>for</code>.</p>
+<p>Встроенные коллекции — списки, кортежи, словари, множества, строки — являются итерируемыми объектами; файл, открытый функцией <code>open</code>, сам является итератором по строкам. По списку можно пройти сколько угодно раз, поскольку каждый цикл получает новый итератор, а по итератору — один раз: после первого прохода он исчерпан. Исчерпанный итератор обязан и дальше возбуждать <code>StopIteration</code> при каждом вызове <code>next</code>.</p>
+<pre><code class="language-python">xs = [1.5, 2.5, 4.0]
+it = iter(xs)
+next(it), next(it)    # (1.5, 2.5)
+next(it)              # 4.0
+next(it)              # исключение StopIteration
+iter(it) is it        # True: итератор возвращает самого себя
+list(it), list(xs)    # ([], [1.5, 2.5, 4.0])
+next(range(3))        # TypeError: 'range' object is not an iterator
+</code></pre>
+<p>Проверка <code>isinstance(x, collections.abc.Iterator)</code> отличает итератор от итерируемого объекта, у которого есть только <code>__iter__</code>.</p>
+<h3 id="Собственный-итератор"><a class="header" href="#Собственный-итератор">Собственный итератор</a></h3>
+<p>Класс <code>Linspace</code> ниже — упрощённый аналог <code>numpy.linspace</code>: <code>n</code> равноотстоящих точек отрезка от <code>a</code> до <code>b</code>. Роли разделены явно: контейнер хранит параметры сетки и на каждый вызов <code>__iter__</code> создаёт новый итератор, а обход выполняет класс <code>LinspaceIterator</code>.</p>
+<pre><code class="language-python">class Linspace:
+    def __init__(self, a, b, n):
+        self.a, self.n = a, n
+        self.h = (b - a) / (n - 1)
 
     def __iter__(self):
-        return RangeIterator(self)
+        return LinspaceIterator(self.a, self.h, self.n)
 
-class RangeIterator:
-    def __init__(self, container):
-        self.container = container
-        self.current = -1          # состояние обхода живёт здесь
+class LinspaceIterator:
+    def __init__(self, a, h, n):
+        self.a, self.h, self.n, self.i = a, h, n, 0   # состояние обхода
 
     def __iter__(self):
         return self                # итератор обязан быть итерируемым
 
     def __next__(self):
-        if self.current &lt; self.container.stop_value:
-            self.current += 1
-            return self.current
-        raise StopIteration
-</code></pre>
-<p>Поле <code>current</code> хранится в итераторе, а не в контейнере,
-поэтому каждый новый <code>for</code> начинает счёт заново, а по одному объекту <code>Range(5)</code> можно
-пройти произвольное число раз. Если поместить счётчик в контейнер, второй проход окажется
-пустым. Без метода <code>__iter__</code> у самого
-итератора объект не является итерируемым, и цикл <code>for</code> по нему невозможен.</p>
-<p>Чаще обе роли совмещают в одном классе, где <code>__iter__</code> возвращает <code>self</code>: кода при этом меньше, однако второй проход начнётся там, где закончился первый.</p>
-<pre><code class="language-python">class Range2:
-    def __init__(self, stop_value: int):
-        self.current = -1
-        self.stop_value = stop_value - 1
-    
-    def __iter__(self):
-        return self
-    
-    def __next__(self):
-        if self.current &lt; self.stop_value:
-            self.current += 1
-            return self.current
-        raise StopIteration
-</code></pre>
-<p>Обычный цикл <code>for</code> получает итератор через <code>iter</code>, вызывает <code>next</code> в цикле и перехватывает <code>StopIteration</code>, чтобы остановиться.</p>
-<pre><code class="language-python">iterable = Range2(5)
-iterator = iter(iterable)
+        if self.i == self.n:
+            raise StopIteration
+        self.i += 1
+        return self.a + (self.i - 1) * self.h
 
-while True:
-    try:
-        value = next(iterator)
-        print(value)
-    except StopIteration:
-        break
+grid = Linspace(0.0, 1.0, 5)
+list(grid)    # [0.0, 0.25, 0.5, 0.75, 1.0]
+list(grid)    # тот же результат: второй проход получает новый итератор
 </code></pre>
+<p>Счётчик <code>i</code> хранится в итераторе, а не в контейнере, поэтому каждый новый <code>for</code> начинает с первой точки, а по одной сетке можно пройти произвольное число раз. Точка вычисляется как <code>a + i·h</code>, а не прибавлением <code>h</code> к предыдущей: при накоплении ошибки округления складываются и растут с номером точки, а при умножении погрешность каждой точки остаётся в последних разрядах. Последняя точка и при умножении может отличаться от <code>b</code> в последнем знаке, поэтому <code>numpy.linspace</code> присваивает ей значение <code>b</code> явно.</p>
+<p>Обе роли можно совместить в одном классе, где <code>__iter__</code> возвращает <code>self</code>: кода при этом меньше, однако второй проход начнётся там, где закончился первый, и окажется пустым. Так устроены однопроходные объекты — файлы и генераторы; у контейнеров роли разделены. Без метода <code>__iter__</code> сам итератор не является итерируемым: цикл <code>for</code> по контейнеру <code>Linspace</code> работает, поскольку у полученного итератора цикл вызывает только <code>__next__</code>, а цикл по объекту <code>iter(grid)</code> и передача его в <code>list</code> или <code>zip</code> завершаются <code>TypeError</code>.</p>
+<h3 id="Другие-способы-итерации"><a class="header" href="#Другие-способы-итерации">Другие способы итерации</a></h3>
+<p>Кроме основного протокола, функция <code>iter</code> поддерживает ещё два способа получить итератор, а оператор <code>in</code> — свой порядок поиска.</p>
+<div class="table-wrapper"><table><thead><tr><th>Механизм</th><th>Как работает</th><th>Применение</th></tr></thead><tbody>
+<tr><td><code>__getitem__</code></td><td>перебор индексов 0, 1, 2… до <code>IndexError</code></td><td>старые классы-последовательности</td></tr>
+<tr><td><code>iter(f, граница)</code></td><td>вызовы <code>f()</code> до граничного значения</td><td>чтение блоками, опрос</td></tr>
+<tr><td><code>__contains__</code></td><td><code>x in obj</code>; без метода — перебор через <code>__iter__</code></td><td>проверка принадлежности</td></tr>
+</tbody></table>
+</div>
+<p>Если у объекта нет <code>__iter__</code>, но есть <code>__getitem__</code>, функция <code>iter</code> создаёт итератор, запрашивающий элементы с индексами 0, 1, 2 и далее, пока <code>__getitem__</code> не возбудит <code>IndexError</code>. Так перебирались последовательности до появления протокола итераторов, и этот путь сохранён для совместимости. <code>collections.abc.Iterable</code> такой объект итерируемым не признаёт, поэтому надёжная проверка — вызов <code>iter(obj)</code>.</p>
+<pre><code class="language-python">class Squares:
+    def __getitem__(self, i):
+        if i &gt;= 4:
+            raise IndexError(i)
+        return i * i
+
+list(Squares()), 9 in Squares()   # ([0, 1, 4, 9], True)
+</code></pre>
+<p>Функция <code>iter</code> с двумя аргументами принимает вызываемый объект и граничное значение: итератор вызывает функцию без аргументов и выдаёт результаты, пока не получит граничное значение. Двоичные файлы оцифровщиков и детекторов читаются так блоками фиксированного размера; границей служит пустая строка байтов, которую <code>read</code> возвращает в конце файла.</p>
+<pre><code class="language-python">from functools import partial
+
+with open('run042.dat', 'rb') as f:
+    for block in iter(partial(f.read, 4096), b''):
+        process(block)
+</code></pre>
+<p>Оператор <code>in</code> вызывает метод <code>__contains__</code>, а при его отсутствии перебирает объект через <code>__iter__</code> или <code>__getitem__</code>, пока не найдёт равный элемент. Для итератора это означает расход элементов: после проверки в нём остаются только элементы после найденного.</p>
+<pre><code class="language-python">it = iter(Linspace(0.0, 1.0, 5))
+0.5 in it      # True
+list(it)       # [0.75, 1.0]: элементы до 0.5 включительно израсходованы
+</code></pre>
+<h3 id="Итераторы-стандартной-библиотеки"><a class="header" href="#Итераторы-стандартной-библиотеки">Итераторы стандартной библиотеки</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Объект</th><th>Итератор?</th><th>Повторный обход</th></tr></thead><tbody>
+<tr><td><code>list</code>, <code>tuple</code>, <code>str</code>, <code>dict</code>, <code>set</code></td><td>нет: итерируемый</td><td>да</td></tr>
+<tr><td><code>range(n)</code></td><td>нет: ленивая последовательность</td><td>да; есть <code>len</code> и индексы</td></tr>
+<tr><td><code>dict.keys()</code>, <code>values()</code>, <code>items()</code></td><td>нет: представления</td><td>да; текущее содержимое словаря</td></tr>
+<tr><td><code>open(path)</code></td><td>да</td><td>нет: позиция в файле</td></tr>
+<tr><td><code>map</code>, <code>filter</code>, <code>zip</code>, <code>enumerate</code>, <code>reversed</code></td><td>да</td><td>нет</td></tr>
+<tr><td>генератор</td><td>да</td><td>нет</td></tr>
+</tbody></table>
+</div>
+<p><code>range</code> не хранит элементы, а вычисляет их и при этом остаётся последовательностью с длиной, индексами и проверкой <code>in</code> без перебора для целых чисел. Представления словаря отражают его текущее содержимое; изменение размера словаря во время обхода завершается <code>RuntimeError: dictionary changed size during iteration</code>. Функции <code>map</code>, <code>filter</code>, <code>zip</code>, <code>enumerate</code> и <code>reversed</code> возвращают итераторы и вычисляют элементы по запросу, поэтому их результат, использованный дважды, во второй раз пуст — частая ошибка при переносе кода с Python 2, где <code>map</code> и <code>zip</code> возвращали списки.</p>
+<pre><code class="language-python">m = map(str, [1, 2])
+list(m), list(m)                      # (['1', '2'], [])
+list(zip([1, 2], [1], strict=True))   # ValueError: zip() argument 2 is shorter than argument 1
+</code></pre>
+<p>Функция <code>zip</code> останавливается на самой короткой последовательности; с Python 3.10 параметр <code>strict=True</code> превращает расхождение длин в <code>ValueError</code>. При объединении отметок времени и показаний <code>zip(times, values, strict=True)</code> защищает от молчаливого усечения рядов разной длины.</p>
 <h2 id="Генераторы"><a class="header" href="#Генераторы">Генераторы</a></h2>
-<p>Генераторы работают на принципе запоминания контекста, сохраняемого ключевым словом <code>yield</code>.</p>
-<p>Написание двух классов ради простого перебора является избыточным. Функция с <code>yield</code> при вызове не выполняет тело, а возвращает генератор. Тело начинает выполняться при <code>next</code>, доходит до ближайшего <code>yield</code>, отдаёт значение и <strong>приостанавливается</strong>, сохранив все локальные переменные и место остановки.</p>
-<p>В примере ниже первые два вызова возвращают значения, а третий доходит до <code>return</code> и возбуждает <code>StopIteration</code>, поместив в него возвращённое значение.</p>
-<pre><code class="language-python">def simple_generator():
-    yield 1
-    yield 2
-    return 3
+<h3 id="Генераторная-функция"><a class="header" href="#Генераторная-функция">Генераторная функция</a></h3>
+<p>Писать два класса ради простого перебора избыточно. Функция, в теле которой встречается <code>yield</code>, при вызове не выполняет тело, а возвращает объект-генератор. Генератор — итератор: <code>next</code> запускает тело и выполняет его до ближайшего <code>yield</code>, значение <code>yield</code> становится результатом <code>next</code>, а функция <strong>приостанавливается</strong>. Генератор хранит кадр функции — локальные переменные и место остановки — между вызовами <code>next</code>; точку остановки задаёт <code>yield</code>. Следующий <code>next</code> продолжает выполнение с инструкции после <code>yield</code>.</p>
+<pre><code class="language-python">def countdown(n):
+    print('старт')
+    while n &gt; 0:
+        yield n
+        n -= 1
+    return 'пуск'
 
-gen = simple_generator()
-print(next(gen))  # 1
-print(next(gen))  # 2
-print(next(gen))  # StopIteration: 3
+g = countdown(3)    # тело не выполняется, ничего не печатается
+next(g)             # печатает «старт», возвращает 3
+next(g), next(g)    # (2, 1)
+next(g)             # исключение StopIteration: пуск
 </code></pre>
-<p>Существует и краткая форма — генераторное выражение; от спискового включения его отличают круглые скобки вместо квадратных. Список из ста тысяч элементов занимает память целиком, а генератор не вычисляет ни одного элемента, пока он не будет запрошен: 800 килобайт против 200 байт.</p>
-<pre><code class="language-python">gen_exp = (x for x in range(100000))
-print(gen_exp)  # &lt;generator object &lt;genexpr&gt; at 0x...&gt;
+<p>Когда тело завершается, возбуждается <code>StopIteration</code>, и значение <code>return</code>, если оно есть, сохраняется в атрибуте <code>value</code> исключения; цикл <code>for</code> и функция <code>list</code> это значение не используют: <code>list(countdown(3))</code> печатает «старт» и возвращает <code>[3, 2, 1]</code>. Генератор заменяет класс итератора: метод <code>__iter__</code>, написанный генератором, возвращает новый генератор при каждом вызове, и по контейнеру можно проходить многократно без отдельного класса.</p>
+<pre><code class="language-python">class Linspace:
+    def __init__(self, a, b, n):
+        self.a, self.n = a, n
+        self.h = (b - a) / (n - 1)
+
+    def __iter__(self):
+        for i in range(self.n):
+            yield self.a + i * self.h
 </code></pre>
-<p>Журнал захода, записывавшийся всю смену, в память целиком не помещается, но построчно читается так же просто, как список: файл сам по себе является итератором, а генератор поверх него отбрасывает лишнее и отдаёт по одному разобранному событию, удерживая в памяти только текущую строку.</p>
-<pre><code class="language-python">def read_events(path):
-    """Отдаёт события журнала по одному, не читая файл целиком."""
+<p>Генератор удобен там, где следующий элемент вычисляется по предыдущим, — шаги интегрирования, итерации метода Ньютона, последовательные приближения.</p>
+<h3 id="Состояния-генератора"><a class="header" href="#Состояния-генератора">Состояния генератора</a></h3>
+<p>Генератор проходит четыре состояния, которые возвращает функция <code>inspect.getgeneratorstate</code>.</p>
+<div class="table-wrapper"><table><thead><tr><th>Состояние</th><th>Когда наступает</th></tr></thead><tbody>
+<tr><td><code>GEN_CREATED</code></td><td>после вызова генераторной функции: кадр создан, тело не выполнялось</td></tr>
+<tr><td><code>GEN_RUNNING</code></td><td>во время выполнения тела после <code>next</code>, <code>send</code> или <code>throw</code></td></tr>
+<tr><td><code>GEN_SUSPENDED</code></td><td>после <code>yield</code>: локальные переменные и место остановки сохранены</td></tr>
+<tr><td><code>GEN_CLOSED</code></td><td>после <code>return</code>, исключения или вызова <code>close</code></td></tr>
+</tbody></table>
+</div>
+<pre><code class="language-python">import inspect
+
+g = countdown(3)
+inspect.getgeneratorstate(g)                       # 'GEN_CREATED'
+next(g)                                            # печатает «старт», возвращает 3
+inspect.getgeneratorstate(g), g.gi_frame.f_locals  # ('GEN_SUSPENDED', {'n': 3})
+</code></pre>
+<p>Состояние хранится в атрибутах объекта: <code>gi_frame</code> — кадр выполнения с локальными переменными <code>f_locals</code> и номером строки <code>f_lineno</code>, после завершения генератора <code>gi_frame</code> равен <code>None</code>; <code>gi_running</code> — признак выполнения; <code>gi_yieldfrom</code> — подгенератор, которому делегировано выполнение через <code>yield from</code>. Методы <code>send</code>, <code>throw</code> и <code>close</code> рассматриваются в разделе о корутинах; <code>close</code> у ещё не запущенного генератора переводит его в <code>GEN_CLOSED</code> сразу, без выполнения тела. Генератор не может запустить сам себя: <code>next(g)</code> внутри тела <code>g</code> завершается <code>ValueError: generator already executing</code>.</p>
+<h3 id="Генераторные-выражения"><a class="header" href="#Генераторные-выражения">Генераторные выражения</a></h3>
+<p>Генераторное выражение — краткая форма генератора; от спискового включения его отличают круглые скобки вместо квадратных. Если выражение — единственный аргумент функции, вторые скобки не нужны.</p>
+<pre><code class="language-python">squares = [x * x for x in range(100_000)]   # список строится сразу
+lazy = (x * x for x in range(100_000))      # генератор, элементы по запросу
+total = sum(x * x for x in range(100_000))  # скобки вызова служат скобками выражения
+</code></pre>
+<p>Списковое включение хранит все элементы, генератор не вычисляет ни одного, пока элемент не будет запрошен. Измерения на Python 3.12.3:</p>
+<div class="table-wrapper"><table><thead><tr><th>Величина</th><th>Список</th><th>Генератор</th></tr></thead><tbody>
+<tr><td><code>sys.getsizeof</code></td><td>800 984 байта</td><td>200 байт</td></tr>
+<tr><td>пик памяти при <code>sum</code> (<code>tracemalloc</code>)</td><td>4,0 МБ</td><td>464 байта</td></tr>
+<tr><td>повторный обход</td><td>да</td><td>нет</td></tr>
+<tr><td><code>len</code> и индексы</td><td>да</td><td>нет</td></tr>
+</tbody></table>
+</div>
+<p><code>sys.getsizeof</code> учитывает только сам список, то есть массив ссылок; объекты-числа добавляют ещё около 2,8 МБ, что и показывает пик памяти при суммировании. Размер генератора не зависит от длины последовательности, но зависит от версии Python: в 3.11 тот же генератор занимает 208 байт.</p>
+<p>Первый источник выражения вычисляется сразу при его создании, а условие и остальные части выполняются при обходе. Поэтому изменение переменной после создания генератора влияет на результат:</p>
+<pre><code class="language-python">data = [0, 2, 5, 12]
+threshold = 1
+g = (x for x in data if x &gt; threshold)
+threshold = 10
+list(g)          # [12]: условие прочитало threshold в момент перебора
+</code></pre>
+<p>Суммы, средние и экстремумы по большим наборам удобно вычислять генераторными выражениями — без промежуточного списка в памяти.</p>
+<h3 id="Конвейер-генераторов"><a class="header" href="#Конвейер-генераторов">Конвейер генераторов</a></h3>
+<p>Генераторы соединяются в конвейер: каждая стадия, кроме первой, принимает итерируемый объект и сама является генератором. Журнал захода, записывавшийся всю смену, может не помещаться в память целиком, но построчно читается так же просто, как список.</p>
+<pre><code class="language-python">def read_lines(path):
     with open(path) as f:
-        for line in f:
-            if not line.strip() or line.startswith('#'):
-                continue           # пустые строки и комментарии пропускаем
-            t, channel, value = line.split()
-            yield float(t), channel, float(value)
+        yield from f
 
-for t, channel, value in read_events('run042.log'):
-    if channel == 'BPM01':
-        print(t, value)
+def parse(lines):
+    for line in lines:
+        if not line.strip() or line.startswith('#'):
+            continue           # пустые строки и комментарии пропускаются
+        t, channel, value = line.split()
+        yield float(t), channel, float(value)
+
+def select(events, name):
+    for t, channel, value in events:
+        if channel == name:
+            yield t, value
+
+lines = read_lines('run042.log')
+bpm = select(parse(lines), 'BPM01')
+print(max(value for t, value in bpm))
 </code></pre>
-<p>Обратный случай — бесконечная последовательность. Генератор вычисляет значения, пока они запрашиваются, а границу устанавливает читающая сторона: <code>itertools.islice</code> берёт первые несколько значений и освобождает генератор.</p>
-<pre><code class="language-python">import itertools
+<p><code>read_lines</code> читает журнал построчно, поскольку файл — итератор по строкам; <code>parse</code> пропускает пустые строки и комментарии и выдаёт разобранные события; <code>select</code> оставляет события одного канала; <code>max</code> потребляет результат. Элементы проходят конвейер по одному: <code>max</code> запрашивает событие у <code>select</code>, <code>select</code> — у <code>parse</code>, <code>parse</code> — строку у <code>read_lines</code>. В памяти одновременно находятся одна строка и одно событие, поэтому журнал любого размера обрабатывается с постоянным расходом памяти. Стадии независимы: их легко заменить, добавить проверку или пересчёт единиц, а <code>parse</code> и <code>select</code> проверяются по отдельности на списке строк вместо файла.</p>
+<pre><code class="language-python">log = ['0.0 BPM01 1.2', '0.1 BPM02 0.7', '0.2 BPM01 1.4']
+pipe = select(parse(log), 'BPM01')   # ничего не прочитано
+next(pipe)                           # (0.0, 1.2)
+next(pipe)                           # (0.2, 1.4): строка BPM02 отброшена
+next(pipe, 'конец')                  # 'конец' вместо StopIteration
+</code></pre>
+<p>Файл закрывается, когда генератор <code>read_lines</code> завершится или будет закрыт; если обход прерван досрочно, файл остаётся открытым до вызова <code>close</code> или сборки мусора (раздел «Завершение генератора»).</p>
+<h3 id="Бесконечные-последовательности"><a class="header" href="#Бесконечные-последовательности">Бесконечные последовательности</a></h3>
+<p>Генератор с бесконечным циклом описывает последовательность без конца: значения вычисляются, пока их запрашивают, а границу устанавливает читающая сторона. Генератор <code>oscillator</code> выдаёт состояния гармонического осциллятора с шагом <code>dt</code> по полунеявной схеме Эйлера: сначала обновляется скорость, затем координата по новой скорости.</p>
+<pre><code class="language-python">import itertools, math
 
-def clock(dt):
-    """Бесконечная последовательность моментов времени с шагом dt."""
+def oscillator(x, v, dt, w=1.0):
     t = 0.0
     while True:
-        yield t
+        yield t, x, v
+        v -= w * w * x * dt
+        x += v * dt
         t += dt
 
-for t in itertools.islice(clock(0.02), 5):
-    print(round(t, 3))  # 0.0, 0.02, 0.04, 0.06, 0.08 — по одному в строке
+states = oscillator(1.0, 0.0, 0.01)
+list(itertools.islice(states, 3))   # три первых состояния
+next(states)                        # четвёртое, t = 0.03: генератор продолжает с места остановки
+next(t for t, x, v in oscillator(1.0, 0.0, 0.01) if x &lt; 0)   # 1.5700000000000012
+math.pi / 2                                                  # 1.5707963267948966
 </code></pre>
-<p>Когда генератор лишь передаёт элементы другого источника, цикл с <code>yield</code> записывается короче через <code>yield from</code>. Это не только синтаксическое упрощение: конструкция пробрасывает во вложенный генератор всё, что передаётся через <code>send</code> и <code>throw</code>, а наружу отдаёт его <code>return</code>, что необходимо при вложенных генераторах.</p>
-<pre><code class="language-python">numbers = [1, 2, 3]
+<p>Условия остановки в генераторе нет: его задаёт вызывающий код. <code>itertools.islice</code> берёт заданное число состояний и больше не обращается к генератору, <code>takewhile</code> выдаёт состояния, пока выполняется условие, <code>next</code> с генераторным выражением возвращает первое состояние, удовлетворяющее условию, например первое пересечение нуля. <code>takewhile</code> при этом забирает из генератора и первый элемент, не прошедший условие, и этот элемент теряется. Список из бесконечного генератора построить нельзя: <code>list(oscillator(...))</code> не завершится, а память будет расти, пока процесс не будет остановлен.</p>
+<p>Координата впервые становится отрицательной при t = 1,57 при точном значении π/2 = 1,5708: расхождение меньше шага. Полунеявная схема точно сохраняет величину x² + v² − dt·x·v, поэтому x² + v² колеблется в узкой полосе около единицы: за 10 000 шагов отклонение не превышает dt/(2 − dt) ≈ 0,00503. У явной схемы Эйлера x² + v² на каждом шаге умножается на 1 + dt², и за те же 10 000 шагов выросла бы примерно в e раз. Так генератор разделяет схему интегрирования и условие остановки — по времени, по числу шагов или по событию.</p>
+<p>Моменты времени, вычисляемые сложением <code>t += dt</code>, тоже накапливают ошибку округления: у <code>itertools.count(0.0, 0.1)</code> десятый шаг даёт 0.9999999999999999 вместо 1.0, и документация <code>itertools</code> рекомендует в таком случае умножение. Генератор моментов времени без накопления:</p>
+<pre><code class="language-python">def clock(dt):
+    """Бесконечная последовательность моментов времени с шагом dt."""
+    for i in itertools.count():
+        yield i * dt           # умножение, а не накопление t += dt
 
-# Стандартный подход
-def func():
-    for item in numbers:
-        yield item
-
-# Упрощенный подход
-def func():
-    yield from numbers
+[round(t, 3) for t in itertools.islice(clock(0.02), 5)]   # [0.0, 0.02, 0.04, 0.06, 0.08]
 </code></pre>
+<h3 id="Делегирование-yield-from"><a class="header" href="#Делегирование-yield-from">Делегирование: yield from</a></h3>
+<p>Когда генератор лишь передаёт элементы другого итерируемого объекта, цикл <code>for x in g: yield x</code> записывается короче: <code>yield from g</code>. Рекурсивный обход двоичного дерева поиска в порядке возрастания выдаёт элементы левого поддерева, значение узла и элементы правого поддерева, а вложенные вызовы соединяются через <code>yield from</code>.</p>
+<pre><code class="language-python">class Node:
+    def __init__(self, value, left=None, right=None):
+        self.value = value
+        self.left, self.right = left, right
+
+def walk(node):
+    if node is not None:
+        yield from walk(node.left)
+        yield node.value
+        yield from walk(node.right)
+
+tree = Node(5, Node(3, Node(1)), Node(8))
+list(walk(tree))     # [1, 3, 5, 8]
+</code></pre>
+<p>Конструкция <code>yield from</code> (PEP 380, Python 3.3) не сводится к сокращению цикла. Она передаёт во вложенный генератор значения, отправленные через <code>send</code>, и исключения, отправленные через <code>throw</code>, а значением самого выражения <code>yield from</code> становится результат <code>return</code> вложенного генератора:</p>
+<pre><code class="language-python">def sub():
+    yield 1
+    yield 2
+    return 'итог'
+
+def outer():
+    r = yield from sub()
+    print('подгенератор вернул', r)
+
+list(outer())   # печатает «подгенератор вернул итог», результат [1, 2]
+</code></pre>
+<p>Это позволяет разбивать сложный генератор на части, как функцию на подфункции. Рекурсивным генератором с <code>yield from</code> записывается обход любых деревьев — разбиений пространства (квадродеревья и октодеревья в задаче N тел), иерархий геометрии детектора.</p>
+<h3 id="Завершение-генератора"><a class="header" href="#Завершение-генератора">Завершение генератора</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Ситуация</th><th>Результат</th></tr></thead><tbody>
+<tr><td><code>return значение</code></td><td><code>StopIteration(значение)</code>: результат для <code>yield from</code>, не для <code>for</code></td></tr>
+<tr><td><code>StopIteration</code> в теле (PEP 479, Python 3.7)</td><td><code>RuntimeError: generator raised StopIteration</code></td></tr>
+<tr><td><code>next(g)</code> внутри самого <code>g</code></td><td><code>ValueError: generator already executing</code></td></tr>
+<tr><td>досрочное прерывание обхода</td><td>выполнение <code>finally</code> и <code>with</code> при <code>close()</code> или сборке мусора</td></tr>
+</tbody></table>
+</div>
+<p>До Python 3.7 исключение <code>StopIteration</code>, возникшее внутри тела генератора, — например, от вызова <code>next</code> у исчерпанного итератора, — молча завершало генератор, и ошибка терялась. PEP 479 изменил это поведение: такое исключение превращается в <code>RuntimeError</code>. Поэтому внутри генератора <code>next</code> вызывается со значением по умолчанию или в блоке <code>try</code>, а для завершения используется <code>return</code>.</p>
+<pre><code class="language-python">def firsts(groups):
+    for g in groups:
+        yield next(iter(g))        # пустая группа: RuntimeError
+
+list(firsts([[1], []]))   # RuntimeError: generator raised StopIteration
+
+def firsts(groups):
+    for g in groups:
+        yield next(iter(g), None)
+
+list(firsts([[1], []]))   # [1, None]
+</code></pre>
+<p>Генератор, обход которого прерван досрочно — оператором <code>break</code> или исключением у потребителя, — остаётся в состоянии <code>GEN_SUSPENDED</code>; его блоки <code>finally</code> и менеджеры контекста выполнятся при вызове <code>close</code> или при уничтожении объекта сборщиком мусора. В CPython это обычно происходит сразу после потери последней ссылки, в других реализациях — позже, поэтому ресурсы освобождают явно: <code>g.close()</code> или <code>contextlib.closing(g)</code>.</p>
+<h2 id="Модуль-itertools"><a class="header" href="#Модуль-itertools">Модуль itertools</a></h2>
+<p>Модуль <code>itertools</code> содержит ленивые итераторы, реализованные на C, — базовые средства обработки последовательностей без промежуточных списков. Все функции модуля возвращают итераторы, поэтому их результат однопроходный и может быть входом следующей функции.</p>
+<h3 id="Бесконечные-итераторы-и-срезы"><a class="header" href="#Бесконечные-итераторы-и-срезы">Бесконечные итераторы и срезы</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Функция</th><th>Пример</th><th>Результат</th></tr></thead><tbody>
+<tr><td><code>count(start, step)</code></td><td><code>count(0.0, 0.25)</code></td><td>0.0, 0.25, 0.5, …</td></tr>
+<tr><td><code>cycle(it)</code></td><td><code>cycle('AB')</code></td><td>A, B, A, B, …</td></tr>
+<tr><td><code>repeat(x, n)</code></td><td><code>repeat(0, 3)</code></td><td>0, 0, 0</td></tr>
+<tr><td><code>islice(it, start, stop, step)</code></td><td><code>islice(count(), 2, 8, 2)</code></td><td>2, 4, 6</td></tr>
+<tr><td><code>takewhile(pred, it)</code></td><td><code>takewhile(lambda t: t &lt; 1, ts)</code></td><td>до первого ложного условия</td></tr>
+<tr><td><code>dropwhile(pred, it)</code></td><td><code>dropwhile(lambda x: x &lt; 3, [1, 4, 2, 5])</code></td><td>4, 2, 5</td></tr>
+<tr><td><code>compress(it, mask)</code></td><td><code>compress('ABCD', [1, 0, 1, 0])</code></td><td>A, C</td></tr>
+<tr><td><code>filterfalse(pred, it)</code></td><td><code>filterfalse(lambda x: x % 2, range(6))</code></td><td>0, 2, 4</td></tr>
+</tbody></table>
+</div>
+<p><code>count</code> считает от <code>start</code> с шагом <code>step</code>, в том числе для вещественных чисел, но с вещественным шагом накапливает его сложением; <code>cycle</code> повторяет элементы источника по кругу, сохраняя их копию; <code>repeat</code> выдаёт одно значение заданное или бесконечное число раз. <code>islice</code> — аналог среза для любого итератора без отрицательных индексов, поскольку длина итератора неизвестна. <code>takewhile</code> останавливается на первом ложном условии, <code>dropwhile</code> пропускает элементы, пока условие истинно, а после первого неподходящего выдаёт всё остальное без проверки: это не фильтр.</p>
+<h3 id="Объединение-и-группировка"><a class="header" href="#Объединение-и-группировка">Объединение и группировка</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Функция</th><th>Что делает</th></tr></thead><tbody>
+<tr><td><code>chain(a, b)</code>, <code>chain.from_iterable(xs)</code></td><td>последовательное соединение источников</td></tr>
+<tr><td><code>zip_longest(a, b, fillvalue=None)</code></td><td>соединение до конца самого длинного источника</td></tr>
+<tr><td><code>groupby(it, key)</code></td><td>группы соседних элементов с одним ключом</td></tr>
+<tr><td><code>pairwise(it)</code> (Python 3.10)</td><td>соседние пары (a, b), (b, c), …</td></tr>
+<tr><td><code>batched(it, n)</code> (Python 3.12)</td><td>кортежи по n элементов</td></tr>
+<tr><td><code>accumulate(it, func, initial=x)</code></td><td>накопленные суммы, бегущий максимум</td></tr>
+<tr><td><code>starmap(f, pairs)</code></td><td><code>f(*pair)</code> для каждой пары</td></tr>
+<tr><td><code>tee(it, n)</code></td><td>n независимых копий одного итератора</td></tr>
+</tbody></table>
+</div>
+<p><code>chain.from_iterable</code> соединяет источники из итерируемого объекта, например из списка списков; распаковка <code>chain(*xss)</code> строит кортеж источников и на бесконечном источнике не завершится. <code>groupby</code> выдаёт пары «ключ, итератор группы» и объединяет только соседние элементы, поэтому для группировки по всему набору данные сначала сортируют по тому же ключу.</p>
+<pre><code class="language-python">from itertools import groupby, pairwise, batched, accumulate
+
+events = [('BPM02', 0.7), ('BPM01', 1.2), ('BPM01', 1.4), ('BPM02', 0.9)]
+[name for name, _ in groupby(events, key=lambda e: e[0])]
+# ['BPM02', 'BPM01', 'BPM02']: без сортировки BPM02 попал в две группы
+for name, grp in groupby(sorted(events), key=lambda e: e[0]):
+    print(name, [v for _, v in grp])   # BPM01 [1.2, 1.4] и BPM02 [0.7, 0.9]
+
+times = [0.00, 0.12, 0.31, 0.39]
+[round(b - a, 2) for a, b in pairwise(times)]   # [0.12, 0.19, 0.08]
+list(batched(range(7), 3))                      # [(0, 1, 2), (3, 4, 5), (6,)]
+list(accumulate([3, 1, 4, 1, 5], max))          # [3, 3, 4, 4, 5]
+</code></pre>
+<p><code>pairwise</code> по отметкам времени даёт интервалы между событиями, <code>accumulate</code> — накопленную дозу или интеграл методом прямоугольников, <code>batched</code> — пакеты для записи в файл или отправки по сети. Вместо <code>pairwise</code> иногда пишут <code>zip(xs, islice(xs, 1, None))</code>; на списке это работает, а на итераторе даёт неверные пары, поскольку оба аргумента расходуют один итератор.</p>
+<h3 id="Комбинаторика"><a class="header" href="#Комбинаторика">Комбинаторика</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Функция</th><th>Перебирает</th><th>Число вариантов</th></tr></thead><tbody>
+<tr><td><code>product(A, B)</code></td><td>все пары (a, b)</td><td><code>len(A) * len(B)</code></td></tr>
+<tr><td><code>product(A, repeat=k)</code></td><td>кортежи длины k</td><td><code>n ** k</code></td></tr>
+<tr><td><code>permutations(A, k)</code></td><td>упорядоченные выборки</td><td><code>math.perm(n, k)</code></td></tr>
+<tr><td><code>combinations(A, k)</code></td><td>неупорядоченные выборки</td><td><code>math.comb(n, k)</code></td></tr>
+<tr><td><code>combinations_with_replacement(A, k)</code></td><td>выборки с повторением</td><td><code>math.comb(n + k - 1, k)</code></td></tr>
+</tbody></table>
+</div>
+<p>Комбинаторные функции заменяют вложенные циклы: <code>product</code> выдаёт декартово произведение в лексикографическом порядке, где последний источник меняется быстрее всех. Число вариантов растёт быстро, поэтому его заранее оценивают функциями <code>math.perm</code> и <code>math.comb</code> (Python 3.8).</p>
+<pre><code class="language-python">from itertools import product, combinations
+import math
+
+grid = list(product([1.0, 2.0], [0.1, 0.2, 0.3]))
+len(grid), grid[:3]          # (6, [(1.0, 0.1), (1.0, 0.2), (1.0, 0.3)])
+list(combinations('ABCD', 2))
+# [('A', 'B'), ('A', 'C'), ('A', 'D'), ('B', 'C'), ('B', 'D'), ('C', 'D')]
+math.comb(32, 2), sum(1 for _ in combinations(range(32), 2))   # (496, 496)
+</code></pre>
+<p><code>product</code> перебирает сетку параметров моделирования — температуры и поля, энергии и углы — одним циклом без вложенности; <code>combinations</code> даёт пары детекторов для поиска совпадений: 32 детектора образуют 496 пар. Число повторов в <code>product</code> передаётся только именованным аргументом <code>repeat</code>: вызов <code>product('ab', 2)</code> завершается <code>TypeError</code>.</p>
+<h3 id="Рецепты-и-ограничения"><a class="header" href="#Рецепты-и-ограничения">Рецепты и ограничения</a></h3>
+<p>Документация модуля содержит раздел рецептов — коротких функций, собранных из стандартных блоков: скользящее окно <code>sliding_window</code>, чередование источников <code>roundrobin</code>, удаление повторов <code>unique_everseen</code> и другие; многие из них вошли в сторонний пакет <code>more-itertools</code>. Скользящее среднее строится на <code>deque</code> ограниченной длины: очередь хранит последние <code>n</code> отсчётов, а старые вытесняются автоматически.</p>
+<pre><code class="language-python">from collections import deque
+from itertools import islice
+
+def moving_average(xs, n):
+    it = iter(xs)
+    window = deque(islice(it, n - 1), maxlen=n)
+    for x in it:
+        window.append(x)
+        yield sum(window) / n
+
+list(moving_average([1, 2, 3, 4, 5], 3))   # [2.0, 3.0, 4.0]
+</code></pre>
+<p>Ограничения модуля следуют из ленивости:</p>
+<ul>
+<li><code>product</code>, <code>permutations</code> и <code>combinations</code> читают входные источники целиком и сохраняют их в кортежах ещё до выдачи первого результата, поэтому бесконечный итератор передавать в них нельзя;</li>
+<li><code>tee</code> хранит элементы, пока их не прочитают все копии, и при большом отставании одной копии расходует память как список; исходный итератор после <code>tee</code> не используется;</li>
+<li>группа из <code>groupby</code> действительна только до перехода к следующей: если её нужно сохранить, её сразу превращают в список;</li>
+<li><code>islice</code> не поддерживает отрицательные индексы.</li>
+</ul>
+<p>Скользящее среднее и медиана — простейшие фильтры сигнала; для массивов NumPy среднее вычисляют свёрткой <code>numpy.convolve</code>, медиану — функцией <code>scipy.signal.medfilt</code>, а генератор подходит для потока, который не хранится целиком.</p>
 <h2 id="Корутины"><a class="header" href="#Корутины">Корутины</a></h2>
-<p>Корутины выросли из генераторов и решают задачу не параллельного счёта, а ожидания: один поток занимается другой работой, пока текущая задача ожидает ответа от сети или диска.</p>
-<p>Генератор только отдаёт значения наружу, а корутина способна и <strong>принимать</strong> их. Выражение <code>deposit = (yield)</code> приостанавливает функцию и ожидает, пока извне будет вызван <code>send</code>. Таким образом, получается диалог с функцией, сохраняющей между запросами своё состояние.</p>
-<p>Рассмотрим расчёт сложных процентов. Коэффициент роста, вычисленный один раз при создании корутины, далее не меняется, а суммы вклада в неё можно передавать неограниченно.</p>
-<pre><code class="language-python">import math
-from collections.abc import Generator
+<p>Корутины (сопрограммы) выросли из генераторов: генератор, принимающий значения через <code>send</code>, хранит состояние между вызовами и обрабатывает поток входных данных. На том же механизме приостановки построена асинхронность, где один поток занимается другой работой, пока задача ожидает ответа от сети или прибора.</p>
+<h3 id="Метод-send"><a class="header" href="#Метод-send">Метод send</a></h3>
+<p>Выражение <code>yield</code> справа от присваивания делает генератор двусторонним: <code>x = yield result</code> выдаёт <code>result</code> наружу, приостанавливает функцию и при возобновлении получает значение, переданное методом <code>send</code>. Вызов <code>next(g)</code> равносилен <code>g.send(None)</code>. Перед первым <code>send</code> корутину запускают вызовом <code>next</code>, чтобы она дошла до первого <code>yield</code>: отправить значение в только что созданный генератор нельзя. Метод <code>send</code> возвращает следующее значение, выданное корутиной, поэтому один вызов и передаёт измерение, и возвращает обновлённый результат.</p>
+<p>Корутина <code>stats</code> вычисляет среднее и дисперсию потока измерений по формулам Уэлфорда: на каждом шаге обновляются число отсчётов, среднее и сумма квадратов отклонений M2, а несмещённая оценка дисперсии равна M2/(n − 1).</p>
+<pre><code class="language-python">def stats():
+    n, mean, m2 = 0, 0.0, 0.0
+    result = None
+    while True:
+        x = yield result
+        n += 1
+        d = x - mean
+        mean += d / n
+        m2 += d * (x - mean)
+        result = n, mean, m2 / (n - 1) if n &gt; 1 else 0.0
+
+s = stats()
+s.send(2.0)    # TypeError: can't send non-None value to a just-started generator
+next(s)        # запуск до первого yield
+s.send(2.0)    # (1, 2.0, 0.0)
+s.send(4.0)    # (2, 3.0, 2.0)
+s.send(6.0)    # (3, 4.0, 4.0)
+</code></pre>
+<p>Состояние хранится в локальных переменных генератора, а не в атрибутах объекта; эквивалентный класс с методом <code>add</code> длиннее, но при сложном состоянии нагляднее. Формулы Уэлфорда численно устойчивы: в отличие от формулы «среднее квадратов минус квадрат среднего», они не вычитают близкие большие числа и не теряют точность при большом постоянном смещении сигнала.</p>
+<p>Тот же приём с аннотацией типов: тип <code>Generator[тип выдачи, тип приёма, тип возврата]</code> из <code>collections.abc</code> описывает корутину, выдающую <code>None</code> или результат, принимающую вклад и ничего не возвращающую. Корутина ниже вычисляет вклад с учётом сложных процентов; коэффициент роста вычисляется один раз — при первом <code>next(coro)</code>, когда корутина доходит до первого <code>yield</code>, — и далее не меняется, а суммы вклада в неё можно передавать неограниченно.</p>
+<pre><code class="language-python">from collections.abc import Generator
 
 def cash_return_coro(percent: float,
                      years: int) -&gt; Generator[float | None, float, None]:
-    value = math.pow(1 + percent / 100, years)
+    value = (1 + percent / 100) ** years
+    result = None
     while True:
         try:
-            deposit = (yield)
-            yield round(deposit * value, 2)
+            deposit = yield result
         except GeneratorExit:
             print('Выход из корутины')
             raise
+        result = round(deposit * value, 2)
 
-# Использование
 coro = cash_return_coro(5, 5)
-next(coro)
-values = [1000, 2000, 5000, 10000, 100000]
-for item in values:
-    print(coro.send(item))
-    next(coro)
-coro.close()
+next(coro)                       # запуск до первого yield
+for item in [1000, 2000, 5000, 10000, 100000]:
+    print(coro.send(item))       # 1276.28, 2552.56, 6381.41, 12762.82, 127628.16
+coro.close()                     # печатает «Выход из корутины»
 </code></pre>
-<p>За один оборот цикла корутина приостанавливается дважды: сначала на <code>yield</code>, принимающем вклад, затем на <code>yield</code>, отдающем результат. Поэтому <code>send</code> возвращает вычисленное число, а следующий за ним <code>next</code> доводит корутину до очередного приёма.</p>
-<h2 id="Дальнейшее-изучение"><a class="header" href="#Дальнейшее-изучение">Дальнейшее изучение</a></h2>
-<p>Таким образом, итератор отдаёт элементы по одному, генератор приостанавливает функцию на <code>yield</code> и продолжает с места, запомненного при остановке, а корутина способна ещё и принимать значения через <code>send()</code>.</p>
-<p>На этом построена асинхронность в Python: цикл событий представляет собой планировщик, который переключается между приостановленными генераторами и отдаёт процессорное время той задаче, которая готова работать, пока остальные ожидают ответа от сети или диска. Внутреннее устройство этого механизма и его использование через <code>asyncio</code> рассматриваются в главе про асинхронность в разделе «Ускорение расчётов».</p>
+<p>Выражение <code>deposit = yield result</code> отдаёт наружу результат предыдущего шага и принимает следующий вклад, поэтому <code>next(coro)</code> нужен один раз — чтобы довести корутину до первого <code>yield</code>. Форма с двумя <code>yield</code> за оборот — один принимает вклад, другой отдаёт результат — требует вызова <code>next</code> после каждого <code>send</code>: если его пропустить, следующий вклад попадёт не в тот <code>yield</code> и потеряется без ошибки.</p>
+<h3 id="Методы-throw-и-close"><a class="header" href="#Методы-throw-и-close">Методы throw и close</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Вызов</th><th>Что происходит в генераторе</th></tr></thead><tbody>
+<tr><td><code>g.throw(exc)</code></td><td>исключение в точке <code>yield</code>; перехваченное — работа до следующего <code>yield</code></td></tr>
+<tr><td><code>g.close()</code></td><td><code>GeneratorExit</code> в точке <code>yield</code>; выполнение <code>finally</code> и завершение генератора</td></tr>
+<tr><td><code>yield</code> после <code>GeneratorExit</code></td><td><code>RuntimeError: generator ignored GeneratorExit</code></td></tr>
+<tr><td><code>g.throw(тип, значение, tb)</code></td><td>форма с тремя аргументами: устаревшая с Python 3.12</td></tr>
+</tbody></table>
+</div>
+<p><code>throw</code> возбуждает исключение в точке, где генератор приостановлен, — так, будто его выбросила инструкция <code>yield</code>. Если генератор перехватывает исключение, он продолжает работу до следующего <code>yield</code>, и <code>throw</code> возвращает выданное значение; если нет, исключение выходит наружу из вызова <code>throw</code>. В счётчике ниже <code>ValueError</code> служит командой сброса.</p>
+<pre><code class="language-python">def counter():
+    n = 0
+    try:
+        while True:
+            try:
+                yield n
+                n += 1
+            except ValueError:
+                n = 0
+    finally:
+        print('закрытие, n =', n)
+
+c = counter()
+next(c), next(c), next(c)   # (0, 1, 2)
+c.throw(ValueError)         # 0: сброс без завершения генератора
+next(c)                     # 1
+c.close()                   # печатает «закрытие, n = 1»
+next(c)                     # исключение StopIteration
+</code></pre>
+<p><code>close</code> возбуждает в точке остановки <code>GeneratorExit</code>: генератор обязан завершиться — выполнить блоки <code>finally</code> и выйти. Если вместо этого он снова выполнит <code>yield</code>, возникнет <code>RuntimeError: generator ignored GeneratorExit</code>. Поэтому после перехвата <code>GeneratorExit</code> генератор не выполняет <code>yield</code>: исключение возбуждают повторно, как в <code>cash_return_coro</code>, или завершают генератор оператором <code>return</code>, а для освобождения ресурсов достаточно <code>finally</code> или <code>with</code>. CPython вызывает <code>close</code> и при уничтожении незавершённого генератора, поэтому файлы и соединения, открытые в теле генератора, закрываются и при прерванном обходе. Форма <code>throw</code> с тремя аргументами — тип, значение, трассировка — с Python 3.12 устарела: передаётся один аргумент — экземпляр или класс исключения.</p>
+<h3 id="yield-from-как-канал"><a class="header" href="#yield-from-как-канал">yield from как канал</a></h3>
+<p><code>yield from</code> соединяет вызывающий код с подгенератором напрямую: значения, выдаваемые подгенератором, проходят наружу, значения <code>send</code> и исключения <code>throw</code> — внутрь, а делегирующий генератор на это время приостановлен и лишь получает итоговый результат.</p>
+<pre><code class="language-python">def averager():
+    total, n = 0.0, 0
+    while True:
+        x = yield
+        if x is None:
+            return total / n
+        total, n = total + x, n + 1
+
+def collect(results, name):
+    while True:
+        results[name] = yield from averager()
+
+results = {}
+c = collect(results, 'BPM01')
+next(c)
+for x in (1.25, 1.5, 1.75):
+    c.send(x)
+c.send(None)       # конец серии
+results            # {'BPM01': 1.5}
+</code></pre>
+<p>Корутина <code>averager</code> принимает значения одной серии и по сигналу конца серии — значению <code>None</code> — возвращает среднее; делегирующий генератор <code>collect</code> записывает этот результат в словарь и начинает следующую серию. Для вызывающего кода два уровня неразличимы: он отправляет значения в <code>collect</code>, а они попадают в <code>averager</code>. Без <code>yield from</code> пришлось бы вручную перехватывать <code>StopIteration</code>, передавать <code>send</code> и <code>throw</code> и обрабатывать <code>close</code>. На такой передаче управления по цепочке вложенных генераторов была построена первая версия <code>asyncio</code>: корутины ожидали друг друга через <code>yield from</code>, пока в Python 3.5 не появился <code>await</code>.</p>
+<h3 id="Генератор-как-менеджер-контекста"><a class="header" href="#Генератор-как-менеджер-контекста">Генератор как менеджер контекста</a></h3>
+<p>Декоратор <code>contextlib.contextmanager</code> превращает генератор с одним <code>yield</code> в менеджер контекста. Код до <code>yield</code> выполняется при входе в блок <code>with</code> и играет роль <code>__enter__</code>; значение <code>yield</code> связывается с переменной после <code>as</code>; код после <code>yield</code> выполняется при выходе из блока и играет роль <code>__exit__</code>.</p>
+<pre><code class="language-python">import contextlib, time
+
+@contextlib.contextmanager
+def timer(label):
+    t0 = time.perf_counter()
+    try:
+        yield
+    finally:
+        dt = time.perf_counter() - t0
+        print(f'{label}: {dt:.2f} с')
+
+with timer('сумма'):
+    s = sum(i * i for i in range(10**6))   # печатает «сумма: 0.04 с»; время зависит от машины
+
+with timer('деление'):
+    1 / 0      # печатает «деление: 0.00 с», затем ZeroDivisionError выходит наружу
+</code></pre>
+<p>Если в блоке <code>with</code> возникает исключение, оно возбуждается в генераторе в точке <code>yield</code>, поэтому завершающий код помещается в <code>finally</code> — иначе при ошибке он не выполнится. Исключение, перехваченное в генераторе и не возбуждённое повторно, считается обработанным. Такой менеджер короче класса с методами <code>__enter__</code> и <code>__exit__</code> и подходит для однократных действий вокруг блока: замер времени этапов обработки, временная смена каталога или настроек, захват и освобождение ресурса. Менеджер из <code>contextmanager</code> применяется и как декоратор функции. В <code>contextlib</code> есть и готовые менеджеры: <code>suppress</code> подавляет указанные исключения, <code>chdir</code> (Python 3.11) временно меняет рабочий каталог, <code>closing</code> вызывает <code>close</code> по выходе, <code>ExitStack</code> собирает переменное число менеджеров; временный каталог создаёт <code>tempfile.TemporaryDirectory</code>.</p>
+<h2 id="От-генераторов-к-async-и-await"><a class="header" href="#От-генераторов-к-async-и-await">От генераторов к async и await</a></h2>
+<h3 id="Цикл-событий-на-генераторах"><a class="header" href="#Цикл-событий-на-генераторах">Цикл событий на генераторах</a></h3>
+<p>Планировщик, переключающийся между задачами, записывается в десяток строк, если задачи — генераторы. Задача выполняет шаг работы и отдаёт управление инструкцией <code>yield</code>. Планировщик хранит очередь готовых задач, берёт первую, продвигает её вызовом <code>next</code> до следующего <code>yield</code> и ставит в конец очереди; завершившаяся задача возбуждает <code>StopIteration</code> и из очереди удаляется.</p>
+<pre><code class="language-python">from collections import deque
+
+def task(name, n):
+    for i in range(n):
+        print(name, 'шаг', i)
+        yield
+
+def run(tasks):
+    queue = deque(tasks)
+    while queue:
+        t = queue.popleft()
+        try:
+            next(t)
+        except StopIteration:
+            continue
+        queue.append(t)
+
+run([task('прибор A', 3), task('прибор B', 2)])
+</code></pre>
+<pre><code class="language-text">прибор A шаг 0
+прибор B шаг 0
+прибор A шаг 1
+прибор B шаг 1
+прибор A шаг 2
+</code></pre>
+<p>Две задачи чередуются, хотя поток один: переключение происходит только в точках <code>yield</code>, поэтому такая многозадачность называется кооперативной — задача, не дошедшая до <code>yield</code>, удерживает поток. В цикле событий <code>asyncio</code> задача, ожидающая данных, не возвращается в очередь сразу: она регистрирует ожидание у селектора операционной системы и снова становится готовой, когда данные пришли или истёк тайм-аут. Полная реализация такого планировщика разобрана в главе <a href="../../perf/async.html">«Асинхронность»</a>.</p>
+<h3 id="async-def-и-await"><a class="header" href="#async-def-и-await">async def и await</a></h3>
+<p>До Python 3.5 корутины <code>asyncio</code> были генераторами: они ожидали друг друга через <code>yield from</code> и помечались декоратором <code>@asyncio.coroutine</code>, удалённым в Python 3.11. PEP 492 ввёл нативные корутины: функция, объявленная через <code>async def</code>, при вызове возвращает объект типа <code>coroutine</code>, а <code>await</code> приостанавливает её до завершения ожидаемого объекта — другой корутины, задачи или <code>Future</code>. <code>await</code> допустим только внутри <code>async def</code>, а объект-корутину нельзя перебрать циклом <code>for</code>.</p>
+<div class="table-wrapper"><table><thead><tr><th>Генераторная корутина</th><th>Нативная корутина (Python 3.5, PEP 492)</th></tr></thead><tbody>
+<tr><td><code>def</code> и <code>yield</code></td><td><code>async def</code></td></tr>
+<tr><td><code>yield from future</code></td><td><code>await future</code></td></tr>
+<tr><td><code>@asyncio.coroutine</code>, удалён в 3.11</td><td>без декоратора</td></tr>
+<tr><td><code>loop.run_until_complete(main())</code></td><td><code>asyncio.run(main())</code>, Python 3.7</td></tr>
+</tbody></table>
+</div>
+<p>Ожидание приборов с разной задержкой показывает разницу между ожиданием и блокировкой:</p>
+<pre><code class="language-python">import asyncio, time
+
+async def poll(name, delay):
+    await asyncio.sleep(delay)      # точка ожидания: управление у цикла событий
+    return name, delay
+
+async def blocking(name, delay):
+    time.sleep(delay)               # блокирующий вызов: цикл событий стоит
+    return name, delay
+
+async def main(f):
+    t0 = time.perf_counter()
+    res = await asyncio.gather(f('A', 0.3), f('B', 0.5), f('C', 0.8))
+    print(res, round(time.perf_counter() - t0, 2))
+
+asyncio.run(main(poll))       # [('A', 0.3), ('B', 0.5), ('C', 0.8)] 0.8
+asyncio.run(main(blocking))   # [('A', 0.3), ('B', 0.5), ('C', 0.8)] 1.61
+</code></pre>
+<p>С <code>await</code> задержки перекрываются, и общее время равно наибольшей — 0,8 с; <code>time.sleep</code> не отдаёт управление циклу событий, и опросы выполняются по очереди за 1,6 с. Вызов <code>poll('A', 0.3)</code> без <code>await</code> ничего не выполняет: создаётся объект, а при его уничтожении выводится предупреждение <code>RuntimeWarning: coroutine 'poll' was never awaited</code> — признак забытого <code>await</code>. Задачи, тайм-ауты, группы задач и асинхронная итерация рассматриваются в главе <a href="../../perf/async.html">«Асинхронность»</a>.</p>
+<h2 id="Выбор-средства"><a class="header" href="#Выбор-средства">Выбор средства</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>Задача</th><th>Средство</th></tr></thead><tbody>
+<tr><td>перебор данных по одному элементу</td><td>итератор, генератор</td></tr>
+<tr><td>конвейер обработки потока</td><td>цепочка генераторов, <code>itertools</code></td></tr>
+<tr><td>состояние, меняющееся по входным данным</td><td>корутина с <code>send</code> или класс</td></tr>
+<tr><td>действия до и после блока</td><td><code>contextlib.contextmanager</code></td></tr>
+<tr><td>ожидание сети и приборов</td><td><code>asyncio</code>: <code>gather</code>, <code>TaskGroup</code>, <code>timeout</code></td></tr>
+<tr><td>расчёт на всех ядрах</td><td><code>multiprocessing</code>, NumPy, numba</td></tr>
+<tr><td>блокирующие вызовы и файлы в асинхронном коде</td><td><code>asyncio.to_thread</code></td></tr>
+</tbody></table>
+</div>
+<h2 id="Итоги"><a class="header" href="#Итоги">Итоги</a></h2>
+<p>Таким образом, цикл <code>for</code> получает итератор функцией <code>iter</code> и вызывает <code>next</code>, пока тот не возбудит <code>StopIteration</code>; итерируемый объект выдаёт новый итератор на каждый проход, а сам итератор однопроходный. Функция с <code>yield</code> возвращает генератор, выполняемый по шагам: между вызовами локальные переменные и место остановки хранятся в кадре, а <code>return</code> завершает генератор и передаёт значение в <code>StopIteration</code>. Генераторные выражения и конвейеры генераторов обрабатывают данные по одному элементу, поэтому расход памяти не зависит от объёма данных. Модуль <code>itertools</code> даёт ленивые бесконечные итераторы, срезы, объединение, группировку и комбинаторику. Методы <code>send</code>, <code>throw</code> и <code>close</code> превращают генератор в корутину, а <code>yield from</code> соединяет её с подгенератором и возвращает его результат. Нативные корутины <code>async def</code> и <code>await</code> выполняет цикл событий, переключая задачи в точках ожидания.</p>
+<p>Для самостоятельного изучения рекомендуются документация модуля <code>itertools</code> с разделом рецептов, PEP 380 (<code>yield from</code>), PEP 479 (<code>StopIteration</code> внутри генератора) и PEP 492 (<code>async</code> и <code>await</code>).</p>
 
                     </main>
 
