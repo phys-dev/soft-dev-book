@@ -180,43 +180,38 @@
                     <main>
                         <h1 id="Графики-matplotlib"><a class="header" href="#Графики-matplotlib">Графики Matplotlib</a></h1>
 <blockquote>
-<p>Беглый справочник для читателя, не знакомого с Python. Полностью тема рассматривается в основных главах книги; в печатное издание приложение не вошло.</p>
-<p>Приложение представляет собой перевод с сокращениями учебника <a href="https://cs231n.github.io/python-numpy-tutorial/#matplotlib">«Python Numpy Tutorial»</a> курса CS231n Стэнфордского университета; автор — Дж. Джонсон, исходный текст распространяется по <a href="https://github.com/cs231n/cs231n.github.io/blob/master/LICENSE">лицензии MIT</a>, © 2015 Andrej Karpathy.</p>
+<p>Краткий справочник для читателей, не знакомых с Python. Полностью тема рассматривается в основных главах книги; в печатное издание приложение не вошло.</p>
+<p>Разделы о функциях <code>plot</code> и <code>subplot</code> переведены с сокращениями из учебника <a href="https://cs231n.github.io/python-numpy-tutorial/#matplotlib">«Python Numpy Tutorial»</a> курса CS231n Стэнфордского университета (автор — Дж. Джонсон; исходный текст распространяется по <a href="https://github.com/cs231n/cs231n.github.io/blob/master/LICENSE">лицензии MIT</a>, © 2015 Andrej Karpathy). Раздел учебника об изображениях опущен, а разделы о подписях осей, гистограммах, точках с погрешностями и сохранении в файл добавлены.</p>
 </blockquote>
-<p>Matplotlib является библиотекой для построения графиков. Ниже рассматривается минимум по модулю <code>matplotlib.pyplot</code>, системе построения графиков, аналогичной MATLAB. Подробное рассмотрение визуализации на Python (Matplotlib, Plotly, HoloViews) приведено в главе <a href="./visualization.html">«Визуализация на Python»</a>.</p>
+<blockquote>
+<p><strong>Слайды к главе.</strong> Устройство фигуры Matplotlib, основные виды графиков и сохранение в файл изложены также во второй части лекции «Визуализация данных на Python» с демонстрацией в терминале; слайды лекции доступны <a href="https://phys-dev.github.io/soft-dev-book/slides/lecture-11.html#/sec-mpl">на сайте книги</a> и <a href="https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-11.pdf">в PDF</a>.</p>
+</blockquote>
+<iframe src="../../slides/lecture-11.html#/sec-mpl" title="Слайды лекции «Визуализация данных на Python»: фигура и оси" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
+<p>Matplotlib является библиотекой для построения графиков. Ниже рассматривается минимум по модулю <code>matplotlib.pyplot</code> — интерфейсу, аналогичному MATLAB, в котором команды добавляются в скрытую «текущую фигуру». Явный интерфейс с объектами фигуры и осей и подробное рассмотрение визуализации на Python (Matplotlib, seaborn, Plotly, HoloViews) приведены в главе <a href="./visualization.html">«Визуализация на Python»</a>.</p>
 <pre><code class="language-python">import numpy as np
 import matplotlib.pyplot as plt
 </code></pre>
-<p>Команда IPython, включающая отображение графиков в блокноте:</p>
-<pre><code class="language-python">%matplotlib inline
-</code></pre>
+<p>В блокноте Jupyter графики выводятся под ячейкой. В современных версиях Jupyter это поведение включено по умолчанию, а в старых его включала команда IPython <code>%matplotlib inline</code>.</p>
 <h3 id="Построение-графиков"><a class="header" href="#Построение-графиков">Построение графиков</a></h3>
 <p>Основной функцией <code>matplotlib</code> является <code>plot</code>, строящая графики двумерных данных:</p>
-<pre><code class="language-python"># Вычисляем координаты x и y точек на синусоиде
-x = np.arange(0, 3 * np.pi, 0.1)
+<pre><code class="language-python">x = np.arange(0, 3 * np.pi, 0.1)    # координаты точек синусоиды
 y = np.sin(x)
 
-# Строим график с помощью matplotlib
-plt.plot(x, y)
+plt.plot(x, y)                      # график средствами matplotlib
 </code></pre>
-<pre><code>[&lt;matplotlib.lines.Line2D at 0x1142b94d0&gt;]
-</code></pre>
-<p><img src="output_172_1.png" alt="png" /></p>
+<p><img src="img/mpl-sine.png" alt="Синусоида, построенная функцией plot" /></p>
 <p>Несколько кривых одновременно, с заголовком, легендой и подписями осей:</p>
 <pre><code class="language-python">y_sin = np.sin(x)
 y_cos = np.cos(x)
 
-# Строим оба графика с помощью matplotlib
-plt.plot(x, y_sin)
+plt.plot(x, y_sin)                  # обе кривые в одних осях
 plt.plot(x, y_cos)
-plt.xlabel('x axis label')
-plt.ylabel('y axis label')
-plt.title('Sine and Cosine')
-plt.legend(['Sine', 'Cosine'])
+plt.xlabel('x, рад')
+plt.ylabel('f(x)')
+plt.title('Синус и косинус')
+plt.legend(['sin(x)', 'cos(x)'])
 </code></pre>
-<pre><code>&lt;matplotlib.legend.Legend at 0x114390a50&gt;
-</code></pre>
-<p><img src="output_174_1.png" alt="png" /></p>
+<p><img src="img/mpl-sincos.png" alt="Синус и косинус в одних осях с подписями, заголовком и легендой" /></p>
 <p>В физике график без подписанных осей графиком не считается. На осях всегда должны быть указаны величина и её единицы измерения («t, с», «U, мВ»); за это отвечают <code>plt.xlabel</code> и <code>plt.ylabel</code>. Заголовок задаётся функцией <code>plt.title</code>, а <code>plt.legend</code> выводит легенду со списком кривых и их названий.</p>
 <p>Имя кривой удобнее задавать непосредственно в <code>plot</code> через аргумент <code>label</code>: в этом случае <code>plt.legend()</code> вызывается без аргументов, и соответствие кривых и подписей не нарушается. Координатная сетка <code>plt.grid(True)</code> облегчает считывание значений с графика.</p>
 <pre><code class="language-python">plt.plot(x, y_sin, label='sin(x)')
@@ -229,46 +224,43 @@ plt.grid(True)  # координатная сетка
 </code></pre>
 <h3 id="subplots"><a class="header" href="#subplots">Subplots</a></h3>
 <p>Функция <code>subplot</code> размещает несколько графиков на одном рисунке:</p>
-<pre><code class="language-python"># Вычисляем координаты x и y точек на синусоиде и косинусоиде
-x = np.arange(0, 3 * np.pi, 0.1)
+<pre><code class="language-python">x = np.arange(0, 3 * np.pi, 0.1)    # координаты точек синусоиды и косинусоиды
 y_sin = np.sin(x)
 y_cos = np.cos(x)
 
-# Задаём сетку subplot'ов высотой 2 и шириной 1
-# и делаем активным первый subplot.
-plt.subplot(2, 1, 1)
-
-# Строим первый график
+plt.subplot(2, 1, 1)                # сетка 2 × 1, активен первый подграфик
 plt.plot(x, y_sin)
-plt.title('Sine')
+plt.title('Синус')
 
-# Делаем активным второй subplot и строим второй график.
-plt.subplot(2, 1, 2)
+plt.subplot(2, 1, 2)                # активен второй подграфик
 plt.plot(x, y_cos)
-plt.title('Cosine')
+plt.title('Косинус')
 
-# Показываем рисунок.
-plt.show()
+plt.tight_layout()                  # поля без наложения подписей
+plt.show()                          # вывод рисунка
 </code></pre>
-<p><img src="output_177_0.png" alt="png" /></p>
+<p><img src="img/mpl-subplots.png" alt="Синус и косинус на двух подграфиках одного рисунка" /></p>
 <p>Подробнее о функции <code>subplot</code> — в <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplot.html">документации</a>.</p>
 <h3 id="Гистограммы"><a class="header" href="#Гистограммы">Гистограммы</a></h3>
-<p>Гистограмма строится первой, когда имеется набор повторных измерений: она показывает распределение значений. Сгенерируем 10 000 «измерений», рассеянных вокруг истинного значения по закону Гаусса, и рассмотрим их с помощью <code>plt.hist</code>.</p>
-<pre><code class="language-python"># 10000 «измерений»: истинное значение 5.0, случайный шум 0.5
-values = np.random.normal(loc=5.0, scale=0.5, size=10000)
+<p>Гистограмма строится первой, когда имеется набор повторных измерений: она показывает распределение значений. Ниже генерируются 10 000 «измерений», рассеянных вокруг истинного значения по закону Гаусса, и строится их гистограмма функцией <code>plt.hist</code>.</p>
+<pre><code class="language-python">rng = np.random.default_rng(0)      # генератор случайных чисел NumPy
+
+# 10 000 «измерений»: истинное значение 5,0, случайный шум 0,5
+values = rng.normal(loc=5.0, scale=0.5, size=10000)
 
 plt.hist(values, bins=50, density=True, alpha=0.7)
 plt.xlabel('Измеренное значение')
 plt.ylabel('Плотность вероятности')
 plt.grid(True)
 </code></pre>
+<p><img src="img/mpl-hist.png" alt="Гистограмма 10 000 измерений, нормированная на единичную площадь" /></p>
 <p>Аргумент <code>bins</code> задаёт число корзин: при слишком малом значении распределение теряет детали, при слишком большом гистограмма становится шумной. Флаг <code>density=True</code> нормирует гистограмму на единичную площадь, и в этих осях её можно сравнивать с теоретической плотностью вероятности, например с гауссианой. Полупрозрачность <code>alpha</code> необходима, когда несколько распределений накладываются друг на друга.</p>
 <h3 id="Точки-с-погрешностями-errorbar"><a class="header" href="#Точки-с-погрешностями-errorbar">Точки с погрешностями (errorbar)</a></h3>
-<p>Основным графиком в экспериментальной физике являются точки с погрешностями. Его строит <code>plt.errorbar</code>: кроме координат точек она принимает величины ошибок по осям (<code>yerr</code> и <code>xerr</code>) и рисует усы.</p>
+<p>Основным графиком в экспериментальной физике являются точки с погрешностями. Его строит <code>plt.errorbar</code>: кроме координат точек она принимает величины ошибок по осям (<code>yerr</code> и <code>xerr</code>) и рисует отрезки погрешностей.</p>
 <pre><code class="language-python"># «Эксперимент»: период маятника в зависимости от длины подвеса
 L = np.array([0.2, 0.4, 0.6, 0.8, 1.0])        # длина, м
 T = 2 * np.pi * np.sqrt(L / 9.81)              # теоретический период, с
-T_exp = T + np.random.normal(0, 0.03, T.size)  # «измеренный» период, с
+T_exp = T + rng.normal(0, 0.03, T.size)        # «измеренный» период, с
 T_err = np.full_like(T, 0.05)                  # погрешность измерения, с
 
 plt.errorbar(L, T_exp, yerr=T_err, fmt='o', capsize=3, label='эксперимент')
@@ -278,7 +270,8 @@ plt.ylabel('T, с')
 plt.legend()
 plt.grid(True)
 </code></pre>
-<p>Ключ <code>fmt='o'</code> необходим, поскольку экспериментальные точки изображаются маркерами и не соединяются ломаной; рядом проводится теоретическая кривая или аппроксимация. Аргумент <code>capsize</code> задаёт размер шляпок на концах усов, а <code>xerr</code> добавляет горизонтальные усы, если погрешность имеется и по оси x.</p>
+<p><img src="img/mpl-errorbar.png" alt="Период маятника: измерения с отрезками погрешностей и теоретическая кривая" /></p>
+<p>Ключ <code>fmt='o'</code> необходим, поскольку экспериментальные точки изображаются маркерами и не соединяются ломаной; рядом проводится теоретическая кривая или аппроксимация. Аргумент <code>capsize</code> задаёт размер засечек на концах отрезков, а <code>xerr</code> добавляет горизонтальные отрезки, если погрешность имеется и по оси x.</p>
 <h3 id="Сохранение-рисунка-в-файл"><a class="header" href="#Сохранение-рисунка-в-файл">Сохранение рисунка в файл</a></h3>
 <p>Графики существуют внутри блокнота. Для вставки рисунка в отчёт или статью его сохраняют в файл с помощью <code>plt.savefig</code>; формат определяется расширением имени файла.</p>
 <pre><code class="language-python">plt.plot(x, np.sin(x))
