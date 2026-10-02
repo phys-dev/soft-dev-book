@@ -23,6 +23,12 @@ src/slides/viewer.js и viewer.css, поэтому страница кладёт
 демонстраций в терминале) становятся изолированными <iframe>: скрипты
 в них разрешены, доступ к странице книги и к сети закрыт.
 
+Картинки слайдов презентация хранит как загруженные файлы, и в слайде
+стоит адрес /_blob/<id>. Файл assets.json в папке с deck.json сопоставляет
+такие адреса файлам на диске (пути относительно этой папки), и картинки
+встраиваются в страницу data:-адресами: страница и её PDF обходятся без
+отдельных файлов. Картинка без записи в assets.json останавливает сборку.
+
 Кнопка «Скачать PDF» на панели ведёт на файл soft-dev-book-<имя страницы>.pdf
 (для lecture-01.html — soft-dev-book-lecture-01.pdf) в последнем релизе
 на GitHub. PDF печатает из готовой страницы web/slides_pdf.py; файл
@@ -33,8 +39,10 @@ src/slides/viewer.js и viewer.css, поэтому страница кладёт
 Страницу не правят вручную: правки вносятся в презентацию, после чего
 страница собирается заново.
 """
+import base64
 import html
 import json
+import mimetypes
 import os
 import re
 import sys
@@ -112,6 +120,32 @@ PAGE = """<!doctype html>
 """
 
 
+BLOB = re.compile(r'src="(/_blob/[^"]+)"')
+
+
+def blob_files(folder):
+    """Соответствие адресов /_blob/<id> файлам на диске: assets.json рядом с deck.json."""
+    path = os.path.join(folder, "assets.json")
+    if not os.path.isfile(path):
+        return {}
+    with open(path, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def inline_images(text, folder, files):
+    """Картинки /_blob/<id> встраиваются в слайд data:-адресами."""
+    def repl(match):
+        url = match.group(1)
+        if url not in files:
+            sys.exit(f"нет файла для картинки {url}: допишите assets.json в {folder}")
+        path = os.path.join(folder, files[url])
+        mime = mimetypes.guess_type(path)[0] or "application/octet-stream"
+        with open(path, "rb") as f:
+            data = base64.b64encode(f.read()).decode("ascii")
+        return f'src="data:{mime};base64,{data}"'
+    return BLOB.sub(repl, text)
+
+
 def deck_folder(path):
     """Папка с deck.json: указанная или её подпапка project/."""
     for folder in (path, os.path.join(path, "project")):
@@ -160,7 +194,7 @@ def check_notes(page):
                  + "\n  ".join(found))
 
 
-def slide(folder, slide_id, notes=True):
+def slide(folder, slide_id, notes=True, files=None):
     """Один слайд без служебных комментариев; заметки докладчика скрыты
     (hidden) или, при notes=False, удалены."""
     if not SLIDE_ID.match(slide_id):
@@ -178,7 +212,7 @@ def slide(folder, slide_id, notes=True):
     if (not text.startswith(f'<section id="{slide_id}"')
             or text.count("<section") != 1 or not text.endswith("</section>")):
         sys.exit(f"{slide_id}.html: ожидается ровно один <section id=\"{slide_id}\">")
-    return EMBED.sub(embed, text)
+    return EMBED.sub(embed, inline_images(text, folder, files or {}))
 
 
 def pdf_name(page_path):
@@ -192,7 +226,8 @@ def build(folder, pdf_href, notes=True):
     fonts = [f'<link rel="stylesheet" href="{html.escape(face["href"])}">'
              for face in deck.get("faces", {}).values()
              if face.get("href", "").startswith(FONTS)]
-    slides = [slide(folder, slide_id, notes) for slide_id in deck["order"]
+    files = blob_files(folder)
+    slides = [slide(folder, slide_id, notes, files) for slide_id in deck["order"]
               if slide_id not in PRESENTER_ONLY]
     icons = {name: ICON.format(d) for name, d in ICONS.items()}
     page = PAGE.format(title=html.escape(deck["title"]), fonts="\n".join(fonts),
