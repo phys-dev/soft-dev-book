@@ -1,6 +1,10 @@
 # NumPy и pandas
 
-Физик обращается к языку программирования ради данных, поэтому начать целесообразно с инструментов, приспособленных для быстрых вычислений.
+Физик обращается к языку программирования ради данных, поэтому начать целесообразно с инструментов, приспособленных для быстрых вычислений над ними. В настоящей главе рассматриваются две библиотеки: NumPy, предоставляющая многомерный массив чисел одного типа, и pandas, предоставляющая таблицу с именованными столбцами разных типов. Все примеры выполнены в IPython на одной машине — виртуальной машине с двумя ядрами под Python 3.12 с NumPy 2.5 и pandas 3.0, на которой записаны демонстрации лекции «NumPy и pandas».
+
+> **Слайды к главе.** Устройство массива, индексация, векторные операции, типы элементов и чтение файлов изложены также в первых трёх частях лекции «NumPy и pandas» с демонстрациями в терминале; слайды лекции доступны [на сайте книги](https://phys-dev.github.io/soft-dev-book/slides/lecture-10.html#/sec-arr) и [в PDF](https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-10.pdf).
+
+<iframe src="../../slides/lecture-10.html#/sec-arr" title="Слайды лекции «NumPy и pandas»: массив NumPy" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
 
 ## NumPy
 
@@ -14,7 +18,7 @@ NumPy решает две задачи:
 * хранить многомерные массивы (в том числе матрицы);
 * быстро считать математические функции сразу от всего массива.
 
-Основой библиотеки является один объект, [ndarray](https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html).
+Основой библиотеки является один объект, [ndarray](https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html).
 
 Отличия массива от списка:
 * длина массива, заданная в момент создания, остаётся неизменной, тогда как список растёт динамически;
@@ -25,8 +29,48 @@ NumPy решает две задачи:
 
 
 ```python
+import sys
+
 import numpy as np
+
+lst = [float(i) for i in range(10**6)]
+print(sys.getsizeof(lst) + sum(sys.getsizeof(v) for v in lst))
+print(np.array(lst).nbytes)
 ```
+
+    32448728
+    8000000
+
+
+Список из миллиона вещественных чисел вместе с объектами-числами занимает около 32,4 МБ: 8,4 МБ приходится на массив ссылок самого списка, 24 МБ — на объекты float по 24 байта. Массив NumPy хранит те же числа подряд, по 8 байт на число, и занимает ровно 8 МБ.
+
+### Устройство массива
+
+Массив состоит из буфера данных и заголовка, описывающего, как этот буфер читать: тип элементов `dtype`, форму `shape` — длину по каждой оси — и шаги `strides`, то есть сдвиги в байтах при увеличении индекса по каждой оси на единицу.
+
+
+```python
+m = np.arange(12.0).reshape(3, 4)
+print(m.dtype, m.shape, m.ndim, m.strides, m.itemsize, m.nbytes)
+t = m.T
+print(t.shape, t.strides, np.shares_memory(m, t))
+```
+
+    float64 (3, 4) 2 (32, 8) 8 96
+    (4, 3) (8, 32) True
+
+
+Матрица 3×4 из float64 записана по строкам: переход к следующему столбцу сдвигает адрес на 8 байт, к следующей строке — на 32 байта, поэтому адрес элемента `m[i, j]` равен началу буфера плюс 32·i плюс 8·j. Транспонирование не переставляет числа в памяти, а меняет шаги местами и возвращает представление — новый заголовок над тем же буфером. Метод `reshape` тоже возвращает представление, если новую форму можно описать шагами над тем же буфером, а иначе копирует данные:
+
+
+```python
+np.shares_memory(m.reshape(2, 6), m), np.shares_memory(m.T.reshape(12), m)
+```
+
+    (True, False)
+
+
+Столбцы матрицы `m` не лежат в буфере подряд, поэтому вытянуть транспонированную матрицу в вектор без копирования нельзя.
 
 ### Способы создания массивов
 
@@ -40,25 +84,17 @@ import numpy as np
 np.array([1, 2, 3, 4, 5])
 ```
 
-
-
-
     array([1, 2, 3, 4, 5])
 
 
-
-При конвертации можно задавать тип данных с помощью аргумента [dtype](https://docs.scipy.org/doc/numpy/reference/generated/numpy.dtype.html): 
+При конвертации можно задавать тип данных с помощью аргумента [dtype](https://numpy.org/doc/stable/reference/arrays.dtypes.html):
 
 
 ```python
 np.array([1, 2, 3, 4, 5], dtype=np.float32)
 ```
 
-
-
-
     array([1., 2., 3., 4., 5.], dtype=float32)
-
 
 
 Аналогичное преобразование:
@@ -68,57 +104,38 @@ np.array([1, 2, 3, 4, 5], dtype=np.float32)
 np.float32([1, 2, 3, 4, 5])
 ```
 
-
-
-
     array([1., 2., 3., 4., 5.], dtype=float32)
-
 
 
 ### Генерация массивов
 
-* [arange](https://docs.scipy.org/doc/numpy/reference/generated/numpy.arange.html) работает как аналог range из Python, но принимает и нецелочисленный шаг
-* [linspace](https://docs.scipy.org/doc/numpy/reference/generated/numpy.linspace.html) равномерно разбивает отрезок на n-1 интервал
-* [logspace](https://docs.scipy.org/doc/numpy/reference/generated/numpy.logspace.html) разбивает отрезок по логарифмической шкале
-* [zeros](https://docs.scipy.org/doc/numpy/reference/generated/numpy.zeros.html) создаёт массив заданной размерности, заполненный нулями
-* [ones](https://docs.scipy.org/doc/numpy/reference/generated/numpy.ones.html) создаёт массив заданной размерности, заполненный единицами
-* [empty](https://docs.scipy.org/doc/numpy/reference/generated/numpy.empty.html) создаёт массив заданной размерности, не инициализированный никаким значением, то есть заполненный мусором из памяти
+* [arange](https://numpy.org/doc/stable/reference/generated/numpy.arange.html) работает как аналог range из Python, но принимает и нецелочисленный шаг;
+* [linspace](https://numpy.org/doc/stable/reference/generated/numpy.linspace.html) равномерно разбивает отрезок на n − 1 интервал, включая оба конца;
+* [logspace](https://numpy.org/doc/stable/reference/generated/numpy.logspace.html) разбивает отрезок по логарифмической шкале;
+* [zeros](https://numpy.org/doc/stable/reference/generated/numpy.zeros.html) создаёт массив заданной размерности, заполненный нулями;
+* [ones](https://numpy.org/doc/stable/reference/generated/numpy.ones.html) создаёт массив заданной размерности, заполненный единицами;
+* [empty](https://numpy.org/doc/stable/reference/generated/numpy.empty.html) создаёт массив заданной размерности, не инициализированный никаким значением, то есть заполненный прежним содержимым памяти.
 
 
 ```python
 np.arange(0, 5, 0.5)
 ```
 
-
-
-
     array([0. , 0.5, 1. , 1.5, 2. , 2.5, 3. , 3.5, 4. , 4.5])
-
-
 
 
 ```python
 np.linspace(0, 5, 11)
 ```
 
-
-
-
     array([0. , 0.5, 1. , 1.5, 2. , 2.5, 3. , 3.5, 4. , 4.5, 5. ])
-
-
 
 
 ```python
 np.logspace(0, 9, 10, base=2)
 ```
 
-
-
-
     array([  1.,   2.,   4.,   8.,  16.,  32.,  64., 128., 256., 512.])
-
-
 
 
 ```python
@@ -126,12 +143,8 @@ np.zeros((2, 2))
 ```
 
 
-
-
     array([[0., 0.],
            [0., 0.]])
-
-
 
 
 ```python
@@ -139,12 +152,8 @@ np.ones((2, 2))
 ```
 
 
-
-
     array([[1., 1.],
            [1., 1.]])
-
-
 
 
 ```python
@@ -152,19 +161,16 @@ np.empty((2, 2))
 ```
 
 
-
-
     array([[1., 1.],
            [1., 1.]])
 
 
+Значения в массиве `np.empty` — то, что осталось в выделенной памяти; здесь это единицы из только что освобождённого массива. Пользоваться таким массивом можно лишь при немедленной записи всех его элементов.
 
 
 ```python
-np.diag([1,2,3])
+np.diag([1, 2, 3])
 ```
-
-
 
 
     array([[1, 0, 0],
@@ -172,31 +178,49 @@ np.diag([1,2,3])
            [0, 0, 3]])
 
 
+С дробным шагом число точек `arange` зависит от округления. Число точек равно округлённому вверх частному (0,8 − 0,5) / 0,1, которое из-за двоичного округления чуть больше трёх, поэтому сетка содержит четыре точки, а последняя из них чуть меньше 0,8 и печатается как 0.8:
+
+
+```python
+print(np.arange(0.5, 0.8, 0.1))
+print(np.arange(0.5, 0.8, 0.1)[-1], np.linspace(0.5, 0.8, 4)[-1])
+```
+
+    [0.5 0.6 0.7 0.8]
+    0.7999999999999999 0.8
+
+
+Правую границу, которую `arange` по определению исключает, сетка фактически содержит. Когда известно число точек, сетку на отрезке строят функцией `linspace`: она включает обе границы точно.
+
+Случайные числа даёт генератор `np.random.default_rng`. Зерно, переданное явно, делает расчёт воспроизводимым, а методы генератора `normal`, `uniform`, `integers` задают распределение. Функции `np.random.rand` и `np.random.seed` относятся к старому интерфейсу с глобальным состоянием и сохранены для совместимости.
+
+
+```python
+rng = np.random.default_rng(42)
+rng.normal(0.0, 1.0, size=3)
+```
+
+    array([ 0.30471708, -1.03998411,  0.7504512 ])
+
 
 Размеры массива хранятся в поле **shape**, а число измерений — в поле **ndim**.
 
 
 ```python
-array = np.ones((2, 3,))
-print('Размерность массива - %s, количество размерностей - %d'%(array.shape, array.ndim))
+array = np.ones((2, 3))
+print(f"форма {array.shape}, число измерений {array.ndim}")
 array
 ```
 
-    Размерность массива - (2, 3), количество размерностей - 2
-
-
-
-
+    форма (2, 3), число измерений 2
 
     array([[1., 1., 1.],
            [1., 1., 1.]])
 
 
-
-
 ```python
-## Чему равны ndim и shape в следующих случаях
-print(np.diag([1,2,3]).shape, np.diag([1,2,3]).ndim)
+# диагональная матрица 3×3 и куб 5×5×5
+print(np.diag([1, 2, 3]).shape, np.diag([1, 2, 3]).ndim)
 print(np.zeros((5, 5, 5)).shape, np.zeros((5, 5, 5)).ndim)
 ```
 
@@ -204,7 +228,7 @@ print(np.zeros((5, 5, 5)).shape, np.zeros((5, 5, 5)).ndim)
     (5, 5, 5) 3
 
 
-Метод [reshape](https://docs.scipy.org/doc/numpy/reference/generated/numpy.reshape.html) изменяет форму массива, не изменяя самих данных
+Метод [reshape](https://numpy.org/doc/stable/reference/generated/numpy.reshape.html) изменяет форму массива, не изменяя самих данных.
 
 
 ```python
@@ -214,14 +238,11 @@ array
 ```
 
 
-
-
     array([[0. , 0.5, 1. , 1.5, 2. , 2.5],
            [3. , 3.5, 4. , 4.5, 5. , 5.5]])
 
 
-
-Многомерный массив разворачивается в вектор функцией [ravel](https://numpy.org/doc/stable/reference/generated/numpy.ravel.html)
+Многомерный массив разворачивается в вектор функцией [ravel](https://numpy.org/doc/stable/reference/generated/numpy.ravel.html).
 
 
 ```python
@@ -229,18 +250,13 @@ array = np.ravel(array)
 array
 ```
 
-
-
-
     array([0. , 0.5, 1. , 1.5, 2. , 2.5, 3. , 3.5, 4. , 4.5, 5. , 5.5])
 
 
-
-
 ```python
-# Какие будут массивы?
-print(np.ravel(np.diag([1,2])))
-print(np.reshape(np.diag([1,2]), [1, 4]))
+# ravel вытягивает матрицу в вектор, reshape задаёт форму (1, 4)
+print(np.ravel(np.diag([1, 2])))
+print(np.reshape(np.diag([1, 2]), [1, 4]))
 ```
 
     [1 0 0 2]
@@ -249,7 +265,7 @@ print(np.reshape(np.diag([1,2]), [1, 4]))
 
 ### Индексация
 
-В NumPy применяется привычная индексация Python, включая отрицательные индексы и срезы, записываемые так же, как для списка
+В NumPy применяется привычная индексация Python, включая отрицательные индексы и срезы, записываемые так же, как для списка.
 
 
 ```python
@@ -267,7 +283,6 @@ print(array[::-1])
     [5.5 5.  4.5 4.  3.5 3.  2.5 2.  1.5 1.  0.5 0. ]
 
 
-
 ```python
 print(array.shape)
 ```
@@ -275,36 +290,17 @@ print(array.shape)
     (12,)
 
 
+`None`, или `np.newaxis`, вставляет новую ось длины 1:
+
 
 ```python
-print(array[None,0:, None].ndim, array[None,0:, None].shape)
-array[None,0:, None]
+print(array[None, 0:, None].ndim, array[None, 0:, None].shape)
 ```
 
     3 (1, 12, 1)
 
 
-
-
-
-    array([[[0. ],
-            [0.5],
-            [1. ],
-            [1.5],
-            [2. ],
-            [2.5],
-            [3. ],
-            [3.5],
-            [4. ],
-            [4.5],
-            [5. ],
-            [5.5]]])
-
-
-
-**Замечание**: индексы и срезы, перечисляемые для многомерного массива, разделять квадратными скобками не следует, 
-
-т.е. вместо ```matrix[i][j]``` нужно использовать ```matrix[i, j]```
+Индексы многомерного массива перечисляются через запятую в одних квадратных скобках: вместо `matrix[i][j]` пишут `matrix[i, j]`. Запись `matrix[i][j]` тоже работает, но сначала создаёт промежуточный массив-строку.
 
 Массив, подставленный вместо индекса, может быть и списком номеров, и булевой маской:
 
@@ -313,33 +309,22 @@ array[None,0:, None]
 array[[0, 2, 4, 6, 8, 10]]
 ```
 
-
-
-
     array([0., 1., 2., 3., 4., 5.])
-
-
 
 
 ```python
 array[[True, False, True, False, True, False, True, False, True, False, True, False]]
 ```
 
-
-
-
     array([0., 1., 2., 3., 4., 5.])
 
 
-
-
 ```python
-# Что будет выведено?
+# массив формы (1, 3) и вектор формы (3,) равны лишь после добавления оси
 x = np.array([[1, 2, 3]])
 y = np.array([1, 2, 3])
 
-print (x.shape, y.shape)
-
+print(x.shape, y.shape)
 print(np.array_equal(x, y))
 print(np.array_equal(x, y[None, :]))
 ```
@@ -349,264 +334,168 @@ print(np.array_equal(x, y[None, :]))
     True
 
 
+Условия соединяются поэлементными операторами `&`, `|` и `~` и заключаются в скобки: слова `and`, `or` и `not` требуют одного логического значения и к массивам не применяются.
+
 
 ```python
 x = np.arange(10)
-x
-```
-
-
-
-
-    array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
-
-
-
-
-```python
 x[(x % 2 == 0) & (x > 5)]
 ```
-
-
-
 
     array([6, 8])
 
 
-
-
 ```python
-print(x)
-y = x[x>5] 
+y = x[x > 5]
 y *= 2
 print(y)
 print(x)
+x[x > 5] *= 2
+print(x)
 ```
 
-    [0 1 2 3 4 5 6 7 8 9]
     [12 14 16 18]
     [0 1 2 3 4 5 6 7 8 9]
+    [ 0  1  2  3  4  5 12 14 16 18]
 
 
-Срез массива в NumPy является представлением тех же данных, а не их копией: изменение среза наподобие `x[2:5]` приводит к изменению исходного массива. Отбор по маске или по списку индексов всегда возвращает копию, и исходный массив остаётся нетронутым. Когда требуются собственные данные, применяется метод `copy`.
+Срез массива в NumPy является представлением тех же данных, а не их копией: изменение среза наподобие `x[2:5]` приводит к изменению исходного массива. Отбор по маске или по списку индексов всегда возвращает копию, и изменение отобранного исходный массив не затрагивает. Присваивание по маске `x[x > 5] *= 2`, напротив, записывает прямо в исходный массив. Общую память двух массивов проверяет функция `np.shares_memory`; когда требуются собственные данные, применяется метод `copy`.
 
 
 ```python
-x.copy()
+x = np.arange(10)
+np.shares_memory(x, x[::2]), np.shares_memory(x, x[[0, 2]]), np.shares_memory(x, x.copy())
 ```
 
-
-
-
-    array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
-
+    (True, False, False)
 
 
 ### Сохранение и чтение массивов в бинарном формате
 
+Функция `np.save` записывает массив в файл `.npy`: заголовок с типом и формой, затем содержимое буфера без потери точности. `np.load` читает его обратно, а с аргументом `mmap_mode="r"` не загружает файл целиком, а отображает его в память, так что с диска читаются только нужные части. Несколько массивов сохраняются в архив `.npz` функциями `np.savez` и `np.savez_compressed`.
+
 
 ```python
-with open('out.npy', 'wb') as f:
-    np.save(f, x)
-    
-with open('out.npy', 'rb') as f:
-    print(f.read())
-    
-with open('out.npy', 'rb') as f:
-    y = np.load(f)
-    print(y)    
+np.save("out.npy", x)
+
+with open("out.npy", "rb") as f:
+    print(f.read(64))
+
+y = np.load("out.npy")
+print(y)
 ```
 
-    b"\x93NUMPY\x01\x00v\x00{'descr': '<i8', 'fortran_order': False, 'shape': (10,), }                                                           \n\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x06\x00\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x08\x00\x00\x00\x00\x00\x00\x00\t\x00\x00\x00\x00\x00\x00\x00"
+    b"\x93NUMPY\x01\x00v\x00{'descr': '<i8', 'fortran_order': False, 'shape': (10,"
     [0 1 2 3 4 5 6 7 8 9]
 
 
+### Чтение текстовых файлов
 
-### Чтение данных с помощью функции [genfromtxt](https://docs.scipy.org/doc/numpy/reference/generated/numpy.genfromtxt.html#numpy.genfromtxt)
-
-Для примера потребуется файл `iris_subset.txt`. Он не приложен, и настоящий не нужен:
-числа в нём случайные (чашелистик длиной 1134 см встретится ниже в выводе).
-Важна только структура: текстовая таблица с заголовком, четыре числовых столбца
-и один строковый. Такой файл необходимо создать самостоятельно, поместив в первую строку имена
-столбцов, разделённые `, `:
-
-```text
-sepal_length_in_cm, sepal_width_in_cm, petal_length_in_cm, petal_width_in_cm, class
-1.0, 1.0, 10.0, 121.0, setosa
-1.0, 314.0, 13.0, 121.0, versicolor
-```
-
-Если требуется работать с настоящими ирисами, их предоставляет scikit-learn одной строкой:
-`from sklearn.datasets import load_iris`.
-
-```python
-iris = np.genfromtxt('iris_subset.txt', delimiter=', ', names=True, dtype=[('sepal_length_in_cm', 'f8'), 
-                                                                          ('sepal_width_in_cm', 'f8'), 
-                                                                          ('petal_length_in_cm', 'f8'), 
-                                                                          ('petal_width_in_cm', 'f8'),
-                                                                          ('class', 'U10')])
-iris
-```
-
-
-
-
-    array([(1.000e+00,   1. ,   10.,   121. , 'setosa'),
-           (1.000e+00, 314. ,   13.,   121. , 'versicolor'),
-           (1.134e+03,   1. ,  103.,  1421. , 'setosa'),
-           (1.000e+00, 141. ,   10.,   121. , 'versicolor'),
-           (1.440e+02,   1. , 4582., 13481. , 'versicolor'),
-           (1.000e+00,  13.3,   10.,   121. , 'versicolor'),
-           (1.141e+03,   1. , 1341.,  1231.1, 'setosa'),
-           (7.320e+02, 131. ,  139.,    92.1, 'setosa')],
-          dtype=[('sepal_length_in_cm', '<f8'), ('sepal_width_in_cm', '<f8'), ('petal_length_in_cm', '<f8'), ('petal_width_in_cm', '<f8'), ('class', '<U10')])
-
-
-
-`genfromtxt` с `names=True` возвращает структурированный массив, хранящий имена столбцов вместе с данными. Строка из него запрашивается по номеру, а столбец — по названию.
+Текстовые таблицы читают функции [loadtxt](https://numpy.org/doc/stable/reference/generated/numpy.loadtxt.html) и [genfromtxt](https://numpy.org/doc/stable/reference/generated/numpy.genfromtxt.html). Для примера записывается короткий журнал измерений: время t, напряжение U и ток I, причём два показания пропущены.
 
 
 ```python
-print('Описание первого элемента: %s'%iris[0])
-print('Значения столбца sepal_length_in_cm: %s'%iris['sepal_length_in_cm'])
+with open("log.csv", "w") as f:
+    f.write("t,U,I\n0.0,1.02,0.51\n0.5,,0.49\n1.0,1.05,\n1.5,1.03,0.50\n")
 ```
 
-    Описание первого элемента: (1., 1., 10., 121., 'setosa')
-    Значения столбца sepal_length_in_cm: [1.000e+00 1.000e+00 1.134e+03 1.000e+00 1.440e+02 1.000e+00 1.141e+03
-     7.320e+02]
 
+`loadtxt` ожидает полные строки и на пропущенном значении останавливается с ошибкой:
 
 
 ```python
-sepal_length_setosa = iris['sepal_length_in_cm'][iris['class'] == 'setosa']
-sepal_length_versicolor = iris['sepal_length_in_cm'][iris['class'] == 'versicolor']
-
-print('Значения столбца sepal_length_in_cm\n\tclass setosa: %s\n\tclass versicolor: %s'%(sepal_length_setosa, 
-                                                                                         sepal_length_versicolor))
+try:
+    np.loadtxt("log.csv", delimiter=",", skiprows=1)
+except ValueError as err:
+    print("ValueError:", err)
 ```
 
-    Значения столбца sepal_length_in_cm
-    	class setosa: [1.000e+00 1.134e+03 1.141e+03 7.320e+02]
-    	class versicolor: [  1.   1. 144.   1.]
+    ValueError: could not convert string '' to float64 at row 1, column 2.
+
+
+`genfromtxt` подставляет на место пропусков `nan`, а с `names=True` берёт имена столбцов из первой строки и возвращает структурированный массив, в котором строка запрашивается по номеру, а столбец — по названию.
+
+
+```python
+log = np.genfromtxt("log.csv", delimiter=",", names=True)
+log
+```
+
+
+    array([(0. , 1.02, 0.51), (0.5,  nan, 0.49), (1. , 1.05,  nan),
+           (1.5, 1.03, 0.5 )],
+          dtype=[('t', '<f8'), ('U', '<f8'), ('I', '<f8')])
+
+
+```python
+print(log["U"])
+print(log[0])
+```
+
+    [1.02  nan 1.05 1.03]
+    (0.0, 1.02, 0.51)
 
 
 Строки в начале и в конце файла пропускаются аргументами **skip_header** и **skip_footer**, а столбцы отбираются через **usecols**.
 
 
 ```python
-iris_class = np.genfromtxt('iris_subset.txt', delimiter=', ', skip_header=1, usecols=4, dtype='U10')
-iris_class
+np.genfromtxt("log.csv", delimiter=",", skip_header=1, usecols=(1, 2))
 ```
 
 
+    array([[1.02, 0.51],
+           [ nan, 0.49],
+           [1.05,  nan],
+           [1.03, 0.5 ]])
 
 
-    array(['setosa', 'versicolor', 'setosa', 'versicolor', 'versicolor',
-           'versicolor', 'setosa', 'setosa'], dtype='<U10')
-
-
+Операции в NumPy производятся над массивами одинаковой формы целиком, без цикла. Мощность в каждый момент времени — поэлементное произведение двух столбцов:
 
 
 ```python
-iris_features = np.genfromtxt('iris_subset.txt', delimiter=', ', skip_header=1, usecols=range(4))
-iris_features
+P = log["U"] * log["I"]
+print(P)
+print(np.mean(P), np.nanmean(P))
 ```
 
+    [0.5202    nan    nan 0.515 ]
+    nan 0.5176000000000001
 
 
+Пропуск в любом из сомножителей даёт `nan` в произведении, а `np.mean` от массива с `nan` тоже равна `nan`; функции с приставкой nan — `nanmean`, `nansum`, `nanmax` — пропуски не учитывают.
 
-    array([[1.0000e+00, 1.0000e+00, 1.0000e+01, 1.2100e+02],
-           [1.0000e+00, 3.1400e+02, 1.3000e+01, 1.2100e+02],
-           [1.1340e+03, 1.0000e+00, 1.0300e+02, 1.4210e+03],
-           [1.0000e+00, 1.4100e+02, 1.0000e+01, 1.2100e+02],
-           [1.4400e+02, 1.0000e+00, 4.5820e+03, 1.3481e+04],
-           [1.0000e+00, 1.3300e+01, 1.0000e+01, 1.2100e+02],
-           [1.1410e+03, 1.0000e+00, 1.3410e+03, 1.2311e+03],
-           [7.3200e+02, 1.3100e+02, 1.3900e+02, 9.2100e+01]])
-
-
-
-
-```python
-features_setosa = iris_features[iris_class == 'setosa']
-features_versicolor = iris_features[iris_class == 'versicolor']
-```
-
-Операции в NumPy производятся над векторами одинаковой размерности целиком, без цикла.
-
-Поэлементная разность двух векторов:
-
-
-```python
-sepal_length_versicolor - sepal_length_setosa
-```
-
-
-
-
-    array([    0., -1133.,  -997.,  -731.])
-
-
-
-Аналогично для многомерных массивов.
-
-
-```python
-features_versicolor - features_setosa
-```
-
-
-
-
-    array([[ 0.00000e+00,  3.13000e+02,  3.00000e+00,  0.00000e+00],
-           [-1.13300e+03,  1.40000e+02, -9.30000e+01, -1.30000e+03],
-           [-9.97000e+02,  0.00000e+00,  3.24100e+03,  1.22499e+04],
-           [-7.31000e+02, -1.17700e+02, -1.29000e+02,  2.89000e+01]])
-
-
-
-### [Broadcasting](https://docs.scipy.org/doc/numpy/user/basics.broadcasting.html)
+### [Broadcasting](https://numpy.org/doc/stable/user/basics.broadcasting.html)
 
 Broadcasting снимает требование одинаковой формы и разрешает арифметику над массивами разных, но согласованных между собой размерностей. Простейшим случаем является умножение вектора на число.
 
-![Imgur](https://i.imgur.com/tE3ZCWG.gif)
-
 
 ```python
-2*np.arange(1, 4)
+2 * np.arange(1, 4)
 ```
-
-
-
 
     array([2, 4, 6])
 
 
-
-Правило согласования размерностей: 
+Правило согласования размерностей:
 
 > In order to broadcast, the size of the trailing axes for both arrays in an operation must either be the same size or one of them must be one.
 
-Таким образом, для выполнения broadcasting длины осей, отсчитываемых с конца, должны либо совпадать, либо одна из них должна быть равна единице.
+Таким образом, длины осей, отсчитываемых с конца, должны либо совпадать, либо одна из них должна быть равна единице, и тогда ось длины 1 растягивается до длины другого операнда без копирования данных. Если количество размерностей не совпадает, к массиву меньшей размерности слева дописываются оси длины 1, не занимающие памяти:
 
-Если количество размерностей не совпадает, к массиву меньшей размерности слева дописываются фиктивные оси, не занимающие памяти, например:
+| Операнды | Результат |
+|---|---|
+| (4, 3) и (3,) | (4, 3) |
+| (4, 1) и (3,) | (4, 3) |
+| (2, 3, 4) и (4,) | (2, 3, 4) |
+| (4, 3) и (4,) | ошибка |
 
-```python
-a = np.ones((2, 3, 4))
-b = np.ones(4)
-c = a * b  # здесь a.shape = (2, 3, 4), а b.shape считается равным (1, 1, 4)
-```
-
-Прибавим к каждой строке матрицы один и тот же вектор:
-
-![Imgur](https://i.imgur.com/VsP2dqT.gif)
+К каждой строке матрицы прибавляется один и тот же вектор:
 
 
 ```python
 np.array([[0, 0, 0], [10, 10, 10], [20, 20, 20], [30, 30, 30]]) + np.arange(3)
 ```
-
-
 
 
     array([[ 0,  1,  2],
@@ -615,19 +504,12 @@ np.array([[0, 0, 0], [10, 10, 10], [20, 20, 20], [30, 30, 30]]) + np.arange(3)
            [30, 31, 32]])
 
 
-
-Со столбцами такой приём не работает: вектор из четырёх элементов не согласуется с матрицей по последней оси.
-
-![Imgurl](https://i.imgur.com/9LvGoeL.gif)
-
-Сначала вектор, дополненный новой осью, приводится к виду:
+Со столбцами такой приём не работает: вектор из четырёх элементов не согласуется с матрицей по последней оси. Поэтому вектору сначала добавляется ось:
 
 
 ```python
 np.arange(4)[:, np.newaxis]
 ```
-
-
 
 
     array([[0],
@@ -636,15 +518,12 @@ np.arange(4)[:, np.newaxis]
            [3]])
 
 
-
-Затем к нему прибавляется матрица:
+После этого он прибавляется к каждому столбцу:
 
 
 ```python
-np.arange(4)[:, np.newaxis]+np.array([[0, 0, 0], [10, 10, 10], [20, 20, 20], [30, 30, 30]])
+np.arange(4)[:, np.newaxis] + np.array([[0, 0, 0], [10, 10, 10], [20, 20, 20], [30, 30, 30]])
 ```
-
-
 
 
     array([[ 0,  0,  0],
@@ -653,35 +532,42 @@ np.arange(4)[:, np.newaxis]+np.array([[0, 0, 0], [10, 10, 10], [20, 20, 20], [30
            [33, 33, 33]])
 
 
-
-Кроме того, в NumPy имеются сводные операции над массивами: [np.min](https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.min.html), [np.max](https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.max.html), [np.sum](https://docs.scipy.org/doc/numpy/reference/generated/numpy.sum.html), [np.mean](https://docs.scipy.org/doc/numpy/reference/generated/numpy.mean.html) и т.д.
-
-
-```python
-print('Среднее значение всех значений класса versicolor: %s'%np.mean(features_versicolor))
-print('Среднее значение каждого признака класса versicolor: %s'%np.mean(features_versicolor, axis=0))
-```
-
-    Среднее значение всех значений класса versicolor: 1192.20625
-    Среднее значение каждого признака класса versicolor: [  36.75   117.325 1153.75  3461.   ]
-
-
-Вычислим без цикла \\(\frac{1}{n} \sum\limits_{i=1}^n |x_i-y_i|\\) для каждой пары \\((x, y)\\), где \\(x\\) обозначает вектор признаков объекта из класса setosa, а \\(y\\) вектор признаков объекта из класса versicolor.
+Тот же приём даёт попарные разности координат N частиц: `r[:, None, :] - r[None, :, :]` имеет форму (N, N, 3), и матрица попарных расстояний вычисляется без цикла.
 
 
 ```python
-np.mean(np.abs(features_setosa - features_versicolor[:, np.newaxis]), axis=2)
+r = np.random.default_rng(0).random((4, 3))   # координаты четырёх частиц
+d = r[:, None, :] - r[None, :, :]             # форма (4, 4, 3)
+dist = np.sqrt((d**2).sum(axis=-1))
+dist.round(3)
 ```
 
 
+    array([[0.   , 1.2  , 0.682, 0.623],
+           [1.2  , 0.   , 0.701, 1.293],
+           [0.682, 0.701, 0.   , 0.639],
+           [0.623, 1.293, 0.639, 0.   ]])
 
 
-    array([[7.900000e+01, 7.090000e+02, 9.727750e+02, 2.672250e+02],
-           [3.500000e+01, 6.665000e+02, 9.302750e+02, 2.247250e+02],
-           [4.518750e+03, 4.382250e+03, 4.121975e+03, 4.637475e+03],
-           [3.075000e+00, 6.345750e+02, 8.983500e+02, 2.516500e+02]])
+Операнды broadcasting не копируются, но результат и промежуточные массивы занимают полную форму: массив разностей формы (N, N, 3) из float64 при N = 10 000 занимает 2,2 ГиБ. Такие расчёты разбивают на блоки или переписывают через матричное произведение.
+
+Кроме того, в NumPy имеются сводные операции над массивами: [np.min](https://numpy.org/doc/stable/reference/generated/numpy.min.html), [np.max](https://numpy.org/doc/stable/reference/generated/numpy.max.html), [np.sum](https://numpy.org/doc/stable/reference/generated/numpy.sum.html), [np.mean](https://numpy.org/doc/stable/reference/generated/numpy.mean.html) и другие. Для примера генерируется тысяча измерений трёх каналов: средние каналов 1, 5 и −2, нормальный шум с отклонением 0,1.
 
 
+```python
+rng = np.random.default_rng(42)
+data = rng.normal([1.0, 5.0, -2.0], 0.1, size=(1000, 3))
+print(data.mean())
+print(data.mean(axis=0))
+print(data.std(axis=0, ddof=1))
+```
+
+    1.330781043301899
+    [ 0.99917285  4.99693758 -2.0037673 ]
+    [0.10139425 0.09984559 0.10112884]
+
+
+Среднее без аргумента сворачивает весь массив в одно число, а `axis=0` сворачивает измерения и даёт по числу на канал; аргумент `ddof=1` делает отклонение выборочным.
 
 ### Операции
 
@@ -694,19 +580,18 @@ print(x)
 
     [[[ 0  1  2  3]
       [ 4  5  6  7]]
-    
+
      [[ 8  9 10 11]
       [12 13 14 15]]
-    
+
      [[16 17 18 19]
       [20 21 22 23]]
-    
+
      [[24 25 26 27]
       [28 29 30 31]]
-    
+
      [[32 33 34 35]
       [36 37 38 39]]]
-
 
 
 ```python
@@ -718,25 +603,18 @@ print(np.mean(x))
     19.5
 
 
-
 ```python
 x.mean(axis=0)
 ```
-
-
 
 
     array([[16., 17., 18., 19.],
            [20., 21., 22., 23.]])
 
 
-
-
 ```python
 x.mean(axis=1)
 ```
-
-
 
 
     array([[ 2.,  3.,  4.,  5.],
@@ -746,13 +624,9 @@ x.mean(axis=1)
            [34., 35., 36., 37.]])
 
 
-
-
 ```python
 x.mean(axis=2)
 ```
-
-
 
 
     array([[ 1.5,  5.5],
@@ -762,29 +636,18 @@ x.mean(axis=2)
            [33.5, 37.5]])
 
 
-
-
 ```python
-x.mean(axis=(0,2))
+x.mean(axis=(0, 2))
 ```
-
-
-
 
     array([17.5, 21.5])
 
 
-
-
 ```python
-x.mean(axis=(0,1,2))
+x.mean(axis=(0, 1, 2))
 ```
 
-
-
-
-    19.5
-
+    np.float64(19.5)
 
 
 ### Конкатенация многомерных массивов
@@ -795,46 +658,8 @@ x.mean(axis=(0,1,2))
 ```python
 x = np.arange(10).reshape(5, 2)
 y = np.arange(100, 120).reshape(5, 4)
-```
-
-
-```python
-x
-```
-
-
-
-
-    array([[0, 1],
-           [2, 3],
-           [4, 5],
-           [6, 7],
-           [8, 9]])
-
-
-
-
-```python
-y
-```
-
-
-
-
-    array([[100, 101, 102, 103],
-           [104, 105, 106, 107],
-           [108, 109, 110, 111],
-           [112, 113, 114, 115],
-           [116, 117, 118, 119]])
-
-
-
-
-```python
 np.hstack((x, y))
 ```
-
-
 
 
     array([[  0,   1, 100, 101, 102, 103],
@@ -844,58 +669,25 @@ np.hstack((x, y))
            [  8,   9, 116, 117, 118, 119]])
 
 
+Массивы объединяются, только если их формы совпадают по всем осям, кроме оси объединения: матрицы 2×3 и 2×2 складываются по горизонтали, но не по вертикали.
 
 
 ```python
 x = np.ones([2, 3])
 y = np.zeros([2, 2])
-```
-
-
-```python
-# Какой будет результат
-print(np.hstack((x,y)).shape)
-print(np.vstack((x,y)).shape)
+print(np.hstack((x, y)).shape)
+try:
+    np.vstack((x, y))
+except ValueError as err:
+    print("ValueError:", err)
 ```
 
     (2, 5)
-
-
-
-    ---------------------------------------------------------------------------
-
-    ValueError                                Traceback (most recent call last)
-
-    Cell In[54], line 3
-          1 # Какой будет результат
-          2 print(np.hstack((x,y)).shape)
-    ----> 3 print(np.vstack((x,y)).shape)
-
-
-    File /opt/anaconda3/lib/python3.12/site-packages/numpy/core/shape_base.py:289, in vstack(tup, dtype, casting)
-        287 if not isinstance(arrs, list):
-        288     arrs = [arrs]
-    --> 289 return _nx.concatenate(arrs, 0, dtype=dtype, casting=casting)
-
-
     ValueError: all the input array dimensions except for the concatenation axis must match exactly, but along dimension 1, the array at index 0 has size 3 and the array at index 1 has size 2
-
 
 
 ```python
 p = np.arange(1).reshape([1, 1, 1, 1])
-p
-```
-
-
-
-
-    array([[[[0]]]])
-
-
-
-
-```python
 print("vstack: ", np.vstack((p, p)).shape)
 print("hstack: ", np.hstack((p, p)).shape)
 print("dstack: ", np.dstack((p, p)).shape)
@@ -910,52 +702,62 @@ print("concatenate: ", np.concatenate((p, p), axis=3).shape)
 
 ### Типы
 
-От типа массива зависят и занимаемая память, и диапазон представимых значений. Рассмотрим, что происходит с числом 70000 в `uint16`. С версии NumPy 2.0 конструктор массива на таком значении завершается ошибкой `OverflowError`, а без предупреждения оно усекается только при явном приведении через `astype`, превращаясь в 4464; такое переполнение, не сопровождаемое ошибкой, является классическим источником неверных результатов.
+От типа массива зависят и занимаемая память, и диапазон представимых значений. С версии 2.0 NumPy отвергает число Python, не помещающееся в тип, уже в конструкторе массива, но явное приведение `astype` и арифметика над целыми массивами переполняются без сообщений; такое переполнение является классическим источником неверных результатов.
+
 
 ```python
 x = [1, 2, 70000]
-```
-
-
-```python
 np.array(x, dtype=np.float32)
 ```
-
-
-
 
     array([1.e+00, 2.e+00, 7.e+04], dtype=float32)
 
 
-
-
 ```python
-np.array(x, dtype=np.uint16)
+try:
+    np.array(x, dtype=np.uint16)
+except OverflowError as err:
+    print("OverflowError:", err)
 ```
 
     OverflowError: Python integer 70000 out of bounds for uint16
 
-Ранее NumPy усекал значение, не помещавшееся в тип, и лишь выдавал предупреждение;
-с версии 2.0 это ошибка. Незаметное переполнение осталось только при явном приведении:
 
 ```python
 np.array(70000).astype(np.uint16)
 ```
 
-    4464
+    array(4464, dtype=uint16)
 
-`uint16` хранит остаток по модулю \\( 2^{16} \\), а
-\\( 70000 - 65536 = 4464 \\). Такая ошибка не приводит к исключению и ничего не выводит.
+
+`uint16` хранит остаток по модулю \\( 2^{16} \\), а \\( 70000 - 65536 = 4464 \\). Так же ведёт себя арифметика: сумма массива `uint8` и числа 100 остаётся `uint8`, и 200 + 100 превращается в 44.
+
+
+```python
+np.array([200, 250], dtype=np.uint8) + 100
+```
+
+    array([44, 94], dtype=uint8)
+
+
+Ни одна из этих ошибок не приводит к исключению и ничего не выводит. Вещественные числа ограничены точностью: мантисса float32 содержит 24 двоичных разряда, поэтому \\( 2^{24} + 1 \\) во float32 непредставимо.
+
+
+```python
+np.float32(16777216) + np.float32(1)
+```
+
+    np.float32(1.6777216e+07)
+
+
+При смешении строк и чисел массив получает строковый тип:
+
 
 ```python
 np.array(x, dtype=np.str_)
 ```
 
-
-
-
     array(['1', '2', '70000'], dtype='<U5')
-
 
 
 ### Функциональное программирование
@@ -976,338 +778,127 @@ print(np.apply_along_axis(f, 0, np.arange(10)))
      2.44948974 2.64575131 2.82842712 3.        ]
 
 
-
 ```python
 vf = np.vectorize(f)
 ```
 
 
 ```python
-%%timeit 
+%%timeit
 vf(np.arange(100000))
 ```
 
-    146 ms ± 2.4 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
-
+    51.6 ms ± 2.52 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
 
 
 ```python
-%%timeit 
-np.apply_along_axis(f, 0, np.arange(100000)) 
+%%timeit
+np.apply_along_axis(f, 0, np.arange(100000))
 ```
 
-    1.89 ms ± 31.9 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
-
+    93.8 μs ± 1.06 μs per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
 
 
 ```python
-%%timeit 
+%%timeit
 np.array([f(v) for v in np.arange(100000)])
 ```
 
-    129 ms ± 861 μs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+    55 ms ± 1.53 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
 
-Разница в семьдесят раз выглядит убедительно, однако выводы из неё были бы поспешными. `np.vectorize` и списковое включение вызывают `f` сто тысяч раз, и 130–150 миллисекунд составляют стоимость ста тысяч вызовов функции Python. В то же время `apply_along_axis` с `axis=0` на одномерном массиве вызывает `f` один раз, передавая в неё весь массив целиком, так что измерен здесь один векторный `np.sqrt`, а не поэлементный обход.
 
-Прежде чем доверять отношению времён, необходимо разобраться, что делает каждая из сравниваемых версий. `np.vectorize` не векторизует, а лишь оборачивает цикл, и ускорения от него ожидать не следует.
+Разница в сотни раз выглядит убедительно, однако выводы из неё были бы поспешными. `np.vectorize` и списковое включение вызывают `f` сто тысяч раз, и их время составляет стоимость ста тысяч вызовов функции Python. В то же время `apply_along_axis` с `axis=0` на одномерном массиве вызывает `f` один раз, передавая в неё весь массив целиком, так что измерен здесь один векторный `np.sqrt`, а не поэлементный обход.
+
+Прежде чем доверять отношению времён, необходимо разобраться, что делает каждая из сравниваемых версий. `np.vectorize` не векторизует, а лишь оборачивает цикл, и ускорения от него ожидать не приходится.
 
 ## Pandas
 
 [pandas.pydata.org/docs/](https://pandas.pydata.org/docs/)
 
-Pandas читает данные, приводит их в порядок, вычисляет по ним сводки и строит графики. Если NumPy предоставляет массив чисел, то pandas предоставляет таблицу с именованными столбцами и индексом, размечающим строки.
+Pandas читает данные, приводит их в порядок, вычисляет по ним сводки и строит графики. Если NumPy предоставляет массив чисел, то pandas предоставляет таблицу с именованными столбцами и индексом, размечающим строки. Каждый столбец хранится отдельным массивом NumPy или, для строк, массивом Arrow, поэтому операции над столбцом выполняются векторно.
+
+> **Слайды к главе.** Таблицы pandas, отбор строк и копирование при записи, группировка и объединение таблиц, временные ряды и пропуски изложены также в последних трёх частях лекции «NumPy и pandas» с демонстрациями в терминале; слайды лекции доступны [на сайте книги](https://phys-dev.github.io/soft-dev-book/slides/lecture-10.html#/sec-pd) и [в PDF](https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-10.pdf).
+
+<iframe src="../../slides/lecture-10.html#/sec-pd" title="Слайды лекции «NumPy и pandas»: таблицы pandas" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
 
 
 ```python
 import pandas as pd
-df = pd.read_csv("titanic.csv", sep='\t')
+
+df = pd.read_csv("titanic.csv")
+df.shape
 ```
 
-Набор данных о «Титанике» находится в открытом доступе (например,
-в [OpenML](https://www.openml.org/d/40945) под именем `titanic`).
-Файл использует табуляцию, а не запятую в качестве разделителя, поэтому `sep='\t'` обязателен.
-Файл, загруженный из другого источника, может оказаться обычным CSV.
+    (891, 12)
+
+
+Файл titanic.csv взят из учебника pandas для начинающих (каталог doc/data репозитория pandas-dev/pandas): 891 пассажир «Титаника», 12 столбцов, разделитель — запятая. Файлы, сохранённые в русской локали, обычно записаны с разделителем «;» и десятичной запятой и читаются с аргументами `sep=";"` и `decimal=","`; без второго числовые столбцы окажутся строковыми.
 
 
 ```python
-df.head(3)
+df[["Survived", "Pclass", "Sex", "Age", "Fare"]].head(3)
 ```
 
 
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>PassengerId</th>
-      <th>Survived</th>
-      <th>Pclass</th>
-      <th>Name</th>
-      <th>Sex</th>
-      <th>Age</th>
-      <th>SibSp</th>
-      <th>Parch</th>
-      <th>Ticket</th>
-      <th>Fare</th>
-      <th>Cabin</th>
-      <th>Embarked</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>1</td>
-      <td>0</td>
-      <td>3</td>
-      <td>Braund, Mr. Owen Harris</td>
-      <td>male</td>
-      <td>22.0</td>
-      <td>1</td>
-      <td>0</td>
-      <td>A/5 21171</td>
-      <td>7.2500</td>
-      <td>NaN</td>
-      <td>S</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>2</td>
-      <td>1</td>
-      <td>1</td>
-      <td>Cumings, Mrs. John Bradley (Florence Briggs Th...</td>
-      <td>female</td>
-      <td>38.0</td>
-      <td>1</td>
-      <td>0</td>
-      <td>PC 17599</td>
-      <td>71.2833</td>
-      <td>C85</td>
-      <td>C</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>3</td>
-      <td>1</td>
-      <td>3</td>
-      <td>Heikkinen, Miss. Laina</td>
-      <td>female</td>
-      <td>26.0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>STON/O2. 3101282</td>
-      <td>7.9250</td>
-      <td>NaN</td>
-      <td>S</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
+       Survived  Pclass     Sex   Age     Fare
+    0         0       3    male  22.0   7.2500
+    1         1       1  female  38.0  71.2833
+    2         1       3  female  26.0   7.9250
 
 
 ```python
-view = df[df['Sex'] == 'female']
+df.info()
 ```
+
+    <class 'pandas.DataFrame'>
+    RangeIndex: 891 entries, 0 to 890
+    Data columns (total 12 columns):
+     #   Column       Non-Null Count  Dtype  
+    ---  ------       --------------  -----  
+     0   PassengerId  891 non-null    int64  
+     1   Survived     891 non-null    int64  
+     2   Pclass       891 non-null    int64  
+     3   Name         891 non-null    str    
+     4   Sex          891 non-null    str    
+     5   Age          714 non-null    float64
+     6   SibSp        891 non-null    int64  
+     7   Parch        891 non-null    int64  
+     8   Ticket       891 non-null    str    
+     9   Fare         891 non-null    float64
+     10  Cabin        204 non-null    str    
+     11  Embarked     889 non-null    str    
+    dtypes: float64(2), int64(5), str(5)
+    memory usage: 118.7 KB
+
+
+Метод `info` перечисляет столбцы с числом непустых значений и типом. Строковые столбцы pandas 3.0 хранит в отдельном типе `str`, а не в `object`, как прежние версии. Из числа непустых значений сразу видны пропуски: возраст известен у 714 пассажиров, номер каюты — у 204, порт посадки — у 889.
+
+### Отбор строк и столбцов
+
+Строки отбираются маской, как в NumPy: сравнение столбца даёт Series из значений bool, условия соединяются операторами `&` и `|` и заключаются в скобки.
 
 
 ```python
-list(((df['Sex'] == 'female') & (df['Age'] > 30)).index)
+mask = (df["Sex"] == "female") & (df["Age"] > 30)
+mask.sum()
 ```
 
-
-
-
-    [0,
-     1,
-     2,
-     3,
-     4,
-     5,
-     6,
-     7,
-     8,
-     9,
-     10,
-     11,
-     12,
-     13,
-     14,
-     15,
-     16,
-     17,
-     18,
-     19,
-     20,
-     21,
-     22,
-     23,
-     24,
-     25,
-     26,
-     27,
-     28,
-     29,
-     30,
-     31,
-     32,
-     33,
-     34,
-     35,
-     36,
-     37,
-     38,
-     39,
-     40,
-     41,
-     42,
-     43,
-     44,
-     45,
-     46,
-     47,
-     48,
-     49,
-     50,
-     51,
-     52,
-     53,
-     54,
-     55,
-     56,
-     57,
-     58,
-     59,
-     60,
-     61,
-     62,
-     63,
-     64,
-     65,
-     66,
-     67,
-     68,
-     69,
-     70,
-     71,
-     72,
-     73,
-     74,
-     75,
-     76,
-     77,
-     78,
-     79,
-     80,
-     81,
-     82,
-     83,
-     84,
-     85,
-     86,
-     87,
-     88,
-     89,
-     90,
-     91,
-     92,
-     93,
-     94,
-     95,
-     96,
-     97,
-     98,
-     99,
-     100,
-     101,
-     102,
-     103,
-     104,
-     105,
-     106,
-     107,
-     108,
-     109,
-     110,
-     111,
-     112,
-     113,
-     114,
-     115,
-     116,
-     117,
-     118,
-     119,
-     120,
-     121,
-     122,
-     123,
-     124,
-     125,
-     126,
-     127,
-     128,
-     129,
-     130,
-     131,
-     132,
-     133,
-     134,
-     135,
-     136,
-     137,
-     138,
-     139,
-     140,
-     141,
-     142,
-     143,
-     144,
-     145,
-     146,
-     147,
-     148,
-     149,
-     150,
-     151,
-     152,
-     153,
-     154,
-     155]
-
-
+    np.int64(103)
 
 
 ```python
-df[(df['Sex'] == 'female') & (df['Age'] > 30)].index
+women = df[mask]
+women[["Name", "Age", "Pclass"]].head(3)
 ```
 
 
+                                                     Name   Age  Pclass
+    1   Cumings, Mrs. John Bradley (Florence Briggs Th...  38.0       1
+    3        Futrelle, Mrs. Jacques Heath (Lily May Peel)  35.0       1
+    11                            Bonnell, Miss Elizabeth  58.0       1
 
 
-    Index([1, 3, 11, 15, 18, 25, 40, 52, 61, 85, 98, 123, 132], dtype='int64')
-
-
-
-
-```python
-df.drop(index=df[(df['Sex'] == 'female') & (df['Age'] > 30)].index, inplace=True)
-```
+Индексатор `loc` обращается к строке по метке индекса:
 
 
 ```python
@@ -1315,169 +906,38 @@ df.loc[78]
 ```
 
 
-
-
-    PassengerId                               79
-    Survived                                   1
-    Pclass                                     2
-    Name           Caldwell, Master. Alden Gates
-    Sex                                     male
-    Age                                     0.83
-    SibSp                                      0
-    Parch                                      2
-    Ticket                                248738
-    Fare                                    29.0
-    Cabin                                    NaN
-    Embarked                                   S
+    PassengerId                              79
+    Survived                                  1
+    Pclass                                    2
+    Name           Caldwell, Master Alden Gates
+    Sex                                    male
+    Age                                    0.83
+    SibSp                                     0
+    Parch                                     2
+    Ticket                               248738
+    Fare                                   29.0
+    Cabin                                   NaN
+    Embarked                                  S
     Name: 78, dtype: object
 
 
+Метод `describe` даёт сводку по числовым столбцам, а для строковых — число значений, число различных, самое частое и его частоту.
 
 
 ```python
-df.iloc[0]
+df[["Age", "SibSp", "Parch", "Fare"]].describe().round(2)
 ```
 
 
-
-
-    PassengerId                          1
-    Survived                             0
-    Pclass                               3
-    Name           Braund, Mr. Owen Harris
-    Sex                               male
-    Age                               22.0
-    SibSp                                1
-    Parch                                0
-    Ticket                       A/5 21171
-    Fare                              7.25
-    Cabin                              NaN
-    Embarked                             S
-    Name: 0, dtype: object
-
-
-
-
-```python
-df.describe()
-```
-
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>PassengerId</th>
-      <th>Survived</th>
-      <th>Pclass</th>
-      <th>Age</th>
-      <th>SibSp</th>
-      <th>Parch</th>
-      <th>Fare</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>count</th>
-      <td>143.000000</td>
-      <td>143.000000</td>
-      <td>143.000000</td>
-      <td>113.000000</td>
-      <td>143.000000</td>
-      <td>143.000000</td>
-      <td>143.000000</td>
-    </tr>
-    <tr>
-      <th>mean</th>
-      <td>80.902098</td>
-      <td>0.307692</td>
-      <td>2.461538</td>
-      <td>26.702035</td>
-      <td>0.601399</td>
-      <td>0.391608</td>
-      <td>27.526018</td>
-    </tr>
-    <tr>
-      <th>std</th>
-      <td>44.536473</td>
-      <td>0.463161</td>
-      <td>0.776134</td>
-      <td>14.483237</td>
-      <td>1.075593</td>
-      <td>0.813919</td>
-      <td>40.406013</td>
-    </tr>
-    <tr>
-      <th>min</th>
-      <td>1.000000</td>
-      <td>0.000000</td>
-      <td>1.000000</td>
-      <td>0.830000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>6.750000</td>
-    </tr>
-    <tr>
-      <th>25%</th>
-      <td>43.500000</td>
-      <td>0.000000</td>
-      <td>2.000000</td>
-      <td>19.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>7.925000</td>
-    </tr>
-    <tr>
-      <th>50%</th>
-      <td>81.000000</td>
-      <td>0.000000</td>
-      <td>3.000000</td>
-      <td>24.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>13.000000</td>
-    </tr>
-    <tr>
-      <th>75%</th>
-      <td>118.500000</td>
-      <td>1.000000</td>
-      <td>3.000000</td>
-      <td>33.000000</td>
-      <td>1.000000</td>
-      <td>0.000000</td>
-      <td>29.597900</td>
-    </tr>
-    <tr>
-      <th>max</th>
-      <td>156.000000</td>
-      <td>1.000000</td>
-      <td>3.000000</td>
-      <td>71.000000</td>
-      <td>5.000000</td>
-      <td>5.000000</td>
-      <td>263.000000</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
+              Age   SibSp   Parch    Fare
+    count  714.00  891.00  891.00  891.00
+    mean    29.70    0.52    0.38   32.20
+    std     14.53    1.10    0.81   49.69
+    min      0.42    0.00    0.00    0.00
+    25%     20.12    0.00    0.00    7.91
+    50%     28.00    0.00    0.00   14.45
+    75%     38.00    1.00    0.00   31.00
+    max     80.00    8.00    6.00  512.33
 
 
 ```python
@@ -1485,209 +945,38 @@ df[["Sex", "Cabin"]].describe()
 ```
 
 
+             Sex Cabin
+    count    891   204
+    unique     2   147
+    top     male    G6
+    freq     577     4
 
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Sex</th>
-      <th>Cabin</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>count</th>
-      <td>143</td>
-      <td>25</td>
-    </tr>
-    <tr>
-      <th>unique</th>
-      <td>2</td>
-      <td>23</td>
-    </tr>
-    <tr>
-      <th>top</th>
-      <td>male</td>
-      <td>C23 C25 C27</td>
-    </tr>
-    <tr>
-      <th>freq</th>
-      <td>100</td>
-      <td>2</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
-### Срезы в DataFrame
-
-Наиболее частой ошибкой начинающего пользователя pandas является невнимание к тому, что срез иногда оказывается представлением исходной таблицы, а иногда её копией.
 
 ### Индексация
 
-После сортировки индекс, приписанный строке, сохраняется и перестаёт совпадать с её номером по порядку.
+Для отбора строк есть два индексатора. `loc` работает с метками индекса и именами столбцов, и срез по меткам включает правую границу; `iloc` работает с номерами позиций, как индексация NumPy, и правая граница среза не включается. После сортировки метка, приписанная строке, сохраняется и перестаёт совпадать с её номером по порядку.
 
 
 ```python
-df.sort_values("Age", inplace=True)
+s = df.sort_values("Age")
+s[["Name", "Age"]].head(3)
 ```
+
+
+                                   Name   Age
+    803  Thomas, Master Assad Alexander  0.42
+    755        Hamalainen, Master Viljo  0.67
+    644           Baclini, Miss Eugenie  0.75
 
 
 ```python
-df.head(3)
+s.loc[78, "Age"], s.iloc[78]["Age"]
 ```
 
+    (np.float64(0.83), np.float64(15.0))
 
 
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>PassengerId</th>
-      <th>Survived</th>
-      <th>Pclass</th>
-      <th>Name</th>
-      <th>Sex</th>
-      <th>Age</th>
-      <th>SibSp</th>
-      <th>Parch</th>
-      <th>Ticket</th>
-      <th>Fare</th>
-      <th>Cabin</th>
-      <th>Embarked</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>78</th>
-      <td>79</td>
-      <td>1</td>
-      <td>2</td>
-      <td>Caldwell, Master. Alden Gates</td>
-      <td>male</td>
-      <td>0.83</td>
-      <td>0</td>
-      <td>2</td>
-      <td>248738</td>
-      <td>29.000</td>
-      <td>NaN</td>
-      <td>S</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>8</td>
-      <td>0</td>
-      <td>3</td>
-      <td>Palsson, Master. Gosta Leonard</td>
-      <td>male</td>
-      <td>2.00</td>
-      <td>3</td>
-      <td>1</td>
-      <td>349909</td>
-      <td>21.075</td>
-      <td>NaN</td>
-      <td>S</td>
-    </tr>
-    <tr>
-      <th>119</th>
-      <td>120</td>
-      <td>0</td>
-      <td>3</td>
-      <td>Andersson, Miss. Ellis Anna Maria</td>
-      <td>female</td>
-      <td>2.00</td>
-      <td>4</td>
-      <td>2</td>
-      <td>347082</td>
-      <td>31.275</td>
-      <td>NaN</td>
-      <td>S</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
-
-```python
-df.iloc[78]
-```
-
-
-
-
-    PassengerId                              67
-    Survived                                  1
-    Pclass                                    2
-    Name           Nye, Mrs. (Elizabeth Ramell)
-    Sex                                  female
-    Age                                    29.0
-    SibSp                                     0
-    Parch                                     0
-    Ticket                           C.A. 29395
-    Fare                                   10.5
-    Cabin                                   F33
-    Embarked                                  S
-    Name: 66, dtype: object
-
-
-
-
-```python
-df.loc[78]
-```
-
-
-
-
-    PassengerId                               79
-    Survived                                   1
-    Pclass                                     2
-    Name           Caldwell, Master. Alden Gates
-    Sex                                     male
-    Age                                     0.83
-    SibSp                                      0
-    Parch                                      2
-    Ticket                                248738
-    Fare                                    29.0
-    Cabin                                    NaN
-    Embarked                                   S
-    Name: 78, dtype: object
-
-
+После сортировки по возрасту `s.loc[78]` по-прежнему обращается к пассажиру с меткой 78, а `s.iloc[78]` — к семьдесят девятой по возрасту строке. Метод `reset_index` перенумеровывает строки заново.
 
 
 ```python
@@ -1695,231 +984,83 @@ df.loc[[78, 79, 100], ["Age", "Cabin"]]
 ```
 
 
+           Age Cabin
+    78    0.83   NaN
+    79   30.00   NaN
+    100  28.00   NaN
 
 
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Age</th>
-      <th>Cabin</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>78</th>
-      <td>0.83</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>79</th>
-      <td>30.00</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>100</th>
-      <td>28.00</td>
-      <td>NaN</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
-Чтобы изменять данные среза, не затрагивая основную таблицу, достаточно работать с копией.
+Метод `query` принимает условие строкой, в которой допускаются `and` и `or`:
 
 
 ```python
-df_slice_copy = df.loc[[78, 79, 100], ["Age", "Cabin"]].copy()
+df.query("Pclass == 1 and Age < 18").shape
 ```
+
+    (12, 12)
+
+
+### Копирование при записи
+
+До версии 3.0 результат индексации в pandas был то представлением, то копией в зависимости от операции, и запись в него то меняла исходную таблицу, то нет; pandas предупреждал об этом `SettingWithCopyWarning`. С версии 3.0 действует единое правило копирования при записи (Copy-on-Write): любой объект, полученный индексацией или методом, ведёт себя как копия, а изменить таблицу можно только операцией над ней самой.
 
 
 ```python
-df_slice_copy[:] = 3
+sub = df.loc[[78, 79, 100], ["Age", "Fare"]]
+sub["Age"] = 3
+sub
 ```
+
+
+         Age     Fare
+    78     3  29.0000
+    79     3  12.4750
+    100    3   7.8958
 
 
 ```python
-df_slice_copy
+df.loc[[78, 79, 100], ["Age", "Fare"]]
 ```
 
 
+           Age     Fare
+    78    0.83  29.0000
+    79   30.00  12.4750
+    100  28.00   7.8958
 
 
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Age</th>
-      <th>Cabin</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>78</th>
-      <td>3.0</td>
-      <td>3</td>
-    </tr>
-    <tr>
-      <th>79</th>
-      <td>3.0</td>
-      <td>3</td>
-    </tr>
-    <tr>
-      <th>100</th>
-      <td>3.0</td>
-      <td>3</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
-Если же изменять требуется саму основную таблицу, то используется `loc`.
+Запись в `sub` исходную таблицу не изменила, и защитный вызов `.copy()` для этого не требуется. Цепочка присваиваний `df[маска]["Fare"] = 0` никогда не меняет таблицу: первый шаг создаёт новый объект, и запись идёт в него. Обнаружив такую цепочку, pandas выдаёт предупреждение `ChainedAssignmentError`. Пример выполняется на копии таблицы `t`, чтобы не изменять `df`:
 
 
 ```python
-df.head(3)
+t = df.copy()
+t[t["Age"] > 60]["Fare"] = 0
+(t.loc[t["Age"] > 60, "Fare"] == 0).sum()
 ```
 
+    <ipython-input-79-652a0f7e26bc>:2: ChainedAssignmentError: A value is being set on a copy of a DataFrame or Series through chained assignment.
+    Such chained assignment never works to update the original DataFrame or Series, because the intermediate object on which we are setting values always behaves as a copy (due to Copy-on-Write).
 
+    Try using '.loc[row_indexer, col_indexer] = value' instead, to perform the assignment in a single step.
 
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>PassengerId</th>
-      <th>Survived</th>
-      <th>Pclass</th>
-      <th>Name</th>
-      <th>Sex</th>
-      <th>Age</th>
-      <th>SibSp</th>
-      <th>Parch</th>
-      <th>Ticket</th>
-      <th>Fare</th>
-      <th>Cabin</th>
-      <th>Embarked</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>78</th>
-      <td>79</td>
-      <td>1</td>
-      <td>2</td>
-      <td>Caldwell, Master. Alden Gates</td>
-      <td>male</td>
-      <td>0.83</td>
-      <td>0</td>
-      <td>2</td>
-      <td>248738</td>
-      <td>29.000</td>
-      <td>NaN</td>
-      <td>S</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>8</td>
-      <td>0</td>
-      <td>3</td>
-      <td>Palsson, Master. Gosta Leonard</td>
-      <td>male</td>
-      <td>2.00</td>
-      <td>3</td>
-      <td>1</td>
-      <td>349909</td>
-      <td>21.075</td>
-      <td>NaN</td>
-      <td>S</td>
-    </tr>
-    <tr>
-      <th>119</th>
-      <td>120</td>
-      <td>0</td>
-      <td>3</td>
-      <td>Andersson, Miss. Ellis Anna Maria</td>
-      <td>female</td>
-      <td>2.00</td>
-      <td>4</td>
-      <td>2</td>
-      <td>347082</td>
-      <td>31.275</td>
-      <td>NaN</td>
-      <td>S</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
+    See the documentation for a more detailed explanation: https://pandas.pydata.org/pandas-docs/stable/user_guide/copy_on_write.html#chained-assignment
+      t[t["Age"] > 60]["Fare"] = 0
+    np.int64(0)
 
 
 ```python
-some_slice = df["Age"].isin([20, 25,30])
-df.loc[some_slice, "Fare"] = df.loc[some_slice, "Fare"] * 10
+t.loc[t["Age"] > 60, "Fare"] = 0
+(t.loc[t["Age"] > 60, "Fare"] == 0).sum()
 ```
 
-Следующий способ применять не рекомендуется:
+    np.int64(22)
 
 
-```python
-slice_df = df[some_slice]
-slice_df["Fare"] = slice_df["Fare"] * 10
-```
+Та же запись одной операцией `t.loc[маска, "Fare"] = 0` изменяет таблицу: нулями стали все 22 значения. Для старого кода существен обратный порядок шагов: запись `df["Fare"][маска] = 0` до версии 3.0 меняла таблицу, а теперь, как и любая цепочка, её не меняет.
 
-С pandas 3.0 включён механизм Copy-on-Write, и `SettingWithCopyWarning` удалён. Запись в `slice_df` теперь гарантированно попадает в копию, исходная таблица не изменяется, и предупреждения об этом не выдаётся. Правило прежнее: исходная таблица изменяется только через `df.loc[маска, столбец] = ...`.
+Выборка по маске, как и в NumPy, сразу копирует строки. Результаты операций, которые прежде возвращали представление, — столбец `df["Fare"]`, срез строк `df[:10]`, `reset_index`, `rename` — данные заранее не копируют: новый объект использует память исходного, пока в один из них не выполнена запись, и только тогда копируются затронутые данные.
 
-Столбцы отбираются названием или списком названий в ```[]```.
-
-**Замечание:** если передаётся название одного столбца, то возвращается объект класса [pandas.Series](http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html), а если список названий столбцов, то возвращается  [pandas.DataFrame](http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html); для получения [numpy.array](https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html) достаточно обратиться к полю **values**.
-
-`Series` и `DataFrame` имеют много общих методов, работающих одинаково в обоих случаях.
+Столбцы отбираются названием или списком названий в `[]`. Если передаётся название одного столбца, то возвращается объект класса [pandas.Series](https://pandas.pydata.org/docs/reference/api/pandas.Series.html), а если список названий столбцов, то [pandas.DataFrame](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html). `Series` и `DataFrame` имеют много общих методов, работающих одинаково в обоих случаях.
 
 
 ```python
@@ -1927,16 +1068,12 @@ df["Age"].head(5)
 ```
 
 
-
-
-    78     0.83
-    7      2.00
-    119    2.00
-    16     2.00
-    43     3.00
+    0    22.0
+    1    38.0
+    2    26.0
+    3    35.0
+    4    35.0
     Name: Age, dtype: float64
-
-
 
 
 ```python
@@ -1944,72 +1081,24 @@ df[["Age"]].head(5)
 ```
 
 
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Age</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>78</th>
-      <td>0.83</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>2.00</td>
-    </tr>
-    <tr>
-      <th>119</th>
-      <td>2.00</td>
-    </tr>
-    <tr>
-      <th>16</th>
-      <td>2.00</td>
-    </tr>
-    <tr>
-      <th>43</th>
-      <td>3.00</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
+        Age
+    0  22.0
+    1  38.0
+    2  26.0
+    3  35.0
+    4  35.0
 
 
 ### pd.Series
 
-Одномерный срез датафрейма является `pd.Series`, столбцом значений, снабжённым индексом.
-
-Извлечь из `pd.Series` обычный `np.array` можно, однако обычно это не требуется: вместе с массивом теряется индекс.
+Одномерный срез таблицы является `pd.Series`, столбцом значений, снабжённым индексом. Массив NumPy из него даёт метод `to_numpy()`; атрибут `values` у строкового столбца в pandas 3.0 возвращает не массив NumPy, а массив Arrow. Обычно извлекать массив не требуется: вместе с ним теряется индекс.
 
 
 ```python
-df["Age"].head(5).values
+df["Age"].head(5).to_numpy()
 ```
 
-
-
-
-    array([0.83, 2.  , 2.  , 2.  , 3.  ])
-
+    array([22., 38., 26., 35., 35.])
 
 
 Индекс извлекается отдельно:
@@ -2019,11 +1108,7 @@ df["Age"].head(5).values
 df["Age"].head(5).index
 ```
 
-
-
-
-    Index([78, 7, 119, 16, 43], dtype='int64')
-
+    RangeIndex(start=0, stop=5, step=1)
 
 
 Создаётся `Series` так же, как `np.array`, только индекс задаётся явно.
@@ -2034,14 +1119,10 @@ pd.Series([1, 2, 3], index=["Red", "Green", "Blue"])
 ```
 
 
-
-
     Red      1
     Green    2
     Blue     3
     dtype: int64
-
-
 
 
 ```python
@@ -2049,28 +1130,10 @@ pd.Series(1, index=["Red", "Green", "Blue"])
 ```
 
 
-
-
     Red      1
     Green    1
     Blue     1
     dtype: int64
-
-
-
-
-```python
-pd.Series([1, 2, 3], index=["Red", "Green", "Blue"])
-```
-
-
-
-
-    Red      1
-    Green    2
-    Blue     3
-    dtype: int64
-
 
 
 `Series` разворачивается обратно в `DataFrame`:
@@ -2082,319 +1145,80 @@ s.to_frame("Values")
 ```
 
 
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Values</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>Red</th>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>Green</th>
-      <td>2</td>
-    </tr>
-    <tr>
-      <th>Blue</th>
-      <td>3</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
+           Values
+    Red         1
+    Green       2
+    Blue        3
 
 
 ```python
-s.loc["Red"]
+s.loc["Red"], s.iloc[0]
 ```
 
+    (np.int64(1), np.int64(1))
 
 
+### [Объединение таблиц](https://pandas.pydata.org/docs/user_guide/merging.html)
 
-    1
-
-
+Метод `merge` объединяет две таблицы по значениям ключевых столбцов, как соединение в SQL. Аргумент `how` задаёт, какие строки попадут в результат: `inner` — только строки, ключ которых есть в обеих таблицах, `left` — все строки левой таблицы, а там, где пары нет, столбцы правой заполняются NaN, `right` и `outer` — все строки правой и обеих. К пассажирам по коду порта посадки присоединяется справочник портов:
 
 
 ```python
-s.iloc[0]
+ports = pd.DataFrame({"Embarked": ["C", "Q", "S"],
+                      "Port": ["Cherbourg", "Queenstown", "Southampton"]})
+m = df.merge(ports, on="Embarked", how="left", validate="m:1", indicator=True)
+m["_merge"].value_counts()
 ```
 
 
-
-
-    1
-
-
-
-### [Объединение таблиц](http://pandas.pydata.org/pandas-docs/stable/merging.html)
-
-Две таблицы сводятся в одну методом `join`, сопоставляющим строки по индексу.
-
-```python
-df1 = df[["Age", "Parch"]].copy()
-df2 = df[["Ticket", "Fare"]].copy()
-```
+    _merge
+    both          889
+    left_only       2
+    right_only      0
+    Name: count, dtype: int64
 
 
 ```python
-df1.join(df2).head(5)
+m.loc[m["_merge"] == "left_only", ["PassengerId", "Name", "Port"]]
 ```
 
 
+         PassengerId                                       Name Port
+    61            62                         Icard, Miss Amelie  NaN
+    829          830  Stone, Mrs. George Nelson (Martha Evelyn)  NaN
 
 
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
+Аргумент `validate="m:1"` проверяет, что ключ в правой таблице уникален: при дубликате `merge` завершается ошибкой `MergeError` вместо того, чтобы без предупреждения размножить строки. Аргумент `indicator=True` добавляет столбец `_merge`, показывающий источник строки: у двух пассажиров порт посадки не указан, и пары в справочнике у них нет.
 
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Age</th>
-      <th>Parch</th>
-      <th>Ticket</th>
-      <th>Fare</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>78</th>
-      <td>0.83</td>
-      <td>2</td>
-      <td>248738</td>
-      <td>29.0000</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>2.00</td>
-      <td>1</td>
-      <td>349909</td>
-      <td>21.0750</td>
-    </tr>
-    <tr>
-      <th>119</th>
-      <td>2.00</td>
-      <td>2</td>
-      <td>347082</td>
-      <td>31.2750</td>
-    </tr>
-    <tr>
-      <th>16</th>
-      <td>2.00</td>
-      <td>1</td>
-      <td>382652</td>
-      <td>29.1250</td>
-    </tr>
-    <tr>
-      <th>43</th>
-      <td>3.00</td>
-      <td>2</td>
-      <td>SC/Paris 2123</td>
-      <td>41.5792</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
+Метод `join` объединяет таблицы по индексу:
 
 
 ```python
-df1 = df[["Age", "Parch", "PassengerId"]].copy()
-df2 = df[["Ticket", "Fare", "PassengerId"]].copy()
+df1 = df[["Age", "Parch"]]
+df2 = df[["Ticket", "Fare"]]
+df1.join(df2).head(3)
 ```
+
+
+        Age  Parch            Ticket     Fare
+    0  22.0      0         A/5 21171   7.2500
+    1  38.0      0          PC 17599  71.2833
+    2  26.0      0  STON/O2. 3101282   7.9250
+
+
+`pd.concat` склеивает таблицы одинаковой структуры, например результаты двух серий измерений, одну под другой:
 
 
 ```python
-pd.merge(df1, df2, on=["PassengerId"]).head(5)
+pd.concat([df.head(2), df.tail(2)])[["PassengerId", "Name"]]
 ```
 
 
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Age</th>
-      <th>Parch</th>
-      <th>PassengerId</th>
-      <th>Ticket</th>
-      <th>Fare</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>0.83</td>
-      <td>2</td>
-      <td>79</td>
-      <td>248738</td>
-      <td>29.0000</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>2.00</td>
-      <td>1</td>
-      <td>8</td>
-      <td>349909</td>
-      <td>21.0750</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>2.00</td>
-      <td>2</td>
-      <td>120</td>
-      <td>347082</td>
-      <td>31.2750</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>2.00</td>
-      <td>1</td>
-      <td>17</td>
-      <td>382652</td>
-      <td>29.1250</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>3.00</td>
-      <td>2</td>
-      <td>44</td>
-      <td>SC/Paris 2123</td>
-      <td>41.5792</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
-
-```python
-pd.merge(df1, df2, on=["PassengerId"], how="inner").head(5)
-```
-
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Age</th>
-      <th>Parch</th>
-      <th>PassengerId</th>
-      <th>Ticket</th>
-      <th>Fare</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>0.83</td>
-      <td>2</td>
-      <td>79</td>
-      <td>248738</td>
-      <td>29.0000</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>2.00</td>
-      <td>1</td>
-      <td>8</td>
-      <td>349909</td>
-      <td>21.0750</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>2.00</td>
-      <td>2</td>
-      <td>120</td>
-      <td>347082</td>
-      <td>31.2750</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>2.00</td>
-      <td>1</td>
-      <td>17</td>
-      <td>382652</td>
-      <td>29.1250</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>3.00</td>
-      <td>2</td>
-      <td>44</td>
-      <td>SC/Paris 2123</td>
-      <td>41.5792</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
+         PassengerId                                               Name
+    0              1                            Braund, Mr. Owen Harris
+    1              2  Cumings, Mrs. John Bradley (Florence Briggs Th...
+    889          890                              Behr, Mr. Karl Howell
+    890          891                                Dooley, Mr. Patrick
 
 
 ### Группировка
@@ -2407,76 +1231,24 @@ print("Pclass 2: ", df[df["Pclass"] == 2]["Age"].mean())
 print("Pclass 3: ", df[df["Pclass"] == 3]["Age"].mean())
 ```
 
-    Pclass 1:  36.86363636363637
-    Pclass 2:  26.68576923076923
-    Pclass 3:  23.26923076923077
-
+    Pclass 1:  38.233440860215055
+    Pclass 2:  29.87763005780347
+    Pclass 3:  25.14061971830986
 
 
 ```python
-df.groupby(["Pclass"])[["Age"]].mean()
+df.groupby("Pclass")[["Age"]].mean()
 ```
 
 
+                  Age
+    Pclass           
+    1       38.233441
+    2       29.877630
+    3       25.140620
 
 
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Age</th>
-    </tr>
-    <tr>
-      <th>Pclass</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>1</th>
-      <td>36.863636</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>26.685769</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>23.269231</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
-
-Сам по себе `groupby` ничего не вычисляет, а возвращает объект, хранящий разбиение и ожидающий сводной операции.
-
-```python
-df.groupby(["Survived", "Pclass"])
-```
-
-
-
-
-    <pandas.core.groupby.generic.DataFrameGroupBy object at 0x73b08903f7d0>
-
-
+Группировка устроена по схеме «разбиение — применение — объединение». Сам по себе `groupby` ничего не вычисляет, а возвращает объект `DataFrameGroupBy`, хранящий разбиение и ожидающий сводной операции; результаты операции для групп объединяются в таблицу, индексом которой служат значения ключа.
 
 
 ```python
@@ -2484,18 +1256,14 @@ df.groupby(["Survived", "Pclass"])["PassengerId"].count()
 ```
 
 
-
-
     Survived  Pclass
-    0         1         18
-              2         16
-              3         65
-    1         1          7
-              2         11
-              3         26
+    0         1          80
+              2          97
+              3         372
+    1         1         136
+              2          87
+              3         119
     Name: PassengerId, dtype: int64
-
-
 
 
 ```python
@@ -2503,1149 +1271,312 @@ df.groupby(["Survived", "Pclass"])[["PassengerId", "Cabin"]].count()
 ```
 
 
+                     PassengerId  Cabin
+    Survived Pclass                    
+    0        1                80     59
+             2                97      3
+             3               372      6
+    1        1               136    117
+             2                87     13
+             3               119      6
 
 
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th></th>
-      <th>PassengerId</th>
-      <th>Cabin</th>
-    </tr>
-    <tr>
-      <th>Survived</th>
-      <th>Pclass</th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th rowspan="3" valign="top">0</th>
-      <th>1</th>
-      <td>18</td>
-      <td>12</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>16</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>65</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th rowspan="3" valign="top">1</th>
-      <th>1</th>
-      <td>7</td>
-      <td>7</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>11</td>
-      <td>2</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>26</td>
-      <td>2</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
+Метод `count` считает непустые значения столбца, поэтому для Cabin счётчики меньше: каюта известна в основном у пассажиров первого класса. Число строк группы независимо от пропусков даёт метод `size`. Метод `agg` применяет к группам несколько сводных функций сразу:
 
 
 ```python
-df.groupby(["Survived", "Pclass"])[["PassengerId", "Fare"]].describe()
+df.groupby("Pclass")["Fare"].agg(["mean", "median", "max"]).round(2)
 ```
 
 
+             mean  median     max
+    Pclass                       
+    1       84.15   60.29  512.33
+    2       20.66   14.25   73.50
+    3       13.68    8.05   69.55
 
 
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead tr th {
-        text-align: left;
-    }
-
-    .dataframe thead tr:last-of-type th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr>
-      <th></th>
-      <th></th>
-      <th colspan="8" halign="left">PassengerId</th>
-      <th colspan="8" halign="left">Fare</th>
-    </tr>
-    <tr>
-      <th></th>
-      <th></th>
-      <th>count</th>
-      <th>mean</th>
-      <th>std</th>
-      <th>min</th>
-      <th>25%</th>
-      <th>50%</th>
-      <th>75%</th>
-      <th>max</th>
-      <th>count</th>
-      <th>mean</th>
-      <th>std</th>
-      <th>min</th>
-      <th>25%</th>
-      <th>50%</th>
-      <th>75%</th>
-      <th>max</th>
-    </tr>
-    <tr>
-      <th>Survived</th>
-      <th>Pclass</th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th rowspan="3" valign="top">0</th>
-      <th>1</th>
-      <td>18.0</td>
-      <td>82.555556</td>
-      <td>44.501450</td>
-      <td>7.0</td>
-      <td>40.75</td>
-      <td>88.5</td>
-      <td>117.00</td>
-      <td>156.0</td>
-      <td>18.0</td>
-      <td>80.035183</td>
-      <td>66.109719</td>
-      <td>27.7208</td>
-      <td>51.896875</td>
-      <td>61.2771</td>
-      <td>78.721875</td>
-      <td>263.0000</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>16.0</td>
-      <td>107.187500</td>
-      <td>44.842270</td>
-      <td>21.0</td>
-      <td>72.50</td>
-      <td>122.0</td>
-      <td>145.25</td>
-      <td>151.0</td>
-      <td>16.0</td>
-      <td>33.555725</td>
-      <td>32.412477</td>
-      <td>10.5000</td>
-      <td>12.881250</td>
-      <td>23.5000</td>
-      <td>31.740600</td>
-      <td>130.0000</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>65.0</td>
-      <td>80.892308</td>
-      <td>42.930585</td>
-      <td>1.0</td>
-      <td>49.00</td>
-      <td>87.0</td>
-      <td>114.00</td>
-      <td>155.0</td>
-      <td>65.0</td>
-      <td>19.123272</td>
-      <td>20.710190</td>
-      <td>6.7500</td>
-      <td>7.895800</td>
-      <td>8.0500</td>
-      <td>21.075000</td>
-      <td>98.2500</td>
-    </tr>
-    <tr>
-      <th rowspan="3" valign="top">1</th>
-      <th>1</th>
-      <td>7.0</td>
-      <td>84.000000</td>
-      <td>49.568135</td>
-      <td>24.0</td>
-      <td>44.00</td>
-      <td>89.0</td>
-      <td>117.50</td>
-      <td>152.0</td>
-      <td>7.0</td>
-      <td>90.966057</td>
-      <td>85.998766</td>
-      <td>26.2833</td>
-      <td>35.500000</td>
-      <td>63.3583</td>
-      <td>106.560400</td>
-      <td>263.0000</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>11.0</td>
-      <td>57.181818</td>
-      <td>35.261362</td>
-      <td>10.0</td>
-      <td>33.00</td>
-      <td>57.0</td>
-      <td>73.00</td>
-      <td>134.0</td>
-      <td>11.0</td>
-      <td>21.627273</td>
-      <td>10.581905</td>
-      <td>10.5000</td>
-      <td>11.750000</td>
-      <td>26.0000</td>
-      <td>28.375000</td>
-      <td>41.5792</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>26.0</td>
-      <td>72.807692</td>
-      <td>46.318048</td>
-      <td>3.0</td>
-      <td>34.00</td>
-      <td>72.0</td>
-      <td>109.50</td>
-      <td>147.0</td>
-      <td>26.0</td>
-      <td>16.698400</td>
-      <td>24.254889</td>
-      <td>7.1417</td>
-      <td>7.756250</td>
-      <td>7.9250</td>
-      <td>14.244775</td>
-      <td>124.7500</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
-### Работа с временными метками
-
-Показания приборов почти всегда поступают с меткой времени, проставленной системой сбора. Добавим в таблицу столбец с временем в формате Unix и рассмотрим, какие операции pandas предоставляет для него после приведения к своему типу.
-
-```python
-tdf = df.copy()
-tdf["ts"] = range(1560000000, 1560000000 + tdf.shape[0])
-```
+Сводная таблица `pivot_table` раскладывает свёртку по двум ключам — по строкам и по столбцам, а функция `pd.cut` разбивает непрерывную величину на интервалы, которые затем служат ключом группировки:
 
 
 ```python
-tdf.head(2)
+df.pivot_table(values="Survived", index="Sex", columns="Pclass").round(2)
 ```
 
 
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>PassengerId</th>
-      <th>Survived</th>
-      <th>Pclass</th>
-      <th>Name</th>
-      <th>Sex</th>
-      <th>Age</th>
-      <th>SibSp</th>
-      <th>Parch</th>
-      <th>Ticket</th>
-      <th>Fare</th>
-      <th>Cabin</th>
-      <th>Embarked</th>
-      <th>ts</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>78</th>
-      <td>79</td>
-      <td>1</td>
-      <td>2</td>
-      <td>Caldwell, Master. Alden Gates</td>
-      <td>male</td>
-      <td>0.83</td>
-      <td>0</td>
-      <td>2</td>
-      <td>248738</td>
-      <td>29.000</td>
-      <td>NaN</td>
-      <td>S</td>
-      <td>1560000000</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>8</td>
-      <td>0</td>
-      <td>3</td>
-      <td>Palsson, Master. Gosta Leonard</td>
-      <td>male</td>
-      <td>2.00</td>
-      <td>3</td>
-      <td>1</td>
-      <td>349909</td>
-      <td>21.075</td>
-      <td>NaN</td>
-      <td>S</td>
-      <td>1560000001</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
-
-Столбец, приведённый к `datetime`, получает операции, недоступные целому числу.
-
-```python
-tdf["ts"] = pd.to_datetime(tdf["ts"], unit="s")
-```
+    Pclass     1     2     3
+    Sex                     
+    female  0.97  0.92  0.50
+    male    0.37  0.16  0.14
 
 
 ```python
-tdf.head(2)
+age = pd.cut(df["Age"], [0, 12, 18, 40, 80])
+df.groupby(age)["Survived"].agg(["mean", "size"]).round(2)
 ```
 
 
+              mean  size
+    Age                 
+    (0, 12]   0.58    69
+    (12, 18]  0.43    70
+    (18, 40]  0.39   425
+    (40, 80]  0.37   150
 
 
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>PassengerId</th>
-      <th>Survived</th>
-      <th>Pclass</th>
-      <th>Name</th>
-      <th>Sex</th>
-      <th>Age</th>
-      <th>SibSp</th>
-      <th>Parch</th>
-      <th>Ticket</th>
-      <th>Fare</th>
-      <th>Cabin</th>
-      <th>Embarked</th>
-      <th>ts</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>78</th>
-      <td>79</td>
-      <td>1</td>
-      <td>2</td>
-      <td>Caldwell, Master. Alden Gates</td>
-      <td>male</td>
-      <td>0.83</td>
-      <td>0</td>
-      <td>2</td>
-      <td>248738</td>
-      <td>29.000</td>
-      <td>NaN</td>
-      <td>S</td>
-      <td>2019-06-08 13:20:00</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>8</td>
-      <td>0</td>
-      <td>3</td>
-      <td>Palsson, Master. Gosta Leonard</td>
-      <td>male</td>
-      <td>2.00</td>
-      <td>3</td>
-      <td>1</td>
-      <td>349909</td>
-      <td>21.075</td>
-      <td>NaN</td>
-      <td>S</td>
-      <td>2019-06-08 13:20:01</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
-
-Время, установленное в качестве индекса, делает доступным `resample`, пересчитывающий ряд на равномерную сетку заданного шага.
-
-```python
-tdf.set_index("ts", inplace=True)
-```
+Метод `transform` возвращает результат свёртки для каждой строки исходной таблицы; так пропущенный возраст заполняют медианой группы:
 
 
 ```python
-tdf.resample("15s").sum()[["PassengerId", "Survived", "Pclass", "Sex"]]
+med = df.groupby("Pclass")["Age"].transform("median")
+df["Age"].isna().sum(), df["Age"].fillna(med).isna().sum()
+```
+
+    (np.int64(177), np.int64(0))
+
+
+### Временные ряды
+
+Показания приборов почти всегда поступают с меткой времени, проставленной системой сбора. Для примера генерируется синтетический журнал установки за один час: давление p в нанопаскалях и ток пучка I в миллиамперах, опрос с шагом от 1,5 до 2,5 с, всплеск давления в 12:40, около процента пропущенных показаний тока и трёхминутная пауза записи с 12:20.
+
+
+```python
+rng = np.random.default_rng(7)
+dt = rng.uniform(1.5, 2.5, 1800)                        # шаг опроса, с
+time = pd.Timestamp("2026-10-02 12:00:00") + pd.to_timedelta(np.cumsum(dt), unit="s")
+sec = (time - time[0]).total_seconds().to_numpy()
+p = 40 + 1.0 * rng.standard_normal(time.size)           # фон 40 нПа
+burst = (sec > 2400) & (sec < 2460)                     # всплеск давления
+p[burst] += 400 * np.exp(-(sec[burst] - 2400) / 15)
+I = 150 * np.exp(-sec / 36000) + 0.2 * rng.standard_normal(time.size)
+I[rng.random(time.size) < 0.01] = np.nan                # пропущенные показания
+raw = pd.DataFrame({"time": time, "p": p.round(2), "I": I.round(2)})
+gap = (raw["time"] >= "2026-10-02 12:20:00") & (raw["time"] < "2026-10-02 12:23:00")
+raw[~gap].to_csv("vacuum.csv", index=False, date_format="%Y-%m-%d %H:%M:%S.%f")
 ```
 
 
+Если при чтении указать столбец времени в `parse_dates` и сделать его индексом, таблица получает индекс `DatetimeIndex` и операции, недоступные обычным числам.
 
 
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>PassengerId</th>
-      <th>Survived</th>
-      <th>Pclass</th>
-      <th>Sex</th>
-    </tr>
-    <tr>
-      <th>ts</th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>2019-06-08 13:20:00</th>
-      <td>862</td>
-      <td>7</td>
-      <td>41</td>
-      <td>malemalefemalemalefemalemalefemalefemalemalefe...</td>
-    </tr>
-    <tr>
-      <th>2019-06-08 13:20:15</th>
-      <td>1302</td>
-      <td>4</td>
-      <td>40</td>
-      <td>femalefemalefemalefemalemalemalefemalefemalefe...</td>
-    </tr>
-    <tr>
-      <th>2019-06-08 13:20:30</th>
-      <td>1235</td>
-      <td>3</td>
-      <td>38</td>
-      <td>malemalefemalefemalemalemalemalemalemalemalema...</td>
-    </tr>
-    <tr>
-      <th>2019-06-08 13:20:45</th>
-      <td>1628</td>
-      <td>6</td>
-      <td>33</td>
-      <td>femalefemalemalemalemalemalemalemalefemalemale...</td>
-    </tr>
-    <tr>
-      <th>2019-06-08 13:21:00</th>
-      <td>1057</td>
-      <td>5</td>
-      <td>37</td>
-      <td>malemalemalemalefemalefemalemalefemalemalemale...</td>
-    </tr>
-    <tr>
-      <th>2019-06-08 13:21:15</th>
-      <td>1144</td>
-      <td>6</td>
-      <td>37</td>
-      <td>malemalefemalefemalemalefemalemalemalemalemale...</td>
-    </tr>
-    <tr>
-      <th>2019-06-08 13:21:30</th>
-      <td>1590</td>
-      <td>0</td>
-      <td>28</td>
-      <td>malemalemalemalemalemalemalemalemalemalemalema...</td>
-    </tr>
-    <tr>
-      <th>2019-06-08 13:21:45</th>
-      <td>845</td>
-      <td>4</td>
-      <td>33</td>
-      <td>malemalemalemalemalemalemalemalemalemalefemale...</td>
-    </tr>
-    <tr>
-      <th>2019-06-08 13:22:00</th>
-      <td>912</td>
-      <td>6</td>
-      <td>41</td>
-      <td>femalemalemalemalemalefemalemalemalemalemalema...</td>
-    </tr>
-    <tr>
-      <th>2019-06-08 13:22:15</th>
-      <td>994</td>
-      <td>3</td>
-      <td>24</td>
-      <td>malemalefemalemalemalefemalefemalemale</td>
-    </tr>
-  </tbody>
-</table>
-</div>
+```python
+log = pd.read_csv("vacuum.csv", parse_dates=["time"], index_col="time")
+log.head(3)
+```
 
 
+                                    p       I
+    time                                     
+    2026-10-02 12:00:02.125095  41.38  149.88
+    2026-10-02 12:00:04.522309  39.51  150.28
+    2026-10-02 12:00:06.797994  39.23  150.05
+
+
+```python
+log.index.dtype, log.index.to_series().diff().max()
+```
+
+    (dtype('<M8[us]'), Timedelta('0 days 00:03:04.381713'))
+
+
+В pandas 3.0 даты, прочитанные из строк, по умолчанию хранятся с микросекундным разрешением. Разность соседних меток показывает самую длинную паузу записи — около трёх минут. Срез по строкам дат выбирает интервал времени и, как всякий срез по меткам, включает правую границу целиком: строка "2026-10-02 12:30" обозначает всю минуту.
+
+
+```python
+log.loc["2026-10-02 12:30":"2026-10-02 12:30"].shape
+```
+
+    (29, 2)
+
+
+Метод `resample` пересчитывает ряд на равномерную сетку с заданным шагом и сворачивает значения внутри каждого интервала, причём для разных столбцов свёртки могут быть разными. Псевдонимы интервалов месяца, квартала и года записываются в pandas 3.0 как ME, QE и YE; прежние M, Q и Y вызывают ошибку.
+
+
+```python
+log.resample("10min").agg({"p": "max", "I": "mean"}).round(1)
+```
+
+
+                             p      I
+    time                             
+    2026-10-02 12:00:00   42.7  148.8
+    2026-10-02 12:10:00   42.8  146.3
+    2026-10-02 12:20:00   42.6  143.5
+    2026-10-02 12:30:00   43.2  141.5
+    2026-10-02 12:40:00  434.2  139.2
+    2026-10-02 12:50:00   42.4  136.9
+
+
+Всплеск давления виден в интервале с 12:40, а ток убывает со временем жизни пучка.
 
 ### Скользящие окна
 
-Скользящее окно (rolling) сглаживает зашумлённый ряд: для каждой точки вычисляется среднее (либо сумма, либо максимум) нескольких соседних. Первые значения, попавшие в неполное окно, остаются пустыми.
-
-![Imgurl](https://i2.wp.com/datascienceparichay.com/wp-content/uploads/2021/11/rolling-sum-pandas.png?fit=900%2C520&ssl=1)
+Скользящее окно (rolling) сглаживает зашумлённый ряд: для каждой точки вычисляется среднее (сумма, максимум) по окну из неё самой и предшествующих показаний. Окно задаётся числом точек или длительностью, например "1min", и тогда неравномерный шаг показаний учитывается автоматически. Поэтому сглаженный ряд запаздывает относительно исходного на половину окна; аргумент `center=True` располагает окно симметрично вокруг точки.
 
 
 ```python
-tdf.sort_index(inplace=True)
+roll = log["p"].rolling("1min").mean()
+roll.idxmax(), log["p"].rolling("1min", center=True).mean().idxmax()
 ```
 
 
-```python
-tdf[["Fare"]].rolling(window=5).mean().head(10)
-```
+    (Timestamp('2026-10-02 12:41:01.270118'),
+     Timestamp('2026-10-02 12:40:30.310722'))
 
 
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Fare</th>
-    </tr>
-    <tr>
-      <th>ts</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>2019-06-08 13:20:00</th>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2019-06-08 13:20:01</th>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2019-06-08 13:20:02</th>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2019-06-08 13:20:03</th>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2019-06-08 13:20:04</th>
-      <td>30.41084</td>
-    </tr>
-    <tr>
-      <th>2019-06-08 13:20:05</th>
-      <td>30.19084</td>
-    </tr>
-    <tr>
-      <th>2019-06-08 13:20:06</th>
-      <td>29.31584</td>
-    </tr>
-    <tr>
-      <th>2019-06-08 13:20:07</th>
-      <td>28.61084</td>
-    </tr>
-    <tr>
-      <th>2019-06-08 13:20:08</th>
-      <td>30.72334</td>
-    </tr>
-    <tr>
-      <th>2019-06-08 13:20:09</th>
-      <td>26.62250</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
-Скользящее окно сочетается с группировкой: окно внутри каждой группы вычисляется независимо.
-
-
-```python
-rol = tdf[["Sex", "Fare"]].groupby(["Sex"]).rolling(window=5).mean()
-```
-
-
-```python
-rol.head(100)
-```
-
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th></th>
-      <th>Fare</th>
-    </tr>
-    <tr>
-      <th>Sex</th>
-      <th>ts</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th rowspan="5" valign="top">female</th>
-      <th>2019-06-08 13:20:02</th>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2019-06-08 13:20:04</th>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2019-06-08 13:20:06</th>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2019-06-08 13:20:07</th>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2019-06-08 13:20:09</th>
-      <td>27.67584</td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <th>...</th>
-      <td>...</td>
-    </tr>
-    <tr>
-      <th rowspan="5" valign="top">male</th>
-      <th>2019-06-08 13:21:26</th>
-      <td>14.02416</td>
-    </tr>
-    <tr>
-      <th>2019-06-08 13:21:27</th>
-      <td>17.12416</td>
-    </tr>
-    <tr>
-      <th>2019-06-08 13:21:28</th>
-      <td>12.72000</td>
-    </tr>
-    <tr>
-      <th>2019-06-08 13:21:29</th>
-      <td>16.34084</td>
-    </tr>
-    <tr>
-      <th>2019-06-08 13:21:30</th>
-      <td>19.81000</td>
-    </tr>
-  </tbody>
-</table>
-<p>100 rows × 1 columns</p>
-</div>
-
-
-
-
-```python
-rol.loc['male'].head(10)
-```
-
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Fare</th>
-    </tr>
-    <tr>
-      <th>ts</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>2019-06-08 13:20:00</th>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2019-06-08 13:20:01</th>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2019-06-08 13:20:03</th>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2019-06-08 13:20:05</th>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2019-06-08 13:20:08</th>
-      <td>29.35750</td>
-    </tr>
-    <tr>
-      <th>2019-06-08 13:20:11</th>
-      <td>32.93750</td>
-    </tr>
-    <tr>
-      <th>2019-06-08 13:20:12</th>
-      <td>30.97084</td>
-    </tr>
-    <tr>
-      <th>2019-06-08 13:20:19</th>
-      <td>26.98918</td>
-    </tr>
-    <tr>
-      <th>2019-06-08 13:20:20</th>
-      <td>28.28418</td>
-    </tr>
-    <tr>
-      <th>2019-06-08 13:20:26</th>
-      <td>22.64668</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
+Максимум правостороннего минутного среднего приходится на момент, когда в окне оказывается весь всплеск, почти через минуту после его начала, а максимум центрированного — на середину всплеска. Для журнала установки это разница в моменте события после сглаживания.
 
 ### Работа со строками
 
-Строковые столбцы имеют аксессор `.str`, через который к каждому элементу применяются обычные строковые методы, выстраиваемые в цепочку. Ниже из полного имени пассажира извлекается личное имя: строка приводится к нижнему регистру, запятая заменяется, строка разрезается по точке и берётся вторая часть.
+Строковые столбцы имеют аксессор `.str`, через который к каждому элементу применяются строковые методы и регулярные выражения. Ниже из полного имени пассажира извлекаются обращение (Mr, Mrs, Miss, Master…) и личное имя; в файле pandas после обращения точка стоит не всегда, поэтому она в выражении необязательна.
+
 
 ```python
-df["Name"].str.lower()\
-          .str.replace(",", " ")\
-          .str.split(".").str[1]\
-          .head(10)
+parts = df["Name"].str.extract(r",\s*(?:the\s+)?(?P<title>[^\s.]+)\.?\s+(?P<name>.*)")
+parts.head(3)
 ```
 
 
+      title                                   name
+    0    Mr                            Owen Harris
+    1   Mrs  John Bradley (Florence Briggs Thayer)
+    2  Miss                                  Laina
 
 
-    78                    alden gates
-    7                   gosta leonard
-    119              ellis anna maria
-    16                         eugene
-    43      simonne marie anne andree
-    63                         harald
-    10                 marguerite rut
-    58               constance mirium
-    50                     juha niilo
-    24                 torborg danira
-    Name: Name, dtype: object
+```python
+parts["title"].value_counts().head(5)
+```
 
+
+    title
+    Mr        517
+    Miss      182
+    Mrs       125
+    Master     40
+    Dr          7
+    Name: count, dtype: int64
 
 
 ### Пропущенные значения
 
-В реальных данных пропуски присутствуют всегда: прибор не сработал, поле анкеты осталось пустым. Pandas обозначает их как `NaN` и предоставляет несколько способов их обработки: строки с пропуском удаляются целиком, пропуски заполняются значением или находятся маской.
-
-```python
-df["Cabin"].head(15)
-```
-
-
-
-
-    78     NaN
-    7      NaN
-    119    NaN
-    16     NaN
-    43     NaN
-    63     NaN
-    10      G6
-    58     NaN
-    50     NaN
-    24     NaN
-    147    NaN
-    59     NaN
-    125    NaN
-    39     NaN
-    9      NaN
-    Name: Cabin, dtype: object
-
-
+В реальных данных пропуски присутствуют всегда: прибор не сработал, поле анкеты осталось пустым. Pandas обозначает их как `NaN` в вещественных и строковых столбцах, `pd.NA` — в целых и логических столбцах с поддержкой пропусков (`Int64`, `boolean`), `NaT` — в датах.
 
 
 ```python
-df["Cabin"].dropna().head(15)
+df.isna().sum()
 ```
 
 
+    PassengerId      0
+    Survived         0
+    Pclass           0
+    Name             0
+    Sex              0
+    Age            177
+    SibSp            0
+    Parch            0
+    Ticket           0
+    Fare             0
+    Cabin          687
+    Embarked         2
+    dtype: int64
 
 
-    10              G6
-    136            D47
-    27     C23 C25 C27
-    102            D26
-    151             C2
-    97         D10 D12
-    88     C23 C25 C27
-    118        B58 B60
-    139            B86
-    75           F G73
-    23              A6
-    66             F33
-    21             D56
-    148             F2
-    137           C123
-    Name: Cabin, dtype: object
-
-
+Строки с пропуском удаляются методом `dropna`, а пропуски заполняются значением методом `fillna`:
 
 
 ```python
-df["Cabin"].fillna(3).head(5)
+df["Cabin"].fillna("unknown").head(5)
 ```
 
 
-
-
-    78     3
-    7      3
-    119    3
-    16     3
-    43     3
-    Name: Cabin, dtype: object
-
-
+    0    unknown
+    1        C85
+    2    unknown
+    3       C123
+    4    unknown
+    Name: Cabin, dtype: str
 
 
 ```python
-df["Cabin"].bfill().head(15)
+df.dropna(subset=["Age"]).shape
 ```
 
+    (714, 12)
 
 
-
-    78      G6
-    7       G6
-    119     G6
-    16      G6
-    43      G6
-    63      G6
-    10      G6
-    58     D47
-    50     D47
-    24     D47
-    147    D47
-    59     D47
-    125    D47
-    39     D47
-    9      D47
-    Name: Cabin, dtype: object
-
-
+Сводные операции по умолчанию пропускают NaN: средний возраст вычисляется по 714 известным значениям, а не по 891 пассажиру. Это удобно, но скрывает масштаб пропусков. Удаление строк с пропуском смещает выборку, если пропуски связаны с другими признаками, как здесь — с классом каюты:
 
 
 ```python
-pd.isna(df["Cabin"]).head(10)
+df["Age"].isna().groupby(df["Pclass"]).mean().round(3)
 ```
 
 
+    Pclass
+    1    0.139
+    2    0.060
+    3    0.277
+    Name: Age, dtype: float64
 
 
-    78      True
-    7       True
-    119     True
-    16      True
-    43      True
-    63      True
-    10     False
-    58      True
-    50      True
-    24      True
-    Name: Cabin, dtype: bool
+Методы `ffill` и `bfill` переносят соседнее значение вперёд или назад, а `interpolate` заполняет пропуск по соседним точкам; они предназначены для упорядоченных рядов, таких как журнал установки. С `method="time"` интерполяция учитывает неравномерный шаг меток времени.
 
+
+```python
+print(log["I"].isna().sum())
+print(log["I"].ffill().isna().sum(), log["I"].interpolate(method="time").isna().sum())
+```
+
+    17
+    0 0
 
 
 ### Функция apply
 
-Когда готовой векторной операции не нашлось, остаётся `apply`, применяющий заданную функцию к каждой строке (`axis=1`) или к каждому столбцу. Внутри работает обычный цикл Python со всеми издержками, рассмотренными в главе про производительность, поэтому перед написанием `apply` следует ещё раз поискать векторное решение.
+Когда готовой векторной операции не нашлось, остаётся `apply`, применяющий заданную функцию к каждой строке (`axis=1`) или к каждому столбцу. Внутри работает обычный цикл Python со всеми издержками, рассмотренными в главе про производительность, поэтому перед написанием `apply` следует ещё раз поискать векторное решение. Размер семьи пассажира вычисляется обоими способами:
+
 
 ```python
-def dummpy_example(row):
-    return row['Sex'] * row['Pclass']
+def family_size(row):
+    return row["SibSp"] + row["Parch"] + 1
 
-df['dummy_example'] = df.apply(dummpy_example, axis=1)
-df.tail(3)
+(df.apply(family_size, axis=1) == df["SibSp"] + df["Parch"] + 1).all()
 ```
 
+    np.True_
 
 
+```python
+%timeit df.apply(family_size, axis=1)
+```
 
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>PassengerId</th>
-      <th>Survived</th>
-      <th>Pclass</th>
-      <th>Name</th>
-      <th>Sex</th>
-      <th>Age</th>
-      <th>SibSp</th>
-      <th>Parch</th>
-      <th>Ticket</th>
-      <th>Fare</th>
-      <th>Cabin</th>
-      <th>Embarked</th>
-      <th>dummy_example</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>128</th>
-      <td>129</td>
-      <td>1</td>
-      <td>3</td>
-      <td>Peter, Miss. Anna</td>
-      <td>female</td>
-      <td>NaN</td>
-      <td>1</td>
-      <td>1</td>
-      <td>2668</td>
-      <td>22.3583</td>
-      <td>F E69</td>
-      <td>C</td>
-      <td>femalefemalefemale</td>
-    </tr>
-    <tr>
-      <th>140</th>
-      <td>141</td>
-      <td>0</td>
-      <td>3</td>
-      <td>Boulos, Mrs. Joseph (Sultana)</td>
-      <td>female</td>
-      <td>NaN</td>
-      <td>0</td>
-      <td>2</td>
-      <td>2678</td>
-      <td>15.2458</td>
-      <td>NaN</td>
-      <td>C</td>
-      <td>femalefemalefemale</td>
-    </tr>
-    <tr>
-      <th>154</th>
-      <td>155</td>
-      <td>0</td>
-      <td>3</td>
-      <td>Olsen, Mr. Ole Martin</td>
-      <td>male</td>
-      <td>NaN</td>
-      <td>0</td>
-      <td>0</td>
-      <td>Fa 265302</td>
-      <td>7.3125</td>
-      <td>NaN</td>
-      <td>S</td>
-      <td>malemalemale</td>
-    </tr>
-  </tbody>
-</table>
-</div>
+    2 ms ± 45.7 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 
 
+```python
+%timeit df["SibSp"] + df["Parch"] + 1
+```
+
+    36.6 μs ± 655 ns per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
+
+
+Повторяющиеся строковые значения экономнее хранить в типе `category`: столбец содержит целые коды и словарь значений. Формат файла тоже влияет на скорость: CSV — текст без типов, который приходится разбирать при каждом чтении, а Parquet хранит столбцы в двоичном виде с типами и сжатием и позволяет читать только нужные столбцы. На стенде лекции таблица из миллиона строк занимает в CSV 41 МиБ и читается 163 мс, в Parquet — 16 МиБ и 21 мс.
 
 ### Визуализация
 
-Метод `plot()` строит ряд как есть, `resample("10s").mean().plot()` сначала усредняет его по десятисекундным интервалам и даёт сглаженную кривую, а `hist()` строит гистограмму распределения.
-
-```python
-tdf["Fare"].plot()
-```
-
-
-
-
-    <Axes: xlabel='ts'>
-
-
-
-
-    
-![png](output_189_1.png)
-    
-
+Метод `plot()` строит ряд как есть, а `resample("1min").mean().plot()` сначала усредняет его по минутным интервалам и даёт сглаженную кривую. Построению графиков посвящена глава «Визуализация на Python».
 
 
 ```python
-tdf["Fare"].resample("10s").mean().plot()
+ax = log["p"].plot(figsize=(8, 3), ylabel="p, нПа")
 ```
 
-
-
-
-    <Axes: xlabel='ts'>
-
-
-
-
-    
-![png](output_190_1.png)
-    
-
+![Давление по журналу установки: фон около 40 нПа и всплеск в 12:40](img/vacuum-p.png)
 
 
 ```python
-tdf["Sex"].hist()
+ax = log["I"].resample("1min").mean().plot(figsize=(8, 3), ylabel="I, мА")
 ```
 
-
-
-
-    <Axes: >
-
-
-
-
-    
-![png](output_191_1.png)
-    
-
-
+![Ток пучка, усреднённый по минутам: убывание и разрыв на месте паузы записи](img/vacuum-i.png)
