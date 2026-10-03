@@ -1,0 +1,1535 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Работа с базами данных - Разработка и применение программного обеспечения в физических исследованиях</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../intro/intro.html">О книге</a></li><li class="chapter-item expanded affix "><a href="../intro/about-me.html">О себе</a></li><li class="chapter-item expanded affix "><li class="part-title">Инструменты разработчика</li><li class="chapter-item expanded "><a href="../ai/intro.html"><strong aria-hidden="true">1.</strong> ИИ для разработки</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ai/context.html"><strong aria-hidden="true">1.1.</strong> Контекст и скорость изменений</a></li><li class="chapter-item expanded "><a href="../ai/develop.html"><strong aria-hidden="true">1.2.</strong> ИИ и разработчик</a></li><li class="chapter-item expanded "><a href="../ai/basic.html"><strong aria-hidden="true">1.3.</strong> Технические основы</a></li><li class="chapter-item expanded "><a href="../ai/instruments.html"><strong aria-hidden="true">1.4.</strong> Инструментарий</a></li><li class="chapter-item expanded "><a href="../ai/copilot.html"><strong aria-hidden="true">1.5.</strong> GitHub Copilot</a></li><li class="chapter-item expanded "><a href="../ai/qa.html"><strong aria-hidden="true">1.6.</strong> Вопросы и ответы</a></li></ol></li><li class="chapter-item expanded "><a href="../dev/git.html"><strong aria-hidden="true">2.</strong> Git</a></li><li class="chapter-item expanded affix "><li class="part-title">Операционная система Linux</li><li class="chapter-item expanded "><a href="../linux/intro.html"><strong aria-hidden="true">3.</strong> Основы Linux</a></li><li class="chapter-item expanded "><a href="../linux/tools.html"><strong aria-hidden="true">4.</strong> Инструменты</a></li><li class="chapter-item expanded "><a href="../linux/booting.html"><strong aria-hidden="true">5.</strong> Процесс загрузки</a></li><li class="chapter-item expanded "><a href="../linux/filesystems.html"><strong aria-hidden="true">6.</strong> Файловые системы</a></li><li class="chapter-item expanded "><a href="../linux/install-arch-linux.html"><strong aria-hidden="true">7.</strong> Установка Arch Linux</a></li><li class="chapter-item expanded "><a href="../linux/structure.html"><strong aria-hidden="true">8.</strong> Внутреннее устройство Linux</a></li><li class="chapter-item expanded "><a href="../dev/docker.html"><strong aria-hidden="true">9.</strong> Docker</a></li><li class="chapter-item expanded affix "><li class="part-title">Язык Python</li><li class="chapter-item expanded "><a href="../dev/python/init.html"><strong aria-hidden="true">10.</strong> Устройство интерпретатора Python</a></li><li class="chapter-item expanded "><a href="../dev/python/objects.html"><strong aria-hidden="true">11.</strong> Объекты и память</a></li><li class="chapter-item expanded "><a href="../dev/python/collections.html"><strong aria-hidden="true">12.</strong> Коллекции</a></li><li class="chapter-item expanded "><a href="../dev/python/o-notation.html"><strong aria-hidden="true">13.</strong> Сложность операций с коллекциями</a></li><li class="chapter-item expanded "><a href="../dev/python/functions.html"><strong aria-hidden="true">14.</strong> Функции</a></li><li class="chapter-item expanded "><a href="../dev/python/async.html"><strong aria-hidden="true">15.</strong> Итераторы, генераторы и корутины</a></li><li class="chapter-item expanded "><a href="../dev/python/decorators.html"><strong aria-hidden="true">16.</strong> Декораторы и functools</a></li><li class="chapter-item expanded "><a href="../dev/python/classes.html"><strong aria-hidden="true">17.</strong> Классы</a></li><li class="chapter-item expanded affix "><li class="part-title">Алгоритмы и структуры данных</li><li class="chapter-item expanded "><a href="../cs/intro.html"><strong aria-hidden="true">18.</strong> Роль алгоритмов в работе физика</a></li><li class="chapter-item expanded "><a href="../cs/basic-algos.html"><strong aria-hidden="true">19.</strong> Введение в алгоритмы</a></li><li class="chapter-item expanded "><a href="../cs/basic-structures.html"><strong aria-hidden="true">20.</strong> Основные структуры данных</a></li><li class="chapter-item expanded "><a href="../cs/recurs-and-sorts.html"><strong aria-hidden="true">21.</strong> Рекурсия и сортировки</a></li><li class="chapter-item expanded "><a href="../cs/hash-funcs.html"><strong aria-hidden="true">22.</strong> Хеш-функции</a></li><li class="chapter-item expanded "><a href="../cs/trees.html"><strong aria-hidden="true">23.</strong> Деревья</a></li><li class="chapter-item expanded "><a href="../cs/graphs.html"><strong aria-hidden="true">24.</strong> Графы</a></li><li class="chapter-item expanded affix "><li class="part-title">Инженерные практики</li><li class="chapter-item expanded "><a href="../dev/life.html"><strong aria-hidden="true">25.</strong> Жизненный цикл ПО</a></li><li class="chapter-item expanded "><a href="../dev/python/requirements.html"><strong aria-hidden="true">26.</strong> Требования к коду</a></li><li class="chapter-item expanded "><a href="../dev/app.html"><strong aria-hidden="true">27.</strong> От скрипта к приложению</a></li><li class="chapter-item expanded "><a href="../dev/net.html"><strong aria-hidden="true">28.</strong> Компьютерные сети</a></li><li class="chapter-item expanded "><a href="../dev/web.html"><strong aria-hidden="true">29.</strong> Веб-технологии</a></li><li class="chapter-item expanded "><a href="../dev/bd.html"><strong aria-hidden="true">30.</strong> Базы данных</a></li><li class="chapter-item expanded "><a href="../dev/bd-work.html" class="active"><strong aria-hidden="true">31.</strong> Работа с базами данных</a></li><li class="chapter-item expanded "><a href="../dev/system-design.html"><strong aria-hidden="true">32.</strong> Системный дизайн</a></li><li class="chapter-item expanded affix "><li class="part-title">Обработка данных</li><li class="chapter-item expanded "><a href="../dev/python/intro.html"><strong aria-hidden="true">33.</strong> Научные библиотеки Python</a></li><li class="chapter-item expanded "><a href="../dev/python/numpy-and-pandas.html"><strong aria-hidden="true">34.</strong> NumPy и pandas</a></li><li class="chapter-item expanded "><a href="../dev/python/scipy.html"><strong aria-hidden="true">35.</strong> SciPy</a></li><li class="chapter-item expanded "><a href="../dev/python/visualization.html"><strong aria-hidden="true">36.</strong> Визуализация на Python</a></li><li class="chapter-item expanded "><a href="../ds/intro.html"><strong aria-hidden="true">37.</strong> Машинное обучение</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ds/basic.html"><strong aria-hidden="true">37.1.</strong> Основные понятия</a></li><li class="chapter-item expanded "><a href="../ds/ml.html"><strong aria-hidden="true">37.2.</strong> Классические алгоритмы</a></li><li class="chapter-item expanded "><a href="../ds/nn.html"><strong aria-hidden="true">37.3.</strong> Нейронные сети</a></li><li class="chapter-item expanded "><a href="../ds/tools.html"><strong aria-hidden="true">37.4.</strong> Инструменты: scikit-learn</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Ускорение расчётов</li><li class="chapter-item expanded "><a href="../perf/intro.html"><strong aria-hidden="true">38.</strong> С чего начинать оптимизацию</a></li><li class="chapter-item expanded "><a href="../dev/python/optimization.html"><strong aria-hidden="true">39.</strong> Причины низкой скорости Python</a></li><li class="chapter-item expanded "><a href="../perf/python-tricks.html"><strong aria-hidden="true">40.</strong> Оптимизация средствами самого Python</a></li><li class="chapter-item expanded "><a href="../perf/perf.html"><strong aria-hidden="true">41.</strong> Скорость выполнения программ</a></li><li class="chapter-item expanded "><a href="../perf/gil.html"><strong aria-hidden="true">42.</strong> Многопоточность и GIL</a></li><li class="chapter-item expanded "><a href="../perf/async.html"><strong aria-hidden="true">43.</strong> Асинхронность</a></li><li class="chapter-item expanded "><a href="../perf/cuda.html"><strong aria-hidden="true">44.</strong> CUDA и вычисления на GPU</a></li><li class="chapter-item expanded affix "><li class="part-title">Разбор реальных кодов</li><li class="chapter-item expanded "><a href="../examples/intro.html"><strong aria-hidden="true">45.</strong> Коды и скрипты</a></li><li class="chapter-item expanded "><a href="../examples/kenv.html"><strong aria-hidden="true">46.</strong> Уравнение огибающей Капчинского—Владимирского для пучка заряженных частиц</a></li><li class="chapter-item expanded "><a href="../examples/envelope-optimize.html"><strong aria-hidden="true">47.</strong> Оптимизация огибающей пучка заряженных частиц с помощью генетического алгоритма</a></li><li class="chapter-item expanded "><a href="../examples/redpic.html"><strong aria-hidden="true">48.</strong> Релятивистская разностная схема для расчёта динамики частиц</a></li><li class="chapter-item expanded "><a href="../examples/orbit-correction.html"><strong aria-hidden="true">49.</strong> Коррекция равновесной орбиты с применением матрицы отклика и нейронных сетей</a></li><li class="chapter-item expanded "><a href="../examples/cadquery/layout.html"><strong aria-hidden="true">50.</strong> Трёхмерная схема установки кодом</a></li><li class="chapter-item expanded "><a href="../examples/accumulator.html"><strong aria-hidden="true">51.</strong> Цифровой двойник ускорителя</a></li><li class="chapter-item expanded "><a href="../examples/sava.html"><strong aria-hidden="true">52.</strong> Мультиагентный помощник оператора</a></li><li class="chapter-item expanded "><a href="../examples/ai-scientist.html"><strong aria-hidden="true">53.</strong> Автономный исследователь на языковых моделях</a></li><li class="chapter-item expanded "><a href="../examples/async-api.html"><strong aria-hidden="true">54.</strong> Асинхронное API для кинотеатра</a></li><li class="chapter-item expanded affix "><li class="part-title">Практикум</li><li class="chapter-item expanded "><a href="../practicum/intro.html"><strong aria-hidden="true">55.</strong> Структура заданий</a></li><li class="chapter-item expanded "><a href="../practicum/review-code-task.html"><strong aria-hidden="true">56.</strong> Ревью чужого кода</a></li><li class="chapter-item expanded "><a href="../practicum/markov-chain-task.html"><strong aria-hidden="true">57.</strong> Генерация текста на основе данных</a></li><li class="chapter-item expanded "><a href="../practicum/booting-linux-task.html"><strong aria-hidden="true">58.</strong> Установка Arch Linux вручную с RAID1 и UEFI</a></li><li class="chapter-item expanded "><a href="../practicum/linux-tools-task.html"><strong aria-hidden="true">59.</strong> Настройка окружения и работа с утилитами</a></li><li class="chapter-item expanded "><a href="../practicum/linux-structure-task.html"><strong aria-hidden="true">60.</strong> Работа с долгоиграющими процессами</a></li><li class="chapter-item expanded "><a href="../practicum/python-algo-task.html"><strong aria-hidden="true">61.</strong> Решение задач на Python и анализ сложности</a></li><li class="chapter-item expanded "><a href="../practicum/kitty-startup-task.html"><strong aria-hidden="true">62.</strong> Деплой стартапа</a></li><li class="chapter-item expanded "><a href="../practicum/final-project-requirements.html"><strong aria-hidden="true">63.</strong> Итоговый проект</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Приложение. Экспресс-курс</li><li class="chapter-item expanded "><a href="../dev/python/basics.html"><strong aria-hidden="true">64.</strong> Основы языка</a></li><li class="chapter-item expanded "><a href="../dev/python/numpy.html"><strong aria-hidden="true">65.</strong> Массивы NumPy</a></li><li class="chapter-item expanded "><a href="../dev/python/matplotlib.html"><strong aria-hidden="true">66.</strong> Графики Matplotlib</a></li><li class="chapter-item expanded affix "><a href="../resume/intro.html">Заключение</a></li><li class="chapter-item expanded affix "><a href="../resume/literature.html">Литература и статьи</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Разработка и применение программного обеспечения в физических исследованиях</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/phys-dev/soft-dev-book/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="Работа-с-базами-данных"><a class="header" href="#Работа-с-базами-данных">Работа с базами данных</a></h1>
+<p>В настоящей главе рассматривается работа с базами данных из программ и их эксплуатация. Глава продолжает главу <a href="./bd.html">«Базы данных»</a>, где изложены назначение СУБД, реляционная модель, язык SQL и индексы, и использует её сквозной пример — журнал измерений <code>lab.db</code>, который заполняет скрипт <code>make_lab.py</code>, — а также сервер PostgreSQL в контейнере <code>pg</code>, запущенный там же вместе с псевдонимом <code>psql</code>. Последовательно рассматриваются драйверы <code>sqlite3</code> и psycopg и защита от SQL-инъекций, транзакции и одновременный доступ, выбор между SQLite, PostgreSQL и MySQL, ORM SQLAlchemy, резервные копии, репликация, масштабирование и мониторинг, нереляционные хранилища и выбор СУБД, затем учебный сервис в четырёх хранилищах, связка баз данных с pandas и порядок перехода лаборатории от файлов к базе. Опыты главы продолжают опыты главы «Базы данных»: журнал содержит построенные там индексы и статистику, а в PostgreSQL лежит таблица <code>measurements</code> из опыта с <code>EXPLAIN ANALYZE</code>.</p>
+<p>Листинги главы выполнены на той же машине, что и листинги главы «Базы данных», — виртуальной машине под Python 3.12 со встроенной библиотекой SQLite 3.45, SQLAlchemy 2.1, psycopg 3.3, pandas 3.0 и Flask 3.1, на которой записаны демонстрации лекции «Базы данных»; PostgreSQL 17 и Redis 8 работали на ней в контейнерах Docker. Консоли <code>sqlite3</code> на машине нет, и запросы к SQLite выполнены модулем <code>sqlite3</code> из Python. Времена выполнения зависят от машины и меняются от запуска к запуску, тогда как планы запросов, числа строк и значения воспроизводятся.</p>
+<h2 id="Тот-же-sql-из-python"><a class="header" href="#Тот-же-sql-из-python">Тот же SQL из Python</a></h2>
+<blockquote>
+<p><strong>Слайды к главе.</strong> Интерфейс DB-API на примере модулей sqlite3 и psycopg, параметры запросов и SQL-инъекции, ORM SQLAlchemy, pandas и форматы файлов изложены также в пятой части лекции «Базы данных» с демонстрациями в терминале; слайды лекции доступны <a href="https://phys-dev.github.io/soft-dev-book/slides/lecture-13.html#/sec-py">на сайте книги</a> и <a href="https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-13.pdf">в PDF</a>.</p>
+</blockquote>
+<iframe src="../slides/lecture-13.html#/sec-py" title="Слайды лекции «Базы данных»: Python и базы" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
+<h3 id="Модуль-sqlite3"><a class="header" href="#Модуль-sqlite3">Модуль sqlite3</a></h3>
+<p>Модуль <code>sqlite3</code>, входящий в стандартную библиотеку, устанавливать не требуется. Драйверы баз данных в Python следуют общему интерфейсу DB-API, описанному в PEP 249: функция <code>connect</code> возвращает соединение, метод <code>execute</code> выполняет запрос с параметрами, <code>fetchone</code> и <code>fetchall</code> или итерация по курсору возвращают строки кортежами, <code>commit</code> и <code>rollback</code> управляют транзакцией. Поэтому код для SQLite и PostgreSQL выглядит почти одинаково. Рассмотрим скрипт сбора данных, записывающий точки в отдельную базу <code>daq.db</code>:</p>
+<pre><code class="language-python">import random
+import sqlite3
+
+
+def read_adc():
+    """Опрос АЦП; здесь сигнал датчика положения имитируется генератором."""
+    return round(random.gauss(0.41, 0.002), 4)
+
+
+random.seed(1)
+# открывается (или создаётся) файл базы; ":memory:" — временная база в памяти
+con = sqlite3.connect("daq.db")
+# в SQLite проверка внешних ключей по умолчанию выключена
+con.execute("PRAGMA foreign_keys = ON")
+
+cur = con.cursor()  # курсор выполняет запросы и отдаёт результаты
+
+# таблица создаётся, если её ещё нет (текст запроса — тот же SQL)
+cur.execute("""
+    CREATE TABLE IF NOT EXISTS measurements (
+        id      INTEGER PRIMARY KEY,
+        run_id  INTEGER NOT NULL,
+        channel TEXT NOT NULL,
+        t       REAL NOT NULL,
+        value   REAL NOT NULL
+    )
+""")
+
+# одиночная вставка: значения передаются кортежем, в запросе — знаки вопроса
+cur.execute(
+    "INSERT INTO measurements (run_id, channel, t, value) VALUES (?, ?, ?, ?)",
+    (1, "BPM01", 0.0, 0.412),
+)
+
+# массовая вставка: executemany принимает любой итерируемый объект
+points = [(1, "BPM01", i / 10, read_adc()) for i in range(1, 1000)]
+cur.executemany(
+    "INSERT INTO measurements (run_id, channel, t, value) VALUES (?, ?, ?, ?)",
+    points,
+)
+con.commit()  # изменения фиксируются на диске
+
+# выборка: по курсору можно итерироваться, каждая строка — кортеж
+for t, value in cur.execute(
+    "SELECT t, value FROM measurements WHERE channel = ? AND t &lt; ? ORDER BY t",
+    ("BPM01", 0.3),
+):
+    print(t, value)
+
+con.close()
+</code></pre>
+<pre><code>0.0 0.412
+0.1 0.4126
+0.2 0.4129
+</code></pre>
+<p>Для небольших выборок удобны <code>cur.fetchone()</code> и <code>cur.fetchall()</code>, однако итерация по курсору экономнее: строки читаются по мере надобности и не накапливаются в памяти все сразу. Повторный запуск скрипта добавит в таблицу ещё тысячу точек, поскольку <code>CREATE TABLE IF NOT EXISTS</code> существующую таблицу не пересоздаёт.</p>
+<h3 id="Драйвер-psycopg"><a class="header" href="#Драйвер-psycopg">Драйвер psycopg</a></h3>
+<p>Для PostgreSQL в новом коде используют драйвер psycopg третьей версии (<code>pip install "psycopg[binary]"</code>), заменяющий psycopg2: он передаёт параметры серверу отдельно от текста запроса, умеет работать асинхронно и поддерживает конвейерную отправку команд. Отличий от <code>sqlite3</code> два. Знак параметра — <code>%s</code> вместо <code>?</code>. Конструкция <code>with psycopg.connect(...) as conn:</code> при выходе из блока фиксирует транзакцию и закрывает соединение, тогда как <code>with con:</code> в <code>sqlite3</code> только завершает транзакцию, оставляя соединение открытым. Для массовой загрузки вместо тысяч <code>INSERT</code> используют команду <code>COPY</code>, которой psycopg передаёт строки потоком; это самый быстрый способ загрузить данные в PostgreSQL.</p>
+<pre><code class="language-python">import psycopg
+
+DSN = "host=127.0.0.1 user=postgres password=lab"
+points = [(7, "BPM01", i / 100, round(0.16 + 1e-4 * i, 4)) for i in range(5000)]
+
+with psycopg.connect(DSN) as conn:          # при выходе: COMMIT и закрытие
+    conn.execute("DROP TABLE IF EXISTS points")
+    conn.execute("CREATE TABLE points (run_id int, channel text, t float8, value float8)")
+    with conn.cursor().copy(
+        "COPY points (run_id, channel, t, value) FROM STDIN"
+    ) as copy:
+        for row in points:
+            copy.write_row(row)             # строки уходят серверу потоком
+    rows = conn.execute(
+        "SELECT t, value FROM points WHERE run_id = %s AND t &lt; %s ORDER BY t",
+        (7, 0.03),
+    ).fetchall()
+print(rows)
+</code></pre>
+<pre><code>[(0.0, 0.16), (0.01, 0.1601), (0.02, 0.1602)]
+</code></pre>
+<p>Соединение с PostgreSQL обслуживает отдельный серверный процесс, и открыть его дорого. Оценим, во что обходится соединение на каждый запрос, по сравнению с одним постоянным соединением и с пулом <code>psycopg_pool.ConnectionPool</code> из пакета <code>psycopg-pool</code>:</p>
+<pre><code class="language-python">import time
+
+import psycopg
+from psycopg_pool import ConnectionPool
+
+DSN = "host=127.0.0.1 user=postgres password=lab"
+N = 200
+
+
+def per_query(func):
+    """Среднее время одного вызова, мс."""
+    start = time.perf_counter()
+    for _ in range(N):
+        func()
+    return (time.perf_counter() - start) / N * 1000
+
+
+def new_connection():                       # соединение на каждый запрос
+    with psycopg.connect(DSN) as conn:
+        conn.execute("SELECT 1").fetchone()
+
+
+conn = psycopg.connect(DSN, autocommit=True)  # одно соединение на всю работу
+pool = ConnectionPool(DSN, min_size=2, max_size=4, open=True)
+
+
+def from_pool():                            # соединение из пула, затем обратно
+    with pool.connection() as c:
+        c.execute("SELECT 1").fetchone()
+
+
+print(f"новое соединение  {per_query(new_connection):6.2f} мс на запрос")
+print(f"одно соединение   {per_query(lambda: conn.execute('SELECT 1').fetchone()):6.2f} мс на запрос")
+print(f"пул соединений    {per_query(from_pool):6.2f} мс на запрос")
+pool.close()
+</code></pre>
+<pre><code>новое соединение    3.15 мс на запрос
+одно соединение     0.07 мс на запрос
+пул соединений      0.19 мс на запрос
+</code></pre>
+<p>Открытие соединения, включающее сетевое рукопожатие, проверку пароля и запуск серверного процесса, обходится в 3 мс, в 45 раз дороже самого запроса. Пул держит соединения открытыми и выдаёт их на время блока <code>with pool.connection()</code>; по выходе из блока он фиксирует транзакцию и возвращает соединение в пул. Разница с одним соединением объясняется именно транзакцией: соединение из пула работает без автофиксации, и запрос обрамляют команды <code>BEGIN</code> и <code>COMMIT</code>, а с параметром <code>kwargs={"autocommit": True}</code> пул отвечает так же быстро, как одно соединение. Таким образом, сервис открывает соединения один раз на процесс — пулом в самой программе или посредником PgBouncer перед сервером, — а не на каждый запрос.</p>
+<h3 id="Параметризованные-запросы-и-sql-инъекции"><a class="header" href="#Параметризованные-запросы-и-sql-инъекции">Параметризованные запросы и SQL-инъекции</a></h3>
+<p>В примерах выше значения подставлялись через знаки вопроса, а не f-строками, и причиной этого является безопасность. Пусть имя канала приходит извне: из формы на веб-странице, из аргумента командной строки или из присланного файла.</p>
+<pre><code class="language-python">channel = input("Канал: ")
+
+# ТАК ДЕЛАТЬ НЕЛЬЗЯ: запрос склеивается из чужого текста
+cur.execute(f"SELECT t, value FROM measurements WHERE channel = '{channel}'")
+</code></pre>
+<p>Если пользователь введёт <code>' OR '1'='1</code>, итоговый запрос превратится в <code>... WHERE channel = '' OR '1'='1'</code>, где условие всегда истинно, фильтр исчезает, а наружу уходит вся таблица. Ввод вида <code>'; DROP TABLE measurements; --</code> в драйвере, исполняющем несколько команд подряд, уничтожит таблицу. Это явление называется <strong>SQL-инъекцией</strong>, одной из самых старых и до сих пор распространённых уязвимостей (см. <a href="https://xkcd.com/327/">xkcd про школьника Bobby Tables</a>).</p>
+<p>Параметризованный запрос неуязвим по построению: текст запроса и данные передаются драйверу <em>раздельно</em>, и введённая строка остаётся строкой при любом содержимом:</p>
+<pre><code class="language-python"># правильно: запрос отдельно, данные отдельно
+cur.execute("SELECT t, value FROM measurements WHERE channel = ?", (channel,))
+</code></pre>
+<p>Проверим оба способа на копии журнала <code>inject.db</code> (<code>cp lab.db inject.db</code>): последний опыт удаляет таблицу, и ставить его на рабочем журнале нельзя. Скрипт получает имя канала аргументом командной строки и считает точки запросом, склеенным f-строкой, и запросом с параметром:</p>
+<pre><code class="language-python">"""SQL-инъекция: запрос, склеенный из строки, против запроса с параметром."""
+import sqlite3
+import sys
+
+con = sqlite3.connect("inject.db")            # копия журнала: cp lab.db inject.db
+channel = sys.argv[-1]
+unsafe = f"SELECT count(*) FROM measurements WHERE channel = '{channel}'"
+print("склеено: ", unsafe)
+if sys.argv[1] == "--script":                 # executescript выполняет все операторы
+    con.executescript(unsafe)
+    tables = con.execute("SELECT name FROM sqlite_master WHERE type = 'table'")
+    print("таблицы: ", [row[0] for row in tables])
+    sys.exit()
+try:
+    print("склейка: ", con.execute(unsafe).fetchone()[0], "строк")
+except sqlite3.Error as e:
+    print("склейка: ", f"{type(e).__name__}: {e}")
+safe = "SELECT count(*) FROM measurements WHERE channel = ?"
+print("параметр:", con.execute(safe, (channel,)).fetchone()[0], "строк")
+</code></pre>
+<pre><code class="language-bash">$ python3 inject.py BPM01
+склеено:  SELECT count(*) FROM measurements WHERE channel = 'BPM01'
+склейка:  200000 строк
+параметр: 200000 строк
+$ python3 inject.py "' OR '1'='1"
+склеено:  SELECT count(*) FROM measurements WHERE channel = '' OR '1'='1'
+склейка:  1000000 строк
+параметр: 0 строк
+$ python3 inject.py "'; DROP TABLE measurements; --"
+склеено:  SELECT count(*) FROM measurements WHERE channel = ''; DROP TABLE measurements; --'
+склейка:  ProgrammingError: You can only execute one statement at a time.
+параметр: 0 строк
+$ python3 inject.py --script "'; DROP TABLE measurements; --"
+склеено:  SELECT count(*) FROM measurements WHERE channel = ''; DROP TABLE measurements; --'
+таблицы:  ['experiments', 'runs', 'sqlite_stat1']
+</code></pre>
+<p>Для обычного ввода оба способа возвращают 200 000 строк. Ввод <code>' OR '1'='1</code> превращает склеенный запрос в условие, истинное для всех строк, и запрос возвращает 1 000 000 — все измерения всех каналов, — а запрос с параметром ищет канал с именем <code>' OR '1'='1</code> и находит 0 строк. Ввод с точкой с запятой и <code>DROP TABLE</code> в методе <code>execute</code> не срабатывает: модуль <code>sqlite3</code> отказывается выполнять больше одного оператора и выдаёт <code>ProgrammingError</code>. Это свойство драйвера, а не защита: тот же ввод, переданный в <code>executescript</code>, который выполняет операторы подряд, удаляет таблицу <code>measurements</code>, и в базе остаются только <code>experiments</code>, <code>runs</code> и служебная таблица статистики <code>sqlite_stat1</code>, созданная командой <code>ANALYZE</code> в главе «Базы данных».</p>
+<p><strong>Значения передаются только через параметры, всегда</strong>, даже если данные собственные. Параметром может быть лишь значение, но не имя таблицы или столбца; имена, подставляемые динамически, необходимо проверять по белому списку. Вторая линия защиты — права: сервис подключается к базе от роли, которой разрешены только нужные операции с нужными таблицами, и команда <code>DROP TABLE</code> от его имени не выполнится.</p>
+<h2 id="Транзакции-и-acid"><a class="header" href="#Транзакции-и-acid">Транзакции и ACID</a></h2>
+<blockquote>
+<p><strong>Слайды к главе.</strong> Гарантии ACID и цена фиксации, уровни изоляции, блокировки и журнал WAL в SQLite и многоверсионность в PostgreSQL изложены также в четвёртой части лекции «Базы данных» с демонстрациями в терминале; слайды лекции доступны <a href="https://phys-dev.github.io/soft-dev-book/slides/lecture-13.html#/sec-tx">на сайте книги</a> и <a href="https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-13.pdf">в PDF</a>.</p>
+</blockquote>
+<iframe src="../slides/lecture-13.html#/sec-tx" title="Слайды лекции «Базы данных»: транзакции" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
+<p><strong>Транзакция</strong> представляет собой группу запросов, выполняемую как единое целое: применяются либо все, либо ни один. Её гарантии описывает аббревиатура <strong>ACID</strong>. Атомарность (atomicity) означает неделимость транзакции: сбой, случившийся на середине, откатывает всё сделанное. Согласованность (consistency) требует, чтобы база переходила из одного корректного состояния в другое, не нарушая ограничений — ключей, <code>NOT NULL</code>, <code>UNIQUE</code>. Изолированность (isolation) скрывает от параллельных транзакций промежуточные состояния друг друга; насколько строго, задаёт уровень изоляции, рассматриваемый ниже. Долговечность (durability) сохраняет подтверждённые командой <code>COMMIT</code> данные даже при внезапном отключении питания, поскольку до ответа клиенту изменения записываются в журнал на диске.</p>
+<p>Заход и снятые в нём точки необходимо записывать в базу вместе: заход без точек и точки без захода одинаково бессмысленны.</p>
+<pre><code class="language-python">import sqlite3
+
+
+def save_run(con, run_row, points):
+    """Сохраняет заход и все его измерения одной транзакцией."""
+    cur = con.cursor()
+    try:
+        cur.execute("INSERT INTO runs (experiment_id, run_number, energy_mev, started_at) "
+                    "VALUES (?, ?, ?, ?)", run_row)       # неявно открывает транзакцию
+        run_id = cur.lastrowid
+        cur.executemany("INSERT INTO measurements (run_id, channel, t, value) "
+                        "VALUES (?, ?, ?, ?)", [(run_id, ch, t, v) for ch, t, v in points])
+        con.commit()
+    except sqlite3.Error:
+        con.rollback()
+        raise
+</code></pre>
+<p>Модуль <code>sqlite3</code> открывает транзакцию неявно перед первой изменяющей командой, <code>commit</code> её фиксирует, <code>rollback</code> откатывает. Ту же пару обеспечивает конструкция <code>with con:</code>, подтверждающая транзакцию при выходе из блока и откатывающая её при исключении; соединение она, в отличие от файла в конструкции <code>with open</code>, не закрывает. Проверим функцию на журнале:</p>
+<pre><code class="language-python">con = sqlite3.connect("lab.db")
+con.execute("PRAGMA foreign_keys = ON")
+count = "SELECT (SELECT count(*) FROM runs), (SELECT count(*) FROM measurements)"
+print("до:          ", con.execute(count).fetchone())
+save_run(con, (2, 42, 25.0, "2026-09-02T10:00:00Z"), [("BPM01", 0.0, 0.5), ("BPM01", 0.01, 0.51)])
+print("после 42:    ", con.execute(count).fetchone())
+try:   # вторая точка без значения: NOT NULL нарушен на середине транзакции
+    save_run(con, (2, 43, 25.5, "2026-09-02T11:00:00Z"), [("BPM01", 0.0, 0.5), ("BPM01", 0.01, None)])
+except sqlite3.IntegrityError as e:
+    print("ошибка:      ", e)
+print("после 43:    ", con.execute(count).fetchone(), "| заход 43:",
+      con.execute("SELECT count(*) FROM runs WHERE run_number = 43").fetchone()[0])
+try:   # то же через with con: — commit при успехе, rollback при исключении
+    with con:
+        con.execute("INSERT INTO runs (experiment_id, run_number, energy_mev, started_at) "
+                    "VALUES (2, 44, 26.0, '2026-09-02T12:00:00Z')")
+        con.execute("INSERT INTO runs (experiment_id, run_number, energy_mev, started_at) "
+                    "VALUES (2, 44, 26.0, '2026-09-02T12:00:00Z')")   # UNIQUE нарушен
+except sqlite3.IntegrityError as e:
+    print("with con:    ", e)
+print("после 44:    ", con.execute(count).fetchone(), "| соединение открыто:",
+      con.execute("SELECT 1").fetchone() == (1,))
+</code></pre>
+<pre><code>до:           (41, 1000000)
+после 42:     (42, 1000002)
+ошибка:       NOT NULL constraint failed: measurements.value
+после 43:     (42, 1000002) | заход 43: 0
+with con:     UNIQUE constraint failed: runs.experiment_id, runs.run_number
+после 44:     (42, 1000002) | соединение открыто: True
+</code></pre>
+<p>Заход 42 с двумя точками записан, и счётчики стали 42 и 1 000 002. У второй точки захода 43 значение пустое: первая точка вставилась, вторая нарушила ограничение <code>NOT NULL</code>, и <code>rollback</code> откатил всю транзакцию — счётчики прежние, а самого захода 43 в таблице нет. Тот же результат даёт <code>with con:</code>, внутри которой заход 44 вставляется дважды: второй раз нарушает ограничение <code>UNIQUE</code> на паре кампании и номера захода, транзакция откатывается, а соединение остаётся открытым.</p>
+<p>Долговечность требует времени: каждая фиксация ждёт, пока диск подтвердит запись. Оценим цену фиксации на скрипте <code>bulk.py</code>, который вставляет 1000 строк четырьмя способами; соединение открыто в режиме автофиксации, в котором каждый оператор вне явной транзакции фиксируется сам:</p>
+<pre><code class="language-python">"""Цена фиксации: 1000 точек четырьмя способами (SQLite, режим журнала по умолчанию)."""
+import os
+import sqlite3
+import sys
+import time
+
+N = int(sys.argv[1]) if len(sys.argv) &gt; 1 else 1000
+SCHEMA = "CREATE TABLE m (run_id INTEGER, channel TEXT, t REAL, value REAL)"
+ROWS = [(1, "BPM01", i / 10, 0.4 + i * 1e-4) for i in range(N)]
+INSERT = "INSERT INTO m VALUES (?, ?, ?, ?)"
+
+
+def fresh(path="bulk.db"):
+    for suffix in ("", "-journal", "-wal", "-shm"):
+        if os.path.exists(path + suffix):
+            os.remove(path + suffix)
+    con = sqlite3.connect(path, isolation_level=None)  # автофиксация каждого оператора
+    con.execute(SCHEMA)
+    return con
+
+
+def commit_each(con):
+    for row in ROWS:
+        con.execute(INSERT, row)          # каждая вставка фиксируется отдельно
+
+
+def one_transaction(con):
+    con.execute("BEGIN")
+    for row in ROWS:
+        con.execute(INSERT, row)
+    con.execute("COMMIT")
+
+
+def executemany(con):
+    con.execute("BEGIN")
+    con.executemany(INSERT, ROWS)
+    con.execute("COMMIT")
+
+
+def multi_values(con):
+    step = 32766 // 4                     # предел числа параметров в одном запросе
+    for k in range(0, N, step):
+        chunk = ROWS[k:k + step]
+        sql = "INSERT INTO m VALUES " + ", ".join(["(?, ?, ?, ?)"] * len(chunk))
+        con.execute(sql, [x for row in chunk for x in row])
+
+
+print(f"SQLite {sqlite3.sqlite_version}, {N} строк")
+for func in (commit_each, one_transaction, executemany, multi_values):
+    con = fresh()
+    start = time.perf_counter()
+    func(con)
+    elapsed = time.perf_counter() - start
+    count = con.execute("SELECT count(*) FROM m").fetchone()[0]
+    con.close()
+    print(f"{func.__name__:16s} {elapsed * 1000:9.1f} мс  ({count} строк)")
+</code></pre>
+<pre><code>SQLite 3.45.1, 1000 строк
+commit_each          654.8 мс  (1000 строк)
+one_transaction        1.8 мс  (1000 строк)
+executemany            1.5 мс  (1000 строк)
+multi_values           2.0 мс  (1000 строк)
+</code></pre>
+<p>Когда каждая вставка фиксируется отдельно, тысяча строк записывается за 0,65 с: тысяча фиксаций означает тысячу ожиданий подтверждения от диска. Те же вставки в рамках одной транзакции занимают 1,8 мс, через <code>executemany</code> — 1,5 мс, многострочным <code>VALUES</code> — 2,0 мс: важна не форма запроса, а число фиксаций. Таким образом, скрипт сбора данных записывает точки группами и фиксирует их раз в несколько секунд, а не после каждой точки.</p>
+<h3 id="Уровни-изоляции"><a class="header" href="#Уровни-изоляции">Уровни изоляции</a></h3>
+<p>Полная изоляция, при которой параллельные транзакции дают тот же результат, что и выполненные по очереди, дорога, поэтому стандарт SQL определяет четыре уровня изоляции через аномалии, допустимые на каждом из них. Грязное чтение — транзакция видит незафиксированные изменения другой. Неповторяемое чтение — повторный запрос той же строки внутри транзакции возвращает другое значение, потому что другая транзакция успела её изменить и зафиксировать. Фантомы — повторный запрос по условию возвращает новые строки. Аномалия сериализации — результат параллельных транзакций невозможно получить ни при каком порядке их последовательного выполнения.</p>
+<div class="table-wrapper"><table><thead><tr><th>Уровень</th><th>Грязное чтение</th><th>Неповторяемое чтение</th><th>Фантомы</th><th>Аномалия сериализации</th></tr></thead><tbody>
+<tr><td>READ UNCOMMITTED</td><td>возможно</td><td>возможно</td><td>возможны</td><td>возможна</td></tr>
+<tr><td>READ COMMITTED</td><td>нет</td><td>возможно</td><td>возможны</td><td>возможна</td></tr>
+<tr><td>REPEATABLE READ</td><td>нет</td><td>нет</td><td>возможны</td><td>возможна</td></tr>
+<tr><td>SERIALIZABLE</td><td>нет</td><td>нет</td><td>нет</td><td>нет</td></tr>
+</tbody></table>
+</div>
+<p>Таблица показывает минимальные требования стандарта; реализации бывают строже. PostgreSQL по умолчанию работает на уровне READ COMMITTED, где каждый оператор видит данные, зафиксированные к его началу. На уровне REPEATABLE READ вся транзакция видит снимок на момент первого запроса, и фантомов в PostgreSQL на нём тоже нет, а READ UNCOMMITTED ведёт себя как READ COMMITTED. MySQL с движком InnoDB по умолчанию использует REPEATABLE READ, а SQLite обеспечивает сериализуемость, разрешая в каждый момент одну пишущую транзакцию. За строгость платят: на уровнях REPEATABLE READ и SERIALIZABLE PostgreSQL может прервать транзакцию ошибкой сериализации, и приложение обязано повторить её целиком. Поведение обоих уровней показывает опыт в конце раздела.</p>
+<h3 id="Блокировки-и-журнал-wal-в-sqlite"><a class="header" href="#Блокировки-и-журнал-wal-в-sqlite">Блокировки и журнал WAL в SQLite</a></h3>
+<p>SQLite разграничивает доступ блокировками всего файла базы. В режиме журнала по умолчанию, DELETE, транзакция перед изменением страницы копирует её прежнее содержимое в файл <code>lab.db-journal</code>, а новые страницы записывает в <code>lab.db</code> при фиксации; при сбое прежние страницы восстанавливаются из журнала. Чтобы зафиксировать транзакцию, писателю нужна исключительная блокировка, и он ждёт, пока не закончатся все читающие транзакции; новые читатели, в свою очередь, ждут окончания фиксации.</p>
+<p>В режиме WAL, который включает команда <code>PRAGMA journal_mode=WAL</code>, новые версии страниц дописываются в файл <code>lab.db-wal</code>, а основной файл не меняется до контрольной точки, которая переносит страницы обратно. Читатель видит снимок базы на момент начала своей транзакции, и режим WAL обеспечивает чтение одновременно с записью: график строится, пока скрипт сбора пишет данные. Писатель в обоих режимах один: вторая пишущая транзакция ждёт освобождения блокировки время <code>timeout</code>, по умолчанию 5 с в модуле <code>sqlite3</code>, и затем получает ошибку <code>database is locked</code>. Транзакцию, которая будет писать, начинают командой <code>BEGIN IMMEDIATE</code>, чтобы ждать блокировку сразу, а не посреди работы. Режим WAL запоминается в файле базы, но требует, чтобы все процессы работали на одной машине: на сетевом диске (NFS, SMB) он неприменим.</p>
+<p>Скрипт <code>locks.py</code> открывает к одной базе два соединения с явным управлением транзакциями и временем ожидания блокировки 0,5 с: соединение A пишет, B читает.</p>
+<pre><code class="language-python">"""Два соединения к одной базе SQLite: блокировки в режиме журнала DELETE и в WAL."""
+import os
+import sqlite3
+import sys
+import time
+
+MODE = sys.argv[1]
+for f in ("locks.db", "locks.db-wal", "locks.db-shm", "locks.db-journal"):
+    if os.path.exists(f):
+        os.remove(f)
+setup = sqlite3.connect("locks.db")
+mode = setup.execute(f"PRAGMA journal_mode={MODE}").fetchone()[0]
+setup.execute("CREATE TABLE m (run_id INTEGER, value REAL)")
+setup.execute("INSERT INTO m VALUES (1, 0.41)")
+setup.commit()
+setup.close()
+# isolation_level=None: транзакции открываются и завершаются явно
+a = sqlite3.connect("locks.db", isolation_level=None, timeout=0.5)   # пишет
+b = sqlite3.connect("locks.db", isolation_level=None, timeout=0.5)   # читает
+
+
+def rows(con):
+    return con.execute("SELECT count(*) FROM m").fetchone()[0]
+
+
+def attempt(sql_con, sql):
+    start = time.perf_counter()
+    try:
+        sql_con.execute(sql)
+        result = "ok"
+    except sqlite3.OperationalError as e:
+        result = str(e)
+    return f"{result} ({time.perf_counter() - start:.2f} с)"
+
+
+print("journal_mode =", mode)
+a.execute("BEGIN IMMEDIATE")
+a.execute("INSERT INTO m VALUES (2, 0.42)")
+print(f"1. A: BEGIN IMMEDIATE, INSERT       A видит {rows(a)}, B видит {rows(b)}")
+print(f"2. B: INSERT, пока пишет A          {attempt(b, 'INSERT INTO m VALUES (3, 0.43)')}")
+print(f"3. A: COMMIT                        {attempt(a, 'COMMIT')}, B видит {rows(b)}")
+b.execute("BEGIN")
+print(f"4. B: BEGIN, SELECT                 B видит {rows(b)}")
+a.execute("BEGIN IMMEDIATE")
+a.execute("INSERT INTO m VALUES (4, 0.44)")
+print(f"5. A: INSERT, COMMIT при чтении B   {attempt(a, 'COMMIT')}, B видит {rows(b)}")
+b.execute("COMMIT")
+if a.in_transaction:
+    print(f"6. B: COMMIT; A: повторный COMMIT   {attempt(a, 'COMMIT')}, B видит {rows(b)}")
+else:
+    print(f"6. B: COMMIT                        B видит {rows(b)}")
+print("файлы:", " ".join(sorted(f for f in os.listdir(".") if f.startswith("locks.db"))))
+</code></pre>
+<pre><code class="language-bash">$ python3 locks.py delete
+journal_mode = delete
+1. A: BEGIN IMMEDIATE, INSERT       A видит 2, B видит 1
+2. B: INSERT, пока пишет A          database is locked (0.54 с)
+3. A: COMMIT                        ok (0.01 с), B видит 2
+4. B: BEGIN, SELECT                 B видит 2
+5. A: INSERT, COMMIT при чтении B   database is locked (0.53 с), B видит 2
+6. B: COMMIT; A: повторный COMMIT   ok (0.01 с), B видит 3
+файлы: locks.db
+$ python3 locks.py wal
+journal_mode = wal
+1. A: BEGIN IMMEDIATE, INSERT       A видит 2, B видит 1
+2. B: INSERT, пока пишет A          database is locked (0.53 с)
+3. A: COMMIT                        ok (0.01 с), B видит 2
+4. B: BEGIN, SELECT                 B видит 2
+5. A: INSERT, COMMIT при чтении B   ok (0.00 с), B видит 2
+6. B: COMMIT                        B видит 3
+файлы: locks.db locks.db-shm locks.db-wal
+</code></pre>
+<p>В режиме DELETE незафиксированная строка A соединению B не видна, а попытка B вставить свою строку ждёт 0,5 с и завершается ошибкой <code>database is locked</code>: писатель может быть только один. После фиксации A соединение B видит две строки. Затем B открывает читающую транзакцию, A вставляет ещё строку, и его <code>COMMIT</code> через 0,5 с тоже получает <code>database is locked</code>: фиксации мешает открытое чтение. Транзакция A при этом не теряется: после <code>COMMIT</code> в B повторный <code>COMMIT</code> в A проходит, и B видит три строки. В режиме WAL второй писатель по-прежнему получает отказ, но <code>COMMIT</code> при открытом чтении B проходит сразу, а B до конца своей транзакции видит снимок с двумя строками и лишь в новой транзакции видит три. Рядом с базой появляются файлы <code>locks.db-wal</code> и <code>locks.db-shm</code>.</p>
+<h3 id="Многоверсионность-в-postgresql"><a class="header" href="#Многоверсионность-в-postgresql">Многоверсионность в PostgreSQL</a></h3>
+<p>PostgreSQL изолирует транзакции не блокировками на чтение, а многоверсионностью (multiversion concurrency control, MVCC). <code>UPDATE</code> не меняет строку на месте: он записывает новую версию строки, а у старой отмечает в служебном поле <code>xmax</code> номер изменившей транзакции; у каждой версии в поле <code>xmin</code> записан номер создавшей её транзакции. Каждый запрос работает со снимком — сведениями о том, какие транзакции были зафиксированы к его началу, — и по <code>xmin</code> и <code>xmax</code> решает, какую из версий видеть. Поэтому читатели не ждут писателей, а писатели не ждут читателей; ждать друг друга приходится только транзакциям, изменяющим одну и ту же строку. Откат дёшев: транзакция лишь помечается прерванной, а её версии становятся невидимыми.</p>
+<p>Покажем, как версии строки видны на разных уровнях изоляции. Скрипт <code>mvcc.py</code> открывает два сеанса. Сеанс A работает в режиме автофиксации, в котором каждая команда составляет отдельную транзакцию, а сеанс B начинает транзакцию на заданном уровне изоляции и читает строку вместе с полями <code>xmin</code> и <code>xmax</code>.</p>
+<pre><code class="language-python">"""Два сеанса PostgreSQL: версии строки и уровень изоляции читателя."""
+import sys
+
+import psycopg
+
+LEVEL = sys.argv[1]                        # READ COMMITTED или REPEATABLE READ
+DSN = "host=127.0.0.1 user=postgres password=lab"
+ROW = "SELECT xmin, xmax, energy FROM runs WHERE id = 1"
+
+a = psycopg.connect(DSN, autocommit=True)  # A: каждая команда — своя транзакция
+b = psycopg.connect(DSN, autocommit=True)  # B: транзакция открывается явно
+a.execute("DROP TABLE IF EXISTS runs")
+a.execute("CREATE TABLE runs (id int PRIMARY KEY, energy real)")
+a.execute("INSERT INTO runs VALUES (1, 5.0)")
+
+
+def show(who, con):
+    xmin, xmax, energy = con.execute(ROW).fetchone()
+    print(f"{who:26s} xmin={xmin} xmax={xmax} energy={energy}")
+
+
+print("уровень изоляции B:", LEVEL)
+b.execute(f"BEGIN ISOLATION LEVEL {LEVEL}")
+show("B: BEGIN, SELECT", b)
+a.execute("UPDATE runs SET energy = 5.5 WHERE id = 1")
+show("A: UPDATE зафиксирован", a)
+show("B: тот же SELECT", b)
+try:
+    b.execute("UPDATE runs SET energy = energy + 1 WHERE id = 1")
+    b.execute("COMMIT")
+    show("B: свой UPDATE, COMMIT", b)
+except psycopg.errors.SerializationFailure as e:
+    print(f"{'B: свой UPDATE':26s} {e.diag.message_primary}")
+    b.execute("ROLLBACK")
+</code></pre>
+<pre><code class="language-bash">$ python3 mvcc.py "READ COMMITTED"
+уровень изоляции B: READ COMMITTED
+B: BEGIN, SELECT           xmin=747 xmax=0 energy=5.0
+A: UPDATE зафиксирован     xmin=748 xmax=0 energy=5.5
+B: тот же SELECT           xmin=748 xmax=0 energy=5.5
+B: свой UPDATE, COMMIT     xmin=749 xmax=0 energy=6.5
+$ python3 mvcc.py "REPEATABLE READ"
+уровень изоляции B: REPEATABLE READ
+B: BEGIN, SELECT           xmin=752 xmax=0 energy=5.0
+A: UPDATE зафиксирован     xmin=753 xmax=0 energy=5.5
+B: тот же SELECT           xmin=752 xmax=753 energy=5.0
+B: свой UPDATE             could not serialize access due to concurrent update
+</code></pre>
+<p>На уровне READ COMMITTED сеанс B сначала видит версию с <code>xmin=747</code>; после того как A изменил строку и зафиксировал изменение, тот же запрос в той же транзакции B возвращает новую версию, <code>xmin=748</code> и <code>energy=5.5</code>. Это неповторяемое чтение. Собственный <code>UPDATE</code> в B прибавляет единицу к последнему зафиксированному значению, и после фиксации значение равно 6,5. На уровне REPEATABLE READ сеанс B после изменения в A продолжает видеть старую версию: <code>xmin=752</code> и <code>xmax=753</code>, то есть версия уже удалена транзакцией 753, но снимок B взят до её фиксации. Когда B пытается изменить эту строку, PostgreSQL отвечает ошибкой <code>could not serialize access due to concurrent update</code>: изменение по устаревшему снимку потеряло бы обновление из A, и транзакцию B необходимо повторить. Номера транзакций зависят от предыстории сервера и при повторе опыта будут другими.</p>
+<p>Обратная сторона многоверсионности — мёртвые версии, которые не видит уже ни один снимок. Их убирает команда <code>VACUUM</code>, обычно запускаемая автоочисткой. Долгая транзакция или забытый открытый сеанс держат старый снимок, и <code>VACUUM</code> не может удалить версии, которые этот снимок ещё видит. Покажем это на таблице из 100 000 строк с отключённой автоочисткой; число живых и мёртвых версий и размер файла считает функция <code>pgstattuple</code> одноимённого расширения:</p>
+<pre><code class="language-python">import psycopg
+
+DSN = "host=127.0.0.1 user=postgres password=lab"
+a = psycopg.connect(DSN, autocommit=True)
+a.execute("CREATE EXTENSION IF NOT EXISTS pgstattuple")
+a.execute("DROP TABLE IF EXISTS runs_log")
+a.execute("CREATE TABLE runs_log (id int PRIMARY KEY, energy real) "
+          "WITH (autovacuum_enabled = off)")      # автоочистка не вмешивается
+a.execute("INSERT INTO runs_log SELECT i, 5.0 FROM generate_series(1, 100000) AS i")
+
+
+def state(stage):
+    live, dead, size = a.execute(
+        "SELECT tuple_count, dead_tuple_count, table_len FROM pgstattuple('runs_log')"
+    ).fetchone()
+    print(f"{stage:28s} живых {live:6d}, мёртвых {dead:6d}, файл {size / 2**20:.1f} МиБ")
+
+
+state("после вставки")
+b = psycopg.connect(DSN, autocommit=True)
+b.execute("BEGIN ISOLATION LEVEL REPEATABLE READ")    # долгая транзакция
+b.execute("SELECT count(*) FROM runs_log").fetchone()  # снимок взят
+a.execute("UPDATE runs_log SET energy = energy + 0.5")
+state("после UPDATE всех строк")
+a.execute("VACUUM runs_log")
+state("VACUUM при открытом снимке")
+b.execute("COMMIT")
+a.execute("VACUUM runs_log")
+state("VACUUM после COMMIT в B")
+a.execute("VACUUM FULL runs_log")
+state("VACUUM FULL")
+</code></pre>
+<pre><code>после вставки                живых 100000, мёртвых      0, файл 3.5 МиБ
+после UPDATE всех строк      живых 100000, мёртвых 100000, файл 6.9 МиБ
+VACUUM при открытом снимке   живых 100000, мёртвых 100000, файл 6.9 МиБ
+VACUUM после COMMIT в B      живых 100000, мёртвых      0, файл 6.9 МиБ
+VACUUM FULL                  живых 100000, мёртвых      0, файл 3.5 МиБ
+</code></pre>
+<p><code>UPDATE</code> всех строк удвоил файл: новые версии записаны рядом со старыми. <code>VACUUM</code> при открытом снимке B не удалил ни одной мёртвой версии, после завершения транзакции B удалил все, но файл остался прежнего размера. Обычный <code>VACUUM</code> освобождает место внутри файла, и следующие изменения займут его, а уменьшает файл, лишь когда освободились страницы в самом его конце; сжимает таблицу <code>VACUUM FULL</code>, переписывая её под исключительной блокировкой. При частых изменениях и долгих транзакциях таблица и её индексы разрастаются, и простой запрос начинает читать тысячи мёртвых версий ради одной живой. Поэтому долгие транзакции необходимо находить по столбцам <code>xact_start</code> и <code>backend_xmin</code> представления <code>pg_stat_activity</code> и завершать.</p>
+<h2 id="sqlite-postgresql-или-mysql"><a class="header" href="#sqlite-postgresql-или-mysql">SQLite, PostgreSQL или MySQL</a></h2>
+<p>Три реляционные СУБД, чаще всего встречающиеся в лаборатории, различаются не языком запросов (SQL везде почти один и тот же), а тем, кто и каким образом получает доступ к базе.</p>
+<div class="table-wrapper"><table><thead><tr><th></th><th>SQLite</th><th>PostgreSQL</th><th>MySQL / MariaDB</th></tr></thead><tbody>
+<tr><td>Архитектура</td><td>встраиваемая библиотека, вся база в одном файле</td><td>клиент-серверная, процесс на соединение</td><td>клиент-серверная, поток на соединение</td></tr>
+<tr><td>Установка</td><td>не нужна, есть в Python</td><td>отдельный сервис</td><td>отдельный сервис</td></tr>
+<tr><td>Одновременная запись</td><td>одна пишущая транзакция в каждый момент</td><td>много клиентов</td><td>много клиентов</td></tr>
+<tr><td>Изоляция по умолчанию</td><td>сериализуемая</td><td>READ COMMITTED</td><td>REPEATABLE READ</td></tr>
+<tr><td>Типизация</td><td>динамическая, строгая в таблицах STRICT</td><td>строгая, богатая (массивы, JSONB, диапазоны)</td><td>строгая, скромнее</td></tr>
+<tr><td>Права доступа</td><td>нет (права на файл)</td><td>пользователи, роли, гранулярные права</td><td>пользователи и права</td></tr>
+<tr><td>Сильная сторона</td><td>нулевая настройка, переносимость</td><td>функциональность и расширения (PostGIS, TimescaleDB)</td><td>распространённость в веб-хостинге</td></tr>
+<tr><td>Типичный случай</td><td>локальные данные, прототипы, базы до десятков и сотен ГБ на локальном диске</td><td>серверное приложение, общая база группы</td><td>веб-проекты, унаследованные системы</td></tr>
+</tbody></table>
+</div>
+<p>Если данные лежат на локальном диске и работают с ними один исследователь и его скрипты, то выбирается <strong>SQLite</strong>. Если база нужна нескольким людям или сервисам по сети, если в неё пишут одновременно и требуются права доступа, то предпочтительнее <strong>PostgreSQL</strong>: сегодня это выбор по умолчанию для серверной СУБД, а его внутреннее устройство подробно описано в книге Е. Рогова «PostgreSQL 18 изнутри» [17], которая свободно распространяется в электронном виде. <strong>MySQL</strong> чаще достаётся как данность вместе с унаследованным проектом или хостингом, чем выбирается осознанно для новой системы.</p>
+<h2 id="orm-sqlalchemy"><a class="header" href="#orm-sqlalchemy">ORM: SQLAlchemy</a></h2>
+<p>SQL в виде строк внутри Python-кода не проверяется до запуска, результаты приходят кортежами, а логика, связывающая объект с его окружением, оказывается распределённой по запросам. <strong>ORM</strong> (Object-Relational Mapping) отображает таблицы на классы, строки на объекты, а внешние ключи на атрибуты-связи. Стандартом де-факто в Python является <a href="https://docs.sqlalchemy.org/en/21/">SQLAlchemy</a>. Во второй версии модели описываются аннотациями <code>Mapped</code> и функцией <code>mapped_column</code>, запросы строятся функцией <code>select</code>, а выполняются в сеансе <code>Session</code>, который отслеживает изменённые объекты и при <code>commit</code> превращает их в <code>INSERT</code> и <code>UPDATE</code>. Пример работает с отдельной базой <code>orm.db</code>: модели описывают только часть столбцов схемы журнала, и вставка в <code>lab.db</code> нарушила бы ограничения <code>NOT NULL</code> её таблиц.</p>
+<pre><code class="language-python">import sys
+
+from sqlalchemy import ForeignKey, create_engine, event, select
+from sqlalchemy.orm import (
+    DeclarativeBase, Mapped, Session, mapped_column, relationship, selectinload,
+)
+
+
+class Base(DeclarativeBase):
+    pass
+
+
+class Run(Base):
+    __tablename__ = "runs"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    energy_mev: Mapped[float]
+    # связь «один ко многим»: у захода — список измерений
+    measurements: Mapped[list["Measurement"]] = relationship(
+        back_populates="run"
+    )
+
+
+class Measurement(Base):
+    __tablename__ = "measurements"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    run_id: Mapped[int] = mapped_column(ForeignKey("runs.id"))
+    channel: Mapped[str]
+    value: Mapped[float]
+    run: Mapped[Run] = relationship(back_populates="measurements")
+
+
+# отдельная база примера; адрес можно передать аргументом
+engine = create_engine(sys.argv[1] if len(sys.argv) &gt; 1 else "sqlite:///orm.db")
+Base.metadata.drop_all(engine)    # пример начинается с пустой базы
+Base.metadata.create_all(engine)  # таблицы создаются по классам
+
+with Session(engine) as session:
+    # объекты вместо INSERT: связи расставляются сами
+    for energy in (8.0, 12.5, 15.0):
+        run = Run(energy_mev=energy)
+        run.measurements.append(Measurement(channel="BPM01", value=0.03 * energy))
+        session.add(run)
+    session.commit()
+
+    # запрос вместо SELECT ... JOIN: сразу нужные столбцы обеих таблиц
+    stmt = (select(Measurement.channel, Measurement.value, Run.energy_mev)
+            .join(Run).where(Run.energy_mev &gt; 10.0))
+    print(stmt.compile(engine))
+    for channel, value, energy in session.execute(stmt):
+        print(channel, round(value, 4), energy)
+</code></pre>
+<pre><code>SELECT measurements.channel, measurements.value, runs.energy_mev
+FROM measurements JOIN runs ON runs.id = measurements.run_id
+WHERE runs.energy_mev &gt; ?
+BPM01 0.375 12.5
+BPM01 0.45 15.0
+</code></pre>
+<p>Перед результатом печатается SQL, который построил <code>select</code>: соединение <code>JOIN</code> с условием по внешнему ключу и параметр <code>?</code> драйвера <code>sqlite3</code>. Запрос выбирает сразу нужные столбцы обеих таблиц. Если же выбрать объекты, <code>select(Measurement).join(Run)</code>, и в цикле обращаться к <code>m.run.energy_mev</code>, соединение послужит только отбору строк: связь <code>Measurement.run</code> по умолчанию загружается лениво, и обращение к ней для каждого нового захода выполняет отдельный запрос <code>SELECT ... FROM runs WHERE runs.id = ?</code>. Это проблема N+1: один запрос за списком и по запросу на каждый его элемент. Число запросов к базе подсчитывает обработчик события <code>before_cursor_execute</code>; продолжение того же скрипта обходит заходы и обращается к их измерениям:</p>
+<pre><code class="language-python"># число запросов к базе при обходе связей
+queries = []
+event.listen(engine, "before_cursor_execute",
+             lambda *args: queries.append(args[2]))
+for options in ([], [selectinload(Run.measurements)]):
+    queries.clear()
+    with Session(engine) as session:
+        for run in session.scalars(select(Run).options(*options)):
+            len(run.measurements)  # обращение к связи
+    print("selectinload:" if options else "ленивая загрузка:", len(queries), "запроса")
+</code></pre>
+<pre><code>ленивая загрузка: 4 запроса
+selectinload: 2 запроса
+</code></pre>
+<p>При ленивой загрузке обращение к связи <code>measurements</code> у каждого из трёх заходов выполняет отдельный запрос, всего их четыре — один за заходами и три за точками; опция <code>selectinload</code> позволяет обойтись двумя запросами: за заходами и затем за всеми их точками одним запросом с условием <code>IN</code>. Явное соединение <code>join</code> заполняет связь, только если указать опцию <code>contains_eager</code>.</p>
+<p>Смена SQLite на PostgreSQL сводится к замене адреса в <code>create_engine</code> и установке драйвера (<code>pip install "psycopg[binary]"</code>); для простых моделей остальной код не меняется, а различия типов и поведения проявляются на сложных схемах. Тот же скрипт работает с отдельной базой <code>orm</code>, созданной в контейнере командой <code>docker exec pg createdb -U postgres orm</code>:</p>
+<pre><code class="language-bash">$ python3 orm_demo.py postgresql+psycopg://postgres:lab@127.0.0.1/orm
+SELECT measurements.channel, measurements.value, runs.energy_mev
+FROM measurements JOIN runs ON runs.id = measurements.run_id
+WHERE runs.energy_mev &gt; %(energy_mev_1)s
+BPM01 0.375 12.5
+BPM01 0.45 15.0
+ленивая загрузка: 4 запроса
+selectinload: 2 запроса
+</code></pre>
+<p>Текст SQL тот же, отличается только запись параметра: <code>%(energy_mev_1)s</code> в стиле psycopg.</p>
+<p>ORM оправдан в приложении с десятком связанных таблиц и развивающейся схемой (накопленные миграции удобно вести инструментом <a href="https://alembic.sqlalchemy.org/">Alembic</a>), при командной разработке и множестве типовых операций «создать-прочитать-обновить-удалить». Чистый SQL предпочтителен для аналитических запросов с многоуровневыми агрегатами и оконными функциями (SQL здесь лаконичнее ORM-конструкций), для массовых загрузок и разовых скриптов. ORM не освобождает от знания SQL: он генерирует тот же SQL, и когда запрос выполняется медленно, разбираться приходится со сгенерированным текстом; для этого достаточно включить <code>create_engine(..., echo=True)</code> и просмотреть запросы, уходящие в базу.</p>
+<h2 id="Эксплуатация"><a class="header" href="#Эксплуатация">Эксплуатация</a></h2>
+<blockquote>
+<p><strong>Слайды к главе.</strong> Резервные копии и их восстановление, журнал WAL и восстановление на момент времени, репликация, масштабирование, мониторинг, нереляционные хранилища и выбор СУБД изложены также в шестой части лекции «Базы данных» с демонстрациями в терминале; слайды лекции доступны <a href="https://phys-dev.github.io/soft-dev-book/slides/lecture-13.html#/sec-ops">на сайте книги</a> и <a href="https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-13.pdf">в PDF</a>.</p>
+</blockquote>
+<iframe src="../slides/lecture-13.html#/sec-ops" title="Слайды лекции «Базы данных»: эксплуатация и выбор" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
+<p>Раздел посвящён эксплуатации созданной базы: резервным копиям и восстановлению, журналу WAL и репликации, масштабированию и мониторингу.</p>
+<h3 id="Резервные-копии"><a class="header" href="#Резервные-копии">Резервные копии</a></h3>
+<p>Резервная копия защищает от того, от чего транзакции не защищают: от ошибочной команды <code>DROP TABLE</code> или <code>DELETE</code> без <code>WHERE</code>, сбоя диска, потери машины. Копирование файла базы SQLite командой <code>cp</code> корректно, только когда к базе никто не подключён. В режиме WAL подтверждённые транзакции до контрольной точки лежат в отдельном файле, и копия одного основного файла их теряет. Согласованную копию работающей базы обеспечивает метод <code>Connection.backup()</code> из Python или команда <code>VACUUM INTO</code>. Рассмотрим разницу на процессе сбора данных <code>writer.py</code>, который переводит базу <code>wal.db</code> в режим WAL, записывает и фиксирует 500 строк и продолжает работать с открытым соединением:</p>
+<pre><code class="language-python">"""Пишущий процесс: база в режиме WAL, 500 зафиксированных строк, соединение открыто."""
+import signal
+import sqlite3
+import sys
+import time
+
+signal.signal(signal.SIGTERM, lambda *args: sys.exit(0))   # kill — штатное завершение
+con = sqlite3.connect("wal.db")
+con.execute("PRAGMA journal_mode=WAL")
+con.execute("CREATE TABLE m (t REAL, value REAL)")
+with con:                                                   # транзакция зафиксирована
+    con.executemany("INSERT INTO m VALUES (?, ?)", [(i / 10, 0.4) for i in range(500)])
+try:
+    while True:                                             # процесс сбора данных работает
+        time.sleep(1)
+finally:
+    con.close()             # последнее соединение: контрольная точка, файл -wal удаляется
+</code></pre>
+<p>Копию методом <code>backup()</code> делает скрипт <code>backup.py</code>:</p>
+<pre><code class="language-python">"""Онлайн-копия базы SQLite: Connection.backup()."""
+import sqlite3
+import sys
+
+src = sqlite3.connect(sys.argv[1])
+dst = sqlite3.connect(sys.argv[2])
+src.backup(dst)                    # согласованная копия, включая страницы из -wal
+dst.close()
+src.close()
+</code></pre>
+<p>Сеанс в терминале:</p>
+<pre><code class="language-bash">$ python3 writer.py &amp;
+$ sleep 1; wc -c wal.db*
+ 4096 wal.db
+32768 wal.db-shm
+28872 wal.db-wal
+65736 total
+$ C="SELECT count(*) FROM m"
+$ cp wal.db copy.db; python3 -m sqlite3 copy.db "$C"
+OperationalError (SQLITE_ERROR): no such table: m
+$ python3 backup.py wal.db bak.db; python3 -m sqlite3 bak.db "$C"
+(500,)
+$ python3 -m sqlite3 wal.db "VACUUM INTO 'into.db'"; python3 -m sqlite3 into.db "$C"
+(500,)
+$ kill %1; sleep 1; wc -c wal.db*
+20480 wal.db
+$ cp wal.db copy2.db; python3 -m sqlite3 copy2.db "$C"
+(500,)
+</code></pre>
+<p>Основной файл занимает 4096 байт — одну страницу с заголовком, — а данные лежат в файле <code>wal.db-wal</code>. Копия основного файла открывается как база без таблиц: подтверждённые данные в неё не попали. <code>Connection.backup()</code> и <code>VACUUM INTO</code> делают согласованные копии с 500 строками. После завершения писателя его соединение закрывается штатно: последнее соединение выполняет контрольную точку, журнал переносится в основной файл, который вырастает до 20 480 байт, файлы <code>-wal</code> и <code>-shm</code> исчезают, и простая копия тоже содержит 500 строк.</p>
+<p>Для PostgreSQL есть два способа. Утилита <code>pg_dump</code> создаёт логическую копию одной базы — SQL-команды или сжатый архив, который восстанавливает <code>pg_restore</code>, — на момент начала копирования; её можно развернуть и на более новой версии сервера. Утилита <code>pg_basebackup</code> снимает физическую копию файлов всего сервера, а вместе с непрерывным архивом журнала WAL позволяет восстановиться на любой момент времени. Рассмотрим первый способ на таблице <code>measurements</code> из опыта с <code>EXPLAIN ANALYZE</code> в главе «Базы данных»:</p>
+<pre><code class="language-bash">$ psql -c 'BEGIN' -c 'DROP TABLE measurements' -c 'ROLLBACK'
+BEGIN
+DROP TABLE
+ROLLBACK
+$ psql -c 'SELECT count(*) FROM measurements'
+  count
+---------
+ 1000000
+(1 row)
+$ docker exec pg pg_dump -U postgres -Fc &gt; lab.dump; wc -c lab.dump
+8678593 lab.dump
+$ psql -c 'DROP TABLE measurements'
+DROP TABLE
+$ docker exec pg createdb -U postgres restored
+$ docker exec -i pg pg_restore -U postgres -d restored &lt; lab.dump
+$ psql -d restored -c 'SELECT count(*) FROM measurements'
+  count
+---------
+ 1000000
+(1 row)
+</code></pre>
+<p>Первая команда открывает транзакцию, удаляет таблицу и откатывает транзакцию: в PostgreSQL даже изменения схемы транзакционны, и после <code>ROLLBACK</code> таблица на месте со всем миллионом строк. Затем <code>pg_dump</code> записывает логическую копию базы в сжатом формате <code>custom</code> в файл <code>lab.dump</code> размером около 8,3 МиБ. Команда <code>DROP TABLE</code> без транзакции выполняется с автофиксацией, и таблица удалена безвозвратно. Восстановление идёт в отдельную базу <code>restored</code>, где сначала проверяют данные. Нужную таблицу затем возвращают в рабочую базу командой <code>pg_restore -t measurements</code>, однако этот ключ восстанавливает только определение и данные таблицы: первичный ключ, индексы и последовательность для столбца <code>id</code> записаны в архиве отдельными элементами, список которых выводит <code>pg_restore -l</code>.</p>
+<p>Хранят копии по правилу «три-два-один»: три копии на двух видах носителей, одна из них — вне здания. Главное правило — копия без проверенного восстановления копией не считается: восстановление репетируют по инструкции на отдельной машине и проверяют, что данные на месте, а инструкцию пишут так, чтобы её выполнил дежурный ночью, а не только автор.</p>
+<h3 id="Журнал-wal-восстановление-на-момент-и-реплики"><a class="header" href="#Журнал-wal-восстановление-на-момент-и-реплики">Журнал WAL, восстановление на момент и реплики</a></h3>
+<p>Журнал упреждающей записи (write-ahead log, WAL) является основой надёжности PostgreSQL: каждое изменение сначала записывается в журнал, и только потом меняются файлы таблиц, поэтому после сбоя сервер восстанавливается, проигрывая журнал от последней контрольной точки. Тот же журнал решает ещё три задачи.</p>
+<p>Для восстановления на любой момент необходимы базовая физическая копия и непрерывный архив сегментов WAL: ночная копия и архив журнала возвращают таблицу, ошибочно удалённую вечером, в состояние за секунду до команды. Это восстановление на момент времени (point-in-time recovery, PITR). Архив включают параметры основного сервера <code>archive_mode</code> и <code>archive_command</code>, базовую копию снимает <code>pg_basebackup</code>, а для восстановления необходимо положить в каталог копии файл <code>recovery.signal</code> и задать команду чтения архива <code>restore_command</code> и момент <code>recovery_target_time</code>. Отрепетируем восстановление на отдельном сервере в контейнере. Каталог <code>$P</code> на машине с Docker, принадлежащий пользователю с номером 70 (так в образе обозначен пользователь <code>postgres</code>), служит хранилищем архива и копий; команды выполняются от имени root.</p>
+<pre><code class="language-bash">$ P=$PWD/pitr; mkdir -p $P/wal; chown -R 70:70 $P
+$ docker run -d --name pitr -e POSTGRES_PASSWORD=lab -v $P:/pitr postgres:17-alpine \
+      -c archive_mode=on -c archive_command='cp %p /pitr/wal/%f' &gt; /dev/null
+$ until docker exec pitr pg_isready -h 127.0.0.1 -q; do sleep 0.5; done
+$ docker exec -u postgres pitr pg_basebackup -D /pitr/base -X stream -c fast
+$ alias pq='docker exec -i -u postgres pitr psql -X -q'
+$ pq -c "CREATE TABLE runs_log AS SELECT i AS id FROM generate_series(1, 1000) AS i"
+$ pq -At -c "SELECT now()"
+2026-10-03 03:45:54.2944+00
+$ sleep 1; pq -c "DROP TABLE runs_log"
+$ pq -At -c "SELECT pg_walfile_name(pg_switch_wal())"
+000000010000000000000004
+</code></pre>
+<p>Сервер с архивом создаёт таблицу <code>runs_log</code> из 1000 строк, запоминается момент времени, через секунду таблица удаляется, а функция <code>pg_switch_wal()</code> закрывает текущий сегмент журнала, чтобы он попал в архив. Затем копия разворачивается в новый каталог, и на ней запускается второй сервер:</p>
+<pre><code class="language-bash">$ docker rm -f -v pitr &gt; /dev/null
+$ cp -a $P/base $P/restore; touch $P/restore/recovery.signal
+$ cat &gt;&gt; $P/restore/postgresql.auto.conf &lt;&lt; EOF
+restore_command = 'cp /pitr/wal/%f %p'
+recovery_target_time = '2026-10-03 03:45:54.2944+00'
+recovery_target_action = 'promote'
+EOF
+$ docker run -d --name pitr2 -e PGDATA=/pitr/restore -v $P:/pitr postgres:17-alpine &gt; /dev/null
+$ sleep 5; docker logs pitr2 2&gt;&amp;1 | grep -E 'point-in-time|stopping|new timeline|archive recovery' | sed 's/.*LOG:  //'
+starting point-in-time recovery to 2026-10-03 03:45:54.2944+00
+recovery stopping before commit of transaction 740, time 2026-10-03 03:45:55.352384+00
+selected new timeline ID: 2
+archive recovery complete
+$ docker exec -u postgres pitr2 psql -X -c "SELECT count(*) FROM runs_log"
+ count
+-------
+  1000
+(1 row)
+</code></pre>
+<p>Восстановление остановилось перед фиксацией транзакции 740, то есть перед командой <code>DROP TABLE</code>, сервер перешёл на новую линию времени (timeline) и вернул таблицу со всеми 1000 строками. Параметр <code>recovery_target_action = 'promote'</code> переводит сервер в обычный режим сразу после достижения цели. По умолчанию сервер останавливается на паузе, чтобы данные можно было проверить до продвижения, однако таблицу, которую удаляла незавершённая транзакция, на паузе держит её блокировка: в первом запуске опыта, без этого параметра, запрос к <code>runs_log</code> ждал её освобождения, которое наступает только после продвижения сервера вызовом <code>pg_wal_replay_resume()</code>.</p>
+<p>Если передавать журнал потоком на другой сервер, получается физическая реплика, представляющая собой побайтовую копию всего сервера, доступную только для чтения; она требует той же основной версии PostgreSQL и той же архитектуры и служит для резервирования и разгрузки чтения. Логическая репликация расшифровывает журнал в изменения строк выбранных таблиц и передаёт их подписчику, который может работать на другой версии PostgreSQL; так переходят на новую версию с минимальным простоем, а сторонние средства логического декодирования тем же способом перекладывают изменения в аналитическую систему. Реплика не заменяет резервную копию: ошибочный <code>DROP TABLE</code> доходит до неё за доли секунды.</p>
+<h3 id="Масштабирование"><a class="header" href="#Масштабирование">Масштабирование</a></h3>
+<p>Один сервер PostgreSQL на современном оборудовании годами обслуживает базу лаборатории и даже института, и масштабирование начинают с дешёвых шагов. Пул соединений, например PgBouncer, позволяет тысячам клиентов работать через десятки серверных процессов. Реплики разгружают основной сервер от чтения: отчёты и графики строятся по реплике, хотя она может отставать на доли секунды. Секционирование делит большую таблицу на части по диапазону, например временной ряд датчиков по месяцам, и позволяет удалять данные старше срока хранения одной командой вместо медленного <code>DELETE</code>, а запросу за неделю — читать одну секцию.</p>
+<pre><code class="language-sql">CREATE TABLE readings (
+    ts      timestamptz NOT NULL,
+    channel text NOT NULL,
+    value   real NOT NULL
+) PARTITION BY RANGE (ts);
+CREATE TABLE readings_2026_08 PARTITION OF readings
+    FOR VALUES FROM ('2026-08-01') TO ('2026-09-01');
+CREATE TABLE readings_2026_09 PARTITION OF readings
+    FOR VALUES FROM ('2026-09-01') TO ('2026-10-01');
+INSERT INTO readings
+SELECT ts, 'P_vacuum', 1e-7 * (1 + random())
+FROM generate_series(timestamptz '2026-08-01', '2026-09-30 23:59', '1 min') AS ts;
+EXPLAIN (COSTS OFF)
+SELECT avg(value) FROM readings
+WHERE ts &gt;= '2026-09-20' AND ts &lt; '2026-09-27';
+DROP TABLE readings_2026_08;          -- август удаляется одной командой
+SELECT count(*) FROM readings;
+</code></pre>
+<pre><code class="language-bash">$ psql &lt; part.sql
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+INSERT 0 87840
+                                                                 QUERY PLAN
+--------------------------------------------------------------------------------------------------------------------------------------------
+ Aggregate
+   -&gt;  Seq Scan on readings_2026_09 readings
+         Filter: ((ts &gt;= '2026-09-20 00:00:00+00'::timestamp with time zone) AND (ts &lt; '2026-09-27 00:00:00+00'::timestamp with time zone))
+(3 rows)
+
+DROP TABLE
+ count
+-------
+ 43200
+(1 row)
+</code></pre>
+<p>План запроса за неделю сентября содержит только секцию <code>readings_2026_09</code>: условие на <code>ts</code> исключило августовскую секцию ещё при планировании. Августовские данные удалены командой <code>DROP TABLE</code> без перебора строк, и в таблице осталось 43 200 минутных отсчётов сентября.</p>
+<p>Шардирование распределяет данные по нескольким серверам по ключу; запросы внутри одного шарда остаются быстрыми, а соединения и транзакции между шардами дороги, поэтому небольшие справочники копируют на каждый шард или денормализуют. Встроенное шардирование есть у ClickHouse, MongoDB и YDB, а в PostgreSQL его добавляет расширение Citus или реализует само приложение. Если заранее ясно, что данные не поместятся на один сервер, шардирование закладывают с самого начала: переделка работающей базы в десятки терабайт отнимает месяцы работы целой команды. Репликация, шардирование и кеширование подробнее рассматриваются в главе <a href="./system-design.html">«Системный дизайн»</a>.</p>
+<h3 id="Мониторинг"><a class="header" href="#Мониторинг">Мониторинг</a></h3>
+<p>СУБД наблюдают как любое приложение, но с поправкой на её особенности. Первая группа показателей — ресурсы: процессор, память, свободное место и число свободных индексных дескрипторов (inode) на диске, число операций ввода-вывода в секунду; диск для базы чаще всего оказывается узким местом. Вторая группа — запросы: их число в секунду, задержки по перцентилям p50 и p99, а не по среднему, которое скрывает медленные запросы, и распределение по типам; рост доли чтений указывает на отказ кеша перед базой, лавина <code>UPDATE</code> — на ошибку в приложении. Третья группа — ошибки. Под нагрузкой они в журнале бывают всегда, например при обрыве соединения клиентом, поэтому тревогу поднимают по превышению порога, а не по каждой записи. Необходимы и нижние пороги: если нагрузка на базу снизилась до нуля, это авария, хотя ни один верхний порог не превышен, — например, данные удалены, и запросам стало нечего делать.</p>
+<p>Специфические признаки PostgreSQL дают системные представления. Самые дорогие запросы показывает расширение <code>pg_stat_statements</code>, загруженное при запуске контейнера в главе «Базы данных»:</p>
+<pre><code class="language-sql">CREATE EXTENSION IF NOT EXISTS pg_stat_statements;
+-- самые дорогие запросы с запуска сервера
+SELECT calls, round(total_exec_time) AS total_ms,
+       left(regexp_replace(query, '\s+', ' ', 'g'), 45) AS query
+FROM pg_stat_statements
+ORDER BY total_exec_time DESC
+LIMIT 5;
+</code></pre>
+<pre><code class="language-bash">$ psql &lt; monitor.sql
+CREATE EXTENSION
+ calls | total_ms |                     query
+-------+----------+-----------------------------------------------
+     1 |     2276 | INSERT INTO measurements (run_id, channel, t,
+     1 |     1127 | COPY public.measurements (id, run_id, channel
+     1 |      710 | COPY public.measurements (id, run_id, channel
+     1 |      146 | UPDATE runs_log SET energy = energy + $1
+     1 |      100 | CREATE INDEX m_run_ch ON measurements (run_id
+(5 rows)
+</code></pre>
+<p>Расширение складывает статистику по нормализованному тексту запроса, в котором константы заменены параметрами <code>$1</code>, <code>$2</code> и так далее. С запуска сервера, то есть за время опытов этой главы и главы «Базы данных», больше всего времени заняли заполнение таблицы скриптом <code>fill.sql</code> из опыта с <code>EXPLAIN ANALYZE</code> и команды <code>COPY</code>, которыми <code>pg_dump</code> и <code>pg_restore</code> переносят данные, а затем <code>UPDATE</code> всех строк в опыте с разрастанием таблицы и создание индекса <code>m_run_ch</code>.</p>
+<p>Число мёртвых версий строк по таблицам показывает представление <code>pg_stat_user_tables</code>, отставание реплик — <code>pg_stat_replication</code>:</p>
+<pre><code class="language-sql">-- мёртвые версии строк по таблицам
+SELECT relname, n_live_tup, n_dead_tup
+FROM pg_stat_user_tables
+ORDER BY n_dead_tup DESC;
+</code></pre>
+<p>Счётчики этих представлений обновляются асинхронно и являются оценками; точные числа даёт функция <code>pgstattuple</code> из опыта с разрастанием таблицы. Если выделенного администратора баз данных нет, первым вариантом рассматривают управляемую СУБД облачного провайдера, который берёт на себя копии, обновления и мониторинг.</p>
+<h2 id="Нереляционные-базы-данных"><a class="header" href="#Нереляционные-базы-данных">Нереляционные базы данных</a></h2>
+<p>Под конкретные профили нагрузки существуют специализированные базы, объединяемые общим названием «NoSQL». Их устройство и цена каждого компромисса подробно рассмотрены у Клеппмана [16].</p>
+<p>Проще всех устроено хранилище пар «ключ → значение» <a href="https://redis.io/">Redis</a> и его открытое ответвление <a href="https://valkey.io/">Valkey</a>. Данные располагаются в оперативной памяти, и операции занимают доли миллисекунды. Типичные роли: кеш (результат тяжёлого запроса или расчёта помещается под ключ с заданным временем жизни), очереди задач между процессами (Redis служит брокером очередей Celery), счётчики и уведомления по подписке (pub/sub). По умолчанию Redis периодически сохраняет снимок данных на диск; журнал всех записей (AOF) включается отдельно и сокращает потерю данных при сбое примерно до секунды, а для чистого кеша сохранение отключают. Команды выполняются в одном потоке, поэтому <code>KEYS</code> со звёздочкой, перебирающая все ключи, на время перебора блокирует сервер для всех клиентов, а перебор ведут командой <code>SCAN</code>. В 2024 году Redis сменил лицензию на несвободную, и сообщество под эгидой Linux Foundation продолжило открытый проект под названием Valkey; в 2025 году Redis 8 вышел и под свободной лицензией AGPLv3. Redis отвечает за скорость и не является главным хранилищем истины; типичные приёмы собраны у Карлсона [19].</p>
+<p>Сервер для опытов запускается в контейнере так же, как PostgreSQL:</p>
+<pre><code class="language-bash">docker run -d --rm --name redis -p 127.0.0.1:6379:6379 redis:8-alpine
+alias redis-cli='docker exec -i redis redis-cli'
+</code></pre>
+<pre><code class="language-bash">$ redis-cli CONFIG GET save
+save
+3600 1 300 100 60 10000
+$ redis-cli CONFIG GET appendonly
+appendonly
+no
+$ redis-cli SET todos:page:0 '{"result": []}' EX 60
+OK
+$ redis-cli TTL todos:page:0
+60
+$ redis-cli INCR runs:counter
+1
+$ redis-cli SCAN 0 MATCH 'todos:page:*'
+0
+todos:page:0
+</code></pre>
+<p>Настройка <code>save</code> по умолчанию сохраняет снимок через час после первого изменения, через пять минут после ста изменений и через минуту после десяти тысяч, а <code>appendonly no</code> означает, что журнал AOF выключен. Ключ, записанный с параметром <code>EX 60</code>, живёт 60 секунд, <code>INCR</code> атомарно увеличивает счётчик, а <code>SCAN</code> перебирает ключи по шаблону порциями, не блокируя сервер надолго: первым числом он возвращает курсор следующей порции, и ноль означает, что перебор завершён.</p>
+<p>Там, где у записей нет общей структуры, применяют документные базы наподобие <a href="https://www.mongodb.com/">MongoDB</a>. Единицей хранения является документ — вложенная структура наподобие JSON; документы собираются в коллекции, и жёсткой схемы нет, поэтому соседние документы могут иметь разные поля. Это удобно для разнородных метаданных, меняющих структуру от записи к записи. Схему MongoDB по умолчанию не навязывает, и проверяет её код; правила можно задать и в самой базе валидатором <code>$jsonSchema</code> на коллекции, который отклоняет или помечает нарушающие их документы. Практические следствия рассмотрены в руководстве по MongoDB [18].</p>
+<p>Телеметрию установки (давление в вакуумной камере, токи магнитов, температуры), приходящую с сотен датчиков каждую секунду годами, в ускорительной технике называют slow control и хранят в базах временных рядов. <a href="https://www.influxdata.com/">InfluxDB</a> предназначена для потока «метка времени → значение» с тегами. Такие базы позволяют автоматически прореживать и удалять устаревшие данные (retention policies), быстро агрегировать по окнам времени («среднее за каждую минуту последних суток») и стыкуются с <a href="https://grafana.com/">Grafana</a> для панелей мониторинга. В мире PostgreSQL то же обеспечивает расширение TimescaleDB, построенное на секционировании по времени.</p>
+<p>Наконец, для аналитики на миллиардах записей созданы колоночные базы, самой известной из которых является <a href="https://clickhouse.com/">ClickHouse</a>. Она хранит данные не по строкам, а по столбцам. Значения одного столбца располагаются рядом, хорошо сжимаются, и запрос «среднее value по миллиарду строк» читает с диска только нужные столбцы, укладываясь в секунды на обычном сервере вместо часов; диалект SQL привычный. Колоночные базы рассчитаны на дозапись и анализ. Вставляют данные крупными партиями: каждая вставка создаёт на диске новый кусок, который затем сливается с соседними, и поток вставок по одной строке приводит к ошибке <code>Too many parts</code>. Точечные <code>UPDATE</code> и <code>DELETE</code> в ClickHouse есть в лёгкой форме, но частые правки отдельных строк остаются дорогими.</p>
+<h3 id="Выбор-хранилища-пример-реальной-системы"><a class="header" href="#Выбор-хранилища-пример-реальной-системы">Выбор хранилища: пример реальной системы</a></h3>
+<p>Система хранения данных ускорительного комплекса использует сразу три базы. Такой подход называется <strong>полиглотным хранением</strong> (polyglot persistence): под каждый профиль данных выбирается своё хранилище.</p>
+<p>В PostgreSQL помещается всё, что должно быть строгим: пользователи и их роли, конфигурация ускорителя и его элементов, метаданные экспериментов (что за эксперимент, когда, кто ответственный), расписание работы установки и журнал событий. Структура этих данных известна заранее, меняется редко, а целостность критична: если запись эксперимента ссылается на несуществующего оператора, это ошибка, обнаруживать которую должна база, а не код. Здесь необходимы схема, внешние ключи и ACID-транзакции.</p>
+<p>В MongoDB помещается всё разнородное: результаты измерений, данные пучка (траектории, размеры, интенсивность), временные ряды параметров, результаты моделирования и оптимизации. У этих данных нет единой схемы: каждый новый тип эксперимента приносит свой набор полей. Требование миграции базы под каждую новую методику приводит к тому, что данные складывают мимо базы, в файлы на рабочем столе.</p>
+<p>Redis хранит недолго живущее: кеш частых запросов, текущие состояния устройств, сессии пользователей веб-интерфейса, очереди сообщений между компонентами. Значение тока магнита <em>в текущий момент</em> запрашивается сотни раз в секунду, и обращаться за ним в дисковую базу бессмысленно. Потеря этих данных при перезапуске неприятна, но не катастрофична: истина хранится в двух других базах.</p>
+<p>Выбор сводится к одному признаку на каждую базу.</p>
+<div class="table-wrapper"><table><thead><tr><th>Признак данных</th><th>Подходящая база</th></tr></thead><tbody>
+<tr><td>Структура известна заранее, а нарушение связей недопустимо</td><td>PostgreSQL</td></tr>
+<tr><td>Структура меняется от записи к записи</td><td>MongoDB</td></tr>
+<tr><td>Данные нужны очень быстро, а их потеря допустима</td><td>Redis</td></tr>
+</tbody></table>
+</div>
+<p>Цена полиглотного хранения: как только данные распределяются по трём базам, <strong>исчезает транзакция, охватывающая их все</strong>, и одним атомарным действием уже нельзя записать эксперимент в PostgreSQL вместе с его результатами в MongoDB. Согласованность необходимо обеспечивать вручную, распределёнными транзакциями или компенсирующими действиями, откатывающими то, что успело записаться. Эта сложность оправдана, только когда профили данных действительно различны.</p>
+<h3 id="Выбор-СУБД"><a class="header" href="#Выбор-СУБД">Выбор СУБД</a></h3>
+<p>Выбор СУБД начинают с вопроса, насколько технология «скучна» в смысле эссе Д. Маккинли «Choose Boring Technology» (2015): система, которая работает десятилетиями, имеет известные ошибки, документацию, сотни специалистов и платную поддержку, реже приводит к неожиданностям, чем новая база с несколькими выпусками. Далее проверяют, есть ли резервное копирование с восстановлением на момент времени и насколько просто проверить восстановление. Оценивают объём и рост данных: если ясно, что один сервер не справится, нужна система со встроенным шардированием или заранее спланированное собственное. Разные нагрузки разводят по разным системам: транзакционная база для записи и аналитическая копия для отчётов проще в эксплуатации, чем одна система для всего. Ищут описания неудач, а не только успехов: если в блоге разработчиков одни победы, а на форумах только вопросы о подключении, о слабых местах системы известно мало, и первым с ними столкнётся сам пользователь. Проверяют безопасность по умолчанию: у FoundationDB, например, сетевой доступ к порту без настроенного TLS даёт полные права, а встроенная авторизация помечена в документации как экспериментальная.</p>
+<p>В студенческом проекте <strong>целесообразно начинать с одной базы</strong>. Данные одного исследователя и его скриптов хранит SQLite, общую базу группы — PostgreSQL. Одна PostgreSQL закрывает потребности лабораторного сервиса на годы вперёд, а для документов в ней есть тип <code>JSONB</code>, индексируемый по полям внутри документа. Вторую базу заводят не потому, что так делают в больших системах, а когда первая измеримо перестала справляться с конкретным профилем нагрузки.</p>
+<h2 id="Одна-задача-в-четырёх-хранилищах"><a class="header" href="#Одна-задача-в-четырёх-хранилищах">Одна задача в четырёх хранилищах</a></h2>
+<p>Рассмотрим учебный сервис, список записей с операциями «прочитать страницу», «добавить», «изменить», «удалить», и переложим его последовательно в четыре хранилища: текстовый файл со строками произвольной длины, файл с записями фиксированной длины, реляционную базу и кеш поверх неё.</p>
+<p>Код почти не меняется от варианта к варианту; меняется то, где лежат данные и во что обходится каждая операция. Сложность операций рассматривалась в главе <a href="../cs/basic-structures.html">«Основные структуры данных»</a>.</p>
+<p>Сервис написан на микрофреймворке <a href="https://flask.palletsprojects.com/">Flask</a>: декоратор <code>@app.route</code> привязывает функцию к URL и методу, объект <code>request</code> даёт доступ к параметрам и телу запроса, а словарь, возвращённый функцией, Flask отдаёт клиенту как JSON. Изменение и удаление несуществующей записи во всех вариантах отвечает кодом 404 Not Found (коды ответа HTTP рассмотрены в главе <a href="./web.html">«Веб-технологии»</a>). Заголовочная часть общая для всех вариантов и далее не повторяется; варианты с базой и кешем добавляют к ней пул соединений и клиент Redis. Все четыре варианта проверены тестовым клиентом Flask 3.1 (<code>app.test_client()</code>) с PostgreSQL и Redis в контейнерах.</p>
+<pre><code class="language-python">import json
+import os
+
+from flask import Flask, Response, request
+
+app = Flask(__name__)
+
+FILE_PATH = 'data.txt'
+PAGE_SIZE = 20
+ELEMENT_SIZE = 64
+FILL_CHAR = b'\0'          # заполнитель, которого нет в тексте записей
+</code></pre>
+<h3 id="Наивное-решение-get"><a class="header" href="#Наивное-решение-get">Наивное решение. GET</a></h3>
+<p>Самый прямолинейный вариант — обычный текстовый файл, по строке на запись; запись с символом перевода строки разорвала бы файл на две строки, поэтому вариант годится только для однострочного текста. Чтобы отдать одну страницу, приходится прочитать весь файл, а при изменении и удалении ещё и переписать его заново: \(O(n)\) на каждую операцию. Пустой файл создаётся при запуске, чтобы чтение до первой записи не завершалось ошибкой.</p>
+<pre><code class="language-python">open(FILE_PATH, 'a').close()        # пустой файл, если его ещё нет
+
+
+@app.route('/', methods=['GET'])
+def paginated_get():
+    page = int(request.args.get('page', '0'))
+    first = page * PAGE_SIZE
+    last = first + PAGE_SIZE
+    result = []
+    with open(FILE_PATH, 'r') as f:
+        for i, line in enumerate(f.readlines()[first:last]):
+            result.append({'id': first + i, 'data': line.rstrip('\n')})
+    return {"result": result}
+</code></pre>
+<h3 id="Наивное-решение-post"><a class="header" href="#Наивное-решение-post">Наивное решение. POST</a></h3>
+<pre><code class="language-python">@app.route('/', methods=['POST'])
+def post():
+    data = request.json['data']
+    with open(FILE_PATH, 'a') as f:
+        f.write(data + '\n')
+    return {}, 201
+</code></pre>
+<h3 id="Наивное-решение-put"><a class="header" href="#Наивное-решение-put">Наивное решение. PUT</a></h3>
+<p>Номер записи совпадает с номером строки, и запись с номером за концом файла не существует: сервис отвечает 404, а не завершается исключением <code>IndexError</code>.</p>
+<pre><code class="language-python">@app.route('/&lt;int:data_id&gt;', methods=['PUT'])
+def put(data_id):
+    data = request.json['data']
+    with open(FILE_PATH, 'r') as f:
+        new_data = f.readlines()
+    if not 0 &lt;= data_id &lt; len(new_data):
+        return {}, 404
+    new_data[data_id] = data + '\n'
+    with open(FILE_PATH, 'w') as f:
+        f.writelines(new_data)
+    return {}, 204
+</code></pre>
+<h3 id="Наивное-решение-delete"><a class="header" href="#Наивное-решение-delete">Наивное решение. DELETE</a></h3>
+<pre><code class="language-python">@app.route('/&lt;int:data_id&gt;', methods=['DELETE'])
+def delete(data_id):
+    with open(FILE_PATH, 'r') as f:
+        new_data = f.readlines()
+    if not 0 &lt;= data_id &lt; len(new_data):
+        return {}, 404
+    del new_data[data_id]
+    with open(FILE_PATH, 'w') as f:
+        f.writelines(new_data)
+    return {}, 204
+</code></pre>
+<h3 id="Фиксированные-записи-get"><a class="header" href="#Фиксированные-записи-get">Фиксированные записи. GET</a></h3>
+<p>Если отвести каждой записи одинаковое число байт, файл превращается в массив, и нужная запись читается сразу, переходом к её смещению через <code>seek()</code>. Зато удаление дорожает: хвост файла за ней приходится сдвигать вручную. Запись, длинная для отведённых 64 байт, сдвинула бы все последующие, поэтому вставка и изменение проверяют длину и отвечают 400 Bad Request. Заполнитель — нулевой байт: в отличие от пробела, он не встречается в тексте и не срезается вместе с пробелами самой записи. Страница у конца файла содержит столько записей, сколько их осталось.</p>
+<pre><code class="language-python">open(FILE_PATH, 'a').close()        # пустой файл, если его ещё нет
+
+
+def count():
+    """Число записей в файле."""
+    return os.path.getsize(FILE_PATH) // ELEMENT_SIZE
+
+
+@app.route('/', methods=['GET'])
+def paginated_get():
+    page = int(request.args.get('page', '0'))
+    first = page * PAGE_SIZE
+    result = []
+    with open(FILE_PATH, 'rb') as f:
+        f.seek(first * ELEMENT_SIZE)
+        data = f.read(PAGE_SIZE * ELEMENT_SIZE)   # у конца файла записей меньше
+    for i in range(len(data) // ELEMENT_SIZE):
+        record = data[i * ELEMENT_SIZE:(i + 1) * ELEMENT_SIZE]
+        result.append({"id": first + i,
+                       "data": record.rstrip(FILL_CHAR).decode('utf-8')})
+    return {"result": result}
+</code></pre>
+<h3 id="Фиксированные-записи-post"><a class="header" href="#Фиксированные-записи-post">Фиксированные записи. POST</a></h3>
+<pre><code class="language-python">@app.route('/', methods=['POST'])
+def post():
+    raw = str(request.json['data']).encode('utf-8')
+    if len(raw) &gt; ELEMENT_SIZE:
+        return {"error": f"запись длиннее {ELEMENT_SIZE} байт"}, 400
+    with open(FILE_PATH, 'ab') as f:
+        f.write(raw.ljust(ELEMENT_SIZE, FILL_CHAR))
+    return {}, 201
+</code></pre>
+<h3 id="Фиксированные-записи-put"><a class="header" href="#Фиксированные-записи-put">Фиксированные записи. PUT</a></h3>
+<pre><code class="language-python">@app.route('/&lt;int:data_id&gt;', methods=['PUT'])
+def put(data_id):
+    raw = str(request.json['data']).encode('utf-8')
+    if len(raw) &gt; ELEMENT_SIZE:
+        return {"error": f"запись длиннее {ELEMENT_SIZE} байт"}, 400
+    if data_id &gt;= count():
+        return {}, 404
+    with open(FILE_PATH, 'r+b') as f:
+        f.seek(data_id * ELEMENT_SIZE)
+        f.write(raw.ljust(ELEMENT_SIZE, FILL_CHAR))
+    return {}, 204
+</code></pre>
+<h3 id="Фиксированные-записи-delete"><a class="header" href="#Фиксированные-записи-delete">Фиксированные записи. DELETE</a></h3>
+<pre><code class="language-python">@app.route('/&lt;int:data_id&gt;', methods=['DELETE'])
+def delete(data_id):
+    if data_id &gt;= count():
+        return {}, 404
+    with open(FILE_PATH, 'r+b') as f:
+        point = data_id * ELEMENT_SIZE
+        while True:                       # хвост файла сдвигается на одну запись
+            f.seek(point + ELEMENT_SIZE)
+            next_record = f.read(ELEMENT_SIZE)
+            f.seek(point)
+            if not next_record:
+                f.truncate()
+                break
+            f.write(next_record)
+            point += ELEMENT_SIZE
+    return {}, 204
+</code></pre>
+<h3 id="Реляционная-база-get"><a class="header" href="#Реляционная-база-get">Реляционная база. GET</a></h3>
+<p>База данных скрывает эту механику за индексами: поиск по ключу, вставку и удаление она выполняет за логарифмическое время, как структуры данных из главы <a href="../cs/basic-structures.html">«Основные структуры данных»</a>. Записи хранятся в таблице <code>todos</code> базы <code>lab</code> (<code>docker exec pg createdb -U postgres lab</code>):</p>
+<pre><code class="language-sql">CREATE TABLE todos (
+    id   bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    todo text NOT NULL
+);
+</code></pre>
+<p>Соединения с сервером открывает пул один раз на процесс, а каждый обработчик берёт соединение на время своего блока <code>with</code>, по выходе из которого транзакция фиксируется.</p>
+<pre><code class="language-python">from psycopg_pool import ConnectionPool
+
+# соединения открываются один раз на процесс и затем переиспользуются
+pool = ConnectionPool('host=localhost dbname=lab user=postgres password=lab',
+                      open=True)
+
+
+@app.route('/', methods=['GET'])
+def paginated_get():
+    page = int(request.args.get('page', '0'))
+    with pool.connection() as conn:       # при выходе — COMMIT и возврат в пул
+        rows = conn.execute(
+            'SELECT "id", "todo" FROM "todos" ORDER BY "id" OFFSET %s LIMIT %s',
+            (page * PAGE_SIZE, PAGE_SIZE),
+        ).fetchall()
+    return {"result": [{"id": row[0], "data": row[1]} for row in rows]}
+</code></pre>
+<p>Постраничная выдача через <code>OFFSET</code> линейна по номеру страницы: чтобы отдать страницу с большим номером, база проходит и отбрасывает все предыдущие строки. На восстановленной копии таблицы <code>measurements</code> из раздела о резервных копиях разница хорошо видна:</p>
+<pre><code class="language-sql">EXPLAIN (ANALYZE, COSTS OFF, TIMING OFF)
+SELECT id, value FROM measurements ORDER BY id OFFSET 900000 LIMIT 20;
+EXPLAIN (ANALYZE, COSTS OFF, TIMING OFF)
+SELECT id, value FROM measurements WHERE id &gt; 900000 ORDER BY id LIMIT 20;
+</code></pre>
+<pre><code class="language-bash">$ psql -d restored &lt; offset.sql
+                                      QUERY PLAN
+---------------------------------------------------------------------------------------
+ Limit (actual rows=20 loops=1)
+   -&gt;  Index Scan using measurements_pkey on measurements (actual rows=900020 loops=1)
+ Planning Time: 0.204 ms
+ Execution Time: 57.325 ms
+(4 rows)
+
+                                    QUERY PLAN
+-----------------------------------------------------------------------------------
+ Limit (actual rows=20 loops=1)
+   -&gt;  Index Scan using measurements_pkey on measurements (actual rows=20 loops=1)
+         Index Cond: (id &gt; 900000)
+ Planning Time: 0.037 ms
+ Execution Time: 0.028 ms
+(5 rows)
+</code></pre>
+<p>Для страницы со смещением 900 000 база прочитала по индексу 900 020 строк и отбросила все, кроме двадцати, а выборка по ключу прочитала ровно 20 строк: 57,3 мс против 0,028 мс. Поэтому длинные списки листают выборкой по ключу, <code>WHERE "id" &gt; %s ORDER BY "id" LIMIT %s</code>, где параметром служит последний <code>id</code> предыдущей страницы.</p>
+<h3 id="Реляционная-база-post"><a class="header" href="#Реляционная-база-post">Реляционная база. POST</a></h3>
+<pre><code class="language-python">@app.route('/', methods=['POST'])
+def post():
+    data = str(request.json['data'])
+    with pool.connection() as conn:
+        new_id = conn.execute(
+            'INSERT INTO "todos" ("todo") VALUES (%s) RETURNING "id"', (data,)
+        ).fetchone()[0]
+    return {"id": new_id}, 201
+</code></pre>
+<h3 id="Реляционная-база-put"><a class="header" href="#Реляционная-база-put">Реляционная база. PUT</a></h3>
+<p>Число изменённых строк сообщает атрибут <code>rowcount</code> курсора: ноль означает, что записи с таким <code>id</code> нет.</p>
+<pre><code class="language-python">@app.route('/&lt;int:data_id&gt;', methods=['PUT'])
+def put(data_id):
+    data = str(request.json['data'])
+    with pool.connection() as conn:
+        cur = conn.execute(
+            'UPDATE "todos" SET "todo" = %s WHERE "id" = %s', (data, data_id)
+        )
+        if cur.rowcount == 0:             # такой записи нет
+            return {}, 404
+    return {}, 204
+</code></pre>
+<h3 id="Реляционная-база-delete"><a class="header" href="#Реляционная-база-delete">Реляционная база. DELETE</a></h3>
+<pre><code class="language-python">@app.route('/&lt;int:data_id&gt;', methods=['DELETE'])
+def delete(data_id):
+    with pool.connection() as conn:
+        cur = conn.execute('DELETE FROM "todos" WHERE "id" = %s', (data_id,))
+        if cur.rowcount == 0:
+            return {}, 404
+    return {}, 204
+</code></pre>
+<h3 id="Кеш-get"><a class="header" href="#Кеш-get">Кеш. GET</a></h3>
+<p>Наконец, самые частые запросы можно не доводить до базы: готовый ответ помещается в Redis и в следующий раз отдаётся из оперативной памяти. Клиент Redis, как и пул, создаётся один раз на процесс и сам держит пул соединений. Ключи страниц получают префикс <code>todos:page:</code>, чтобы сброс затрагивал только их, а не сессии и очереди, которые в полиглотной системе лежат в том же Redis. Ответ из кеша отдаётся с типом <code>application/json</code>, как и ответы остальных вариантов.</p>
+<pre><code class="language-python">import redis
+from psycopg_pool import ConnectionPool
+
+TTL = 60
+pool = ConnectionPool('host=localhost dbname=lab user=postgres password=lab',
+                      open=True)
+cache = redis.Redis(host='localhost', port=6379)   # один клиент на процесс
+
+
+def page_key(page):
+    return f'todos:page:{page}'
+
+
+def drop_pages(first=0):
+    """Сбрасывает закешированные страницы с номером first и дальше."""
+    stale = [key for key in cache.scan_iter(match='todos:page:*')
+             if int(key.rsplit(b':', 1)[1]) &gt;= first]
+    if stale:
+        cache.delete(*stale)
+
+
+@app.route('/', methods=['GET'])
+def paginated_get():
+    page = int(request.args.get('page', '0'))
+    cached_page = cache.get(page_key(page))
+    if cached_page is not None:
+        return Response(cached_page, mimetype='application/json')
+    with pool.connection() as conn:
+        rows = conn.execute(
+            'SELECT "id", "todo" FROM "todos" ORDER BY "id" OFFSET %s LIMIT %s',
+            (page * PAGE_SIZE, PAGE_SIZE),
+        ).fetchall()
+    result = json.dumps({"result": [{"id": row[0], "data": row[1]} for row in rows]})
+    cache.set(page_key(page), result, ex=TTL)
+    return Response(result, mimetype='application/json')
+</code></pre>
+<p>Обратная сторона кеша: клиент, выполнивший POST или PUT, не увидит собственной правки, пока не истечёт <code>TTL</code>, и чем длиннее время жизни ключа, тем дольше сервис отдаёт устаревшее. Поэтому каждая изменяющая операция обязана сбрасывать затронутые ключи, и трудность заключается в том, чтобы определить, какие именно: правка обесценивает ту страницу, на которой находится запись, а вставка и удаление сдвигают нумерацию и обесценивают всё последующее. Ключи ищет команда <code>SCAN</code> (метод <code>scan_iter</code>), а не <code>KEYS</code>, которая на время перебора блокирует сервер; другой способ — номер версии в имени ключа, увеличиваемый при каждом изменении, после чего старые страницы просто истекают.</p>
+<p>У кеша есть и две тонкости, которых этот вариант не решает. Первая — лавина промахов: когда истекает популярная страница, все запросы, пришедшие до её повторного заполнения, одновременно идут в базу. Защитой служит один загрузчик, когда страницу читает из базы только первый запрос, а остальные ждут его результата, или выдача устаревшего значения, пока свежее загружается. Вторая — гонка со сбросом: чтение, начавшееся до изменения, может положить в кеш устаревшую страницу уже после того, как изменение сбросило её ключ, и такая страница проживёт до истечения <code>TTL</code>. Оба явления подробно разобраны в главе <a href="./system-design.html">«Системный дизайн»</a>; в опыте той главы 50 одновременных промахов без защиты обращаются к базе 50 раз, а с одним загрузчиком — один.</p>
+<h3 id="Кеш-post"><a class="header" href="#Кеш-post">Кеш. POST</a></h3>
+<p>Вставка попадает в конец списка, однако выяснять, где он заканчивается, дороже, чем сбросить все страницы.</p>
+<pre><code class="language-python">@app.route('/', methods=['POST'])
+def post():
+    data = str(request.json['data'])
+    with pool.connection() as conn:
+        new_id = conn.execute(
+            'INSERT INTO "todos" ("todo") VALUES (%s) RETURNING "id"', (data,)
+        ).fetchone()[0]
+    drop_pages()
+    return {"id": new_id}, 201
+</code></pre>
+<h3 id="Кеш-put"><a class="header" href="#Кеш-put">Кеш. PUT</a></h3>
+<p>Правка не сдвигает нумерацию, поэтому номер страницы вычисляется по числу записей, лежащих перед изменённой, и сбрасывается один ключ. Сброс выполняется после выхода из блока <code>with</code>, то есть после фиксации: страница, сброшенная до фиксации, могла бы снова попасть в кеш со старыми данными.</p>
+<pre><code class="language-python">@app.route('/&lt;int:data_id&gt;', methods=['PUT'])
+def put(data_id):
+    data = str(request.json['data'])
+    with pool.connection() as conn:
+        cur = conn.execute(
+            'UPDATE "todos" SET "todo" = %s WHERE "id" = %s', (data, data_id)
+        )
+        if cur.rowcount == 0:
+            return {}, 404
+        before = conn.execute(
+            'SELECT count(*) FROM "todos" WHERE "id" &lt; %s', (data_id,)
+        ).fetchone()[0]
+    cache.delete(page_key(before // PAGE_SIZE))   # после COMMIT
+    return {}, 204
+</code></pre>
+<h3 id="Кеш-delete"><a class="header" href="#Кеш-delete">Кеш. DELETE</a></h3>
+<p>После удаления всё последующее сдвигается на одну позицию вперёд, поэтому устаревают и страница удалённой записи, и каждая следующая за ней.</p>
+<pre><code class="language-python">@app.route('/&lt;int:data_id&gt;', methods=['DELETE'])
+def delete(data_id):
+    with pool.connection() as conn:
+        before = conn.execute(
+            'SELECT count(*) FROM "todos" WHERE "id" &lt; %s', (data_id,)
+        ).fetchone()[0]
+        cur = conn.execute('DELETE FROM "todos" WHERE "id" = %s', (data_id,))
+        if cur.rowcount == 0:
+            return {}, 404
+    drop_pages(before // PAGE_SIZE)
+    return {}, 204
+</code></pre>
+<h2 id="pandas-и-базы-данных"><a class="header" href="#pandas-и-базы-данных">Pandas и базы данных</a></h2>
+<p>Функция <code>read_sql</code> в pandas выполняет запрос и возвращает <code>DataFrame</code>, а <code>to_sql</code> записывает <code>DataFrame</code> в таблицу. Функция <code>read_sql</code> принимает соединение <code>sqlite3</code> или объект SQLAlchemy; для PostgreSQL используют <code>create_engine</code> с адресом <code>postgresql+psycopg://...</code>. Журнал для этого раздела создан заново скриптом <code>make_lab.py</code> из главы «Базы данных», без индексов.</p>
+<pre><code class="language-python">"""read_sql и to_sql: агрегация в базе, сводка в pandas, результат обратно в таблицу."""
+import sqlite3
+
+import numpy as np
+import pandas as pd
+
+con = sqlite3.connect("lab.db")
+df = pd.read_sql(
+    """SELECT r.run_number, r.energy_mev, AVG(m.value) AS mean_signal, COUNT(*) AS n
+       FROM measurements AS m JOIN runs AS r ON r.id = m.run_id
+       WHERE m.channel = 'BPM01' GROUP BY r.id""", con)
+print(df.head(3))
+k, b = np.polyfit(df.energy_mev, df.mean_signal, 1)
+print(f"строк в DataFrame: {len(df)}; сигнал = {k:.4f} * E + {b:.4f}")
+df.to_sql("run_summary", con, if_exists="replace", index=False)
+print(con.execute("SELECT sql FROM sqlite_master WHERE name = 'run_summary'").fetchone()[0])
+</code></pre>
+<pre><code>   run_number  energy_mev  mean_signal     n
+0           1         5.0     0.099996  5000
+1           2         5.5     0.110061  5000
+2           3         6.0     0.120023  5000
+строк в DataFrame: 40; сигнал = 0.0200 * E + 0.0000
+CREATE TABLE "run_summary" (
+"run_number" INTEGER,
+  "energy_mev" REAL,
+  "mean_signal" REAL,
+  "n" INTEGER
+)
+</code></pre>
+<p>Фильтрация и агрегация выполнены в базе, и в pandas пришли 40 строк сводки вместо миллиона точек; подгонка прямой методом наименьших квадратов восстановила заложенный в модели наклон 0,0200 на мегаэлектронвольт с нулевым смещением. Таблицу <code>run_summary</code> функция <code>to_sql</code> создала сама, со столбцами по типам <code>DataFrame</code>, но без первичного ключа и ограничений: для постоянных данных схему описывают вручную, а <code>to_sql</code> дописывает строки в готовую таблицу. Тяжёлую фильтрацию и агрегацию передают базе (SQL с <code>WHERE</code> и <code>GROUP BY</code>), а в pandas загружают свёрнутый результат: память и время расходуются на порядки экономнее, чем при чтении всех данных и фильтрации в <code>DataFrame</code>. Связка «SQL-запрос → DataFrame → график» даёт простейшее приложение для визуализации данных; построение графиков рассматривается в главах про <a href="python/numpy-and-pandas.html">обработку</a> и <a href="python/visualization.html">визуализацию</a> данных.</p>
+<p>Формат хранения выбирают по способу доступа. Оценим размеры файлов и время чтения: скрипт <code>formats.py</code> выгружает миллион измерений журнала в CSV и Parquet и сравнивает чтение с SQLite, беря медиану трёх запусков; для Parquet нужен пакет pyarrow.</p>
+<pre><code class="language-python">"""Миллион измерений в CSV, SQLite и Parquet: размер файла и время чтения."""
+import os
+import sqlite3
+import statistics
+import time
+
+import pandas as pd
+import pyarrow
+
+con = sqlite3.connect("lab.db")
+ALL = "SELECT run_id, channel, t, value FROM measurements"
+ONE = ALL + " WHERE run_id = 7 AND channel = 'BPM01'"
+df = pd.read_sql(ALL, con)
+df.to_csv("m.csv", index=False)
+df.to_parquet("m.parquet", index=False)
+db_size = os.path.getsize("lab.db")              # размер до создания индекса
+con.execute("CREATE INDEX idx_m_run_channel ON measurements (run_id, channel)")
+print(f"pandas {pd.__version__}, pyarrow {pyarrow.__version__}, строк: {len(df)}")
+
+
+def ms(func):
+    times = []
+    for _ in range(3):
+        start = time.perf_counter()
+        func()
+        times.append((time.perf_counter() - start) * 1000)
+    return statistics.median(times)
+
+
+def csv_one():
+    d = pd.read_csv("m.csv")                     # прочитать всё, затем отфильтровать
+    return d[(d.run_id == 7) &amp; (d.channel == "BPM01")]
+
+
+FILTER = [("run_id", "==", 7), ("channel", "==", "BPM01")]
+ROWS = [
+    ("CSV", os.path.getsize("m.csv"), lambda: pd.read_csv("m.csv"), csv_one),
+    ("SQLite", db_size, lambda: pd.read_sql(ALL, con), lambda: pd.read_sql(ONE, con)),
+    ("Parquet", os.path.getsize("m.parquet"), lambda: pd.read_parquet("m.parquet"),
+     lambda: pd.read_parquet("m.parquet", filters=FILTER)),
+]
+print(f"{'формат':8s} {'МиБ':&gt;6s} {'всё, мс':&gt;9s} {'один канал, мс':&gt;15s}")
+for name, size, full, one in ROWS:
+    print(f"{name:8s} {size / 2**20:6.1f} {ms(full):9.0f} {ms(one):15.1f}")
+</code></pre>
+<pre><code>pandas 3.0.6, pyarrow 25.0.1, строк: 1000000
+формат      МиБ   всё, мс  один канал, мс
+CSV        22.5       119           113.9
+SQLite     33.4       672             3.3
+Parquet     4.5        17            15.2
+</code></pre>
+<p>CSV является форматом обмена: его читает любая программа, но он хранит текст, а не типы, и для выборки одного канала читается целиком. SQLite подходит для журнала, который пополняется по записи и читается выборочно: всю таблицу модуль <code>sqlite3</code> отдаёт медленно, поскольку строки проходят через Python по одной, зато 5000 строк одного канала одного захода находятся по индексу за несколько миллисекунд. Parquet хранит таблицу по столбцам со сжатием и статистикой групп строк, поэтому занимает в пять раз меньше CSV и быстро читается целиком; при фильтре он пропускает группы строк, где нужного значения заведомо нет, но здесь весь файл умещается в одну группу, и фильтр почти не ускоряет чтение. Таким образом, Parquet является форматом архива для анализа.</p>
+<p>SQL-запросы прямо к файлам Parquet и CSV, без загрузки в базу, выполняет встраиваемая аналитическая СУБД <a href="https://duckdb.org/">DuckDB</a> (<code>pip install duckdb</code>); для запроса к файлу достаточно указать его имя в предложении <code>FROM</code>:</p>
+<pre><code class="language-python">import duckdb
+
+rows = duckdb.sql("""
+    SELECT run_id, round(avg(value), 4) AS mean_signal, count(*) AS n
+    FROM 'm.parquet'
+    WHERE channel = 'BPM01'
+    GROUP BY run_id
+    ORDER BY run_id DESC
+    LIMIT 3
+""").fetchall()
+print(rows)
+</code></pre>
+<pre><code>[(40, 0.49, 5000), (39, 0.48, 5000), (38, 0.47, 5000)]
+</code></pre>
+<p>Строка на отсчёт годится для медленных каналов журнала, но не для осциллограмм и изображений с АЦП на мегагерцах: миллион строк журнала соответствует всего 40 заходам по 50 с при 100 Гц. Такие массивы хранят в файлах HDF5 или Parquet либо массивом в одной строке, а в базе держат метаданные и путь к файлу. Рассмотрим осциллограммы тока цилиндра Фарадея по 20 000 отсчётов при частоте оцифровки 100 МГц, по одной на заход (пакет h5py):</p>
+<pre><code class="language-python">import sqlite3
+
+import h5py
+import numpy as np
+
+rng = np.random.default_rng(7)
+t = np.arange(20_000) / 100e6                # 20 000 отсчётов АЦП на 100 МГц, с
+con = sqlite3.connect("lab.db")
+con.execute("PRAGMA foreign_keys = ON")
+con.execute("""CREATE TABLE IF NOT EXISTS waveforms (
+    run_id  INTEGER NOT NULL REFERENCES runs(id),
+    channel TEXT NOT NULL,
+    file    TEXT NOT NULL,                   -- файл HDF5 с осциллограммой
+    dataset TEXT NOT NULL,                   -- путь к массиву внутри файла
+    rate_hz REAL NOT NULL)""")
+with h5py.File("waveforms.h5", "w") as f, con:
+    for run_id, energy in con.execute("SELECT id, energy_mev FROM runs").fetchall():
+        name = f"run{run_id:03d}/fcup"         # ток с цилиндра Фарадея, мА
+        pulse = 0.4 * energy * np.exp(-((t - 100e-6) / 20e-6) ** 2)
+        pulse += rng.normal(0, 0.05, t.size)
+        f.create_dataset(name, data=pulse.astype(np.float32), compression="gzip")
+        con.execute("INSERT INTO waveforms VALUES (?, 'FCUP', 'waveforms.h5', ?, 100e6)",
+                    (run_id, name))
+
+# поиск — по метаданным в базе, массив — из файла
+file, dataset = con.execute(
+    "SELECT w.file, w.dataset FROM waveforms AS w JOIN runs AS r ON r.id = w.run_id "
+    "WHERE r.run_number = 31").fetchone()
+with h5py.File(file) as f:
+    pulse = f[dataset][:]
+print(dataset, pulse.shape, pulse.dtype, f"максимум {pulse.max():.2f} мА")
+</code></pre>
+<pre><code>run031/fcup (20000,) float32 максимум 8.11 мА
+</code></pre>
+<p>Поиск по-прежнему выполняет SQL — здесь по номеру захода, — а сам массив читается из файла HDF5 одним обращением, со сжатием и без разбиения на строки.</p>
+<h2 id="С-чего-начать-в-своей-лаборатории"><a class="header" href="#С-чего-начать-в-своей-лаборатории">С чего начать в своей лаборатории</a></h2>
+<p>Рецепт перехода от тысячи CSV к одной базе включает следующие шаги:</p>
+<ol>
+<li>
+<p>Завести один файл <code>lab.db</code> и описать схему по образцу журнала из главы <a href="./bd.html">«Базы данных»</a>. Минимально необходимы таблицы вида <code>experiments</code>, <code>runs</code>, <code>measurements</code> с первичными и внешними ключами и <code>NOT NULL</code> на важных полях; время записывается в UTC. Схема служит документацией, проверяющей сама себя.</p>
+</li>
+<li>
+<p>Импортировать накопленные CSV одним скриптом:</p>
+<pre><code class="language-python">from pathlib import Path
+import sqlite3
+
+import pandas as pd
+
+con = sqlite3.connect("lab.db")
+
+frames = []
+for csv_path in sorted(Path("data").rglob("*.csv")):   # порядок обхода задан явно
+    df = pd.read_csv(csv_path)
+    df["source_file"] = str(csv_path)                  # происхождение данных
+    frames.append(df)
+raw = pd.concat(frames, ignore_index=True)             # объединение всех столбцов
+raw.to_sql("measurements_raw", con, if_exists="replace", index=False)
+print(len(raw), "строк:", ", ".join(raw.columns))
+</code></pre>
+<p>Файлы обходятся в отсортированном порядке, собираются в один <code>DataFrame</code> и записываются одним вызовом <code>to_sql</code>. Дописывать каждый файл отдельно (<code>if_exists="append"</code>) нельзя: если в каком-то файле есть столбец, которого не было в первом, загрузка обрывается на середине ошибкой <code>table measurements_raw has no column named ...</code>, а какой файл окажется первым, зависит от порядка обхода. На трёх пробных файлах, в последнем из которых есть лишний столбец <code>temperature</code>, скрипт печатает:</p>
+<pre><code>7 строк: channel, t, value, source_file, temperature
+</code></pre>
+<p>В строках из файлов без этого столбца <code>temperature</code> равна <code>NULL</code>. Далее «сырую» таблицу можно разложить по нормализованной схеме SQL-запросами.</p>
+</li>
+<li>
+<p>Новые данные записывать сразу в базу, применяя в скрипте сбора <code>executemany</code> группами точек и <code>commit</code> раз в несколько секунд, а не файл на каждый заход.</p>
+</li>
+<li>
+<p>Включить <code>PRAGMA journal_mode=WAL</code>: в этом режиме SQLite позволяет читать базу (строить графики) параллельно с записью. Режим сохраняется в самой базе, но работает, только когда все процессы на одной машине: на сетевом диске (NFS, SMB) WAL неприменим. Пишущая транзакция по-прежнему одна.</p>
+</li>
+<li>
+<p>Просматривать данные удобно в DB Browser for SQLite, а резервную копию делает <code>Connection.backup()</code> из Python или команда <code>VACUUM INTO 'backup.db'</code>; простое копирование файла допустимо, только когда к базе никто не подключён, а в режиме WAL — вместе с файлом <code>-wal</code>. Восстановление из копии проверяют заранее.</p>
+</li>
+</ol>
+<p>Когда данными начнёт пользоваться вся группа с нескольких машин, схема переносится в PostgreSQL; SQL и почти весь код при этом остаются прежними, меняются знак параметра, драйвер и тип времени — <code>timestamptz</code> вместо строки.</p>
+<h2 id="Полезные-ссылки"><a class="header" href="#Полезные-ссылки">Полезные ссылки</a></h2>
+<ul>
+<li><a href="https://docs.python.org/3/library/sqlite3.html">Модуль sqlite3 в стандартной библиотеке Python</a></li>
+<li><a href="https://www.psycopg.org/psycopg3/docs/">Документация psycopg 3</a></li>
+<li><a href="https://docs.sqlalchemy.org/en/21/">Документация SQLAlchemy 2.1</a></li>
+<li><a href="https://www.postgresql.org/docs/17/backup.html">Резервное копирование и восстановление в документации PostgreSQL 17</a></li>
+<li><a href="https://postgrespro.ru/education/books/internals">Рогов Е. В. PostgreSQL 18 изнутри</a></li>
+<li><a href="https://valkey.io/docs/">Документация Valkey</a></li>
+<li><a href="https://duckdb.org/docs/">Документация DuckDB</a></li>
+</ul>
+<blockquote>
+<p><strong>Задание.</strong> Собрать и развернуть всё вместе, приложение, контейнеры, сеть и базу: <a href="../practicum/kitty-startup-task.html">«Деплой стартапа»</a>.</p>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../dev/bd.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../dev/system-design.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../dev/bd.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../dev/system-design.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../web/print-edition.js"></script>
+
+
+    </div>
+    </body>
+</html>

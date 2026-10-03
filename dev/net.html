@@ -1,0 +1,713 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Компьютерные сети - Разработка и применение программного обеспечения в физических исследованиях</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../intro/intro.html">О книге</a></li><li class="chapter-item expanded affix "><a href="../intro/about-me.html">О себе</a></li><li class="chapter-item expanded affix "><li class="part-title">Инструменты разработчика</li><li class="chapter-item expanded "><a href="../ai/intro.html"><strong aria-hidden="true">1.</strong> ИИ для разработки</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ai/context.html"><strong aria-hidden="true">1.1.</strong> Контекст и скорость изменений</a></li><li class="chapter-item expanded "><a href="../ai/develop.html"><strong aria-hidden="true">1.2.</strong> ИИ и разработчик</a></li><li class="chapter-item expanded "><a href="../ai/basic.html"><strong aria-hidden="true">1.3.</strong> Технические основы</a></li><li class="chapter-item expanded "><a href="../ai/instruments.html"><strong aria-hidden="true">1.4.</strong> Инструментарий</a></li><li class="chapter-item expanded "><a href="../ai/copilot.html"><strong aria-hidden="true">1.5.</strong> GitHub Copilot</a></li><li class="chapter-item expanded "><a href="../ai/qa.html"><strong aria-hidden="true">1.6.</strong> Вопросы и ответы</a></li></ol></li><li class="chapter-item expanded "><a href="../dev/git.html"><strong aria-hidden="true">2.</strong> Git</a></li><li class="chapter-item expanded affix "><li class="part-title">Операционная система Linux</li><li class="chapter-item expanded "><a href="../linux/intro.html"><strong aria-hidden="true">3.</strong> Основы Linux</a></li><li class="chapter-item expanded "><a href="../linux/tools.html"><strong aria-hidden="true">4.</strong> Инструменты</a></li><li class="chapter-item expanded "><a href="../linux/booting.html"><strong aria-hidden="true">5.</strong> Процесс загрузки</a></li><li class="chapter-item expanded "><a href="../linux/filesystems.html"><strong aria-hidden="true">6.</strong> Файловые системы</a></li><li class="chapter-item expanded "><a href="../linux/install-arch-linux.html"><strong aria-hidden="true">7.</strong> Установка Arch Linux</a></li><li class="chapter-item expanded "><a href="../linux/structure.html"><strong aria-hidden="true">8.</strong> Внутреннее устройство Linux</a></li><li class="chapter-item expanded "><a href="../dev/docker.html"><strong aria-hidden="true">9.</strong> Docker</a></li><li class="chapter-item expanded affix "><li class="part-title">Язык Python</li><li class="chapter-item expanded "><a href="../dev/python/init.html"><strong aria-hidden="true">10.</strong> Устройство интерпретатора Python</a></li><li class="chapter-item expanded "><a href="../dev/python/objects.html"><strong aria-hidden="true">11.</strong> Объекты и память</a></li><li class="chapter-item expanded "><a href="../dev/python/collections.html"><strong aria-hidden="true">12.</strong> Коллекции</a></li><li class="chapter-item expanded "><a href="../dev/python/o-notation.html"><strong aria-hidden="true">13.</strong> Сложность операций с коллекциями</a></li><li class="chapter-item expanded "><a href="../dev/python/functions.html"><strong aria-hidden="true">14.</strong> Функции</a></li><li class="chapter-item expanded "><a href="../dev/python/async.html"><strong aria-hidden="true">15.</strong> Итераторы, генераторы и корутины</a></li><li class="chapter-item expanded "><a href="../dev/python/decorators.html"><strong aria-hidden="true">16.</strong> Декораторы и functools</a></li><li class="chapter-item expanded "><a href="../dev/python/classes.html"><strong aria-hidden="true">17.</strong> Классы</a></li><li class="chapter-item expanded affix "><li class="part-title">Алгоритмы и структуры данных</li><li class="chapter-item expanded "><a href="../cs/intro.html"><strong aria-hidden="true">18.</strong> Роль алгоритмов в работе физика</a></li><li class="chapter-item expanded "><a href="../cs/basic-algos.html"><strong aria-hidden="true">19.</strong> Введение в алгоритмы</a></li><li class="chapter-item expanded "><a href="../cs/basic-structures.html"><strong aria-hidden="true">20.</strong> Основные структуры данных</a></li><li class="chapter-item expanded "><a href="../cs/recurs-and-sorts.html"><strong aria-hidden="true">21.</strong> Рекурсия и сортировки</a></li><li class="chapter-item expanded "><a href="../cs/hash-funcs.html"><strong aria-hidden="true">22.</strong> Хеш-функции</a></li><li class="chapter-item expanded "><a href="../cs/trees.html"><strong aria-hidden="true">23.</strong> Деревья</a></li><li class="chapter-item expanded "><a href="../cs/graphs.html"><strong aria-hidden="true">24.</strong> Графы</a></li><li class="chapter-item expanded affix "><li class="part-title">Инженерные практики</li><li class="chapter-item expanded "><a href="../dev/life.html"><strong aria-hidden="true">25.</strong> Жизненный цикл ПО</a></li><li class="chapter-item expanded "><a href="../dev/python/requirements.html"><strong aria-hidden="true">26.</strong> Требования к коду</a></li><li class="chapter-item expanded "><a href="../dev/app.html"><strong aria-hidden="true">27.</strong> От скрипта к приложению</a></li><li class="chapter-item expanded "><a href="../dev/net.html" class="active"><strong aria-hidden="true">28.</strong> Компьютерные сети</a></li><li class="chapter-item expanded "><a href="../dev/web.html"><strong aria-hidden="true">29.</strong> Веб-технологии</a></li><li class="chapter-item expanded "><a href="../dev/bd.html"><strong aria-hidden="true">30.</strong> Базы данных</a></li><li class="chapter-item expanded "><a href="../dev/bd-work.html"><strong aria-hidden="true">31.</strong> Работа с базами данных</a></li><li class="chapter-item expanded "><a href="../dev/system-design.html"><strong aria-hidden="true">32.</strong> Системный дизайн</a></li><li class="chapter-item expanded affix "><li class="part-title">Обработка данных</li><li class="chapter-item expanded "><a href="../dev/python/intro.html"><strong aria-hidden="true">33.</strong> Научные библиотеки Python</a></li><li class="chapter-item expanded "><a href="../dev/python/numpy-and-pandas.html"><strong aria-hidden="true">34.</strong> NumPy и pandas</a></li><li class="chapter-item expanded "><a href="../dev/python/scipy.html"><strong aria-hidden="true">35.</strong> SciPy</a></li><li class="chapter-item expanded "><a href="../dev/python/visualization.html"><strong aria-hidden="true">36.</strong> Визуализация на Python</a></li><li class="chapter-item expanded "><a href="../ds/intro.html"><strong aria-hidden="true">37.</strong> Машинное обучение</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ds/basic.html"><strong aria-hidden="true">37.1.</strong> Основные понятия</a></li><li class="chapter-item expanded "><a href="../ds/ml.html"><strong aria-hidden="true">37.2.</strong> Классические алгоритмы</a></li><li class="chapter-item expanded "><a href="../ds/nn.html"><strong aria-hidden="true">37.3.</strong> Нейронные сети</a></li><li class="chapter-item expanded "><a href="../ds/tools.html"><strong aria-hidden="true">37.4.</strong> Инструменты: scikit-learn</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Ускорение расчётов</li><li class="chapter-item expanded "><a href="../perf/intro.html"><strong aria-hidden="true">38.</strong> С чего начинать оптимизацию</a></li><li class="chapter-item expanded "><a href="../dev/python/optimization.html"><strong aria-hidden="true">39.</strong> Причины низкой скорости Python</a></li><li class="chapter-item expanded "><a href="../perf/python-tricks.html"><strong aria-hidden="true">40.</strong> Оптимизация средствами самого Python</a></li><li class="chapter-item expanded "><a href="../perf/perf.html"><strong aria-hidden="true">41.</strong> Скорость выполнения программ</a></li><li class="chapter-item expanded "><a href="../perf/gil.html"><strong aria-hidden="true">42.</strong> Многопоточность и GIL</a></li><li class="chapter-item expanded "><a href="../perf/async.html"><strong aria-hidden="true">43.</strong> Асинхронность</a></li><li class="chapter-item expanded "><a href="../perf/cuda.html"><strong aria-hidden="true">44.</strong> CUDA и вычисления на GPU</a></li><li class="chapter-item expanded affix "><li class="part-title">Разбор реальных кодов</li><li class="chapter-item expanded "><a href="../examples/intro.html"><strong aria-hidden="true">45.</strong> Коды и скрипты</a></li><li class="chapter-item expanded "><a href="../examples/kenv.html"><strong aria-hidden="true">46.</strong> Уравнение огибающей Капчинского—Владимирского для пучка заряженных частиц</a></li><li class="chapter-item expanded "><a href="../examples/envelope-optimize.html"><strong aria-hidden="true">47.</strong> Оптимизация огибающей пучка заряженных частиц с помощью генетического алгоритма</a></li><li class="chapter-item expanded "><a href="../examples/redpic.html"><strong aria-hidden="true">48.</strong> Релятивистская разностная схема для расчёта динамики частиц</a></li><li class="chapter-item expanded "><a href="../examples/orbit-correction.html"><strong aria-hidden="true">49.</strong> Коррекция равновесной орбиты с применением матрицы отклика и нейронных сетей</a></li><li class="chapter-item expanded "><a href="../examples/cadquery/layout.html"><strong aria-hidden="true">50.</strong> Трёхмерная схема установки кодом</a></li><li class="chapter-item expanded "><a href="../examples/accumulator.html"><strong aria-hidden="true">51.</strong> Цифровой двойник ускорителя</a></li><li class="chapter-item expanded "><a href="../examples/sava.html"><strong aria-hidden="true">52.</strong> Мультиагентный помощник оператора</a></li><li class="chapter-item expanded "><a href="../examples/ai-scientist.html"><strong aria-hidden="true">53.</strong> Автономный исследователь на языковых моделях</a></li><li class="chapter-item expanded "><a href="../examples/async-api.html"><strong aria-hidden="true">54.</strong> Асинхронное API для кинотеатра</a></li><li class="chapter-item expanded affix "><li class="part-title">Практикум</li><li class="chapter-item expanded "><a href="../practicum/intro.html"><strong aria-hidden="true">55.</strong> Структура заданий</a></li><li class="chapter-item expanded "><a href="../practicum/review-code-task.html"><strong aria-hidden="true">56.</strong> Ревью чужого кода</a></li><li class="chapter-item expanded "><a href="../practicum/markov-chain-task.html"><strong aria-hidden="true">57.</strong> Генерация текста на основе данных</a></li><li class="chapter-item expanded "><a href="../practicum/booting-linux-task.html"><strong aria-hidden="true">58.</strong> Установка Arch Linux вручную с RAID1 и UEFI</a></li><li class="chapter-item expanded "><a href="../practicum/linux-tools-task.html"><strong aria-hidden="true">59.</strong> Настройка окружения и работа с утилитами</a></li><li class="chapter-item expanded "><a href="../practicum/linux-structure-task.html"><strong aria-hidden="true">60.</strong> Работа с долгоиграющими процессами</a></li><li class="chapter-item expanded "><a href="../practicum/python-algo-task.html"><strong aria-hidden="true">61.</strong> Решение задач на Python и анализ сложности</a></li><li class="chapter-item expanded "><a href="../practicum/kitty-startup-task.html"><strong aria-hidden="true">62.</strong> Деплой стартапа</a></li><li class="chapter-item expanded "><a href="../practicum/final-project-requirements.html"><strong aria-hidden="true">63.</strong> Итоговый проект</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Приложение. Экспресс-курс</li><li class="chapter-item expanded "><a href="../dev/python/basics.html"><strong aria-hidden="true">64.</strong> Основы языка</a></li><li class="chapter-item expanded "><a href="../dev/python/numpy.html"><strong aria-hidden="true">65.</strong> Массивы NumPy</a></li><li class="chapter-item expanded "><a href="../dev/python/matplotlib.html"><strong aria-hidden="true">66.</strong> Графики Matplotlib</a></li><li class="chapter-item expanded affix "><a href="../resume/intro.html">Заключение</a></li><li class="chapter-item expanded affix "><a href="../resume/literature.html">Литература и статьи</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Разработка и применение программного обеспечения в физических исследованиях</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/phys-dev/soft-dev-book/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="Компьютерные-сети"><a class="header" href="#Компьютерные-сети">Компьютерные сети</a></h1>
+<p>Разбираться в сетях физику приходится потому, что почти любые данные, необходимые для работы, сегодня получаются через сеть. Установка отдаёт телеметрию по TCP, каталог наблюдений находится за HTTP-интерфейсом, расчёт запускается на кластере по SSH, а результаты отправляются на сервер группы. Когда что-либо из этого перестаёт работать, место разрыва быстро находит тот, кто представляет путь от программы до провода.</p>
+<p>В настоящей главе рассматривается устройство сети ниже прикладного уровня: слои и адреса, маршрутизация, транспортные протоколы UDP и TCP, контроль перегрузок и средства проверки каждого уровня. Прикладные протоколы — система доменных имён, HTTP и TLS — и работа с сетью из Python рассмотрены в следующей главе, <a href="./web.html">«Веб-технологии»</a>.</p>
+<p>Вызов <code>requests.get('https://api.example.org/runs', timeout=5)</code> выглядит как одна операция, однако за ним стоят пять шагов на разных уровнях сети, и каждый из них может завершиться ошибкой.</p>
+<div class="table-wrapper"><table><thead><tr><th>Шаг</th><th>Протокол</th><th>Чем проверить</th></tr></thead><tbody>
+<tr><td>имя <code>api.example.org</code> превращается в IP-адрес</td><td>DNS</td><td><code>dig</code>, запрос к DNS поверх HTTPS</td></tr>
+<tr><td>ядро выбирает маршрут к этому адресу</td><td>IP</td><td><code>ip route get</code>, <code>tracepath</code></td></tr>
+<tr><td>открывается соединение с портом 443 сервера</td><td>TCP</td><td><code>ss</code>, <code>tcpdump</code></td></tr>
+<tr><td>поверх соединения устанавливается шифрованный канал</td><td>TLS</td><td><code>openssl</code>, <code>curl -v</code></td></tr>
+<tr><td>по каналу уходит запрос и приходит ответ</td><td>HTTP</td><td><code>curl -v</code>, <code>requests</code></td></tr>
+</tbody></table>
+</div>
+<p>Представление о пути запроса целиком позволяет отличить отсутствие маршрута от неразрешённого имени, закрытый порт от ошибки сервера и медленный канал от медленной программы. Маршрут и соединение TCP рассматриваются в настоящей главе, разрешение имени, шифрование и обмен по HTTP — в главе <a href="./web.html">«Веб-технологии»</a>.</p>
+<p>Листинги главы выполнены на одной машине — виртуальной машине под Ubuntu 24.04 с ядром Linux 6.8, iproute2 6.1, tcpdump 4.99 и Python 3.12, на которой записаны демонстрации лекции «Введение в веб»; выводы опыта с CUBIC и BBR взяты из записи этой демонстрации. Учебные сети построены внутри машины из сетевых пространств имён и получают адреса из диапазонов, отведённых для документации, а серверы слушают петлевой адрес 127.0.0.1, поэтому на другой машине выводы те же, кроме времени, случайных номеров портов, адресов MAC и номеров последовательности.</p>
+<blockquote>
+<p><strong>Слайды к главе.</strong> Материал этой главы и главы «Веб-технологии» изложен также в лекции «Введение в веб» (слои и адреса, маршрутизация, транспорт, DNS, HTTP и TLS, клиент на Python, собственный сервис) с демонстрациями в терминале; слайды лекции доступны <a href="https://phys-dev.github.io/soft-dev-book/slides/lecture-12.html#/cover">на сайте книги</a> и <a href="https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-12.pdf">в PDF</a>.</p>
+</blockquote>
+<iframe src="../slides/lecture-12.html#/cover" title="Слайды лекции «Введение в веб»" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
+<h2 id="Сетевые-модели-osi-и-tcpip"><a class="header" href="#Сетевые-модели-osi-и-tcpip">Сетевые модели: OSI и TCP/IP</a></h2>
+<blockquote>
+<p><strong>Слайды к главе.</strong> Слои сети, инкапсуляция заголовков, адреса IPv4 и IPv6, MAC-адреса и ARP изложены также в первой части лекции «Введение в веб» с демонстрацией учебной сети из двух узлов; слайды лекции доступны <a href="https://phys-dev.github.io/soft-dev-book/slides/lecture-12.html#/sec-net">на сайте книги</a> и <a href="https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-12.pdf">в PDF</a>.</p>
+</blockquote>
+<iframe src="../slides/lecture-12.html#/sec-net" title="Слайды лекции «Введение в веб»: слои и адреса" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
+<p>Сеть устроена слоями. Каждый слой решает свою узкую задачу и пользуется услугами слоя, лежащего ниже, ничего не зная о его внутреннем устройстве. Приложение формулирует задачу «отправить эти байты на такой-то адрес» и не учитывает ни маршрутов, ни того, медный там кабель или оптика. Благодаря такому разделению Wi-Fi был изобретён без переписывания браузеров и протокола IP.</p>
+<p>Классическая <strong>модель OSI</strong>, созданная как эталонная, насчитывает семь уровней. В таблице указан и уровень более компактной модели TCP/IP, к которому относится каждый из них.</p>
+<div class="table-wrapper"><table><thead><tr><th>№</th><th>Уровень OSI</th><th>Чем занимается</th><th>Уровень TCP/IP</th><th>Единица данных</th></tr></thead><tbody>
+<tr><td>7</td><td>Прикладной</td><td>протоколы приложений: HTTP, DNS, SSH</td><td>прикладной</td><td>сообщение</td></tr>
+<tr><td>6</td><td>Представления</td><td>кодировки, сжатие, шифрование</td><td>прикладной</td><td>сообщение</td></tr>
+<tr><td>5</td><td>Сеансовый</td><td>управление сеансами связи</td><td>прикладной</td><td>сообщение</td></tr>
+<tr><td>4</td><td>Транспортный</td><td>доставка между процессами: TCP, UDP, QUIC</td><td>транспортный</td><td>сегмент TCP, датаграмма UDP</td></tr>
+<tr><td>3</td><td>Сетевой</td><td>адресация и маршрутизация между сетями: IP, ICMP</td><td>межсетевой</td><td>пакет</td></tr>
+<tr><td>2</td><td>Канальный</td><td>передача между соседними узлами: Ethernet, Wi-Fi</td><td>сетевого доступа</td><td>кадр</td></tr>
+<tr><td>1</td><td>Физический</td><td>биты через провод или эфир</td><td>сетевого доступа</td><td>бит</td></tr>
+</tbody></table>
+</div>
+<p>Названия единиц данных представляют собой устоявшееся соглашение, а не часть стандарта: в модели OSI единица любого уровня называется блоком данных протокола этого уровня, а в спецификации IP (RFC 791) пакет называется датаграммой.</p>
+<p>Интернет построен по <strong>модели TCP/IP</strong> из четырёх уровней: сетевого доступа (в RFC 1122 он называется канальным, link layer), межсетевого, транспортного и прикладного. Физический и канальный уровни OSI в ней объединены в первый, а три верхних слиты в один прикладной. Протоколы стека TCP/IP разнесены по уровням OSI условно: стек создавался параллельно с моделью и в неё в точности не укладывается; так, TLS шифрует данные приложения, но работает поверх TCP и целиком не помещается ни на один уровень. Далее мы рассмотрим уровни этой модели снизу вверх.</p>
+<h3 id="Инкапсуляция"><a class="header" href="#Инкапсуляция">Инкапсуляция</a></h3>
+<p>Каждый уровень добавляет к данным свой заголовок. HTTP-запрос приложения становится полезной нагрузкой сегмента TCP, в заголовке которого записаны порты, номера последовательности и флаги. Сегмент вкладывается в пакет IP с адресами отправителя и получателя и счётчиком TTL, а пакет — в кадр Ethernet с MAC-адресами соседних узлов и контрольной суммой FCS в конце.</p>
+<pre><code class="language-text">┌──────────┬──────┬───────┬───────────────────┬─────┐
+│ Ethernet │  IP  │  TCP  │ HTTP: GET /runs … │ FCS │
+└──────────┴──────┴───────┴───────────────────┴─────┘
+                          └ данные приложения ┘
+                  └─────── сегмент TCP ───────┘
+           └──────────── пакет IP ────────────┘
+└────────────────── кадр Ethernet ──────────────────┘
+</code></pre>
+<p>Получатель снимает заголовки в обратном порядке. Маршрутизатор на пути разбирает только кадр и пакет: он отбрасывает старый кадр, строит новый для следующего участка и уменьшает TTL на единицу, а заголовок TCP и данные не трогает. Поэтому MAC-адреса меняются на каждом участке пути, а IP-адреса отправителя и получателя сохраняются до тех пор, пока их вместе с портами TCP не подменит трансляция адресов NAT, рассмотренная ниже.</p>
+<h2 id="Уровень-сетевого-доступа"><a class="header" href="#Уровень-сетевого-доступа">Уровень сетевого доступа</a></h2>
+<p>Самый нижний уровень отвечает на вопрос «как физически доставить биты соседнему узлу».</p>
+<h3 id="Физический-уровень"><a class="header" href="#Физический-уровень">Физический уровень</a></h3>
+<p>Средой передачи здесь являются витая пара и коаксиальный кабель, оптоволокно (одномодовое для дальних линий, многомодовое для коротких), радио в виде Wi-Fi по стандарту 802.11, Bluetooth и сотовой связи. Уровень преобразует единицы и нули в сигнал и обратно.</p>
+<p>Среду передачи характеризуют скорость, полоса пропускания, затухание сигнала и помехоустойчивость. Проблемы на этом уровне: перебитый кабель, наводка от силового шкафа, некачественно обжатый коннектор, растянутый сверх нормы сегмент. В лаборатории они дают заметную долю жалоб на медленную сеть, поэтому диагностику начинают снизу, с проверки физического подключения: при отсоединённом кабеле <code>ip link</code> показывает у интерфейса флаг <code>NO-CARRIER</code> — отсутствие несущей.</p>
+<h3 id="Канальный-уровень"><a class="header" href="#Канальный-уровень">Канальный уровень</a></h3>
+<p>Уровнем выше принятые биты собираются в <strong>кадры</strong> (frames) и передаются между устройствами, находящимися внутри одной локальной сети. Здесь работают Ethernet (стандарт IEEE 802.3) и Wi-Fi (IEEE 802.11), а для соединений «точка-точка» — PPP.</p>
+<p>У каждого сетевого интерфейса есть 48-битный <strong>MAC-адрес</strong>. У физической сетевой карты его задаёт производитель (первые три байта образуют код производителя), у виртуальных интерфейсов — пар veth, мостов, контейнеров и виртуальных машин — он выбирается случайно, а современные операционные системы при подключении к Wi-Fi часто подставляют случайный адрес вместо заводского. Программа знает IP-адрес получателя, а кадр отправляется на MAC-адрес следующего узла: самого получателя, если он находится в той же сети, иначе шлюза. Соответствие между адресами выясняет протокол <strong>ARP</strong>: узел рассылает широковещательный вопрос «у кого адрес 192.0.2.20?» и запоминает ответ в таблице соседей. В IPv6 ту же задачу решает протокол обнаружения соседей NDP. В институтских сетях встречается <strong>VLAN</strong>, представляющая собой логическое разделение одной физической сети на независимые сегменты, не видящие друг друга, чтобы, например, сеть управления установкой не пересекалась с офисной.</p>
+<p>Состояние этого уровня позволяют просмотреть следующие команды.</p>
+<pre><code class="language-bash">ip -br link              # интерфейсы, их состояние и MAC-адреса
+ip -s link show eth0     # счётчики кадров, в том числе ошибки и отброшенные
+ethtool eth0             # скорость, дуплекс, наличие несущей
+ethtool -S eth0          # подробная статистика драйвера
+ip neigh                 # таблица соседей: IP-адреса и MAC-адреса
+</code></pre>
+<p>Утилиты <code>ifconfig</code>, <code>arp</code> и <code>netstat</code> из пакета net-tools устарели, и современные дистрибутивы, в том числе Ubuntu, по умолчанию их не устанавливают: их заменяют <code>ip</code> и <code>ss</code> из пакета iproute2. Имя <code>eth0</code> в примерах условно; в современных дистрибутивах интерфейсы называются по расположению устройства, например <code>enp0s1</code> или <code>ens3</code>.</p>
+<h3 id="Учебная-сеть-из-двух-узлов"><a class="header" href="#Учебная-сеть-из-двух-узлов">Учебная сеть из двух узлов</a></h3>
+<p>Рассмотрим работу канального уровня на учебной сети, для которой достаточно одной машины. Сетевое пространство имён представляет собой механизм ядра Linux, дающий процессам собственный набор интерфейсов, адресов и маршрутов (см. главу <a href="../linux/structure.html">«Внутреннее устройство Linux»</a>); оно играет роль отдельной машины, а пара виртуальных интерфейсов veth соединяет два пространства подобно кабелю. Адреса взяты из диапазона 192.0.2.0/24, отведённого для документации, поэтому учебная сеть не пересекается с настоящей. Здесь и далее команды, создающие пространства имён и перехватывающие пакеты, выполняются от имени root, например в оболочке, открытой командой <code>sudo -i</code>; ключ <code>-n a</code> команды <code>ip</code> и префикс <code>ip netns exec a</code> выполняют команду в пространстве <code>a</code>.</p>
+<pre><code class="language-bash">$ cat lan.sh
+# Два узла одной сети: пространства имён a и b, соединённые парой veth
+ip netns add a
+ip netns add b
+ip link add va netns a type veth peer name vb netns b
+ip -n a addr add 192.0.2.10/24 dev va
+ip -n b addr add 192.0.2.20/24 dev vb
+ip -n a link set va up
+ip -n b link set vb up
+$ sh lan.sh
+$ ip -n a -br link
+lo               DOWN           00:00:00:00:00:00 &lt;LOOPBACK&gt;
+va@if2           UP             c2:4a:45:2f:6e:af &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt;
+$ ip -n a -br addr
+lo               DOWN
+va@if2           UP             192.0.2.10/24 fe80::c04a:45ff:fe2f:6eaf/64
+$ ip netns exec a ping -c 2 192.0.2.20
+PING 192.0.2.20 (192.0.2.20) 56(84) bytes of data.
+64 bytes from 192.0.2.20: icmp_seq=1 ttl=64 time=0.081 ms
+64 bytes from 192.0.2.20: icmp_seq=2 ttl=64 time=0.080 ms
+
+--- 192.0.2.20 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1008ms
+rtt min/avg/max/mdev = 0.080/0.080/0.081/0.000 ms
+$ ip -n a neigh
+192.0.2.20 dev va lladdr b2:b5:3f:8e:8d:30 REACHABLE
+</code></pre>
+<p>В пространстве <code>a</code> есть только петлевой интерфейс <code>lo</code> и конец пары <code>va</code> со случайным MAC-адресом; кроме адреса 192.0.2.10/24, у него есть локальный адрес IPv6, который интерфейс назначил себе сам. Эхо-запрос <code>ping</code> до соседа проходит за десятую долю миллисекунды, а после него в таблице соседей появляется MAC-адрес узла <code>b</code>, полученный по ARP. Пространство имён удаляется командой <code>ip netns del a</code> вместе со своими интерфейсами; процессы, запущенные в нём, перед этим необходимо завершить.</p>
+<h2 id="Сетевой-уровень"><a class="header" href="#Сетевой-уровень">Сетевой уровень</a></h2>
+<p>Канальный уровень доставляет кадры только внутри одной локальной сети. Чтобы достичь машины, находящейся в другом городе, необходим уровень выше, <strong>сетевой</strong>, с главным протоколом IP.</p>
+<p>IP задаёт адреса интерфейсов и формат пакета. Каждый узел на пути пересылает пакет дальше по своей таблице маршрутов, а заполняют таблицы администратор или протоколы маршрутизации, например OSPF внутри организации и BGP между организациями. Сообщения о недоставке и эхо-запросы <code>ping</code> передаёт сопутствующий протокол ICMP.</p>
+<h3 id="Адресация-ipv4"><a class="header" href="#Адресация-ipv4">Адресация IPv4</a></h3>
+<p><strong>IPv4</strong> задаёт 32-битный адрес, записываемый четырьмя десятичными октетами, например <code>192.0.2.10</code>. Всего таких адресов около четырёх миллиардов, и они давно распределены. Отсюда трансляция адресов (NAT) в большинстве домашних и многих институтских сетей: машины внутри получают частные адреса, а наружу выходят под общим публичным адресом маршрутизатора, который подменяет в пакетах адрес и порт отправителя. Провайдеры добавляют к этому ещё и общий NAT на адресах <code>100.64.0.0/10</code>. Долгосрочным решением служит IPv6.</p>
+<p>Запись вида <code>192.0.2.0/24</code> называется префиксом. Число после косой черты — длина префикса, то есть количество старших битов адреса, отведённых под номер сети; оставшиеся биты нумеруют узлы. Сеть <code>192.0.2.0/24</code> содержит 256 адресов, различающихся последним октетом, но узлам из них можно назначить 254: первый адрес обозначает саму сеть, а последний служит широковещательным. Модуль <code>ipaddress</code> стандартной библиотеки позволяет выполнять арифметику адресов и префиксов.</p>
+<pre><code class="language-python">import ipaddress
+
+net = ipaddress.ip_network('192.0.2.0/24')
+print(net.num_addresses, net.netmask, net.broadcast_address)
+print(len(list(net.hosts())), ipaddress.ip_address('192.0.2.200') in net)
+print(ipaddress.ip_address('192.0.2.10').is_private, ipaddress.ip_address('192.0.2.10').is_global)
+addr = ipaddress.ip_address('2001:0db8:85a3:0000:0000:8a2e:0370:7334')
+print(addr)
+print(addr.exploded)
+</code></pre>
+<pre><code>256 255.255.255.0 192.0.2.255
+254 True
+True False
+2001:db8:85a3::8a2e:370:7334
+2001:0db8:85a3:0000:0000:8a2e:0370:7334
+</code></pre>
+<p>Часть диапазонов зарезервирована для особых целей.</p>
+<div class="table-wrapper"><table><thead><tr><th>Диапазон</th><th>Назначение</th></tr></thead><tbody>
+<tr><td><code>10.0.0.0/8</code> (16,7 млн адресов), <code>172.16.0.0/12</code> (1 млн), <code>192.168.0.0/16</code> (65 536)</td><td>частные сети (RFC 1918): в интернете не маршрутизируются и повторяются в разных организациях</td></tr>
+<tr><td><code>100.64.0.0/10</code></td><td>общий NAT провайдера (RFC 6598)</td></tr>
+<tr><td><code>127.0.0.0/8</code></td><td>петлевой интерфейс, сама машина</td></tr>
+<tr><td><code>169.254.0.0/16</code></td><td>локальные адреса канала, которые узел назначает себе сам, не получив адреса (RFC 3927)</td></tr>
+<tr><td><code>192.0.2.0/24</code>, <code>198.51.100.0/24</code>, <code>203.0.113.0/24</code></td><td>примеры в документации (RFC 5737)</td></tr>
+</tbody></table>
+</div>
+<p>RFC 1918 не закрепляет диапазоны за организациями определённого размера; домашние маршрутизаторы обычно берут подсеть из последнего. Адреса документации не встречаются в настоящих сетях, поэтому именно они выбраны для учебных сетей этой главы. Атрибут <code>is_private</code> модуля <code>ipaddress</code> истинен не только для диапазонов RFC 1918, но и для петлевых адресов, адресов документации и других диапазонов, которые реестр IANA относит к неглобальным: адрес <code>192.0.2.10</code> в выводе выше он тоже назвал частным.</p>
+<h3 id="Адресация-ipv6"><a class="header" href="#Адресация-ipv6">Адресация IPv6</a></h3>
+<p><strong>IPv6</strong> решает проблему нехватки адресов. Адрес занимает 128 бит и записывается восемью группами по четыре шестнадцатеричные цифры, например <code>2001:0db8:85a3:0000:0000:8a2e:0370:7334</code>. Ведущие нули в каждой группе опускаются, а одну непрерывную цепочку нулевых групп заменяет двойное двоеточие, и записанный выше адрес превращается в <code>2001:db8:85a3::8a2e:370:7334</code>, как в выводе <code>ipaddress</code>. Двойное двоеточие допускается в адресе один раз, иначе запись стала бы неоднозначной; канонический вид — строчные буквы и самая длинная цепочка нулевых групп, заменённая на <code>::</code>, — установлен RFC 5952. Для документации отведён префикс <code>2001:db8::/32</code> (RFC 3849), петлевой адрес записывается как <code>::1</code>, локальные адреса канала начинаются с <code>fe80::</code>, а аналогом частных сетей служат уникальные локальные адреса <code>fc00::/7</code> (RFC 4193).</p>
+<h2 id="Маршрутизация"><a class="header" href="#Маршрутизация">Маршрутизация</a></h2>
+<blockquote>
+<p><strong>Слайды к главе.</strong> Таблица маршрутов, выбор самого длинного префикса, правила маршрутизации и диагностика пути изложены также во второй части лекции «Введение в веб» с демонстрацией учебной сети с маршрутизатором; слайды лекции доступны <a href="https://phys-dev.github.io/soft-dev-book/slides/lecture-12.html#/sec-route">на сайте книги</a> и <a href="https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-12.pdf">в PDF</a>.</p>
+</blockquote>
+<iframe src="../slides/lecture-12.html#/sec-route" title="Слайды лекции «Введение в веб»: маршрутизация" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
+<p>Маршрутизация отвечает на вопрос «куда отправить принятый пакет дальше». Каждый узел, включая рабочий компьютер, хранит таблицу маршрутов и для каждого пакета выбирает подходящую строку.</p>
+<h3 id="Таблица-маршрутов"><a class="header" href="#Таблица-маршрутов">Таблица маршрутов</a></h3>
+<p>Строка таблицы сопоставляет префикс сети со способом доставки: напрямую через интерфейс, если сеть к нему подключена, или через шлюз, которым является соседний маршрутизатор. Так выглядит таблица узла <code>a</code> учебной сети, построенной в конце раздела:</p>
+<pre><code class="language-bash">$ ip -n a route
+default via 192.0.2.1 dev va
+192.0.2.0/24 dev va proto kernel scope link src 192.0.2.10
+198.51.100.128/25 via 192.0.2.254 dev va
+</code></pre>
+<p>Из всех строк, под которые подходит адрес, выбирается строка с самым длинным префиксом, а при равной длине — с меньшей метрикой. Маршрут <code>default</code>, он же <code>0.0.0.0/0</code>, подходит под любой адрес и срабатывает последним. Пакет к соседу <code>192.0.2.20</code> уходит прямо в интерфейс <code>va</code>, пакет к <code>198.51.100.200</code> подходит под <code>/25</code> и уходит через шлюз <code>192.0.2.254</code>, хотя маршрут по умолчанию тоже подходит, а всё остальное уходит через <code>192.0.2.1</code>. Какой маршрут ядро выберет для конкретного адреса, показывает <code>ip route get</code>; пакетов команда не отправляет.</p>
+<pre><code class="language-bash">$ ip -n a route get 198.51.100.200
+198.51.100.200 via 192.0.2.254 dev va src 192.0.2.10 uid 0
+    cache
+$ ip -n a route get 198.51.100.10
+198.51.100.10 via 192.0.2.1 dev va src 192.0.2.10 uid 0
+    cache
+</code></pre>
+<p>Когда сервер соседнего корпуса не отвечает, а машины своей комнаты доступны, проверку начинают с <code>ip route get</code> и адреса сервера: команда показывает, через какой шлюз и интерфейс уйдёт пакет. При маршруте по умолчанию путь формально есть до любой сети, поэтому причиной чаще оказываются неверный шлюз, отсутствие маршрута обратно у удалённой стороны или фильтрация пакетов на пути.</p>
+<h3 id="Задача-о-выборе-маршрута"><a class="header" href="#Задача-о-выборе-маршрута">Задача о выборе маршрута</a></h3>
+<p>Рассмотрим правило самого длинного префикса на таблице из пяти строк, где префиксы разной длины перекрываются.</p>
+<pre><code class="language-text">default        via 192.0.2.1
+64.0.0.0/4     via 192.0.2.2
+128.0.0.0/1    via 192.0.2.19
+192.0.2.0/25   via 192.0.2.9
+192.0.2.48     via 192.0.2.17
+</code></pre>
+<p>Префикс <code>/n</code> задаёт число старших битов, которые должны совпасть с адресом, поэтому для каждого адреса найдём все подходящие строки и выберем из них самую длинную.</p>
+<div class="table-wrapper"><table><thead><tr><th>Адрес</th><th>Подходящие строки</th><th>Выбранная строка</th></tr></thead><tbody>
+<tr><td>192.0.2.48</td><td>default, /1, /25, /32</td><td><code>192.0.2.48 via 192.0.2.17</code>: точный адрес</td></tr>
+<tr><td>192.0.2.100</td><td>default, /1, /25</td><td><code>192.0.2.0/25 via 192.0.2.9</code></td></tr>
+<tr><td>200.1.2.3</td><td>default, /1</td><td><code>128.0.0.0/1 via 192.0.2.19</code></td></tr>
+<tr><td>10.1.1.1</td><td>default</td><td><code>default via 192.0.2.1</code></td></tr>
+</tbody></table>
+</div>
+<p>Строка <code>192.0.2.48</code> без длины префикса означает маршрут к одному узлу, <code>/32</code>, конкретнее любого другого. Адрес 192.0.2.100 подходит и под <code>128.0.0.0/1</code>, поскольку первый октет 192 в двоичной записи равен 11000000 и начинается с единицы, и под <code>192.0.2.0/25</code>, охватывающую адреса от 0 до 127 в последнем октете; выбирается более длинный префикс <code>/25</code>. Адрес 200.1.2.3 тоже начинается с единичного бита и уходит по строке <code>/1</code>, а 10.1.1.1 не подходит ни под одну строку, кроме <code>default</code>. Префикс <code>64.0.0.0/4</code> охватывает адреса от 64.0.0.0 до 79.255.255.255: четыре старших бита адреса должны совпасть с 0100, — и ни один из четырёх адресов под него не подходит. Проверить ответы позволяет само ядро: запишем ту же таблицу в пространство имён <code>q</code> с интерфейсом-заглушкой <code>dummy</code> и спросим <code>ip route get</code>.</p>
+<pre><code class="language-bash">$ cat quiz.sh
+# Таблица маршрутов задачи о выборе маршрута в пространстве имён q
+ip netns add q
+ip -n q link add d0 type dummy
+ip -n q addr add 192.0.2.10/24 dev d0
+ip -n q link set d0 up
+ip -n q route add default via 192.0.2.1
+ip -n q route add 64.0.0.0/4 via 192.0.2.2
+ip -n q route add 128.0.0.0/1 via 192.0.2.19
+ip -n q route add 192.0.2.0/25 via 192.0.2.9
+ip -n q route add 192.0.2.48 via 192.0.2.17
+$ sh quiz.sh
+$ ip -n q route
+default via 192.0.2.1 dev d0
+64.0.0.0/4 via 192.0.2.2 dev d0
+128.0.0.0/1 via 192.0.2.19 dev d0
+192.0.2.0/25 via 192.0.2.9 dev d0
+192.0.2.0/24 dev d0 proto kernel scope link src 192.0.2.10
+192.0.2.48 via 192.0.2.17 dev d0
+$ for a in 192.0.2.48 192.0.2.100 200.1.2.3 10.1.1.1; do ip -n q route get $a | head -1; done
+192.0.2.48 via 192.0.2.17 dev d0 src 192.0.2.10 uid 0
+192.0.2.100 via 192.0.2.9 dev d0 src 192.0.2.10 uid 0
+200.1.2.3 via 192.0.2.19 dev d0 src 192.0.2.10 uid 0
+10.1.1.1 via 192.0.2.1 dev d0 src 192.0.2.10 uid 0
+</code></pre>
+<p>К пяти строкам задачи ядро добавило шестую, <code>192.0.2.0/24</code>: сеть, подключённую к интерфейсу <code>d0</code>. На ответы она не влияет, поскольку у адресов 192.0.2.48 и 192.0.2.100 есть более длинные подходящие префиксы.</p>
+<h3 id="Правила-и-несколько-таблиц"><a class="header" href="#Правила-и-несколько-таблиц">Правила и несколько таблиц</a></h3>
+<p>Таблица маршрутов в Linux не одна. Какую использовать для конкретного пакета, определяют правила маршрутизации; так выглядят правила по умолчанию в новом пространстве имён:</p>
+<pre><code class="language-bash">$ ip -n q rule
+0:	from all lookup local
+32766:	from all lookup main
+32767:	from all lookup default
+</code></pre>
+<p>Правила просматриваются по возрастанию номера приоритета — меньший номер означает более высокий приоритет. Сначала пакет ищется в таблице <code>local</code> с адресами самой машины, затем в <code>main</code> — обычной таблице, которую показывает <code>ip route</code>, — и в пустой таблице <code>default</code>. Поэтому правило самого длинного префикса действует внутри одной таблицы: пакет на собственный адрес машины уходит в петлевой интерфейс по таблице <code>local</code>, хотя в <code>main</code> есть маршрут по умолчанию.</p>
+<p>Для машины в двух разных подсетях достаточно одной таблицы <code>main</code>. Отдельные таблицы и правила нужны, когда путь зависит не только от адреса назначения, но и от адреса отправителя, входящего интерфейса или метки пакета. Типичный случай — компьютер на установке, подключённый к институтской сети и к сети управления: ответы с адреса сети установки должны уходить через её шлюз. По маршруту по умолчанию они ушли бы в институтскую сеть, и её фильтры отбросили бы их как пакеты с чужим адресом отправителя. Скрипт <code>rule.sh</code> строит такую машину в пространстве имён <code>p</code> с двумя интерфейсами-заглушками:</p>
+<pre><code class="language-bash">$ cat rule.sh
+# Машина в двух сетях: институтской 192.0.2.0/24 и сети установки 203.0.113.0/24
+ip netns add p
+ip -n p link add inst0 type dummy
+ip -n p link add ctl0 type dummy
+ip -n p addr add 192.0.2.10/24 dev inst0
+ip -n p addr add 203.0.113.10/24 dev ctl0
+ip -n p link set inst0 up
+ip -n p link set ctl0 up
+ip -n p link set lo up
+ip -n p route add default via 192.0.2.1
+# пакеты с адреса сети установки — через её шлюз, по отдельной таблице 100
+ip -n p route add default via 203.0.113.1 table 100
+ip -n p rule add from 203.0.113.0/24 lookup 100
+$ sh rule.sh
+$ ip -n p rule
+0:	from all lookup local
+32765:	from 203.0.113.0/24 lookup 100
+32766:	from all lookup main
+32767:	from all lookup default
+$ ip -n p route get 198.51.100.7
+198.51.100.7 via 192.0.2.1 dev inst0 src 192.0.2.10 uid 0
+    cache
+$ ip -n p route get 198.51.100.7 from 203.0.113.10
+198.51.100.7 from 203.0.113.10 via 203.0.113.1 dev ctl0 table 100 uid 0
+    cache
+$ ip -n p route get 192.0.2.10
+local 192.0.2.10 dev lo table local src 192.0.2.10 uid 0
+    cache &lt;local&gt;
+</code></pre>
+<p>Пакет к адресу 198.51.100.7 по умолчанию уходит через институтский шлюз, а тот же пакет с адресом отправителя из сети установки — через шлюз <code>203.0.113.1</code> по таблице 100; пакет на собственный адрес <code>192.0.2.10</code> попадает в таблицу <code>local</code> и уходит в <code>lo</code>. Таким образом, путь пакета определяет не только адрес назначения, но и правило, выбравшее таблицу.</p>
+<h3 id="Диагностика-пути"><a class="header" href="#Диагностика-пути">Диагностика пути</a></h3>
+<p>Когда маршрут есть, а пакеты не доходят, необходимо выяснить, где они теряются. Команда <code>ping</code> проверяет доступность адресата и измеряет время туда и обратно. Каждый маршрутизатор уменьшает поле TTL пакета на единицу и отбрасывает пакет, когда оно доходит до нуля, сообщая об этом отправителю сообщением ICMP. На этом основаны <code>traceroute</code> и <code>tracepath</code>: они отправляют пакеты с растущим TTL и перечисляют узлы пути. Утилита <code>traceroute</code> в современных дистрибутивах часто не установлена; <code>tracepath</code> из пакета iputils работает без прав root и заодно определяет MTU — наибольший размер пакета, проходящего участок без фрагментации. Утилита <code>mtr</code> делает то же непрерывно и подсчитывает потери на каждом узле.</p>
+<pre><code class="language-bash">ip route get 198.51.100.10        # какой маршрут выберет ядро; пакеты не отправляются
+ping -c 4 198.51.100.10           # доступность и время туда и обратно
+tracepath -n 198.51.100.10        # узлы пути и MTU пути
+mtr -n -r -c 100 198.51.100.10    # отчёт по 100 пробам на каждом узле
+</code></pre>
+<p>Значение TTL в ответе <code>ping</code> тоже информативно: Linux отправляет пакеты с TTL 64, и ответ с <code>ttl=63</code> означает один маршрутизатор на пути. Отчёт <code>mtr</code> позволяет показать сетевым администраторам, на каком переходе начинается разрыв; значимы при этом потери, сохраняющиеся до последнего узла. Потери только на промежуточном маршрутизаторе обычно означают, что он ограничивает частоту ответов ICMP, а не теряет транзитные пакеты.</p>
+<h3 id="Учебная-сеть-с-маршрутизатором"><a class="header" href="#Учебная-сеть-с-маршрутизатором">Учебная сеть с маршрутизатором</a></h3>
+<p>Скрипт <code>net.sh</code> строит три пространства имён: узел <code>a</code> в сети 192.0.2.0/24, узел <code>b</code> в сети 198.51.100.0/24 и маршрутизатор <code>r</code> с интерфейсами в обеих сетях. Маршрутизатором <code>r</code> делает параметр ядра <code>net.ipv4.ip_forward</code>, разрешающий пересылку пакетов между интерфейсами.</p>
+<pre><code class="language-bash">$ cat net.sh
+# Две сети и маршрутизатор r между ними: 192.0.2.0/24 и 198.51.100.0/24
+for ns in a r b; do ip netns add $ns; done
+ip link add va netns a type veth peer name ra netns r
+ip link add vb netns b type veth peer name rb netns r
+ip -n a addr add 192.0.2.10/24 dev va
+ip -n r addr add 192.0.2.1/24 dev ra
+ip -n r addr add 198.51.100.1/24 dev rb
+ip -n b addr add 198.51.100.10/24 dev vb
+for d in "a va" "r ra" "r rb" "b vb"; do ip -n ${d% *} link set ${d#* } up; done
+ip netns exec r sysctl -qw net.ipv4.ip_forward=1
+ip -n b route add default via 198.51.100.1
+$ sh net.sh
+$ ip -n a route
+192.0.2.0/24 dev va proto kernel scope link src 192.0.2.10
+$ ip netns exec a ping -c 1 198.51.100.10
+ping: connect: Network is unreachable
+$ ip -n a route add default via 192.0.2.1
+$ ip netns exec a ping -c 2 198.51.100.10
+PING 198.51.100.10 (198.51.100.10) 56(84) bytes of data.
+64 bytes from 198.51.100.10: icmp_seq=1 ttl=63 time=0.099 ms
+64 bytes from 198.51.100.10: icmp_seq=2 ttl=63 time=0.108 ms
+
+--- 198.51.100.10 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1051ms
+rtt min/avg/max/mdev = 0.099/0.103/0.108/0.004 ms
+$ ip netns exec a tracepath -n 198.51.100.10
+ 1?: [LOCALHOST]                      pmtu 1500
+ 1:  192.0.2.1                                             0.066ms
+ 1:  192.0.2.1                                             0.006ms
+ 2:  198.51.100.10                                         0.010ms reached
+     Resume: pmtu 1500 hops 2 back 2
+$ ip -n a route add 198.51.100.128/25 via 192.0.2.254
+</code></pre>
+<p>В таблице узла <code>a</code> сначала есть только подключённая сеть, поэтому <code>ping</code> до 198.51.100.10 сразу завершается сообщением <code>Network is unreachable</code>: ядро не знает, куда отправить пакет. После добавления маршрута по умолчанию через <code>r</code> ответ приходит с <code>ttl=63</code> — на один маршрутизатор меньше начальных 64, а <code>tracepath</code> показывает путь из двух узлов и MTU 1500. Более конкретный маршрут <code>198.51.100.128/25</code> через <code>192.0.2.254</code> действует для адресов от .128 до .255, а 198.51.100.10 по-прежнему уходит через маршрут по умолчанию; шлюза <code>192.0.2.254</code> в сети нет, и <code>ip route get</code> этого не замечает, поскольку пакетов не отправляет. Таблица узла <code>a</code> после последней команды и выбор маршрута для адресов 198.51.100.200 и 198.51.100.10 приведены в начале раздела.</p>
+<h2 id="Транспортный-уровень"><a class="header" href="#Транспортный-уровень">Транспортный уровень</a></h2>
+<blockquote>
+<p><strong>Слайды к главе.</strong> Порты и сокеты, UDP и TCP, рукопожатие в перехвате tcpdump и контроль перегрузок с опытом CUBIC и BBR на линии с потерями изложены также в третьей части лекции «Введение в веб» с демонстрациями в терминале; слайды лекции доступны <a href="https://phys-dev.github.io/soft-dev-book/slides/lecture-12.html#/sec-tcp">на сайте книги</a> и <a href="https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-12.pdf">в PDF</a>.</p>
+</blockquote>
+<iframe src="../slides/lecture-12.html#/sec-tcp" title="Слайды лекции «Введение в веб»: транспорт" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
+<p>IP доставляет пакет до машины, однако на ней работают десятки программ. Какой из них предназначены данные, указывает номер <strong>порта</strong> — первая задача транспортного уровня. Вторая — надёжность доставки; здесь выбирают из двух протоколов в зависимости от того, что дороже: потеря данных или задержка.</p>
+<h3 id="Порты-и-сокеты"><a class="header" href="#Порты-и-сокеты">Порты и сокеты</a></h3>
+<p>Порт представляет собой 16-битное число от 1 до 65 535. Сервер слушает известный порт: 22 — SSH, 53 — DNS, 80 и 443 — HTTP и HTTPS, 5432 — PostgreSQL. Порты ниже 1024 считаются привилегированными: в Linux занять их по умолчанию может только процесс root или процесс с правом <code>CAP_NET_BIND_SERVICE</code>, а границу задаёт параметр ядра <code>net.ipv4.ip_unprivileged_port_start</code>. Клиенту ядро выдаёт временный порт из диапазона <code>net.ipv4.ip_local_port_range</code>, а параметр <code>net.ipv4.tcp_syn_retries</code> задаёт число повторов запроса на соединение.</p>
+<pre><code class="language-bash">$ sysctl net.ipv4.ip_local_port_range net.ipv4.ip_unprivileged_port_start net.ipv4.tcp_syn_retries
+net.ipv4.ip_local_port_range = 32768	60999
+net.ipv4.ip_unprivileged_port_start = 1024
+net.ipv4.tcp_syn_retries = 6
+</code></pre>
+<p>Соединение TCP однозначно задаётся четвёркой: адрес и порт клиента, адрес и порт сервера. Поэтому к одному порту сервера одновременно подключаются тысячи клиентов: их соединения различаются адресами и временными портами. Программа работает с соединением через <strong>сокет</strong>, представляющий собой объект ядра, которому в процессе соответствует файловый дескриптор, а в Python — объект <code>socket.socket</code>. Сокет бывает и без IP: локальный сокет <code>AF_UNIX</code> представлен файлом, и через него, например, клиент PostgreSQL по умолчанию подключается к серверу на той же машине.</p>
+<p>Чтобы проверить, слушает ли программа порт, достаточно команды <code>ss -tln</code>; с ключом <code>-p</code> она показывает и процессы, которым принадлежат сокеты (процессы других пользователей видны только с <code>sudo</code>). Адрес <code>127.0.0.1</code> в колонке Local Address означает, что сервер доступен только с самой машины, <code>0.0.0.0</code> — со всех её интерфейсов IPv4. Для встроенного в Python веб-сервера, который раздаёт каталог <code>www</code> с файлом <code>hello.txt</code> и слушает петлевой адрес, вывод выглядит так; знак <code>&amp;</code> запускает сервер в фоне, а останавливается он командой <code>kill</code> с номером задания, например <code>kill %1</code>:</p>
+<pre><code class="language-bash">$ python3 -m http.server 8000 --bind 127.0.0.1 --directory www &gt;/dev/null 2&gt;&amp;1 &amp;
+$ ss -tln 'sport = :8000'
+State  Recv-Q Send-Q Local Address:Port Peer Address:PortProcess
+LISTEN 0      5          127.0.0.1:8000      0.0.0.0:*
+</code></pre>
+<p>Попытка соединения может завершиться двумя разными ошибками, и различие между ними позволяет определить, где искать причину. Если порт не слушает ни один процесс, ядро адресата сразу отвечает сегментом RST, и клиент получает отказ <code>Connection refused</code>. Если же пакеты по пути или на входе адресата отбрасывает межсетевой экран, ответа нет вовсе, и попытка завершается по тайм-ауту; без явного ограничения ядро Linux повторяет запрос на соединение шесть раз с удваивающейся паузой, начиная с 1 с, то есть около двух минут. Воспроизведём оба случая на учебной сети из двух узлов, построенной скриптом <code>lan.sh</code>: на узле <code>b</code> запустим сервер на порту 8000, а межсетевому экрану nftables поручим отбрасывать пакеты к порту 8001. Клиент <code>conn.py</code> по очереди соединяется с портами 8000, 8001 и 8002 узла <code>b</code>, ограничив ожидание двумя секундами.</p>
+<pre><code class="language-python">import socket
+
+for port in (8000, 8001, 8002):
+    try:
+        with socket.create_connection(('192.0.2.20', port), timeout=2) as s:
+            print(port, 'соединение', s.getsockname(), '-&gt;', s.getpeername())
+    except OSError as err:
+        print(port, type(err).__name__, err)
+</code></pre>
+<pre><code class="language-bash">$ cat fw.sh
+# Узел b из lan.sh: сервер на порту 8000, порт 8001 закрыт межсетевым экраном
+ip netns exec b python3 -m http.server 8000 --bind 192.0.2.20 &gt;/dev/null 2&gt;&amp;1 &amp;
+ip netns exec b nft add table inet fw
+ip netns exec b nft add chain inet fw input '{ type filter hook input priority 0; }'
+ip netns exec b nft add rule inet fw input tcp dport 8001 drop
+$ sh fw.sh
+$ ip netns exec a python3 conn.py
+8000 соединение ('192.0.2.10', 57004) -&gt; ('192.0.2.20', 8000)
+8001 TimeoutError timed out
+8002 ConnectionRefusedError [Errno 111] Connection refused
+</code></pre>
+<p>Вывод показывает и четвёрку соединения: клиент получил от ядра временный порт, а сервер принял соединение на порту 8000. Порт 8001 не ответил за отведённые 2 с, порт 8002 сразу ответил отказом. Таким образом, отказ указывает на адресата, у которого порт никто не слушает, а тайм-аут — на фильтр по пути или на входе адресата.</p>
+<h3 id="udp-быстро-и-без-гарантий"><a class="header" href="#udp-быстро-и-без-гарантий">UDP: быстро и без гарантий</a></h3>
+<p>UDP не устанавливает соединения, не подтверждает доставку, не следит за порядком приходящих датаграмм и не борется с перегрузками. Датаграмма может потеряться, прийти дважды или обогнать предыдущую, и протокол об этом не узнает.</p>
+<p>Зато у UDP минимальные накладные расходы и задержка. Поэтому на нём работают запросы DNS (повторить запрос проще, чем поддерживать соединение; большие ответы и передача зон идут по TCP), голосовая и видеосвязь, онлайн-игры. Потерянный фрагмент там уже не нужен: пока его запрашивают повторно, разговор уходит вперёд. Видео по запросу и большинство трансляций, напротив, передаются по HTTP поверх TCP или QUIC. На UDP построен и сам QUIC, транспорт HTTP/3, заново реализующий надёжную доставку и шифрование. Для физика существенно, что о потере пакетов телеметрии UDP не сообщает: пропуски выявляет только номер пакета, записанный в самих данных.</p>
+<h3 id="tcp-надёжно-но-дороже"><a class="header" href="#tcp-надёжно-но-дороже">TCP: надёжно, но дороже</a></h3>
+<p>TCP доставляет поток байтов в исходном порядке, без пропусков и дубликатов либо сообщает приложению об ошибке: соединение разрывается по тайм-ауту или сбрасывается сегментом RST. Ценой являются установление соединения, подтверждения, повторные передачи и контроль перегрузок. 16-битная контрольная сумма TCP пропускает часть искажений, поэтому целостность важных данных проверяют на уровне приложения: средствами TLS или хешем файла.</p>
+<p>Соединение открывается <strong>тройным рукопожатием</strong>:</p>
+<ol>
+<li>клиент отправляет серверу сегмент <code>SYN</code> со своим случайным начальным номером последовательности x;</li>
+<li>сервер отвечает сегментом <code>SYN-ACK</code> — своим начальным номером y и подтверждением x + 1;</li>
+<li>клиент подтверждает его сегментом <code>ACK</code>, и соединение установлено.</li>
+</ol>
+<p>В сегментах SYN и SYN-ACK стороны сообщают и параметры соединения: наибольший размер сегмента MSS, множитель окна, поддержку выборочных подтверждений SACK и метки времени. Данные клиент отправляет сразу после SYN-ACK, вместе с подтверждением или следом за ним, поэтому рукопожатие обходится в одно время туда и обратно (RTT); этой задержки нет у UDP. TCP Fast Open (RFC 7413) при повторных соединениях передаёт данные уже в SYN, а QUIC совмещает установление соединения с рукопожатием TLS.</p>
+<p>Гарантии TCP обеспечивают поля его заголовка; в скобках указана длина поля в битах.</p>
+<pre><code class="language-text">| Порт отправителя (16)                 | Порт получателя (16)                |
+| Номер последовательности (32)                                               |
+| Номер подтверждения (32)                                                    |
+| Смещение (4) | Резерв (4) | Флаги (8) | Окно (16)                           |
+| Контрольная сумма (16)                | Указатель срочности (16)            |
+| Параметры: MSS, множитель окна, SACK, метки времени (0–320)                 |
+</code></pre>
+<p>Номер последовательности является номером первого байта сегмента в потоке. Номер подтверждения — номер следующего ожидаемого байта: всё, что идёт до него, получено. Окно сообщает, сколько ещё байтов готов принять получатель с учётом множителя из параметров (RFC 7323), и тем самым управляет потоком. Отправитель держит в пути не больше меньшего из двух окон: окна получателя и собственного окна перегрузки, рассмотренного ниже. Смещение данных — длина заголовка в 32-битных словах, от 20 до 60 байт. Флаги отмечают назначение сегмента: SYN — установление соединения, ACK — подтверждение, PSH — данные, которые получатель передаёт приложению без задержки, FIN — закрытие, RST — сброс.</p>
+<p>Закрывается соединение сегментами FIN с каждой стороны. Сторона, закрывшая соединение первой, ещё 60 с держит его в состоянии TIME_WAIT, чтобы запоздавшие сегменты не попали в новое соединение с той же четвёркой адресов и портов.</p>
+<p>Различия двух транспортных протоколов сведены в таблицу.</p>
+<div class="table-wrapper"><table><thead><tr><th>Свойство</th><th>UDP</th><th>TCP</th></tr></thead><tbody>
+<tr><td>соединение</td><td>нет</td><td>рукопожатие перед данными</td></tr>
+<tr><td>доставка</td><td>без гарантий</td><td>подтверждения и повторы</td></tr>
+<tr><td>порядок</td><td>не сохраняется</td><td>сохраняется</td></tr>
+<tr><td>единица передачи</td><td>датаграмма</td><td>поток байтов</td></tr>
+<tr><td>применение</td><td>DNS, голосовая и видеосвязь, QUIC</td><td>HTTP/1.1 и HTTP/2, SSH, почта</td></tr>
+</tbody></table>
+</div>
+<h3 id="Рукопожатие-в-перехвате-tcpdump"><a class="header" href="#Рукопожатие-в-перехвате-tcpdump">Рукопожатие в перехвате tcpdump</a></h3>
+<p>Рассмотрим весь обмен в перехвате пакетов. Сервер из раздела о портах продолжает работать. Запрос к нему запишем в файл <code>req.txt</code>: стартовая строка, заголовок <code>Host</code> и пустая строка, каждая строка заканчивается парой символов <code>\r\n</code> (устройство запроса HTTP рассмотрено в главе <a href="./web.html">«Веб-технологии»</a>). Утилита <code>tcpdump</code> записывает в файл сегменты с портом 8000 на петлевом интерфейсе <code>lo</code>, а утилита <code>nc</code> открывает соединение, отправляет файл запроса и выводит ответ, пока сервер не закроет соединение.</p>
+<pre><code class="language-bash">$ printf 'GET /hello.txt HTTP/1.1\r\nHost: localhost\r\n\r\n' &gt; req.txt
+$ tcpdump -i lo -U -w hs.pcap 'tcp port 8000' 2&gt;/dev/null &amp;
+$ nc 127.0.0.1 8000 &lt; req.txt
+HTTP/1.0 200 OK
+Server: SimpleHTTP/0.6 Python/3.12.3
+Date: Sat, 03 Oct 2026 03:51:25 GMT
+Content-type: text/plain
+Content-Length: 13
+Last-Modified: Sat, 03 Oct 2026 03:51:23 GMT
+
+pulse 4.2 mA
+$ ss -tan 'sport = :8000'
+State     Recv-Q Send-Q Local Address:Port Peer Address:Port Process
+LISTEN    0      5          127.0.0.1:8000      0.0.0.0:*
+TIME-WAIT 0      0          127.0.0.1:8000    127.0.0.1:47054
+</code></pre>
+<p>После остановки перехвата командой <code>kill</code> разберём записанный файл; параметры TCP из строк удалены фильтром <code>sed</code>, чтобы строки умещались на странице.</p>
+<pre><code class="language-bash">$ tcpdump -r hs.pcap -nn -t 2&gt;/dev/null | sed -E 's/, options \[[^]]*\]//'
+IP 127.0.0.1.47054 &gt; 127.0.0.1.8000: Flags [S], seq 4126516469, win 65495, length 0
+IP 127.0.0.1.8000 &gt; 127.0.0.1.47054: Flags [S.], seq 2648559322, ack 4126516470, win 65483, length 0
+IP 127.0.0.1.47054 &gt; 127.0.0.1.8000: Flags [.], ack 1, win 512, length 0
+IP 127.0.0.1.47054 &gt; 127.0.0.1.8000: Flags [P.], seq 1:45, ack 1, win 512, length 44
+IP 127.0.0.1.8000 &gt; 127.0.0.1.47054: Flags [.], ack 45, win 512, length 0
+IP 127.0.0.1.8000 &gt; 127.0.0.1.47054: Flags [P.], seq 1:187, ack 45, win 512, length 186
+IP 127.0.0.1.47054 &gt; 127.0.0.1.8000: Flags [.], ack 187, win 511, length 0
+IP 127.0.0.1.8000 &gt; 127.0.0.1.47054: Flags [P.], seq 187:200, ack 45, win 512, length 13
+IP 127.0.0.1.47054 &gt; 127.0.0.1.8000: Flags [.], ack 200, win 511, length 0
+IP 127.0.0.1.8000 &gt; 127.0.0.1.47054: Flags [F.], seq 200, ack 45, win 512, length 0
+IP 127.0.0.1.47054 &gt; 127.0.0.1.8000: Flags [F.], seq 45, ack 201, win 512, length 0
+IP 127.0.0.1.8000 &gt; 127.0.0.1.47054: Flags [.], ack 46, win 512, length 0
+</code></pre>
+<p>Буквы в квадратных скобках — флаги сегмента: <code>S</code> — SYN, <code>.</code> — ACK, <code>P</code> — PSH, <code>F</code> — FIN. Первые три строки составляют рукопожатие: SYN клиента с временного порта, SYN-ACK сервера и ACK клиента. Затем идут запрос с флагом PSH — 44 байта файла <code>req.txt</code>, — его подтверждение сервером, два сегмента ответа — заголовки длиной 186 байт и тело длиной 13 байт — и их подтверждения. Последними идут FIN сервера, который закрывает соединение первым, поскольку встроенный сервер отвечает по HTTP/1.0 и соединение не поддерживает, FIN клиента, подтверждающий FIN сервера, и последнее подтверждение сервера; утилита <code>nc</code> без ключа <code>-N</code> сама соединение не закрывает и ждёт, пока его закроет сервер. Номера <code>seq</code> и <code>ack</code> после рукопожатия tcpdump показывает относительными, отсчитанными от начальных номеров сторон: <code>seq 1:45</code> означает байты запроса с первого по 44-й, а <code>ack 45</code> — что сервер получил их все и ожидает 45-й. Команда <code>ss</code> сразу после запроса показывает соединение сервера в состоянии TIME-WAIT: закрыл его первым сервер.</p>
+<h3 id="Контроль-перегрузок"><a class="header" href="#Контроль-перегрузок">Контроль перегрузок</a></h3>
+<p>TCP не знает пропускной способности пути заранее и определяет её опытным путём, регулируя <strong>окно перегрузки</strong> — объём данных, отправленных без подтверждения. В начале соединения окно растёт вдвое за каждое время туда и обратно; это медленный старт, который продолжается до первой потери или до порога. Дальше алгоритмы различаются:</p>
+<ul>
+<li><strong>Tahoe</strong> (1988) после любой потери возвращается к медленному старту с одного сегмента;</li>
+<li><strong>Reno</strong> (1990) при трёх повторных подтверждениях вдвое уменьшает окно и продолжает передачу (быстрое восстановление), а к медленному старту возвращается только по тайм-ауту (RFC 5681);</li>
+<li><strong>CUBIC</strong> (RFC 9438) после потери уменьшает окно лишь до 0,7 прежнего и наращивает его по кубической функции времени: быстро вдали от прежнего максимума и осторожно вблизи него, независимо от RTT. Это алгоритм по умолчанию в Linux, Windows и системах Apple;</li>
+<li><strong>BBR</strong> (Google, 2016) строит модель пути — полосу узкого места и минимальную задержку — и не принимает случайную потерю за признак перегрузки, поэтому выигрывает на длинных путях с потерями. В основной ветке ядра Linux находится первая версия алгоритма; в общем узком месте с малым буфером она вытесняет соседние потоки CUBIC.</li>
+</ul>
+<p>Для алгоритмов, уменьшающих окно вдвое при каждой потере, установившуюся скорость позволяет оценить формула Матиса:</p>
+<p>$$
+v \approx \frac{\mathrm{MSS}}{\mathrm{RTT}} \cdot \frac{C}{\sqrt{p}}, \qquad C = \sqrt{3/2} \approx 1{,}22,
+$$</p>
+<p>где \(p\) — доля потерянных пакетов. Размер сегмента выводится из MTU: 1500 − 20 байт заголовка IP − 20 байт заголовка TCP = 1460 байт, а с метками времени в каждом сегменте — 1448. Оценим скорость для линии с RTT 50 мс и потерями 1 %: при MSS 1448 байт получим 1448 / 0,05 · 1,22 / 0,1 ≈ 353 КБ/с, независимо от полосы канала. Формула является оценкой для Reno и подобных ему алгоритмов, а не пределом скорости любого TCP: опыт ниже показывает BBR при тех же потерях в 25 раз быстрее. Поэтому файл, копируемый между корпусами института медленнее, чем позволяет канал, нередко упирается не в «плохую сеть», а в реакцию алгоритма на редкие потери при большой задержке. Другая частая причина — окно получателя и буферы сокетов меньше произведения полосы на задержку: при 100 Мбит/с и RTT 30 мс в пути должно находиться около 375 КБ данных. Окно перегрузки, RTT и алгоритм каждого соединения показывает команда <code>ss -ti</code>.</p>
+<h3 id="Опыт-cubic-и-bbr-на-линии-с-потерями"><a class="header" href="#Опыт-cubic-и-bbr-на-линии-с-потерями">Опыт: CUBIC и BBR на линии с потерями</a></h3>
+<p>Влияние алгоритма на скорость покажем на учебной линии с задержкой и потерями. Скрипт <code>netem.sh</code> строит цепочку из трёх пространств имён: клиент <code>a</code> в сети 192.0.2.0/24, сервер <code>b</code> в сети 198.51.100.0/24 и маршрутизатор <code>r</code> между ними. Дисциплина очереди netem на интерфейсе <code>r</code>, обращённом к клиенту, задерживает на 50 мс каждый пакет, уходящий к клиенту, и случайно теряет 1 % таких пакетов; в обратную сторону пакеты идут без задержки. Укрупнение пакетов TSO, GSO и GRO на виртуальных интерфейсах выключено, чтобы потеря касалась одного пакета, а не пачки. В пространстве <code>b</code> встроенный сервер раздаёт файл случайных данных размером 8 МиБ.</p>
+<pre><code class="language-bash"># Клиент a — маршрутизатор r — сервер b; на r задержка 50 мс и потери 1 %
+for ns in a r b; do ip netns add $ns; done
+ip link add va netns a type veth peer name ra netns r
+ip link add vb netns b type veth peer name rb netns r
+ip -n a addr add 192.0.2.10/24 dev va
+ip -n r addr add 192.0.2.1/24 dev ra
+ip -n r addr add 198.51.100.1/24 dev rb
+ip -n b addr add 198.51.100.10/24 dev vb
+for d in "a va" "r ra" "r rb" "b vb"; do ip -n ${d% *} link set ${d#* } up
+  ip netns exec ${d% *} ethtool -K ${d#* } tso off gso off gro off; done
+ip netns exec r sysctl -qw net.ipv4.ip_forward=1
+ip -n a route add default via 192.0.2.1
+ip -n b route add default via 198.51.100.1
+tc -n r qdisc add dev ra root netem delay 50ms loss 1%
+mkdir -p www &amp;&amp; head -c 8M /dev/urandom &gt; www/data.bin
+ip netns exec b python3 -m http.server 8000 -d www &gt;/dev/null 2&gt;&amp;1 &amp;
+</code></pre>
+<p>Скрипт <code>get.sh</code> скачивает файл из пространства <code>a</code> и печатает время:</p>
+<pre><code class="language-bash">curl -s -o /dev/null -w '%{time_total} с\n' http://198.51.100.10:8000/data.bin
+</code></pre>
+<pre><code class="language-bash">$ sh netem.sh
+$ ip netns exec a ping -c 4 -q 198.51.100.10
+PING 198.51.100.10 (198.51.100.10) 56(84) bytes of data.
+
+--- 198.51.100.10 ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 3009ms
+rtt min/avg/max/mdev = 50.148/63.712/101.371/21.750 ms
+$ ip netns exec b sysctl net.ipv4.tcp_congestion_control
+net.ipv4.tcp_congestion_control = cubic
+$ for i in 1 2 3; do ip netns exec a sh get.sh; done
+23.651585 с
+22.971182 с
+25.421624 с
+$ ip netns exec b sysctl -w net.ipv4.tcp_congestion_control=bbr
+net.ipv4.tcp_congestion_control = bbr
+$ for i in 1 2 3; do ip netns exec a sh get.sh; done
+0.938207 с
+0.904590 с
+0.986031 с
+</code></pre>
+<p>Время туда и обратно составило 50 мс; первый эхо-запрос ждал ещё и ответа ARP от <code>r</code>, который netem тоже задержал, поэтому максимум равен 101 мс, а среднее — 64 мс. Алгоритм задаётся у отправителя данных, то есть у сервера в <code>b</code>, параметром <code>net.ipv4.tcp_congestion_control</code> его пространства имён, а новое соединение получает алгоритм, действующий в момент установления. При CUBIC, выбранном в Linux по умолчанию, файл скачивается за 23,0–25,4 с со скоростью 0,33–0,37 МБ/с, в среднем 0,35 МБ/с, — почти точно столько, сколько даёт оценка Матиса, 353 КБ/с: окно уменьшается при каждой потере. BBR при тех же потерях скачивает файл за 0,90–0,99 с со скоростью 8,5–9,3 МБ/с, в среднем в 25 раз быстрее, поскольку окно из-за каждой потери не уменьшает. Таким образом, на линии со случайными потерями скорость определяет не полоса канала, а алгоритм контроля перегрузок. Дисциплину netem и алгоритм BBR реализуют модули ядра <code>sch_netem</code> и <code>tcp_bbr</code>, которые загружаются при первом использовании.</p>
+<h3 id="Наблюдение-за-соединениями"><a class="header" href="#Наблюдение-за-соединениями">Наблюдение за соединениями</a></h3>
+<p>Состояние соединений и сами пакеты показывают следующие команды.</p>
+<pre><code class="language-bash">ss -tn                                        # установленные и закрывающиеся соединения TCP
+sudo ss -tlnp                                 # слушающие порты и процессы
+ss -ti                                        # окно перегрузки, RTT и алгоритм соединений
+sudo tcpdump -ni any 'tcp port 443'           # все интерфейсы, без разрешения имён
+sudo tcpdump -ni eth0 host 192.0.2.20         # обмен с одним узлом
+sudo tcpdump -i lo -w dump.pcap 'port 8000'   # запись в файл для разбора позже
+tcpdump -r dump.pcap -nn -A                   # чтение файла с выводом содержимого
+</code></pre>
+<p>Ключ <code>-n</code> утилиты <code>tcpdump</code> отключает разрешение адресов в имена, чтобы перехват сам не порождал запросов DNS, а <code>-nn</code> — ещё и номеров портов. Псевдоинтерфейс <code>any</code> слушает все интерфейсы сразу, но без неразборчивого режима. Фильтр на языке BPF отбирает нужное: <code>host</code>, <code>port</code>, <code>tcp</code>, <code>udp</code> и их сочетания через <code>and</code>, <code>or</code> и <code>not</code>. Файл <code>.pcap</code> открывает Wireshark, который позволяет построить графики окна TCP, найти повторные передачи и измерить задержки. Для HTTPS перехват показывает только записи TLS, а содержимое запросов видно лишь в открытом HTTP. Для перехвата необходимы права root, а выполняется он только в своей сети или с разрешения её владельца: пакеты содержат чужие данные.</p>
+<h2 id="Резюме"><a class="header" href="#Резюме">Резюме</a></h2>
+<p>Таким образом, запоминать необходимо не столько детали протоколов, сколько идею слоёв: каждый уровень пользуется услугами нижнего и ничего не знает о его устройстве. Поэтому один и тот же код на <code>requests</code> одинаково работает и по Wi-Fi, и по оптике. Маршрут пакета определяет самый длинный подходящий префикс в таблице, выбранной правилами, а выбор ядра показывает <code>ip route get</code>. TCP обеспечивает надёжную доставку ценой рукопожатия и контроля перегрузок, и на линии со случайными потерями скорость определяет алгоритм контроля перегрузок: BBR сохраняет её там, где CUBIC её теряет.</p>
+<p>Когда что-либо не работает, уровни проверяются в порядке цены проверки, а не строго снизу вверх: сначала самое дешёвое и самое частое. Разрешение имени помещено в таблице на второе место по этой причине: оно проверяется одной командой, а нарушается чаще прочего, хотя уровень у него прикладной; DNS рассматривается в главе <a href="./web.html">«Веб-технологии»</a>.</p>
+<div class="table-wrapper"><table><thead><tr><th>Что проверяем</th><th>Уровень</th><th>Чем смотреть</th></tr></thead><tbody>
+<tr><td>Физическое подключение интерфейса</td><td>физический, канальный</td><td><code>ip link</code>, <code>ethtool</code></td></tr>
+<tr><td>Разрешение имени</td><td>прикладной (DNS)</td><td><code>dig</code>, <code>nslookup</code></td></tr>
+<tr><td>Маршрут и прохождение пакетов</td><td>сетевой</td><td><code>ip route get</code>, <code>ping</code>, <code>tracepath</code>, <code>mtr</code></td></tr>
+<tr><td>Открытый порт и слушающий его процесс</td><td>транспортный</td><td><code>ss -tlnp</code>; отказ или тайм-аут соединения</td></tr>
+<tr><td>Содержимое ответа сервера</td><td>прикладной</td><td><code>curl -v</code>; <code>tcpdump</code> — для открытого HTTP и для проверки прохождения пакетов</td></tr>
+</tbody></table>
+</div>
+<p>Бессмысленно отлаживать код запроса, если имя сервера не разрешается, и проверять DNS, если не поднят сетевой интерфейс.</p>
+<h2 id="Упражнения"><a class="header" href="#Упражнения">Упражнения</a></h2>
+<ol>
+<li>Дополнить таблицу задачи о выборе маршрута строкой <code>192.0.2.64/26 via 192.0.2.33</code>, предсказать маршруты адресов 192.0.2.48, 192.0.2.70 и 192.0.2.100 и проверить предсказание командой <code>ip route get</code> в пространстве имён.</li>
+<li>Повторить опыт с CUBIC и BBR при задержке 10 мс и потерях 0,1 %, оценить скорость CUBIC по формуле Матиса и сравнить оценку с измеренной.</li>
+<li>Перехватить <code>tcpdump</code> рукопожатие запроса HTTPS и найти в нём сообщение ClientHello с именем сервера; устройство TLS рассматривается в главе <a href="./web.html">«Веб-технологии»</a>.</li>
+</ol>
+<h2 id="Полезные-ссылки"><a class="header" href="#Полезные-ссылки">Полезные ссылки</a></h2>
+<ul>
+<li>J. Kurose, K. Ross. <a href="https://gaia.cs.umass.edu/kurose_ross/">Computer Networking: A Top-Down Approach</a>, 9-е изд. — Pearson, 2026, учебник по сетям, построенный сверху вниз, от приложений к каналу;</li>
+<li><a href="https://www.rfc-editor.org/rfc/rfc9293">RFC 9293</a> (TCP), <a href="https://www.rfc-editor.org/rfc/rfc5681">RFC 5681</a> (контроль перегрузок TCP) и <a href="https://www.rfc-editor.org/rfc/rfc9438">RFC 9438</a> (CUBIC), первоисточники по транспортному уровню;</li>
+<li>M. Mathis, J. Semke, J. Mahdavi, T. Ott. <a href="https://doi.org/10.1145/263932.264023">The Macroscopic Behavior of the TCP Congestion Avoidance Algorithm</a> // ACM SIGCOMM Computer Communication Review, 1997, т. 27, № 3 — статья с оценкой скорости TCP при потерях;</li>
+<li>N. Cardwell, Y. Cheng, C. S. Gunn, S. H. Yeganeh, V. Jacobson. <a href="https://doi.org/10.1145/3012426.3022184">BBR: Congestion-Based Congestion Control</a> // ACM Queue, 2016, т. 14, № 5 — описание алгоритма BBR;</li>
+<li>страницы руководства <a href="https://man7.org/linux/man-pages/man8/ip-route.8.html">ip-route(8)</a>, <a href="https://man7.org/linux/man-pages/man8/ip-netns.8.html">ip-netns(8)</a>, <a href="https://man7.org/linux/man-pages/man8/tc-netem.8.html">tc-netem(8)</a> и <a href="https://www.tcpdump.org/manpages/tcpdump.1.html">tcpdump(1)</a>, справочник по командам главы.</li>
+</ul>
+<p>Поверх адресов, маршрутов и соединений TCP работают прикладные протоколы — DNS, HTTP и TLS; им и работе с сетью из Python посвящена следующая глава, <a href="./web.html">«Веб-технологии»</a>.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../dev/app.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../dev/web.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../dev/app.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../dev/web.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../web/print-edition.js"></script>
+
+
+    </div>
+    </body>
+</html>

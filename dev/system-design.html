@@ -1,0 +1,905 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Системный дизайн - Разработка и применение программного обеспечения в физических исследованиях</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../intro/intro.html">О книге</a></li><li class="chapter-item expanded affix "><a href="../intro/about-me.html">О себе</a></li><li class="chapter-item expanded affix "><li class="part-title">Инструменты разработчика</li><li class="chapter-item expanded "><a href="../ai/intro.html"><strong aria-hidden="true">1.</strong> ИИ для разработки</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ai/context.html"><strong aria-hidden="true">1.1.</strong> Контекст и скорость изменений</a></li><li class="chapter-item expanded "><a href="../ai/develop.html"><strong aria-hidden="true">1.2.</strong> ИИ и разработчик</a></li><li class="chapter-item expanded "><a href="../ai/basic.html"><strong aria-hidden="true">1.3.</strong> Технические основы</a></li><li class="chapter-item expanded "><a href="../ai/instruments.html"><strong aria-hidden="true">1.4.</strong> Инструментарий</a></li><li class="chapter-item expanded "><a href="../ai/copilot.html"><strong aria-hidden="true">1.5.</strong> GitHub Copilot</a></li><li class="chapter-item expanded "><a href="../ai/qa.html"><strong aria-hidden="true">1.6.</strong> Вопросы и ответы</a></li></ol></li><li class="chapter-item expanded "><a href="../dev/git.html"><strong aria-hidden="true">2.</strong> Git</a></li><li class="chapter-item expanded affix "><li class="part-title">Операционная система Linux</li><li class="chapter-item expanded "><a href="../linux/intro.html"><strong aria-hidden="true">3.</strong> Основы Linux</a></li><li class="chapter-item expanded "><a href="../linux/tools.html"><strong aria-hidden="true">4.</strong> Инструменты</a></li><li class="chapter-item expanded "><a href="../linux/booting.html"><strong aria-hidden="true">5.</strong> Процесс загрузки</a></li><li class="chapter-item expanded "><a href="../linux/filesystems.html"><strong aria-hidden="true">6.</strong> Файловые системы</a></li><li class="chapter-item expanded "><a href="../linux/install-arch-linux.html"><strong aria-hidden="true">7.</strong> Установка Arch Linux</a></li><li class="chapter-item expanded "><a href="../linux/structure.html"><strong aria-hidden="true">8.</strong> Внутреннее устройство Linux</a></li><li class="chapter-item expanded "><a href="../dev/docker.html"><strong aria-hidden="true">9.</strong> Docker</a></li><li class="chapter-item expanded affix "><li class="part-title">Язык Python</li><li class="chapter-item expanded "><a href="../dev/python/init.html"><strong aria-hidden="true">10.</strong> Устройство интерпретатора Python</a></li><li class="chapter-item expanded "><a href="../dev/python/objects.html"><strong aria-hidden="true">11.</strong> Объекты и память</a></li><li class="chapter-item expanded "><a href="../dev/python/collections.html"><strong aria-hidden="true">12.</strong> Коллекции</a></li><li class="chapter-item expanded "><a href="../dev/python/o-notation.html"><strong aria-hidden="true">13.</strong> Сложность операций с коллекциями</a></li><li class="chapter-item expanded "><a href="../dev/python/functions.html"><strong aria-hidden="true">14.</strong> Функции</a></li><li class="chapter-item expanded "><a href="../dev/python/async.html"><strong aria-hidden="true">15.</strong> Итераторы, генераторы и корутины</a></li><li class="chapter-item expanded "><a href="../dev/python/decorators.html"><strong aria-hidden="true">16.</strong> Декораторы и functools</a></li><li class="chapter-item expanded "><a href="../dev/python/classes.html"><strong aria-hidden="true">17.</strong> Классы</a></li><li class="chapter-item expanded affix "><li class="part-title">Алгоритмы и структуры данных</li><li class="chapter-item expanded "><a href="../cs/intro.html"><strong aria-hidden="true">18.</strong> Роль алгоритмов в работе физика</a></li><li class="chapter-item expanded "><a href="../cs/basic-algos.html"><strong aria-hidden="true">19.</strong> Введение в алгоритмы</a></li><li class="chapter-item expanded "><a href="../cs/basic-structures.html"><strong aria-hidden="true">20.</strong> Основные структуры данных</a></li><li class="chapter-item expanded "><a href="../cs/recurs-and-sorts.html"><strong aria-hidden="true">21.</strong> Рекурсия и сортировки</a></li><li class="chapter-item expanded "><a href="../cs/hash-funcs.html"><strong aria-hidden="true">22.</strong> Хеш-функции</a></li><li class="chapter-item expanded "><a href="../cs/trees.html"><strong aria-hidden="true">23.</strong> Деревья</a></li><li class="chapter-item expanded "><a href="../cs/graphs.html"><strong aria-hidden="true">24.</strong> Графы</a></li><li class="chapter-item expanded affix "><li class="part-title">Инженерные практики</li><li class="chapter-item expanded "><a href="../dev/life.html"><strong aria-hidden="true">25.</strong> Жизненный цикл ПО</a></li><li class="chapter-item expanded "><a href="../dev/python/requirements.html"><strong aria-hidden="true">26.</strong> Требования к коду</a></li><li class="chapter-item expanded "><a href="../dev/app.html"><strong aria-hidden="true">27.</strong> От скрипта к приложению</a></li><li class="chapter-item expanded "><a href="../dev/net.html"><strong aria-hidden="true">28.</strong> Компьютерные сети</a></li><li class="chapter-item expanded "><a href="../dev/web.html"><strong aria-hidden="true">29.</strong> Веб-технологии</a></li><li class="chapter-item expanded "><a href="../dev/bd.html"><strong aria-hidden="true">30.</strong> Базы данных</a></li><li class="chapter-item expanded "><a href="../dev/bd-work.html"><strong aria-hidden="true">31.</strong> Работа с базами данных</a></li><li class="chapter-item expanded "><a href="../dev/system-design.html" class="active"><strong aria-hidden="true">32.</strong> Системный дизайн</a></li><li class="chapter-item expanded affix "><li class="part-title">Обработка данных</li><li class="chapter-item expanded "><a href="../dev/python/intro.html"><strong aria-hidden="true">33.</strong> Научные библиотеки Python</a></li><li class="chapter-item expanded "><a href="../dev/python/numpy-and-pandas.html"><strong aria-hidden="true">34.</strong> NumPy и pandas</a></li><li class="chapter-item expanded "><a href="../dev/python/scipy.html"><strong aria-hidden="true">35.</strong> SciPy</a></li><li class="chapter-item expanded "><a href="../dev/python/visualization.html"><strong aria-hidden="true">36.</strong> Визуализация на Python</a></li><li class="chapter-item expanded "><a href="../ds/intro.html"><strong aria-hidden="true">37.</strong> Машинное обучение</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ds/basic.html"><strong aria-hidden="true">37.1.</strong> Основные понятия</a></li><li class="chapter-item expanded "><a href="../ds/ml.html"><strong aria-hidden="true">37.2.</strong> Классические алгоритмы</a></li><li class="chapter-item expanded "><a href="../ds/nn.html"><strong aria-hidden="true">37.3.</strong> Нейронные сети</a></li><li class="chapter-item expanded "><a href="../ds/tools.html"><strong aria-hidden="true">37.4.</strong> Инструменты: scikit-learn</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Ускорение расчётов</li><li class="chapter-item expanded "><a href="../perf/intro.html"><strong aria-hidden="true">38.</strong> С чего начинать оптимизацию</a></li><li class="chapter-item expanded "><a href="../dev/python/optimization.html"><strong aria-hidden="true">39.</strong> Причины низкой скорости Python</a></li><li class="chapter-item expanded "><a href="../perf/python-tricks.html"><strong aria-hidden="true">40.</strong> Оптимизация средствами самого Python</a></li><li class="chapter-item expanded "><a href="../perf/perf.html"><strong aria-hidden="true">41.</strong> Скорость выполнения программ</a></li><li class="chapter-item expanded "><a href="../perf/gil.html"><strong aria-hidden="true">42.</strong> Многопоточность и GIL</a></li><li class="chapter-item expanded "><a href="../perf/async.html"><strong aria-hidden="true">43.</strong> Асинхронность</a></li><li class="chapter-item expanded "><a href="../perf/cuda.html"><strong aria-hidden="true">44.</strong> CUDA и вычисления на GPU</a></li><li class="chapter-item expanded affix "><li class="part-title">Разбор реальных кодов</li><li class="chapter-item expanded "><a href="../examples/intro.html"><strong aria-hidden="true">45.</strong> Коды и скрипты</a></li><li class="chapter-item expanded "><a href="../examples/kenv.html"><strong aria-hidden="true">46.</strong> Уравнение огибающей Капчинского—Владимирского для пучка заряженных частиц</a></li><li class="chapter-item expanded "><a href="../examples/envelope-optimize.html"><strong aria-hidden="true">47.</strong> Оптимизация огибающей пучка заряженных частиц с помощью генетического алгоритма</a></li><li class="chapter-item expanded "><a href="../examples/redpic.html"><strong aria-hidden="true">48.</strong> Релятивистская разностная схема для расчёта динамики частиц</a></li><li class="chapter-item expanded "><a href="../examples/orbit-correction.html"><strong aria-hidden="true">49.</strong> Коррекция равновесной орбиты с применением матрицы отклика и нейронных сетей</a></li><li class="chapter-item expanded "><a href="../examples/cadquery/layout.html"><strong aria-hidden="true">50.</strong> Трёхмерная схема установки кодом</a></li><li class="chapter-item expanded "><a href="../examples/accumulator.html"><strong aria-hidden="true">51.</strong> Цифровой двойник ускорителя</a></li><li class="chapter-item expanded "><a href="../examples/sava.html"><strong aria-hidden="true">52.</strong> Мультиагентный помощник оператора</a></li><li class="chapter-item expanded "><a href="../examples/ai-scientist.html"><strong aria-hidden="true">53.</strong> Автономный исследователь на языковых моделях</a></li><li class="chapter-item expanded "><a href="../examples/async-api.html"><strong aria-hidden="true">54.</strong> Асинхронное API для кинотеатра</a></li><li class="chapter-item expanded affix "><li class="part-title">Практикум</li><li class="chapter-item expanded "><a href="../practicum/intro.html"><strong aria-hidden="true">55.</strong> Структура заданий</a></li><li class="chapter-item expanded "><a href="../practicum/review-code-task.html"><strong aria-hidden="true">56.</strong> Ревью чужого кода</a></li><li class="chapter-item expanded "><a href="../practicum/markov-chain-task.html"><strong aria-hidden="true">57.</strong> Генерация текста на основе данных</a></li><li class="chapter-item expanded "><a href="../practicum/booting-linux-task.html"><strong aria-hidden="true">58.</strong> Установка Arch Linux вручную с RAID1 и UEFI</a></li><li class="chapter-item expanded "><a href="../practicum/linux-tools-task.html"><strong aria-hidden="true">59.</strong> Настройка окружения и работа с утилитами</a></li><li class="chapter-item expanded "><a href="../practicum/linux-structure-task.html"><strong aria-hidden="true">60.</strong> Работа с долгоиграющими процессами</a></li><li class="chapter-item expanded "><a href="../practicum/python-algo-task.html"><strong aria-hidden="true">61.</strong> Решение задач на Python и анализ сложности</a></li><li class="chapter-item expanded "><a href="../practicum/kitty-startup-task.html"><strong aria-hidden="true">62.</strong> Деплой стартапа</a></li><li class="chapter-item expanded "><a href="../practicum/final-project-requirements.html"><strong aria-hidden="true">63.</strong> Итоговый проект</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Приложение. Экспресс-курс</li><li class="chapter-item expanded "><a href="../dev/python/basics.html"><strong aria-hidden="true">64.</strong> Основы языка</a></li><li class="chapter-item expanded "><a href="../dev/python/numpy.html"><strong aria-hidden="true">65.</strong> Массивы NumPy</a></li><li class="chapter-item expanded "><a href="../dev/python/matplotlib.html"><strong aria-hidden="true">66.</strong> Графики Matplotlib</a></li><li class="chapter-item expanded affix "><a href="../resume/intro.html">Заключение</a></li><li class="chapter-item expanded affix "><a href="../resume/literature.html">Литература и статьи</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Разработка и применение программного обеспечения в физических исследованиях</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/phys-dev/soft-dev-book/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="Системный-дизайн"><a class="header" href="#Системный-дизайн">Системный дизайн</a></h1>
+<p>Программа, которой пользуется группа, со временем превращается в систему. Рядом с ней появляются база данных, общая для нескольких программ, очередь между сбором и обработкой, второй экземпляр сервиса и балансировщик перед обоими. Поведение такой системы определяется уже не только кодом, но и тем, как её части ведут себя под нагрузкой и при отказах. Одна программа либо работает, либо нет; система из нескольких программ отказывает по частям, и каждая часть отказывает по-своему: один экземпляр отвечает медленно, другой завис, очередь переполнилась, а повторы клиентов после кратковременного сбоя многократно умножили нагрузку.</p>
+<p>В настоящей главе рассматривается системный дизайн — выбор устройства системы по требованиям, записанным числами. Последовательно разобраны запись требований, масштабирование, отказоустойчивость, работа с данными, наблюдаемость и сопровождение, а в завершение перечисленные приёмы применены к проекту системы сбора данных физической установки. Глава продолжает раздел «Рост приложения в систему» главы <a href="./app.html">«От скрипта к приложению»</a> и опирается на главы <a href="./net.html">«Компьютерные сети»</a>, <a href="./web.html">«Веб-технологии»</a>, <a href="./bd.html">«Базы данных»</a>, <a href="./bd-work.html">«Работа с базами данных»</a> и <a href="./docker.html">«Docker»</a>.</p>
+<p>Хорошо спроектированную систему описывают четырьмя свойствами. <strong>Масштабируемость</strong> — способность сохранять заданные показатели, прежде всего задержку и долю ошибок, при росте нагрузки за счёт добавления ресурсов. <strong>Отказоустойчивость</strong> — способность продолжать обслуживание, пусть и с ухудшением, при отказе машины, процесса, сети или зависимости. <strong>Наблюдаемость</strong> — возможность по журналам, метрикам и трассировкам понять, что происходит внутри работающей системы. <strong>Сопровождаемость</strong> — возможность изменять систему, выкатывать новые версии и откатывать неудачные быстро и предсказуемо. Свойства конкурируют за один бюджет: каждая копия, повышающая отказоустойчивость, требует затрат, а каждый новый компонент усложняет сопровождение.</p>
+<p>Сквозным примером главы служит архив измерений установки: оцифровщики непрерывно записывают в него данные, а сотрудники и их скрипты читают запуски и графики по HTTP. Каждое типовое решение имеет цену: балансировщик добавляет сетевой переход, реплика базы отстаёт от главной, кеш может отдать устаревшее значение, повтор создаёт дополнительную нагрузку. Поэтому решения принимаются по числам — сколько запросов в секунду, какая задержка допустима, какая доля ответов может быть неуспешной. Числа же показывают, когда сложное устройство не требуется: лабораторному сервису с десятью пользователями одна программа и одна база подходят лучше распределённой системы.</p>
+<p>Листинги главы выполнены на виртуальной машине под Python 3.12 с FastAPI 0.142, uvicorn 0.54, httpx 0.28 и nginx 1.31 — той же, на которой записаны демонстрации лекции «Архитектура и системный дизайн»; числа демонстраций приведены по их записям. Клиент и сервис на этой машине делят два ядра, поэтому пропускная способность и задержки на другой машине будут иными, а распределение запросов по экземплярам, коды ответов и счётчики — теми же.</p>
+<blockquote>
+<p><strong>Слайды к главе.</strong> Требования в числах, масштабирование, отказоустойчивость, работа с данными, наблюдаемость и проект системы сбора данных изложены также в лекции «Архитектура и системный дизайн» с демонстрациями в терминале; слайды лекции доступны <a href="https://phys-dev.github.io/soft-dev-book/slides/lecture-14.html#/cover">на сайте книги</a> и <a href="https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-14.pdf">в PDF</a>.</p>
+</blockquote>
+<iframe src="../slides/lecture-14.html#/cover" title="Слайды лекции «Архитектура и системный дизайн»" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
+<h2 id="Требования-в-числах"><a class="header" href="#Требования-в-числах">Требования в числах</a></h2>
+<blockquote>
+<p><strong>Слайды к главе.</strong> Функциональные и нефункциональные требования, нагрузка и перцентили задержки, SLI, SLO и SLA, бюджет ошибок и «девятки» изложены также в первой части лекции «Архитектура и системный дизайн» с демонстрациями в терминале; слайды лекции доступны <a href="https://phys-dev.github.io/soft-dev-book/slides/lecture-14.html#/sec-req">на сайте книги</a> и <a href="https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-14.pdf">в PDF</a>.</p>
+</blockquote>
+<iframe src="../slides/lecture-14.html#/sec-req" title="Слайды лекции «Архитектура и системный дизайн»: требования" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
+<p>Проектирование начинается не со схемы, а с требований. <strong>Функциональные требования</strong> перечисляют, что система делает: принимает данные с оцифровщиков, выдаёт запуск по номеру, строит график канала за интервал. <strong>Нефункциональные требования</strong> описывают, насколько хорошо она это делает, и записываются числами: нагрузка и её пики, допустимая задержка, доля успешных ответов, объём и срок хранения данных, стоимость. Архитектуру определяют именно нефункциональные требования: один и тот же набор функций для десяти пользователей и для ста тысяч запросов в секунду реализуется совершенно разными системами. Структура спецификации требований рассмотрена в главе <a href="./life.html">«Жизненный цикл ПО»</a>; здесь важно, что каждое требование к качеству получает число.</p>
+<div class="table-wrapper"><table><thead><tr><th>Требование</th><th>Пример для архива измерений</th></tr></thead><tbody>
+<tr><td>функциональное</td><td>выдача запуска по номеру, график канала за интервал</td></tr>
+<tr><td>нагрузка</td><td>запись 4 МБ/с непрерывно, чтение — 50 запросов/с в пике</td></tr>
+<tr><td>задержка</td><td>p99 выдачи запуска меньше 300 мс</td></tr>
+<tr><td>доступность</td><td>99,9 % успешных ответов за 30 дней</td></tr>
+<tr><td>сохранность</td><td>ни одного потерянного измерения</td></tr>
+<tr><td>стоимость</td><td>три машины и диски на год записи</td></tr>
+</tbody></table>
+</div>
+<p>Требование без числа проверить нельзя: «быстро» превращается в перцентиль задержки, «надёжно» — в долю успешных ответов за окно времени. В требования входит и цена: каждая дополнительная девятка доступности кратно увеличивает число машин, площадок и объём работы.</p>
+<h3 id="Нагрузка-и-задержка"><a class="header" href="#Нагрузка-и-задержка">Нагрузка и задержка</a></h3>
+<p>Нагрузку описывают числом запросов в секунду (rps), причём важно не только среднее за сутки, но и пик: у архива измерений он приходится на утро после ночной смены, когда скрипты обработки запускаются одновременно. Задержка представляет собой не одно число, а распределение, и описывают её <strong>перцентилями</strong>. Медиана p50 — время, которого не превышает половина запросов, p95 и p99 — время, которого не превышают 95 и 99 % запросов. Среднее для этого непригодно: несколько очень медленных ответов сдвигают его, но не показывают, насколько велика задержка именно этих ответов. Разницу показывает модель сервиса, у которого 4 % запросов обращаются к медленному диску:</p>
+<pre><code class="language-python">import random
+import statistics
+
+rng = random.Random(14)
+# 96 % запросов обслуживаются около 20 мс, 4 % обращаются к медленному диску
+lat = [rng.gauss(200, 5) if rng.random() &lt; 0.04 else rng.gauss(20, 2)
+       for _ in range(10_000)]
+q = statistics.quantiles(lat, n=100, method='inclusive')  # q[k - 1] — k-й
+print(f'среднее {statistics.fmean(lat):.1f} мс, p50 {q[49]:.1f} мс')
+print(f'p95 {q[94]:.1f} мс, p99 {q[98]:.1f} мс, максимум {max(lat):.1f} мс')
+</code></pre>
+<pre><code>среднее 26.8 мс, p50 20.1 мс
+p95 24.5 мс, p99 203.3 мс, максимум 215.4 мс
+</code></pre>
+<p>Функция <code>statistics.quantiles</code> с <code>n=100</code> возвращает 99 точек разбиения, и k-й перцентиль равен элементу с индексом k − 1. Метод <code>inclusive</code> считает наименьшее и наибольшее значения выборки нулевым и сотым перцентилями и не выходит за пределы наблюдённых значений; метод по умолчанию, <code>exclusive</code>, предполагает, что в генеральной совокупности встречаются и более крайние значения. Среднее, 26,8 мс, больше медианы, но о медленных ответах ничего не сообщает: их показывает только p99, равный 203,3 мс.</p>
+<p>Хвост распределения затрагивает многих пользователей. Оценим, как часто страница, для построения которой выполняется 20 запросов, получает хотя бы один ответ медленнее p99. Вероятность того, что все 20 ответов быстрее p99, равна \(0{,}99^{20} \approx 0{,}82\), поэтому медленный ответ встречается примерно на каждой пятой странице: \(1 - 0{,}99^{20} \approx 0{,}18\). Таким образом, требования к задержке записывают по p95 или p99, а не по среднему.</p>
+<p>Нагрузку, задержку и число одновременно обрабатываемых запросов связывает <strong>закон Литтла</strong>: среднее число запросов в системе равно интенсивности потока, умноженной на среднее время пребывания запроса, \(L = \lambda W\). При \(\lambda = 100\) запросов/с и \(W = 30\) мс в работе одновременно находятся в среднем \(L = 3\) запроса. Если сервис способен обрабатывать одновременно четыре запроса, его ёмкость ограничена значением \(4/W\), и поток выше ёмкости приводит к неограниченному росту очереди и задержки.</p>
+<h3 id="Открытая-и-замкнутая-модель-нагрузки"><a class="header" href="#Открытая-и-замкнутая-модель-нагрузки">Открытая и замкнутая модель нагрузки</a></h3>
+<p>Поведение задержки у границы ёмкости показывает демонстрация к лекции. Сервис <code>svc.py</code> на FastAPI пропускает к работе не больше четырёх запросов одновременно (семафор asyncio); обычный запрос длится 20 мс, а каждый двадцать пятый, то есть 4 % запросов, — 200 мс. Найдём ёмкость сервиса; для этого достаточно закона Литтла. Среднее время обработки равно \(0{,}96 \cdot 20 + 0{,}04 \cdot 200 = 27{,}2\) мс, и по закону Литтла четыре одновременных запроса обслуживаются с темпом около \(4 / 0{,}0272 \approx 147\) запросов/с. Генератор <code>aload.py</code> на httpx отправляет запросы по расписанию с заданной частотой, не дожидаясь ответов, и подаёт каждую частоту в течение 4 с:</p>
+<div class="table-wrapper"><table><thead><tr><th>Частота, запросов/с</th><th>Запросов</th><th>Среднее, мс</th><th>p50, мс</th><th>p95, мс</th><th>p99, мс</th><th>Максимум, мс</th><th>Ошибок</th></tr></thead><tbody>
+<tr><td>50</td><td>200</td><td>30</td><td>22</td><td>27</td><td>203</td><td>205</td><td>0</td></tr>
+<tr><td>100</td><td>400</td><td>29</td><td>22</td><td>32</td><td>202</td><td>203</td><td>0</td></tr>
+<tr><td>140</td><td>560</td><td>32</td><td>23</td><td>35</td><td>208</td><td>214</td><td>0</td></tr>
+<tr><td>160</td><td>640</td><td>267</td><td>265</td><td>499</td><td>563</td><td>696</td><td>0</td></tr>
+<tr><td>200</td><td>800</td><td>799</td><td>792</td><td>1545</td><td>1621</td><td>1819</td><td>0</td></tr>
+</tbody></table>
+</div>
+<p>До 140 запросов/с медиана составляет 22–23 мс, среднее — 29–32 мс, а p99 — 202–208 мс: медленные 4 % не видны в медиане, слегка сдвигают среднее и полностью определяют p99. При 160 запросах/с, всего на 9 % выше ёмкости, медиана вырастает до 265 мс, а при 200 — до 792 мс с максимумом 1819 мс: запросы приходят быстрее, чем обслуживаются, и очередь растёт всё время теста. Ошибок нет ни в одном прогоне — перегрузка проявляется задержкой задолго до отказов.</p>
+<p>Генератор <code>aload.py</code> реализует <strong>открытую модель</strong> нагрузки: моменты отправки задаёт расписание, как у независимых пользователей. Генераторы <strong>замкнутого типа</strong> с постоянным числом одновременных запросов, как ab, wrk или клиент <code>hit.py</code> из остальных демонстраций лекции, отправляют следующий запрос только после ответа на предыдущий. При перегрузке такой генератор замедляется вместе с сервером и не учитывает ожидания запросов, которые не успел отправить, поэтому занижает хвост распределения. Эту ошибку измерения называют coordinated omission, и задержку у границы ёмкости измеряют генератором с расписанием. Профили нагрузочных испытаний, прогрев и отдельное окружение для них рассмотрены в разделе «Нагрузочное тестирование» главы <a href="./life.html">«Жизненный цикл ПО»</a>.</p>
+<h3 id="sli-slo-и-sla"><a class="header" href="#sli-slo-и-sla">SLI, SLO и SLA</a></h3>
+<p>Требования к качеству обслуживания записывают тремя связанными понятиями из практики эксплуатации Google, Site Reliability Engineering [23].</p>
+<div class="table-wrapper"><table><thead><tr><th>Термин</th><th>Что это</th><th>Пример для архива</th></tr></thead><tbody>
+<tr><td>SLI</td><td>измеряемый показатель</td><td>доля ответов без ошибки сервера; доля выдач запуска быстрее 300 мс</td></tr>
+<tr><td>SLO</td><td>цель для SLI за окно времени</td><td>99,9 % успешных ответов за 30 дней</td></tr>
+<tr><td>SLA</td><td>договор с последствиями нарушения</td><td>ниже 99,5 % — возврат части оплаты</td></tr>
+<tr><td>бюджет ошибок</td><td>1 − SLO</td><td>0,1 % запросов за 30 дней</td></tr>
+</tbody></table>
+</div>
+<p>SLI (service level indicator, индикатор уровня обслуживания) представляет собой измеряемую величину: доля ответов без ошибки сервера, доля запросов быстрее 300 мс, задержка поступления данных в архив. SLO (service level objective, цель уровня обслуживания) — требуемое значение индикатора за окно времени, например 99,9 % успешных ответов за скользящие 30 дней. SLA (service level agreement, соглашение об уровне обслуживания) — договор с внешним заказчиком, в котором записаны последствия нарушения; его порог обычно мягче внутреннего SLO, чтобы команда успевала отреагировать до нарушения договора. Доступность распределённого сервиса считают не по времени работы машины, а по запросам: машина может работать, а пользователи — получать ошибки.</p>
+<p>Разность между единицей и SLO называют <strong>бюджетом ошибок</strong>: при 99,9 % это 0,1 % запросов за окно, которые можно потратить на выкатки, эксперименты и аварии. Бюджет расходуется на всё сразу, и когда он исчерпан, выкатки приостанавливают до восстановления. Для архива измерений индикаторов несколько: доля успешных чтений, доля выдач запуска быстрее 300 мс и задержка поступления измерения в архив, которая не должна превышать 10 с после его снятия.</p>
+<h3 id="Девятки-и-составные-системы"><a class="header" href="#Девятки-и-составные-системы">Девятки и составные системы</a></h3>
+<p>Доступность часто называют числом девяток: 99,9 % — три девятки, 99,99 % — четыре. Каждому уровню соответствует допустимое время простоя, равное произведению бюджета ошибок на длительность окна. Таблицу вычисляет скрипт демонстрации <code>nines.py</code>:</p>
+<div class="table-wrapper"><table><thead><tr><th>SLO</th><th>Год</th><th>30 дней</th><th>Неделя</th><th>Сутки</th></tr></thead><tbody>
+<tr><td>99 %</td><td>3 д 15 ч 36 мин</td><td>7 ч 12 мин</td><td>1 ч 40 мин 48 с</td><td>14 мин 24 с</td></tr>
+<tr><td>99,9 %</td><td>8 ч 45 мин 36 с</td><td>43 мин 12 с</td><td>10 мин 5 с</td><td>1 мин 26 с</td></tr>
+<tr><td>99,95 %</td><td>4 ч 22 мин 48 с</td><td>21 мин 36 с</td><td>5 мин 2 с</td><td>43,2 с</td></tr>
+<tr><td>99,99 %</td><td>52 мин 34 с</td><td>4 мин 19 с</td><td>1 мин</td><td>8,6 с</td></tr>
+<tr><td>99,999 %</td><td>5 мин 15 с</td><td>25,9 с</td><td>6,0 с</td><td>0,9 с</td></tr>
+</tbody></table>
+</div>
+<p>При 99,99 % допустимый простой за 30 дней составляет 4 мин 19 с — меньше, чем занимает одна неудачная выкатка с откатом.</p>
+<p>Доступность составной системы вычисляется по правилам теории надёжности. Если запрос проходит последовательно через несколько сервисов и успешен только при успехе каждого, доступности перемножаются, \(A = A_1 A_2 A_3\), и цепочка оказывается хуже каждого звена. Если же работают копии и отказ наступает, только когда отказали все, перемножаются вероятности отказа: \(A = 1 - (1 - A_1)(1 - A_2)\). Запишем обе формулы и бюджет ошибок в коде:</p>
+<pre><code class="language-python">import math
+
+slo = 99.9                                     # цель, %
+budget = 1 - slo / 100                         # доля неуспешных запросов
+print(f'простой за 30 дней: {budget * 30 * 24 * 60:.1f} мин')
+
+chain = math.prod([0.999, 0.999, 0.999])       # три звена последовательно
+copies = 1 - math.prod([1 - 0.99, 1 - 0.99])   # две независимые копии
+print(f'цепочка {chain:.6f}, копии {copies:.6f}')
+</code></pre>
+<pre><code>простой за 30 дней: 43.2 мин
+цепочка 0.997003, копии 0.999900
+</code></pre>
+<p>Цепочка из трёх сервисов по 99,9 % даёт 99,7 %, две копии по 99 % — 99,99 %. Формула для копий верна только при независимых отказах: две копии на одном диске, в одной стойке или обновлённые одной выкаткой отказывают вместе и ведут себя как одна. В той же демонстрации бюджет пересчитан в запросы: при 100 000 запросов/с за 30 дней приходит около \(2{,}59 \cdot 10^{11}\) запросов, и при SLO 99,99 % неуспешными допустимо около \(2{,}59 \cdot 10^{7}\) из них.</p>
+<h2 id="Масштабирование"><a class="header" href="#Масштабирование">Масштабирование</a></h2>
+<blockquote>
+<p><strong>Слайды к главе.</strong> Вертикальное и горизонтальное масштабирование, сервисы без состояния, алгоритмы балансировки и консистентное хеширование изложены также во второй части лекции «Архитектура и системный дизайн» с демонстрациями в терминале; слайды лекции доступны <a href="https://phys-dev.github.io/soft-dev-book/slides/lecture-14.html#/sec-scale">на сайте книги</a> и <a href="https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-14.pdf">в PDF</a>.</p>
+</blockquote>
+<iframe src="../slides/lecture-14.html#/sec-scale" title="Слайды лекции «Архитектура и системный дизайн»: масштабирование" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
+<p>Когда сервис перестаёт справляться с нагрузкой, его мощность наращивают двумя способами.</p>
+<div class="table-wrapper"><table><thead><tr><th></th><th>Вертикальное</th><th>Горизонтальное</th></tr></thead><tbody>
+<tr><td>ресурс</td><td>процессоры и память машины</td><td>число экземпляров</td></tr>
+<tr><td>доработка</td><td>не нужна</td><td>сервис без состояния</td></tr>
+<tr><td>предел</td><td>самая большая машина</td><td>общие зависимости, бюджет</td></tr>
+<tr><td>отказ машины</td><td>остановка всего сервиса</td><td>потеря доли мощности</td></tr>
+<tr><td>изменение</td><td>обычно с перезапуском</td><td>по одному экземпляру, без простоя</td></tr>
+</tbody></table>
+</div>
+<p><strong>Вертикальное масштабирование</strong> даёт той же машине больше процессоров и памяти. Доработка программы не нужна, но предел задан самой большой доступной машиной, а сама машина остаётся единой точкой отказа. Изменение размера виртуальной машины обычно требует её перезапуска; квоту процессора работающего контейнера Docker команда <code>docker update --cpus 2 &lt;контейнер&gt;</code> меняет без перезапуска. <strong>Горизонтальное масштабирование</strong> добавляет одинаковые экземпляры за балансировщиком: рост ограничен бюджетом и общими зависимостями, например базой, отказ одного экземпляра снимает лишь часть мощности, а новые версии выкатываются по одному экземпляру без простоя. Платой является доработка сервиса, который не должен хранить состояние в себе, и сетевой переход через балансировщик.</p>
+<p>Для Python граница между двумя способами проходит внутри машины. Из-за глобальной блокировки интерпретатора процесс обычной сборки CPython выполняет байт-код только в одном потоке за раз и при вычислениях на чистом Python загружает не больше одного ядра (глава <a href="../perf/gil.html">«Многопоточность и GIL»</a>). Поэтому многоядерную машину загружают несколько процессов, как это делают <code>uvicorn --workers</code> и gunicorn. Свободнопоточная сборка, официально поддерживаемая с Python 3.14, снимает это ограничение, но используемой по умолчанию пока не стала.</p>
+<p>В демонстрации к лекции сервис <code>cpu.py</code> выполняет на каждый запрос около 10 мс вычислений на чистом Python в обычной функции-обработчике, которую FastAPI запускает в пуле потоков. Клиент отправляет 300 запросов, по восемь одновременно, открывая новое соединение на каждый запрос. Сервер uvicorn с одним рабочим процессом обрабатывает их за 4,9 с — 62 запроса/с при медиане 118 мс: восемь запросов делят одно ядро, а цикл вместе с обработкой HTTP занимает около 16 мс процессора на запрос. С ключом <code>--workers 2</code> uvicorn открывает слушающий сокет в родительском процессе и передаёт его двум рабочим процессам, а новые соединения между ними распределяет ядро ОС: 142 и 158 запросов за 2,4 с, 126 запросов/с при медиане 57–61 мс. На двух ядрах второй процесс удвоил пропускную способность. Новое соединение на каждый запрос понадобилось потому, что постоянное соединение закрепляется за процессом, который его принял, и восемь постоянных соединений распределились бы по процессам неравномерно.</p>
+<h3 id="Сервисы-без-состояния"><a class="header" href="#Сервисы-без-состояния">Сервисы без состояния</a></h3>
+<p>Горизонтально масштабируется прежде всего <strong>сервис без состояния</strong>: всё, что должно пережить запрос, — сессии пользователей, загруженные файлы, результаты расчётов — хранится вне процесса, в базе, общем кеше или хранилище файлов. Тогда любой экземпляр обслуживает любой запрос, экземпляры можно добавлять, убирать и перезапускать, а балансировщик может направить следующий запрос на любой из них. Словарь в памяти процесса нарушает это свойство: результат, записанный одним экземпляром, не виден другому и пропадает при перезапуске. Для физика типичным примером служит сервис расчётов: исполнитель берёт задание параметрического скана, считает и записывает результат в общее хранилище, и исполнители взаимозаменяемы.</p>
+<p>Сервисы с состоянием — базы данных, кеши, брокеры очередей — масштабируются иначе: новую копию базы сначала наполняют данными, что при нескольких терабайтах занимает часы, а холодный кеш ещё не снимает нагрузку с базы. Даже балансировщик, не хранящий данных приложения, имеет рабочее состояние — открытые соединения, счётчики активных соединений и результаты проверок работоспособности, — и у каждого экземпляра балансировщика оно своё.</p>
+<h3 id="Балансировка-нагрузки"><a class="header" href="#Балансировка-нагрузки">Балансировка нагрузки</a></h3>
+<p>Балансировщик распределяет запросы между экземплярами, и способ выбора экземпляра зависит от характера нагрузки.</p>
+<div class="table-wrapper"><table><thead><tr><th>Алгоритм</th><th>Как выбирает экземпляр</th><th>Когда подходит</th></tr></thead><tbody>
+<tr><td>round robin</td><td>по очереди, с учётом весов</td><td>одинаковые короткие запросы</td></tr>
+<tr><td>least connections</td><td>с наименьшим числом активных соединений</td><td>запросы разной длительности</td></tr>
+<tr><td>hash</td><td>по ключу: пользователь, адрес страницы, номер запуска</td><td>привязка, локальный кеш экземпляра</td></tr>
+<tr><td>random two</td><td>лучший из двух случайных</td><td>несколько балансировщиков</td></tr>
+</tbody></table>
+</div>
+<p>Round robin отправляет запросы по очереди, а веса учитывают неравные машины: сервер с весом 2 получает вдвое больше запросов. Алгоритм подходит для одинаково коротких запросов, но не учитывает скорость экземпляров: медленный получает ту же долю. Least connections выбирает экземпляр с наименьшим числом активных соединений и тем самым снижает нагрузку на медленный. Хеш по ключу — пользователю, адресу страницы, номеру запуска — отправляет одинаковые ключи на один экземпляр, что позволяет использовать его локальный кеш. Выбор лучшего из двух случайных экземпляров почти так же хорош, как least connections, но не требует точного общего счётчика и подходит, когда балансировщиков несколько. Балансировщик транспортного уровня, L4 в модели OSI (глава <a href="./net.html">«Компьютерные сети»</a>), распределяет соединения TCP, не разбирая HTTP, а балансировщик прикладного уровня, L7, разбирает запрос и может выбирать экземпляр по пути, заголовку или cookie, но тратит на это больше процессора, прежде всего на завершение TLS.</p>
+<p>В nginx группа экземпляров описывается блоком <code>upstream</code>, а алгоритм — директивой внутри него:</p>
+<pre><code class="language-nginx">upstream app {
+    zone app 64k;                # состояние группы — общее для рабочих процессов
+    least_conn;                  # или hash $arg_user consistent;
+    server 127.0.0.1:8001 weight=2;
+    server 127.0.0.1:8002;
+    server 127.0.0.1:8003;
+}
+server {
+    listen 127.0.0.1:8080;
+    location / { proxy_pass http://app; }
+}
+</code></pre>
+<p>Директива <code>zone</code> размещает состояние группы в разделяемой памяти и тем самым обеспечивает общие для рабочих процессов nginx очередь и счётчики; без неё каждый рабочий процесс ведёт свою очередь round robin и свои счётчики соединений. Выбор лучшего из двух случайных задаётся директивой <code>random two;</code>: из двух случайно выбранных экземпляров nginx по умолчанию берёт тот, у которого меньше активных соединений. В главах <a href="./web.html">«Веб-технологии»</a> и <a href="./docker.html">«Docker»</a> nginx служит обратным посредником перед единственным бэкендом; блок <code>upstream</code> превращает его в балансировщик.</p>
+<p>В демонстрации к лекции за nginx в контейнере работают три экземпляра FastAPI, отвечающие своим именем; второй из них, app2, отвечает через 200 мс, остальные — через 10 мс. Клиент отправляет 300 запросов, по 12 одновременно. Round robin делит запросы поровну, по 100, весь прогон занимает 2,0 с (148 запросов/с), а медиана у app2 равна 202 мс: медленный экземпляр задерживает каждый третий запрос. С <code>least_conn</code> экземпляры получают 144, 12 и 144 запроса, и прогон занимает 0,6 с (465 запросов/с): медленный экземпляр дольше занят и реже оказывается наименее загруженным. С <code>hash $arg_user</code> каждый из восьми пользователей при всех своих запросах попадает на один и тот же экземпляр.</p>
+<h3 id="Консистентное-хеширование"><a class="header" href="#Консистентное-хеширование">Консистентное хеширование</a></h3>
+<p>Когда экземпляр или шард выбирают по хешу ключа, важно, что происходит при изменении их числа. Простейший способ — остаток от деления хеша на число узлов — при переходе от N к N + 1 узлам меняет узел почти для всех ключей: переезжает доля \(N/(N+1)\), при переходе с четырёх узлов на пять — 80 %. Получим эту долю. Ключ остаётся на месте, только если остатки от деления хеша на N и на N + 1 совпадают; на каждом отрезке из \(N(N+1)\) последовательных значений хеша таких значений N, поэтому на месте остаётся доля \(1/(N+1)\) ключей, а переезжает \(N/(N+1)\). Для кеша это означает одновременный промах почти по всем ключам, для шардов базы — перенос почти всех данных.</p>
+<p><strong>Консистентное хеширование</strong> размещает на кольце значений хеша и узлы, и ключи; ключ принадлежит первому узлу по ходу кольца. Новый узел с одной точкой на кольце забирает ключи только с одной дуги, в среднем долю \(1/(N+1)\), а остальные ключи остаются на месте. Чтобы дуги были равномерными, каждый узел ставят на кольцо во многих точках, и тогда новый узел забирает понемногу ключей у каждого из прежних. Рандеву-хеширование достигает того же иначе: для ключа вычисляется хеш пары «узел, ключ» для каждого узла, и выбирается узел с наибольшим значением.</p>
+<pre><code class="language-python">import bisect
+import hashlib
+
+
+def h(s):
+    """Стабильный хеш: одинаков в любом процессе и на любой машине."""
+    return int.from_bytes(hashlib.md5(s.encode()).digest()[:8], 'big')
+
+
+class Ring:
+    """Консистентное хеширование: vnodes точек на кольце для каждого узла."""
+
+    def __init__(self, nodes, vnodes=100):
+        self.points = sorted((h(f'{n}#{v}'), n)
+                             for n in nodes for v in range(vnodes))
+        self.hashes = [p for p, _ in self.points]
+
+    def __call__(self, key):
+        # первая точка по ходу кольца; за последней следует первая
+        i = bisect.bisect(self.hashes, h(key)) % len(self.points)
+        return self.points[i][1]
+
+
+def by_mod(nodes):                     # остаток от деления
+    return lambda key: nodes[h(key) % len(nodes)]
+
+
+def rendezvous(nodes):                 # наибольший хеш пары «узел, ключ»
+    return lambda key: max(nodes, key=lambda n: h(f'{n}:{key}'))
+</code></pre>
+<p>Функция <code>h</code> построена на MD5 и одинакова в любом процессе и на любой машине; криптографическая стойкость здесь не требуется, достаточно равномерности. Скрипт демонстрации <code>shard.py</code> теми же функциями распределяет 100 000 ключей вида <code>run-000123</code> по четырём шардам и считает, сколько ключей сменят шард при добавлении пятого:</p>
+<div class="table-wrapper"><table><thead><tr><th>Способ</th><th>Ключей на шард, наименьшее</th><th>Ключей на шард, наибольшее</th><th>Переехало при 4 → 5</th></tr></thead><tbody>
+<tr><td>остаток от деления</td><td>24 890</td><td>25 230</td><td>80,0 %</td></tr>
+<tr><td>кольцо, 100 точек на узел</td><td>23 749</td><td>26 014</td><td>20,0 %</td></tr>
+<tr><td>рандеву</td><td>24 897</td><td>25 114</td><td>20,1 %</td></tr>
+</tbody></table>
+</div>
+<p>Остаток от деления распределяет ключи равномерно, но переносит 80,0 % ключей. Кольцо со ста точками на узел переносит 20,0 % — ровно ту долю, которую должен забрать новый шард, — но распределяет ключи менее равномерно. Рандеву-хеширование сочетает равномерность и малый перенос. В nginx консистентный хеш включается словом <code>consistent</code> в директиве <code>hash</code>, например <code>hash $arg_user consistent;</code>.</p>
+<p>Встроенная функция <code>hash()</code> для распределения ключей непригодна: начальное значение хеша строк выбирается при запуске интерпретатора, если не задана переменная окружения <code>PYTHONHASHSEED</code>.</p>
+<pre><code class="language-bash">for i in 1 2; do python3 -c "print(hash('run-000123'))"; done
+for i in 1 2; do PYTHONHASHSEED=0 python3 -c "print(hash('run-000123'))"; done
+</code></pre>
+<pre><code>-6807953549254101815
+7991815127659032150
+-6516832473932046442
+-6516832473932046442
+</code></pre>
+<p>Два первых запуска дают разные числа, два последних — одинаковые. Потомок, созданный вызовом fork, наследует начальное значение родителя (так создаёт рабочие процессы gunicorn), а рабочие процессы <code>uvicorn --workers</code> запускаются методом spawn, то есть новыми интерпретаторами: на той же машине два рабочих процесса uvicorn вернули для одной строки разные значения <code>hash()</code>, а с <code>PYTHONHASHSEED=0</code> — одинаковые. Поэтому для распределения ключей используют стабильный хеш, как функцию <code>h</code> выше.</p>
+<h2 id="Отказоустойчивость"><a class="header" href="#Отказоустойчивость">Отказоустойчивость</a></h2>
+<blockquote>
+<p><strong>Слайды к главе.</strong> Резервирование и кворум, проверки работоспособности, тайм-ауты и дедлайн, повторы, идемпотентность и автомат защиты изложены также в третьей части лекции «Архитектура и системный дизайн» с демонстрациями в терминале; слайды лекции доступны <a href="https://phys-dev.github.io/soft-dev-book/slides/lecture-14.html#/sec-fail">на сайте книги</a> и <a href="https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-14.pdf">в PDF</a>.</p>
+</blockquote>
+<iframe src="../slides/lecture-14.html#/sec-fail" title="Слайды лекции «Архитектура и системный дизайн»: отказоустойчивость" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
+<p>Отказ в распределённой системе является обычным событием, а не исключением: машина перезагружается, процесс зависает, сеть теряет пакеты, зависимость отвечает медленно. Задача отказоустойчивости — не допустить, чтобы частичный отказ стал полным.</p>
+<h3 id="Резервирование-и-кворум"><a class="header" href="#Резервирование-и-кворум">Резервирование и кворум</a></h3>
+<p>Отказоустойчивость начинается с резервирования: экземпляров на один больше, чем требуется для пиковой нагрузки (схема N + 1), чтобы отказ одного не перегружал остальные. Копии разносят по <strong>доменам отказа</strong> — разным машинам, стойкам, линиям питания и площадкам: три реплики на одной машине переживут отказ процесса, но не отказ диска или питания.</p>
+<p>Когда копии хранят данные и должны договориться, например о том, какая из них главная, применяется <strong>кворум</strong>: решение принимает большинство, \(\lfloor N/2 \rfloor + 1\) узлов.</p>
+<div class="table-wrapper"><table><thead><tr><th>Узлов</th><th>Кворум</th><th>Переживает отказов</th></tr></thead><tbody>
+<tr><td>1</td><td>1</td><td>0</td></tr>
+<tr><td>2</td><td>2</td><td>0</td></tr>
+<tr><td>3</td><td>2</td><td>1</td></tr>
+<tr><td>4</td><td>3</td><td>1</td></tr>
+<tr><td>5</td><td>3</td><td>2</td></tr>
+</tbody></table>
+</div>
+<p>Три узла переживают отказ одного, пять — двух; отметим, что четыре узла переживают отказ тоже только одного, поэтому число узлов берут нечётным. Без большинства система обязана остановить запись: иначе после разрыва связи две половины выберут по главному узлу и начнут расходиться; это состояние называют split brain. По той же причине две площадки не обеспечивают автоматического переключения при разрыве связи между ними: добавляют третью, хотя бы со свидетелем, который не хранит данных и только голосует.</p>
+<h3 id="Проверки-работоспособности"><a class="header" href="#Проверки-работоспособности">Проверки работоспособности</a></h3>
+<p>Чтобы перестать отправлять запросы отказавшему экземпляру, балансировщику необходимо узнать об отказе. <strong>Активная проверка</strong> периодически опрашивает служебный адрес, например <code>/health</code>, и исключает экземпляр после нескольких неудач подряд; она есть в HAProxy, Kubernetes и коммерческой версии nginx, но не в открытой. <strong>Пассивная проверка</strong> следит за настоящими запросами: в nginx экземпляр, давший <code>max_fails</code> неудач за время <code>fail_timeout</code>, исключается на <code>fail_timeout</code>, после чего получает пробный запрос. По умолчанию <code>max_fails=1</code> и <code>fail_timeout=10s</code>.</p>
+<pre><code class="language-nginx">upstream app {
+    server 127.0.0.1:8001 max_fails=1 fail_timeout=10s;
+    server 127.0.0.1:8002 max_fails=1 fail_timeout=10s;
+    server 127.0.0.1:8003 max_fails=1 fail_timeout=10s;
+}
+server {
+    listen 127.0.0.1:8080;
+    location / {
+        proxy_pass http://app;
+        proxy_read_timeout 1s;              # ответа ждать не дольше 1 с
+        proxy_next_upstream error timeout;  # когда пробовать соседа
+    }
+}
+</code></pre>
+<p>Неудачный запрос nginx повторяет на соседнем экземпляре по правилам директивы <code>proxy_next_upstream</code>, по умолчанию — при ошибке соединения и тайм-ауте. Запросы с неидемпотентными методами POST, LOCK и PATCH nginx на соседа не передаёт, если запрос уже был отправлен экземпляру: повтор мог бы выполнить действие дважды.</p>
+<p>В демонстрации к лекции к этой конфигурации подключены три экземпляра, а в журнал nginx добавлены адреса и коды всех попыток. Процесс app2 остановлен сигналом STOP: он не отвечает, но ядро продолжает принимать его соединения — так выглядит зависший процесс. Из трёх запросов POST, распределённых по очереди, запрос к app2 через 1,0 с, по истечении <code>proxy_read_timeout</code>, завершается кодом 504: уже отправленный POST nginx соседу не передаёт. После этой неудачи app2 исключён на 10 с, и шесть запросов GET делят app1 и app3 по три без задержек, за 0,1 с. Через 10 с app2 получает пробный запрос GET; nginx ждёт ответа 1 с и, не дождавшись, повторяет запрос на app1, так что клиент получает ответ 200, но примерно через секунду: шесть запросов занимают уже 1,1 с. Журнал nginx показывает обе ситуации:</p>
+<pre><code>POST / HTTP/1.1 504 up=127.0.0.1:8002 st=504
+GET / HTTP/1.1 200 up=127.0.0.1:8002, 127.0.0.1:8001 st=504, 200
+</code></pre>
+<p>Завершённый процесс ведёт себя иначе: его порт закрыт, ядро сразу отклоняет соединение, запрос ещё не отправлен, и nginx передаёт соседу даже POST. Тот же опыт с процессом app2, завершённым сигналом TERM (в демонстрациях лекции его нет), дал на три запроса POST три ответа 200, а запрос, адресованный app2, записан в журнал с двумя попытками:</p>
+<pre><code>POST / HTTP/1.1 200 up=127.0.0.1:8002, 127.0.0.1:8003 st=502, 200
+</code></pre>
+<p>Журнал ошибок nginx содержит для этого запроса сообщение <code>connect() failed (111: Connection refused)</code>; неудача соединения тоже засчитывается в <code>max_fails</code>, и app2 исключается на <code>fail_timeout</code>.</p>
+<p>Сама точка входа тоже резервируется: несколько адресов в DNS, плавающий адрес по протоколу VRRP, который соседняя машина забирает себе при отказе, или anycast — один адрес, анонсируемый из нескольких мест сети. Содержание <code>/health</code> требует отдельного решения: проверка только того, что процесс жив, пропустит экземпляр, потерявший соединение с базой, а проверка всех зависимостей при отказе базы снимет все экземпляры сразу.</p>
+<h3 id="Тайм-ауты-и-дедлайн"><a class="header" href="#Тайм-ауты-и-дедлайн">Тайм-ауты и дедлайн</a></h3>
+<p>Каждому сетевому вызову необходим тайм-аут: без него зависший сервис бесконечно удерживает вызывающего, его потоки и соединения, и отказ распространяется вверх по цепочке. Значения тайм-аутов в цепочке необходимо согласовать. Пусть nginx ждёт ответа gateway 10 с, gateway ждёт сервис articles 30 с, а articles ждёт базу 60 с. Клиент получит ответ 504 через 10 с, а gateway и articles продолжат работу, результат которой уже никому не нужен, и под нагрузкой такие запросы накапливаются. Отсюда правило: тайм-аут вызываемого меньше тайм-аута вызывающего на запас сетевых расходов. Одинаковые значения на всех уровнях не помогают, поскольку внутренний и внешний тайм-ауты срабатывают одновременно.</p>
+<p>Надёжнее передавать по цепочке <strong>дедлайн</strong>, который представляет собой остаток времени, отведённого на запрос, например в заголовке. Каждый уровень вычитает потраченное время, а получив исчерпанный бюджет, прекращает работу. Передают именно остаток, а не абсолютный момент, потому что часы разных машин расходятся; так устроены дедлайны gRPC.</p>
+<pre><code class="language-python">import time
+
+
+def get_with_deadline(client, url, deadline):
+    """Запрос с остатком бюджета; deadline — момент по time.monotonic()."""
+    left = deadline - time.monotonic()            # остаток бюджета, с
+    if left &lt;= 0:
+        raise TimeoutError('бюджет исчерпан')
+    return client.get(url, timeout=left,
+                      headers={'X-Deadline-Ms': str(int(1000 * left))})
+</code></pre>
+<p>Здесь <code>client</code> — клиент httpx. Принимающий сервис вычисляет собственный дедлайн как сумму <code>time.monotonic()</code> и полученного остатка, а вызывая следующий уровень, передаёт остаток за вычетом небольшого запаса. Монотонные часы не зависят от перевода системного времени, поэтому дедлайн внутри процесса отсчитывают по ним.</p>
+<p>В демонстрации к лекции скрипт <code>deadline.py</code> поднимает в рамках одного процесса цепочку из двух серверов, gateway и articles. Времена в демонстрации меньше, чем в примере выше, но соотношение то же — каждый уровень ждёт дольше вызывающего: клиент ждёт ответа 1 с, gateway ждёт articles 6 с, собственный тайм-аут articles — 60 с, а его работа занимает 3 с и выполняется частями по 0,1 с. Без дедлайна клиент через 1,0 с прекращает ждать с ошибкой <code>TimeoutError</code>, а articles доделывает работу, и gateway отвечает 200 через 3,1 с — ответ, который никто не прочтёт. С дедлайном в заголовке <code>X-Deadline-Ms</code> клиент так же получает отказ через 1,0 с, но gateway в тот же момент прекращает ждать и отвечает 504, а articles, обнаружив исчерпанный бюджет, прерывает работу через 1,0 с вместо 3. Для клиента разницы нет, но дедлайн позволяет системе не выполнять работу впустую.</p>
+<p>Само значение тайм-аута выбирают по распределению задержки вызываемого сервиса: тайм-аут на уровне p99,9 означает одну ложную отмену на тысячу запросов. Так поступают в Amazon: сначала выбирают допустимую долю ложных тайм-аутов, например 0,1 %, а затем берут соответствующий перцентиль задержки вызываемого сервиса.</p>
+<h3 id="Повторы"><a class="header" href="#Повторы">Повторы</a></h3>
+<p>Повтор неудачного запроса помогает пережить кратковременный сбой, но при перегрузке усиливает её. Если повторяет каждый уровень цепочки, попытки перемножаются: по две попытки на трёх уровнях дают до \(2^3 = 8\) запросов к последнему сервису, а в примере М. Брукера три попытки на каждом из пяти уровней увеличивают нагрузку на базу в \(3^5 = 243\) раза. Поэтому повторяют в одной точке стека, а число повторов ограничивают. В практике Google на один запрос приходится не больше трёх попыток, а повторы составляют не больше 10 % всех запросов клиента [23]: при полном отказе зависимости нагрузка на неё растёт не почти втрое, а лишь в 1,1 раза.</p>
+<p>Пауза между попытками растёт экспоненциально и выбирается случайно в пределах от нуля до текущей границы: иначе клиенты, одновременно получившие отказ, одновременно и повторят запросы, создав новый пик. Повторяют только временные ошибки — тайм-аут, обрыв соединения, коды 429, 502, 503 и 504 с учётом заголовка <code>Retry-After</code> — и только идемпотентные операции, поскольку тайм-аут не означает, что действие не выполнено. Коды состояния HTTP и повтор запросов клиентом requests рассмотрены в главе <a href="./web.html">«Веб-технологии»</a>; здесь запишем повтор с бюджетом в общем виде:</p>
+<pre><code class="language-python">import random
+import time
+
+
+class RetryBudget:
+    """Бюджет повторов клиента: повторов не больше доли ratio от запросов."""
+
+    def __init__(self, ratio=0.1, reserve=10):
+        self.ratio, self.reserve = ratio, reserve
+        self.tokens = reserve                 # запас на редкие сбои
+
+    def request(self):                        # каждый запрос пополняет счёт
+        self.tokens = min(self.reserve, self.tokens + self.ratio)
+
+    def allow_retry(self):                    # каждый повтор тратит единицу
+        if self.tokens &gt;= 1:
+            self.tokens -= 1
+            return True
+        return False
+
+
+def call_with_retries(call, budget=None, attempts=3, base=0.05, cap=1.0):
+    """Не больше attempts попыток; пауза случайна в пределах, растущих вдвое."""
+    if budget:
+        budget.request()
+    for attempt in range(attempts):
+        try:
+            return call()
+        except (TimeoutError, ConnectionError):   # только временные ошибки
+            last = attempt == attempts - 1
+            if last or (budget and not budget.allow_retry()):
+                raise
+            time.sleep(random.uniform(0, min(cap, base * 2 ** attempt)))
+</code></pre>
+<p>Бюджет представляет собой ведро жетонов: каждый запрос добавляет в него 0,1 жетона, каждый повтор расходует один, а запас в десять жетонов покрывает редкие сбои. Проверим бюджет на зависимости, отказавшей полностью (листинг выше сохранён в файле <code>retry.py</code>):</p>
+<pre><code class="language-python">from retry import RetryBudget, call_with_retries
+
+
+def outage(budget, n=1000):
+    """n запросов к зависимости, отказавшей полностью; число её вызовов."""
+    calls = 0
+
+    def broken():
+        nonlocal calls
+        calls += 1
+        raise ConnectionError('зависимость недоступна')
+
+    for _ in range(n):
+        try:
+            call_with_retries(broken, budget, base=0)
+        except ConnectionError:
+            pass
+    return calls
+
+
+print('без бюджета:', outage(None))
+print('с бюджетом 10 %:', outage(RetryBudget()))
+</code></pre>
+<pre><code>без бюджета: 3000
+с бюджетом 10 %: 1109
+</code></pre>
+<p>Без бюджета каждый из 1000 запросов делает три попытки, и зависимость получает 3000 вызовов. С бюджетом повторов 109 — десять из запаса и по одному на каждые десять запросов, — и нагрузка растёт в 1,11 раза, что согласуется с оценкой из практики Google. Бюджет, таким образом, позволяет пережить редкие сбои и не умножает нагрузку при полном отказе. Нулевая пауза (<code>base=0</code>) выбрана только для того, чтобы опыт не длился минутами.</p>
+<p>В демонстрации к лекции скрипт <code>backoff.py</code> печатает паузы трёх клиентов перед шестью повторами: граница растёт вдвое от 0,1 до 1,6 с и ограничена 2 с, а пауза выбирается случайно в её пределах, поэтому перед пятым повтором клиенты ждут 0,79, 1,34 и 1,00 с. Скрипт <code>chain.py</code> поднимает цепочку из трёх серверов на Python, названных nginx, gateway и articles, причём articles на каждый запрос отвечает 503. При двух попытках на каждом уровне до articles доходит 8 запросов, при трёх — 27, а если повторяет только gateway — 2.</p>
+<h3 id="Идемпотентность"><a class="header" href="#Идемпотентность">Идемпотентность</a></h3>
+<p>Операция <strong>идемпотентна</strong>, если повторное выполнение оставляет систему в том же состоянии, что и однократное; ответ на повтор может отличаться: повторный DELETE получает 404. По стандарту HTTP (RFC 9110) идемпотентны методы чтения GET и HEAD, замена ресурса целиком PUT и удаление DELETE, поэтому их можно повторять после обрыва.</p>
+<div class="table-wrapper"><table><thead><tr><th>Операция</th><th>Повтор безопасен</th></tr></thead><tbody>
+<tr><td>GET, HEAD — чтение</td><td>да</td></tr>
+<tr><td>PUT — замена ресурса целиком</td><td>да</td></tr>
+<tr><td>DELETE — удаление</td><td>да</td></tr>
+<tr><td>POST — создание записи, списание</td><td>нет, без ключа операции</td></tr>
+<tr><td>«выставить ток 10 А»</td><td>да</td></tr>
+<tr><td>«увеличить ток на 1 А»</td><td>нет</td></tr>
+</tbody></table>
+</div>
+<p>POST, создающий запись или выполняющий списание, при повторе создаст вторую запись. Чтобы сделать его идемпотентным, достаточно <strong>ключа операции</strong>: клиент создаёт уникальный ключ один раз на логическую операцию, а не на попытку, и передаёт его во всех попытках, например в заголовке <code>Idempotency-Key</code>, принятом в платёжных API (черновик стандарта IETF с этим заголовком истёк, и стандартом он не стал). Сервер, увидев известный ключ, возвращает сохранённый ответ, не повторяя действия; ключ обеспечивает однократность действия при любом числе попыток. Рассмотрим сервис платежей, у которого каждый третий ответ задержан на секунду, — так моделируется ответ, не дошедший до клиента вовремя:</p>
+<pre><code class="language-python">import asyncio
+from typing import Annotated
+
+from fastapi import FastAPI, Header
+
+app = FastAPI()
+payments = []                       # выполненные списания
+responses = {}                      # ключ операции -&gt; сохранённый ответ
+attempts = 0                        # число принятых запросов POST
+
+
+@app.post('/pay')
+async def pay(payment: dict,
+              idempotency_key: Annotated[str | None, Header()] = None):
+    global attempts
+    attempts += 1
+    if idempotency_key in responses:
+        result = responses[idempotency_key]   # повтор: списания нет
+    else:
+        payments.append(payment['amount'])
+        result = {'payment': len(payments)}
+        if idempotency_key:
+            responses[idempotency_key] = result
+    if attempts % 3 == 0:                     # каждый третий ответ задержан
+        await asyncio.sleep(1.0)
+    return result
+
+
+@app.get('/payments')
+async def report():
+    return {'attempts': attempts, 'count': len(payments),
+            'sum': sum(payments)}
+</code></pre>
+<p>FastAPI сопоставляет параметр <code>idempotency_key</code> заголовку <code>Idempotency-Key</code>: подчёркивание заменяется дефисом, а регистр в именах заголовков не различается. Клиент ждёт ответа 0,3 с, повторяет запрос при ошибке транспорта — тайм-ауте или обрыве соединения — со случайной паузой и создаёт ключ один раз на платёж:</p>
+<pre><code class="language-python">import random
+import sys
+import time
+import uuid
+
+import httpx
+
+URL = 'http://127.0.0.1:8010'
+
+
+def pay(client, payment, use_key=True, attempts=4):
+    key = str(uuid.uuid4())                       # один ключ на операцию
+    headers = {'Idempotency-Key': key} if use_key else {}
+    for attempt in range(attempts):
+        try:
+            return client.post(f'{URL}/pay', json=payment, headers=headers)
+        except httpx.TransportError:              # тайм-аут, обрыв соединения
+            time.sleep(random.uniform(0, 0.1 * 2 ** attempt))
+    raise RuntimeError('попытки исчерпаны')
+
+
+use_key = '--no-key' not in sys.argv
+with httpx.Client(timeout=0.3) as client:
+    for _ in range(10):
+        pay(client, {'amount': 100}, use_key)
+    time.sleep(1.1)                               # дождаться задержанных ответов
+    report = client.get(f'{URL}/payments').json()
+print('с ключом: ' if use_key else 'без ключа:', report)
+</code></pre>
+<p>Сервис из первого листинга сохранён в файле <code>pay_api.py</code>, клиент — в <code>pay_client.py</code>. Сервис запускался командой <code>uvicorn pay_api:app --port 8010</code> заново перед каждым из двух прогонов клиента, <code>python3 pay_client.py --no-key</code> и <code>python3 pay_client.py</code>:</p>
+<pre><code>без ключа: {'attempts': 14, 'count': 14, 'sum': 1400}
+с ключом:  {'attempts': 14, 'count': 10, 'sum': 1000}
+</code></pre>
+<p>Десять платежей по 100 потребовали 14 попыток. Без ключа сервис записал 14 платежей на сумму 1400: каждый повтор после задержанного ответа списал деньги ещё раз. С ключом при тех же 14 попытках записано 10 платежей на 1000: повтор с известным ключом получил сохранённый ответ. Та же картина получена в демонстрации к лекции со скриптом <code>pay.py</code>. Ответы 4xx и 5xx httpx исключениями не считает, поэтому функция <code>pay</code> повторяет только ошибки транспорта; повтор по кодам 503 и 429 добавляется проверкой <code>status_code</code>.</p>
+<p>Словарь <code>responses</code> в листинге — состояние в памяти процесса, и со вторым экземпляром сервиса защита перестала бы работать: повтор, попавший на соседний экземпляр, списал бы деньги снова. В рабочей системе ключ и ответ хранятся в общей базе и записываются в той же транзакции, что и само списание, а уникальность ключа обеспечивает ограничение <code>UNIQUE</code>; тогда и два одновременных повтора не выполнят действие дважды. Ключи хранят ограниченное время, например сутки, за которые повторы заведомо закончатся.</p>
+<p>Тот же принцип применим к управлению установкой. Команда «выставить ток квадруполя 10 А» идемпотентна и может безопасно повторяться до подтверждения, а «увеличить ток на 1 А» при потерянном ответе и повторе изменит ток на 2 А. Поэтому программы управления повторяют уставку с проверкой прочитанного значения. В библиотеке SCAUT, рассмотренной в главе <a href="./app.html">«От скрипта к приложению»</a>, функция установки мотора записывает уставку, выжидает заданную паузу и читает значение обратно, повторяя запись, пока прочитанное значение не попадёт в допуск, но не больше заданного числа попыток.</p>
+<h3 id="Автомат-защиты-и-деградация"><a class="header" href="#Автомат-защиты-и-деградация">Автомат защиты и деградация</a></h3>
+<p>Когда вызываемый сервис отказал, повторы и даже обычные запросы мешают ему восстановиться и занимают ресурсы вызывающего ожиданием тайм-аутов. <strong>Автомат защиты</strong> (circuit breaker) представляет собой шаблон из книги М. Найгарда «Release It!» [25]: он ставится на стороне вызывающего и имеет три состояния. В закрытом состоянии запросы проходят, а неудачи считаются; после нескольких неудач подряд автомат открывается и в течение заданной паузы сразу возвращает ошибку или заглушку, не обращаясь к сервису. По истечении паузы автомат переходит в полуоткрытое состояние и пропускает один пробный настоящий запрос: при успехе закрывается, при неудаче снова открывается.</p>
+<pre><code class="language-python">class Breaker:
+    def __init__(self, threshold=3, open_for=1.0):
+        self.threshold, self.open_for = threshold, open_for
+        self.state, self.failures, self.opened_at = "closed", 0, 0.0
+
+    def call(self, now, func):
+        if self.state == "open":
+            if now - self.opened_at &lt; self.open_for:
+                return "заглушка"                   # быстрый отказ
+            self.state = "half-open"                # пробный запрос
+        if func(now):
+            self.state, self.failures = "closed", 0
+            return "ответ"
+        self.failures += 1
+        if self.state == "half-open" or self.failures &gt;= self.threshold:
+            self.state, self.opened_at = "open", now
+        return "ошибка"
+</code></pre>
+<p>Время <code>now</code> передаётся явно, что позволяет проверить автомат в модельном времени. Скрипт демонстрации <code>breaker.py</code> с этим классом подаёт на gateway 10 запросов в секунду, а сервис articles недоступен первые 2,5 с; печатаются смены результата и состояния:</p>
+<pre><code>0.0 с  ошибка -&gt; closed
+0.2 с  ошибка -&gt; open
+0.3 с  заглушка -&gt; open
+1.2 с  пробный запрос: ошибка -&gt; open
+1.3 с  заглушка -&gt; open
+2.2 с  пробный запрос: ошибка -&gt; open
+2.3 с  заглушка -&gt; open
+3.2 с  пробный запрос: ответ -&gt; closed
+запросов к gateway 40, до articles дошло 13 (без автомата было бы 40)
+</code></pre>
+<p>После третьей неудачи подряд, в 0,2 с, автомат открывается, и до 1,2 с запросы получают заглушку. Пробные запросы в 1,2 и 2,2 с неудачны, а пробный запрос в 3,2 с успешен, и автомат закрывается. Из 40 запросов до articles дошло 13.</p>
+<p>Применение автомата имеет цену. По опыту Amazon он вносит в систему режимы, которые трудно проверить заранее, и может задержать восстановление, поэтому там предпочитают ограничивать повторы локально, ведром жетонов, — именно так устроен бюджет повторов в листинге выше; в AWS SDK такое ограничение действует с 2016 года.</p>
+<p>Вместе с автоматом применяют <strong>деградацию функциональности</strong>: вместо ошибки 504 пользователь получает страницу без отказавшего блока, последнюю сохранённую версию данных или ответ 503 с заголовком <code>Retry-After</code>. Для архива измерений это означает, что при недоступности сервиса построения графиков страница запуска показывает таблицу и последний сохранённый график, а не ошибку.</p>
+<h2 id="Данные"><a class="header" href="#Данные">Данные</a></h2>
+<blockquote>
+<p><strong>Слайды к главе.</strong> Репликация и отставание реплик, шардирование, CAP и PACELC, кеширование и инвалидация, очереди и обратное давление изложены также в четвёртой части лекции «Архитектура и системный дизайн» с демонстрациями в терминале; слайды лекции доступны <a href="https://phys-dev.github.io/soft-dev-book/slides/lecture-14.html#/sec-data">на сайте книги</a> и <a href="https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-14.pdf">в PDF</a>.</p>
+</blockquote>
+<iframe src="../slides/lecture-14.html#/sec-data" title="Слайды лекции «Архитектура и системный дизайн»: данные" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
+<p>Сервис без состояния масштабируется добавлением экземпляров. Базы, кеши и очереди хранят состояние, и с ними так поступить нельзя: копии должны содержать одни и те же данные, а их согласование имеет цену. Подробно эти вопросы рассмотрены у Клеппмана [16].</p>
+<h3 id="Репликация"><a class="header" href="#Репликация">Репликация</a></h3>
+<p>Репликация решает задачу так: запись принимает одна <strong>главная</strong> база, а изменения передаются <strong>репликам</strong>, которые обслуживают чтение; в PostgreSQL изменения передаются по журналу упреждающей записи (WAL). Устройство журнала, физическая и логическая репликация и восстановление на момент времени рассмотрены в разделе «Эксплуатация» главы <a href="./bd-work.html">«Работа с базами данных»</a>. Реплики позволяют масштабировать чтение: если данные читают в сотни раз чаще, чем пишут, добавление реплик снимает нагрузку с главной базы. Для метаданных архива это означает запись в главную базу, а поиск и графики — с реплик.</p>
+<p>По умолчанию потоковая репликация PostgreSQL асинхронна: главная база подтверждает запись, не дожидаясь реплики, и реплика отстаёт, обычно меньше чем на секунду. Отсюда два следствия. Чтение с реплики сразу после записи может не увидеть только что записанное, поэтому для гарантии «читать свои записи» такие чтения направляют в главную базу. При отказе главной базы реплику повышают до главной, и транзакции, не успевшие до неё дойти, теряются. Синхронная репликация подтверждает запись только после её сохранения на реплике — без потерь, но медленнее и с остановкой записи при недоступности реплики. Переключение выполняет автоматика, например Patroni для PostgreSQL, принимающая решение по кворуму.</p>
+<h3 id="Шардирование-и-секционирование"><a class="header" href="#Шардирование-и-секционирование">Шардирование и секционирование</a></h3>
+<p>Когда объём данных или поток записи превышает возможности одной машины, данные делят на части — <strong>шарды</strong>, каждая из которых хранится на своей машине со своими репликами. Шард определяется ключом, и выбор ключа является главным решением.</p>
+<div class="table-wrapper"><table><thead><tr><th>Ключ</th><th>Достоинство</th><th>Недостаток</th></tr></thead><tbody>
+<tr><td>время</td><td>интервал читается с одного шарда</td><td>вся текущая запись — в последний шард</td></tr>
+<tr><td>хеш номера запуска</td><td>нагрузка равномерна</td><td>интервал времени — со всех шардов</td></tr>
+<tr><td>канал, затем время</td><td>канал за интервал — на одном шарде</td><td>популярный канал перегружает свой шард</td></tr>
+</tbody></table>
+</div>
+<p>Деление по времени удобно для архива измерений: выборка за интервал читается с одного шарда, но вся текущая запись приходится на последний. Хеш номера запуска распределяет нагрузку равномерно, но выборка за интервал времени требует обращения ко всем шардам. Составной ключ «канал, время» размещает данные одного канала вместе, но популярный канал перегружает свой шард. При добавлении шардов данные перераспределяются, и консистентное хеширование ограничивает перенос долей \(1/(N+1)\). Запросы и транзакции, затрагивающие несколько шардов, дороже или вовсе недоступны, а смена ключа означает перенос всех данных, поэтому ключ выбирают заранее, по главным запросам.</p>
+<p>К шардированию приходят не сразу. Секционирование таблицы внутри одной базы — <code>PARTITION BY RANGE</code> в PostgreSQL или расширение TimescaleDB для временных рядов — решает многие задачи архива без распределённой системы: оно позволяет запросу за интервал читать только нужные секции, а устаревшие секции удалять целиком. Секционирование временного ряда по месяцам с планом запроса показано в том же разделе «Эксплуатация» главы «Работа с базами данных».</p>
+<h3 id="cap-pacelc-и-кворумы"><a class="header" href="#cap-pacelc-и-кворумы">CAP, PACELC и кворумы</a></h3>
+<p>Хранилище с несколькими копиями при разрыве сети неизбежно выбирает между согласованностью и доступностью. Теорема CAP, сформулированная Э. Брюером и доказанная С. Гилбертом и Н. Линч, утверждает: при разрыве сети (P), разделяющем копии, система либо отказывает части запросов, сохраняя согласованность (C), либо отвечает на все, рискуя выдать устаревшие данные (A). Разрыв сети является не выбором, а условием эксплуатации, поэтому выбирать приходится между C и A. Расширение PACELC, предложенное Д. Абади, добавляет обычный режим: и без разрыва (E) приходится выбирать между задержкой (L) и согласованностью (C), поскольку синхронное подтверждение от нескольких копий увеличивает задержку, а асинхронное допускает расхождение копий.</p>
+<p>Кворумы позволяют настраивать этот выбор. Пусть данные хранятся в N копиях, запись ждёт подтверждения W копий, а чтение опрашивает R копий и берёт новейшее значение. Если \(R + W &gt; N\), множества копий, участвовавших в записи и в чтении, пересекаются хотя бы в одной копии, и чтение видит последнюю подтверждённую запись. При N = 3 и W = R = 2 любые две копии из трёх имеют общую, и система переживает отказ одной копии и при записи, и при чтении. Так устроены Cassandra и подобные системы с уровнями согласованности ONE, QUORUM и ALL.</p>
+<p>Таким образом, для каждой части данных архива решают, допустимо ли устаревание и насколько. График канала может отставать на секунду, а номер нового запуска должен быть единственным, поэтому его выдаёт одна главная база.</p>
+<h3 id="Кеширование"><a class="header" href="#Кеширование">Кеширование</a></h3>
+<p>Кеш хранит результаты дорогих операций ближе к потребителю, и уровней у него несколько: браузер и CDN, кеш nginx, память процесса приложения, общий кеш наподобие Redis. Распространённая схема — <strong>cache-aside</strong>: приложение сначала ищет значение в кеше, при промахе читает базу и помещает результат в кеш со сроком жизни, а при записи обновляет базу и удаляет ключ из кеша. Так устроены кеш страниц в Redis в разделе «Одна задача в четырёх хранилищах» главы <a href="./bd-work.html">«Работа с базами данных»</a> и сервисный слой в разборе <a href="../examples/async-api.html">«Асинхронное API для кинотеатра»</a>.</p>
+<p>Удаление ключа при записи называют инвалидацией, и оно является самым трудным местом схемы: сброс может не дойти, а чтение, начавшееся до записи, может поместить в кеш устаревшее значение уже после сброса. Срок жизни ограничивает время, в течение которого такая ошибка видна. Вторая опасность — <strong>лавина промахов</strong>: когда истекает срок жизни популярного ключа, все экземпляры одновременно идут за ним в базу. Защитой служит один загрузчик, пока остальные ждут его результата, или выдача устаревшего значения на время обновления; в nginx это директивы <code>proxy_cache_lock</code> и <code>proxy_cache_use_stale</code>. Третья опасность — холодный старт: после перезапуска кеша вся нагрузка приходится на базу, и база должна её выдерживать, иначе кеш прогревают постепенно. Локальный кеш процесса быстрее всех, но у каждого экземпляра он свой и теряется при перезапуске.</p>
+<p>Ниже приведён кеш со сроком жизни и одним загрузчиком из демонстрации к лекции:</p>
+<pre><code class="language-python">import threading
+import time
+
+
+class Cache:
+    """Кеш со сроком жизни; single_flight — один загрузчик при промахе."""
+
+    def __init__(self, ttl, single_flight=False):
+        self.ttl, self.single_flight = ttl, single_flight
+        self.data, self.lock = {}, threading.Lock()
+
+    def get(self, key, loader):
+        item = self.data.get(key)
+        if item and item[1] &gt; time.monotonic():
+            return item[0]                          # попадание
+        if not self.single_flight:
+            value = loader(key)                     # каждый промах — в базу
+        else:
+            with self.lock:                         # остальные ждут первого
+                item = self.data.get(key)
+                if item and item[1] &gt; time.monotonic():
+                    return item[0]
+                value = loader(key)
+        self.data[key] = (value, time.monotonic() + self.ttl)
+        return value
+
+    def invalidate(self, key):
+        self.data.pop(key, None)
+</code></pre>
+<p>При промахе без защиты каждый поток идёт в базу сам; в режиме одного загрузчика потоки ждут замок и после него проверяют кеш повторно, так что в базу идёт только первый. Замок здесь один на весь кеш; в рабочем коде целесообразно заводить замок на каждый ключ, чтобы промахи по разным ключам не ждали друг друга. В демонстрации «база» представлена словарём с током квадруполя Q1, чтение которого занимает 200 мс. Функция с декоратором <code>functools.lru_cache</code> первое чтение выполняет за 200,1 мс, второе — за 0,0 мс. Затем в базу записывается 12,0 А: кеш без сброса продолжает отдавать 10,0 А, а после удаления ключа — 12,0 А. Наконец, срок жизни ключа истекает, и 50 потоков одновременно запрашивают его: без защиты в базу идут все 50, с одним загрузчиком — один, а время в обоих случаях равно 0,21 с.</p>
+<h3 id="Очереди"><a class="header" href="#Очереди">Очереди</a></h3>
+<p>Очередь между частями системы развязывает их во времени: источник отдаёт работу и продолжает свою, обработчики разбирают её в своём темпе, а кратковременный пик нагрузки сглаживается. Между процессами и машинами очередь реализует брокер сообщений — Kafka, RabbitMQ, Redis Streams. Важнейшим параметром очереди является предел длины. Неограниченная очередь не защищает от перегрузки, а откладывает её проявление: если поток стабильно выше ёмкости обработчиков, очередь и время ожидания растут без предела, пока не кончится память.</p>
+<p>Полная ограниченная очередь оставляет два допустимых варианта. <strong>Обратное давление</strong>: источник ждёт места и сам замедляется до ёмкости обработчиков; такой режим обеспечивает сохранность всех данных, но источник должен уметь ждать. <strong>Сброс нагрузки</strong>: лишнее отклоняется сразу, например ответом 429 или 503, и источник сохраняет темп ценой потерь. В очереди asyncio оба варианта записываются несколькими строками; ниже — фрагмент источника из скрипта демонстрации <code>queue_demo.py</code>:</p>
+<pre><code class="language-python">if shed:
+    try:
+        q.put_nowait(item)
+    except asyncio.QueueFull:
+        dropped += 1                    # сброс
+else:
+    await q.put(item)                   # ждёт места: давление
+</code></pre>
+<p>Скрипт моделирует систему сбора: источник выдаёт 100 измерений в секунду в течение 3 с, два обработчика тратят по 30 мс на измерение.</p>
+<div class="table-wrapper"><table><thead><tr><th>Очередь</th><th>Выдача, с</th><th>Обработано через, с</th><th>Длина по секундам</th><th>Наибольшее ожидание, с</th><th>Сброшено</th></tr></thead><tbody>
+<tr><td>без предела</td><td>3,0</td><td>4,8</td><td>36, 71, 108</td><td>1,74</td><td>0</td></tr>
+<tr><td><code>maxsize=10</code>, давление</td><td>4,6</td><td>4,8</td><td>10, 10, 10</td><td>0,20</td><td>0</td></tr>
+<tr><td><code>maxsize=10</code>, сброс</td><td>3,0</td><td>3,2</td><td>10, 9, 10</td><td>0,16</td><td>98</td></tr>
+</tbody></table>
+</div>
+<p>Оценим ожидаемое. Ёмкость обработчиков равна \(2 / 0{,}03 \approx 67\) измерениям в секунду, поэтому без предела очередь растёт примерно на 33 измерения в секунду и к концу выдачи достигает около ста; в опыте её длина по секундам равна 36, 71 и 108, а последнее измерение обработано через 4,8 с. С ожиданием выдача растягивается до 4,6 с, очередь всё время полна, но ожидание не превышает 0,20 с и ничего не потеряно. Со сбросом источник сохраняет темп, 3,0 с, и короткое ожидание, 0,16 с, ценой 98 сброшенных измерений из 300, что близко к оценке \(300 - 3 \cdot 67 - 10 \approx 90\): за 3 с обработчики принимают около двухсот измерений, а ещё десять помещаются в очередь.</p>
+<p>Брокеры обычно гарантируют доставку «хотя бы один раз»: после сбоя сообщение может прийти повторно, поэтому обработчик делают идемпотентным. Для системы сбора данных измерения сбрасывать нельзя — их необходимо хранить в буфере на диске и передавать давление источнику, — а запросы просмотра графиков при перегрузке можно отклонить.</p>
+<h2 id="Сопровождение"><a class="header" href="#Сопровождение">Сопровождение</a></h2>
+<blockquote>
+<p><strong>Слайды к главе.</strong> Журналы, метрики и трассировки, монолит и микросервисы, сетка сервисов и защита от перегрузки изложены также в пятой части лекции «Архитектура и системный дизайн» с демонстрацией в терминале; слайды лекции доступны <a href="https://phys-dev.github.io/soft-dev-book/slides/lecture-14.html#/sec-ops">на сайте книги</a> и <a href="https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-14.pdf">в PDF</a>.</p>
+</blockquote>
+<iframe src="../slides/lecture-14.html#/sec-ops" title="Слайды лекции «Архитектура и системный дизайн»: сопровождение" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
+<p>Работающую систему наблюдают, изменяют и защищают от перегрузки. Общие практики сопровождения — дежурства, разбор инцидентов, chaos engineering — перечислены в разделе «Сопровождение» главы <a href="./life.html">«Жизненный цикл ПО»</a>; здесь рассматривается то, что относится к системе из нескольких частей.</p>
+<h3 id="Журналы-метрики-и-трассировки"><a class="header" href="#Журналы-метрики-и-трассировки">Журналы, метрики и трассировки</a></h3>
+<p>Наблюдаемость обеспечивают три вида сигналов.</p>
+<div class="table-wrapper"><table><thead><tr><th>Сигнал</th><th>Вопрос</th><th>Инструменты</th></tr></thead><tbody>
+<tr><td>журналы</td><td>что случилось с этим запросом?</td><td>logging, Loki, Elasticsearch</td></tr>
+<tr><td>метрики</td><td>сколько, как быстро, сколько ошибок?</td><td>Prometheus, Grafana</td></tr>
+<tr><td>трассировки</td><td>где запрос провёл время?</td><td>OpenTelemetry, Jaeger</td></tr>
+</tbody></table>
+</div>
+<p>Журналы отвечают на вопрос, что случилось с конкретным запросом, и нужны для расследования. Метрики представляют собой числа во времени — запросы в секунду, доля ошибок, перцентили задержки, заполнение диска; по ним строят графики и оповещения. Трассировки показывают путь одного запроса через все сервисы и время на каждом участке. Связывает сигналы <strong>идентификатор запроса</strong>: nginx на входе вычисляет переменную <code>$request_id</code> и передаёт её приложению заголовком, и все записи о запросе в журналах всех сервисов содержат одно значение. Стандартный формат передачи контекста трассировки — заголовок <code>traceparent</code> из рекомендации W3C Trace Context, реализуемый библиотеками OpenTelemetry.</p>
+<pre><code class="language-nginx">log_format rid '$request_id $status $request_time';
+server {
+    listen 127.0.0.1:8080;
+    access_log /var/log/nginx/access.log rid;
+    location / {
+        proxy_set_header X-Request-ID $request_id;
+        proxy_pass http://127.0.0.1:8001;
+    }
+}
+</code></pre>
+<p>Два запроса к этой конфигурации с экземпляром на порту 8001, возвращающим полученный заголовок, дают ответы</p>
+<pre><code>X-Request-ID: 4badfddfc135bb0bca59af9adff8b580
+X-Request-ID: cad908e5677252cc248aec77bf34a97b
+</code></pre>
+<p>и строки журнала nginx с теми же идентификаторами:</p>
+<pre><code>4badfddfc135bb0bca59af9adff8b580 200 0.004
+cad908e5677252cc248aec77bf34a97b 200 0.001
+</code></pre>
+<p>Формату журнала дано собственное имя. В образе nginx:alpine основной файл <code>/etc/nginx/nginx.conf</code> уже объявляет формат <code>main</code> и лишь затем подключает файлы каталога <code>conf.d</code>, поэтому та же конфигурация с именем <code>main</code> не проходит проверку <code>nginx -t</code>:</p>
+<pre><code>nginx: [emerg] duplicate "log_format" name "main" in /etc/nginx/conf.d/default.conf:1
+</code></pre>
+<p>Директива <code>log_format</code> только объявляет формат, а журнал пишется в нём, когда формат назван в директиве <code>access_log</code>.</p>
+<p>Книга Google SRE рекомендует для каждого сервиса следить за четырьмя сигналами: задержкой, трафиком, ошибками и насыщением [23]. Оповещение должно требовать действия человека и срабатывать по симптому, а не по причине: по скорости расходования бюджета ошибок, а не по загрузке процессора. В качестве начальных порогов рекомендуется вызывать дежурного, если за час израсходовано 2 % бюджета на 30 дней или за шесть часов — 5 %, и заводить заявку, если за трое суток израсходовано 10 % [24]. Определим, что означают эти пороги. В 30 днях 720 ч, и при равномерном расходе за час тратится 1/720 бюджета; 2 % за час соответствуют скорости расходования \(0{,}02 \cdot 720 = 14{,}4\), при которой бюджет иссякнет за 50 ч. Для 5 % за шесть часов скорость равна \(0{,}05 \cdot 120 = 6\), для 10 % за трое суток — \(0{,}1 \cdot 10 = 1\): заявку заводят, когда бюджет расходуется ровно с той скоростью, при которой его хватит лишь до конца окна.</p>
+<h3 id="Монолит-и-микросервисы"><a class="header" href="#Монолит-и-микросервисы">Монолит и микросервисы</a></h3>
+<div class="table-wrapper"><table><thead><tr><th></th><th>Монолит</th><th>Микросервисы</th></tr></thead><tbody>
+<tr><td>выкатка</td><td>целиком</td><td>по сервису</td></tr>
+<tr><td>масштабирование</td><td>целиком</td><td>по сервису</td></tr>
+<tr><td>отказ части</td><td>общий процесс</td><td>частичный, через сеть</td></tr>
+<tr><td>данные</td><td>одна транзакция</td><td>согласование между базами</td></tr>
+<tr><td>команды</td><td>одна</td><td>несколько независимых</td></tr>
+<tr><td>цена старта</td><td>низкая</td><td>сеть, наблюдаемость, выкатка</td></tr>
+</tbody></table>
+</div>
+<p>Монолит представляет собой одну программу, которая выкатывается и масштабируется целиком; микросервисы — набор небольших сервисов, каждый со своей базой, выкатываемых и масштабируемых независимо. Выбор между ними — вопрос организации команды не меньше, чем техники. Монолит дешевле на старте: вызов функции вместо сетевого запроса, одна транзакция вместо согласования нескольких баз, одна выкатка. Его проблемы появляются с ростом: десяток команд мешает друг другу в одном коде, а выкатка целого становится рискованной. Микросервисы снимают эти проблемы ценой всего, о чём шла речь в разделе об отказоустойчивости, — частичных отказов, тайм-аутов и повторов, — а также затрат на наблюдаемость и согласование данных.</p>
+<p>Распространённый совет — начинать с <strong>модульного монолита</strong>, в котором модули имеют чёткие интерфейсы, как слои SCAUT в главе <a href="./app.html">«От скрипта к приложению»</a> или слои сервиса в разборе <a href="../examples/async-api.html">«Асинхронное API для кинотеатра»</a>, и выделять сервис, когда граница модуля действительно мешает выкатке или масштабированию. Известен и обратный путь: в 2023 году команда Prime Video перенесла мониторинг качества видео из набора распределённых компонентов в одно приложение и сократила затраты на инфраструктуру более чем на 90 %. Группе из пяти человек с одной установкой достаточно монолита с модулями сбора, хранения и веб-интерфейса.</p>
+<h3 id="Сетка-сервисов"><a class="header" href="#Сетка-сервисов">Сетка сервисов</a></h3>
+<p>Когда сервисов десятки, тайм-ауты, повторы, балансировку, шифрование и метрики неудобно реализовывать в каждом из них. <strong>Сетка сервисов</strong> (service mesh) выносит эти функции из кода в посредника, который запускается рядом с каждым экземпляром, — это уровень данных (data plane). Сервис обращается к соседу через локального посредника, а тот выбирает экземпляр, повторяет запрос, соблюдает тайм-ауты, шифрует соединение взаимным TLS и собирает метрики. Уровень управления (control plane) знает топологию системы и раздаёт посредникам адреса экземпляров, правила и сертификаты; его отказ не останавливает работающих посредников, они продолжают работу с последней полученной конфигурацией.</p>
+<p>Первой реализацией был Linkerd в 2016 году, наиболее известная — Istio на основе посредника Envoy, с 2020 года управляемая одним процессом istiod. Цена — два посредника на пути каждого вызова и потребляемые ими ресурсы: по данным проекта Istio для версии 1.24, около 0,2 vCPU и 60 МБ памяти на тысячу запросов в секунду у каждого посредника; режим ambient заменяет посредника у каждого экземпляра общим посредником на узле. Для трёх-пяти сервисов сетка избыточна: для тех же задач достаточно библиотеки клиента и nginx.</p>
+<h3 id="Ограничение-частоты-и-сброс-нагрузки"><a class="header" href="#Ограничение-частоты-и-сброс-нагрузки">Ограничение частоты и сброс нагрузки</a></h3>
+<p>Перегрузка приходит не только от атаки: наплыв пользователей после публикации данных, собственный нагрузочный тест, запущенный не на том сервере, скрипт коллеги без паузы между запросами. <strong>Ограничение частоты</strong> отклоняет запросы сверх заданного темпа до дорогой обработки. В nginx его реализует модуль <code>limit_req</code> по алгоритму «дырявого ведра»: каждый клиент, определяемый ключом, например адресом, получает темп r запросов в секунду и запас b на залп, а с параметром <code>nodelay</code> ведро ведёт себя как ведро жетонов и пропускает залп сразу. По умолчанию nginx отвечает на лишние запросы кодом 503, который клиент примет за отказ сервера, поэтому код меняют на 429 Too Many Requests. Заголовок <code>Retry-After</code>, подсказывающий клиенту, когда повторить, <code>limit_req</code> сам не добавляет: его задаёт директива <code>add_header</code>, а для кода 429 — только с параметром <code>always</code>.</p>
+<pre><code class="language-nginx">map $status $retry_after {       # заголовок только у отказов 429
+    429     1;
+    default "";
+}
+limit_req_zone $binary_remote_addr zone=perip:10m rate=5r/s;
+upstream app {
+    server 127.0.0.1:8001;
+    server 127.0.0.1:8002;
+    server 127.0.0.1:8003;
+}
+server {
+    listen 127.0.0.1:8080;
+    location / {
+        limit_req zone=perip burst=10 nodelay;   # запас на залп — 10
+        limit_req_status 429;                    # по умолчанию — 503
+        add_header Retry-After $retry_after always;
+        proxy_pass http://app;
+    }
+}
+</code></pre>
+<p>Блок <code>map</code> вычисляет значение заголовка по коду ответа: для 429 — одна секунда, для остальных кодов — пустая строка, а заголовок с пустым значением nginx не добавляет. Из залпа в 12 одновременных запросов к этой конфигурации 11 получили ответ 200 без заголовка, а последний — такой ответ:</p>
+<pre><code>HTTP/1.1 429 Too Many Requests
+Server: nginx/1.31.6
+Date: Sat, 03 Oct 2026 03:50:28 GMT
+Content-Type: text/html
+Content-Length: 169
+Connection: keep-alive
+Retry-After: 1
+</code></pre>
+<p>Без параметра <code>always</code> заголовок получили только ответы 200, а ответ 429 остался без него; строка <code>add_header Retry-After 1 always;</code> без блока <code>map</code> добавляет заголовок ко всем ответам, включая успешные.</p>
+<p>В демонстрации к лекции та же конфигурация без заголовка ограничивает каждый адрес пятью запросами в секунду с запасом в десять. Из залпа в 30 одновременных запросов 11 получают ответ 200 — один в счёт темпа и десять в счёт запаса, — а 19 получают 429. Поток 20 запросов в секунду в течение 4 с пропускает 15 запросов в первую секунду и ровно по 5 в каждую следующую. Журнал ошибок nginx содержит 69 записей limiting requests — по одной на каждый отклонённый запрос, 19 из залпа и 50 из потока.</p>
+<p><strong>Сброс нагрузки</strong> применяет тот же принцип внутри сервиса: перегруженный сервис отклоняет часть запросов сразу и вовремя отвечает остальным, а не отвечает всем с задержкой в секунды. От объёмных атак на канал ограничение частоты в nginx не защищает: их отсекают до сервиса — у провайдера, в CDN, распределением адреса через anycast. Межсетевые экраны прикладного уровня отклоняют запросы с признаками атак, а капча отделяет автоматические запросы от людей.</p>
+<h3 id="Сопровождаемость"><a class="header" href="#Сопровождаемость">Сопровождаемость</a></h3>
+<p>Сопровождаемость — свойство системы, позволяющее изменять её и управлять ею без чрезвычайных усилий. Первое правило — <strong>простота</strong>: каждый компонент представляет собой ещё одну часть, которая может отказать и которую необходимо обновлять, поэтому кеш, очередь или второй тип базы добавляют, когда без них измеримо хуже, а не на будущее. Второе — <strong>знакомые технологии</strong>: новую базу или брокер сначала проверяют под нагрузкой на тестовом контуре, а не вводят в работу по одной прочитанной статье. Третье — <strong>управляемая выкатка</strong>: конвейер CI/CD, постепенная выкатка с оповещениями о её ходе и откат одной командой, рассмотренные в главе <a href="./life.html">«Жизненный цикл ПО»</a>. Четвёртое — <strong>изоляция контуров</strong>: тестовый контур не пишет в рабочую базу, а разные группы пользователей или установки обслуживаются разными экземплярами, чтобы ошибка или наплыв в одном контуре не затрагивали другой.</p>
+<p>Зеркалирование рабочих запросов в тестовый контур позволяет проверить новую версию на настоящей нагрузке, но опасно для запросов с побочным действием — писем, списаний, команд оборудованию. Новую версию программы сбора данных поэтому сначала проверяют на стенде с моделью установки, а затем выпускают в смену с готовым откатом.</p>
+<h2 id="Проектирование-системы-сбора-данных"><a class="header" href="#Проектирование-системы-сбора-данных">Проектирование системы сбора данных</a></h2>
+<blockquote>
+<p><strong>Слайды к главе.</strong> Проект системы сбора данных установки — требования, оценки, схема, отказы и реакции — изложен также в шестой части лекции «Архитектура и системный дизайн»; слайды лекции доступны <a href="https://phys-dev.github.io/soft-dev-book/slides/lecture-14.html#/sec-design">на сайте книги</a> и <a href="https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-14.pdf">в PDF</a>.</p>
+</blockquote>
+<iframe src="../slides/lecture-14.html#/sec-design" title="Слайды лекции «Архитектура и системный дизайн»: проектирование" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
+<p>Применим сказанное к задаче, знакомой физику, — системе сбора данных установки. Порядок проектирования тот же, что и в главе: требования, оценки, схема, отказы и наблюдаемость.</p>
+<h3 id="Требования-и-оценки"><a class="header" href="#Требования-и-оценки">Требования и оценки</a></h3>
+<p>Функциональные требования: принимать данные с оцифровщиков, хранить их в архиве, выдавать выборку канала за интервал времени и строить графики. Нефункциональные требования записываются числами. Поток: 200 каналов по 10 кГц и 2 байта на отсчёт, непрерывно. Сохранность: ни одно измерение не теряется при отказе одной машины; это требование важнее скорости чтения. Чтение: двадцать сотрудников и их скрипты, до 50 запросов/с в пике, p99 выборки канала меньше секунды, доступность чтения 99,9 % за 30 дней. Стоимость: три машины и диски на год записи.</p>
+<pre><code class="language-python">rate = 200 * 10_000 * 2           # байт/с: каналы × частота × байт на отсчёт
+day = rate * 86_400 / 1e12        # ТБ в сутки
+year = day * 365                  # ТБ в год
+samples = 200 * 10_000 * 86_400   # отсчётов в сутки
+print(rate / 1e6, round(day, 2), round(year), f'{samples:.3g}')
+</code></pre>
+<pre><code>4.0 0.35 126 1.73e+11
+</code></pre>
+<p>Оценим следствия. Поток 4 МБ/с даёт около 0,35 ТБ в сутки и 126 ТБ в год, а с двумя копиями архива — 252 ТБ; отсюда требования к дискам и вопрос о сжатии и прореживании старых данных, который тоже относится к требованиям. В сетевых единицах 4 МБ/с составляют 32 Мбит/с, около 3 % пропускной способности сети 1 Гбит/с, так что сеть между машинами даже с учётом копий узким местом не станет. Хранение каждого отсчёта отдельной строкой реляционной таблицы означало бы почти 173 млрд строк в сутки; поэтому отсчёты хранят блоками в файлах, а в базе — только метаданные. Приближённая оценка до выбора технологий отсеивает неподходящие решения.</p>
+<h3 id="Схема"><a class="header" href="#Схема">Схема</a></h3>
+<p>Схема разделяет путь записи и путь чтения, потому что требования к ним разные:</p>
+<pre><code class="language-text">Путь записи
+
+Оцифровщики ─4 МБ/с─▶ Приёмники ×2 ─────▶ Очередь ──────────▶ Писатели ×2 ──────▶ Архив
+200 каналов           буфер на диске      брокер, 3 узла      файлы по часам      HDF5, 2 копии
+                                                                │
+                                                                └──▶ Метаданные
+                                                                     PostgreSQL и реплика
+
+Путь чтения
+
+Сотрудники ────50 запросов/с────▶ nginx ──────────▶ API ×2 ────▶ Метаданные и архив
+скрипты, браузер                  лимит и           FastAPI
+                                  балансировка        │
+                                                      └──▶ Кеш графиков, Redis
+</code></pre>
+<p>Рассмотрим путь записи. Оцифровщики отправляют данные двум приёмникам. Каждый приёмник сначала пишет поток в буфер на локальном диске, который позволяет пережить кратковременный отказ следующих звеньев, а затем передаёт его в очередь — брокер сообщений на трёх узлах, хранящий сообщения с репликацией. Брокер переживает отказ одного узла: кворум из двух оставшихся продолжает работу. Именно брокер определяет число машин: на двух машинах одна несла бы два узла из трёх, и с её отказом пропал бы кворум, а трёх машин с одним узлом на каждой достаточно. Писатели забирают данные из очереди, складывают их в файлы HDF5 по часам и каналам в архив с двумя копиями и регистрируют каждый файл в метаданных. Запись идемпотентна — например, каждый блок измерений несёт номер, и писатель пропускает блок, уже записанный в архив, — поэтому повторная доставка сообщения не создаёт дубликатов. Метаданные — запуски, каналы, интервалы и пути к файлам — хранятся в PostgreSQL с репликой.</p>
+<p>Путь чтения начинается с сотрудников и их скриптов, которые обращаются к nginx. Nginx ограничивает частоту запросов и распределяет их между двумя экземплярами API на FastAPI без состояния. API находит файлы по метаданным, читает нужные интервалы из архива и помещает построенные графики в кеш Redis. Метрики и журналы всех компонентов собираются отдельно и на схеме не показаны.</p>
+<h3 id="Отказы-и-реакции"><a class="header" href="#Отказы-и-реакции">Отказы и реакции</a></h3>
+<p>Последний шаг проектирования — пройти по схеме и для каждого компонента ответить на вопрос, что произойдёт при его отказе и какое требование окажется под угрозой.</p>
+<div class="table-wrapper"><table><thead><tr><th>Отказ</th><th>Реакция системы</th><th>Требование под угрозой</th></tr></thead><tbody>
+<tr><td>приёмник</td><td>приём вторым приёмником, буфер в оцифровщике</td><td>сохранность</td></tr>
+<tr><td>узел очереди</td><td>работа кворума из двух оставшихся узлов</td><td>сохранность</td></tr>
+<tr><td>писатель</td><td>ожидание данных в очереди, второй писатель</td><td>сохранность</td></tr>
+<tr><td>заполнение диска</td><td>оповещение за 7 суток по прогнозу</td><td>сохранность</td></tr>
+<tr><td>главная база</td><td>повышение реплики, пауза регистрации файлов</td><td>доступность</td></tr>
+<tr><td>экземпляр API</td><td>исключение в nginx, повтор GET на соседе</td><td>доступность</td></tr>
+<tr><td>наплыв запросов</td><td>ответ 429 от <code>limit_req</code>, графики из кеша</td><td>задержка</td></tr>
+</tbody></table>
+</div>
+<p>Отказ приёмника не теряет данных: второй приёмник продолжает приём, а оцифровщик хранит данные в буфере на время переключения. Отказ писателя задерживает появление данных в архиве, но не теряет их: они ждут в очереди, пока их не заберёт второй писатель. Заполнение диска является медленным отказом, о котором оповещают заранее, по прогнозу заполнения. Отказ главной базы метаданных приостанавливает регистрацию новых файлов до повышения реплики, а чтение продолжается. Отказ экземпляра API скрывает nginx, повторяя запросы GET на соседнем экземпляре, а наплыв запросов чтения ограничивает <code>limit_req</code>, пока графики отдаются из кеша. Каждая реакция проверяется опытом — нагрузочным тестом, остановкой экземпляра, переполнением очереди, — так же, как в демонстрациях к лекции.</p>
+<h3 id="Наблюдаемость-и-резервная-копия"><a class="header" href="#Наблюдаемость-и-резервная-копия">Наблюдаемость и резервная копия</a></h3>
+<p>Наблюдаемость замыкает проект. Индикаторами уровня обслуживания служат задержка поступления измерений в архив, длина очереди, доля успешных и доля быстрых чтений, а оповещения срабатывают по расходу бюджета ошибок и по прогнозу заполнения дисков.</p>
+<p>Две копии архива защищают от отказа диска и машины, но не от ошибочного удаления или порчи файлов программой: вторая копия повторит ошибку. Поэтому архиву необходима резервная копия на другой площадке с регулярной проверкой восстановления, а требования к ней записывают числами — допустимой потерей данных (RPO, recovery point objective) и временем восстановления (RTO, recovery time objective). Оценим время восстановления годового архива: 126 ТБ по сети 1 Гбит/с передаются за \(126 \cdot 10^{12} \cdot 8 / 10^{9} \approx 1{,}0 \cdot 10^{6}\) с, то есть почти за 12 суток. Если допустимое время восстановления меньше, восстановление планируют по частям — сначала метаданные и данные последних запусков — или закладывают более быстрый канал. Резервные копии базы метаданных и восстановление PostgreSQL на момент времени рассмотрены в разделе «Эксплуатация» главы <a href="./bd-work.html">«Работа с базами данных»</a>.</p>
+<p>Пройденный порядок универсален: требования, оценки, схема, отказы и наблюдаемость.</p>
+<h3 id="Упражнения"><a class="header" href="#Упражнения">Упражнения</a></h3>
+<ol>
+<li>Записать SLO 99,5 % для собственного сервиса и вычислить допустимый простой и число неуспешных запросов за 30 дней.</li>
+<li>Нагрузить свой сервис генератором с расписанием, найти его ёмкость и выяснить, как растёт задержка за её пределом.</li>
+<li>Поставить три экземпляра сервиса за nginx, сравнить round robin с весами и <code>least_conn</code> и остановить один экземпляр сигналом STOP.</li>
+<li>Спроектировать архив данных своей установки: оценить поток и объём, нарисовать схему и составить таблицу отказов.</li>
+</ol>
+<p>В <a href="../practicum/final-project-requirements.html">итоговом проекте</a> курса по той же последовательности удобно описать предполагаемый путь решения в документе первого этапа: требования с числами, оценки нагрузки и объёма данных и схему.</p>
+<h2 id="Резюме"><a class="header" href="#Резюме">Резюме</a></h2>
+<p>Таким образом, проектирование системы начинается с требований, записанных числами: нагрузки в запросах в секунду, перцентиля задержки, цели уровня обслуживания и бюджета ошибок. Масштабирование горизонтально, если сервис не хранит состояние в себе, а алгоритм балансировки выбирают по характеру запросов: round robin — для одинаковых, least connections — для разной длительности, хеш — для привязки. Отказы переживают резервирование с кворумом, проверки работоспособности, согласованные тайм-ауты или передача дедлайна и повторы с бюджетом и случайной паузой; повторяют только идемпотентные операции, а автомат защиты и заглушка дают отказавшей зависимости восстановиться. Реплики, шарды, кеш и очередь решают задачи данных, и каждое решение имеет свою цену: отставание реплики, перенос данных при смене ключа, устаревание кеша, выбор между давлением и сбросом в очереди.</p>
+<p>Компонент добавляется тогда, когда расчёт или замер показывает, что без него хуже. Лабораторному сервису обычно достаточно одной программы и одной базы; системный дизайн позволяет заметить момент, когда этого перестаёт хватать, и выбрать следующее решение по числам.</p>
+<h2 id="Полезные-ссылки"><a class="header" href="#Полезные-ссылки">Полезные ссылки</a></h2>
+<ul>
+<li><a href="https://sre.google/sre-book/table-of-contents/">Site Reliability Engineering</a> и <a href="https://sre.google/workbook/table-of-contents/">The Site Reliability Workbook</a>, книги Google о практике эксплуатации в свободном доступе [23, 24]: SLO, бюджет ошибок, оповещения, защита от перегрузки;</li>
+<li>документация nginx: <a href="https://nginx.org/en/docs/http/ngx_http_upstream_module.html">ngx_http_upstream_module</a> (балансировка и пассивные проверки), <a href="https://nginx.org/en/docs/http/ngx_http_proxy_module.html">ngx_http_proxy_module</a> (тайм-ауты и повтор на соседнем экземпляре) и <a href="https://nginx.org/en/docs/http/ngx_http_limit_req_module.html">ngx_http_limit_req_module</a> (ограничение частоты);</li>
+<li>M. Brooker. <a href="https://builder.aws.com/content/3EumjoZascWd1oZiEgL8ORlv3qE/timeouts-retries-and-backoff-with-jitter">Timeouts, retries, and backoff with jitter</a> — статья из Amazon Builders' Library о тайм-аутах, повторах и случайной паузе;</li>
+<li>M. Fowler. <a href="https://martinfowler.com/bliki/CircuitBreaker.html">CircuitBreaker</a> — заметка об автомате защиты;</li>
+<li><a href="https://www.w3.org/TR/trace-context/">W3C Trace Context</a> — формат заголовка <code>traceparent</code>.</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../dev/bd-work.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../dev/python/intro.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../dev/bd-work.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../dev/python/intro.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../web/print-edition.js"></script>
+
+
+    </div>
+    </body>
+</html>
