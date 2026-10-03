@@ -6,9 +6,9 @@ Python является языком общего назначения: стан
 
 Завершается раздел машинным обучением, для которого всё перечисленное служит фундаментом.
 
-> **Слайды к главе.** NumPy и pandas, с которых начинается раздел, изложены также в лекции «NumPy и pandas» (устройство массива, индексация и векторные операции, типы и файлы, таблицы, группировка и слияние, временные ряды) с демонстрациями в терминале; слайды лекции доступны [на сайте книги](https://phys-dev.github.io/soft-dev-book/slides/lecture-10.html#/cover) и [в PDF](https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-10.pdf).
+> **Слайды к главе.** NumPy, pandas и SciPy, с которых начинается раздел, изложены также в лекции «NumPy, pandas и SciPy» (устройство массива, индексация и векторные операции, типы и файлы, таблицы, группировка и временные ряды, численные методы) с демонстрациями в терминале; слайды лекции доступны [на сайте книги](https://phys-dev.github.io/soft-dev-book/slides/lecture-10.html#/cover) и [в PDF](https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-10.pdf).
 
-<iframe src="../../slides/lecture-10.html#/cover" title="Слайды лекции «NumPy и pandas»" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
+<iframe src="../../slides/lecture-10.html#/cover" title="Слайды лекции «NumPy, pandas и SciPy»" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
 
 Устройство языка — объекты, коллекции, функции и классы — рассматривалось в разделе «Язык Python». Здесь язык считается известным.
 

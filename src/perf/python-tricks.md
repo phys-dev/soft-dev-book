@@ -4,9 +4,9 @@
 
 В настоящей главе рассматриваются приёмы, не требующие ничего, кроме самого языка; компиляторы и векторизация рассматриваются в следующей главе. Выигрыш обычно скромнее, зато цена нулевая: код остаётся обычным Python, доступным для чтения любому коллеге.
 
-> **Слайды к главе.** Приёмы языка и экономия памяти изложены также в третьей и четвёртой частях лекции «Оптимизация» с демонстрациями в терминале; слайды лекции доступны [на сайте книги](https://phys-dev.github.io/soft-dev-book/slides/lecture-09.html#/sec-lang) и [в PDF](https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-09.pdf).
+> **Слайды к главе.** Приёмы языка и экономия памяти изложены также в третьей и четвёртой частях лекции «Оптимизация и параллельные вычисления» с демонстрациями в терминале; слайды лекции доступны [на сайте книги](https://phys-dev.github.io/soft-dev-book/slides/lecture-09.html#/sec-lang) и [в PDF](https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-09.pdf).
 
-<iframe src="../slides/lecture-09.html#/sec-lang" title="Слайды лекции «Оптимизация»: приёмы языка" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
+<iframe src="../slides/lecture-09.html#/sec-lang" title="Слайды лекции «Оптимизация и параллельные вычисления»: приёмы языка" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
 
 ## Объекты оптимизации
 
@@ -711,7 +711,7 @@ def copy_cached(elements):
 
 Расчёт, не помещающийся в оперативную память, не выполняется вовсе или многократно замедляется: выделение памяти завершается ошибкой `MemoryError`, а при подкачке данные читаются с диска.
 
-<iframe src="../slides/lecture-09.html#/sec-mem" title="Слайды лекции «Оптимизация»: память" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
+<iframe src="../slides/lecture-09.html#/sec-mem" title="Слайды лекции «Оптимизация и параллельные вычисления»: память" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
 
 ### Измерение памяти
 

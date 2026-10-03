@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Лекция 9. Оптимизация</title>
+<title>Лекция 9. Оптимизация и параллельные вычисления</title>
 <!-- Собрано web/slides.py из презентации. Вручную не править: правки
      вносятся в презентацию, затем страница собирается заново. -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&amp;display=swap">
@@ -16,8 +16,8 @@
 <section id="cover" data-transition="fade" style="background:#FFF9C1; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:row; gap:64px">
 <div style="flex:1; display:flex; flex-direction:column; justify-content:space-between">
 <div style="display:flex; flex-direction:column; gap:32px">
-<h1 style="font-size:104px; font-weight:800; line-height:1.1; color:#201B10">Оптимизация</h1>
-<p style="font-size:36px; line-height:1.4; color:#201B10">Поиск места, где программа теряет время, и ускорение расчёта на Python: профилирование, приёмы языка, память, Numba, Cython и NumPy</p>
+<h1 style="font-size:104px; font-weight:800; line-height:1.1; color:#201B10">Оптимизация и параллельные вычисления</h1>
+<p style="font-size:36px; line-height:1.4; color:#201B10">Поиск места, где программа теряет время, и ускорение расчёта на Python: профилирование, приёмы языка, память, Numba, Cython, NumPy, потоки, процессы и видеокарта</p>
 </div>
 <div style="display:flex; flex-direction:column; gap:6px">
 <p style="font-size:34px; line-height:1.35; color:#201B10">Вячеслав Федоров</p>
@@ -29,8 +29,8 @@
 <div style="width:420px; display:flex; flex-direction:column; justify-content:center; align-items:center">
 <div style="width:320px; height:320px; background:#FCE300; border-radius:32px; display:flex; align-items:center; justify-content:center"><p style="font-family:'Jersey 10', 'Courier New', monospace; font-size:130px; line-height:1.1; color:#201B10">100x</p></div>
 </div>
-<aside hidden>Изложение. Девятая лекция посвящена скорости вычислений на Python. Язык удобен, но интерпретация, динамическая типизация и объектная модель обходятся дорого: наивный цикл на Python выполняется в десятки и сотни раз медленнее того же кода на C. Для скрипта, запускаемого раз в день, это несущественно, а для обработки данных с детектора или моделирования миллиона частиц разница составляет часы против недель. В рамках лекции рассматриваются причины медленности, измерение времени и профилирование, приёмы, не требующие ничего, кроме самого языка, экономия памяти, компиляция через Numba и Cython, векторизация NumPy и параллелизм. Надпись на титуле, 100x, обозначает порядок ускорения, которого позволяет достичь компиляция горячего цикла.
-Демонстрации. Слайды с розовым выделением слова «Демонстрация» отмечают места, где изложение прерывается для работы в терминале виртуальной машины lab. На каждом таком слайде проигрывается запись тех же команд; числа в записях получены на этой виртуальной машине с двумя ядрами и Python 3.12, далее называемой стендом. На другой машине иными будут и сами числа, и соотношения между ними: выигрыш параллельных версий зависит от числа ядер, а выигрыш BLAS — от процессора и библиотеки.</aside>
+<aside hidden>Изложение. Девятая лекция посвящена скорости вычислений на Python. Язык удобен, но интерпретация, динамическая типизация и объектная модель обходятся дорого: наивный цикл на Python выполняется в десятки и сотни раз медленнее того же кода на C. Для скрипта, запускаемого раз в день, это несущественно, а для обработки данных с детектора или моделирования миллиона частиц разница составляет часы против недель. В рамках лекции рассматриваются причины медленности, измерение времени и профилирование, приёмы, не требующие ничего, кроме самого языка, экономия памяти, компиляция через Numba и Cython, векторизация NumPy и параллельные вычисления: потоки и глобальная блокировка интерпретатора, пул процессов, сборка Python без GIL и видеокарта. Надпись на титуле, 100x, обозначает порядок ускорения, которого позволяет достичь компиляция горячего цикла; параллельные вычисления на процессоре добавляют к нему множитель, не превышающий числа ядер.
+Демонстрации. Слайды с розовым выделением слова «Демонстрация» отмечают места, где изложение прерывается для работы в терминале виртуальной машины lab. На каждом таком слайде проигрывается запись тех же команд; числа в записях получены на этой виртуальной машине с двумя ядрами и Python 3.12, а в седьмой части — также со свободнопоточным Python 3.14; далее машина называется стендом. На другой машине иными будут и сами числа, и соотношения между ними: выигрыш параллельных версий зависит от числа ядер, а выигрыш BLAS — от процессора и библиотеки. Видеокарты на стенде нет, поэтому ядро CUDA выполняется в симуляторе на процессоре и служит только для проверки индексов, а не для замера скорости.</aside>
 </section>
 <section id="plan" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-direction:column; gap:20px">
@@ -43,9 +43,10 @@
 <div style="display:flex; gap:40px; align-items:center"><p style="width:110px; font-family:'Jersey 10', 'Courier New', monospace; font-size:120px; line-height:0.8; text-align:right; color:#8A6D00">03</p><p style="font-size:44px; color:#201B10">Приёмы языка</p></div>
 <div style="display:flex; gap:40px; align-items:center"><p style="width:110px; font-family:'Jersey 10', 'Courier New', monospace; font-size:120px; line-height:0.8; text-align:right; color:#8A6D00">04</p><p style="font-size:44px; color:#201B10">Память</p></div>
 <div style="display:flex; gap:40px; align-items:center"><p style="width:110px; font-family:'Jersey 10', 'Courier New', monospace; font-size:120px; line-height:0.8; text-align:right; color:#8A6D00">05</p><p style="font-size:44px; color:#201B10">Компиляция</p></div>
-<div style="display:flex; gap:40px; align-items:center"><p style="width:110px; font-family:'Jersey 10', 'Courier New', monospace; font-size:120px; line-height:0.8; text-align:right; color:#8A6D00">06</p><p style="font-size:44px; color:#201B10">NumPy и параллелизм</p></div>
+<div style="display:flex; gap:40px; align-items:center"><p style="width:110px; font-family:'Jersey 10', 'Courier New', monospace; font-size:120px; line-height:0.8; text-align:right; color:#8A6D00">06</p><p style="font-size:44px; color:#201B10">NumPy и BLAS</p></div>
+<div style="display:flex; gap:40px; align-items:center"><p style="width:110px; font-family:'Jersey 10', 'Courier New', monospace; font-size:120px; line-height:0.8; text-align:right; color:#8A6D00">07</p><p style="font-size:44px; color:#201B10">Потоки, процессы и GPU</p></div>
 </div>
-<aside hidden>Изложение. Лекция состоит из шести частей. Первая объясняет, откуда берётся медленность Python: динамическая типизация, изменяемость всего во время выполнения, устройство интерпретатора. Вторая посвящена измерению: когда оптимизация оправдана, как замерить время фрагмента модулем timeit и найти горячее место профилировщиками cProfile, line_profiler и py-spy. Третья собирает приёмы самого языка с замерами на стенде. Четвёртая — память: как её измерить и как хранить данные компактнее. Пятая — компиляция горячих циклов через Numba и Cython на примерах умножения матриц и пространственного заряда пучка. Шестая — векторизация NumPy, параллельные процессы и видеокарта.</aside>
+<aside hidden>Изложение. Лекция состоит из семи частей. Первая объясняет, откуда берётся медленность Python: динамическая типизация, изменяемость всего во время выполнения, устройство интерпретатора. Вторая посвящена измерению: когда оптимизация оправдана, как замерить время фрагмента модулем timeit и найти горячее место профилировщиками cProfile, line_profiler и py-spy. Третья собирает приёмы самого языка с замерами на стенде. Четвёртая — память: как её измерить и как хранить данные компактнее. Пятая — компиляция горячих циклов через Numba и Cython на примерах умножения матриц и пространственного заряда пучка. Шестая — векторизация NumPy и библиотека BLAS. Седьмая — параллельные вычисления: потоки и глобальная блокировка интерпретатора, пул процессов, сборка Python без GIL и модель вычислений CUDA на видеокарте.</aside>
 </section>
 <section id="why" style="background:#73CCFE; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:row; gap:48px">
 <div style="flex:1; display:flex; flex-direction:column; justify-content:center; gap:40px">
@@ -69,7 +70,7 @@
 <div style="display:flex; gap:40px; align-items:center"><p style="width:80px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; text-align:right; color:#8A6D00">03</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:30px; font-weight:700; line-height:1.3; color:#201B10">Приёмы языка</p><p style="font-size:24px; line-height:1.35; color:#201B10">встроенные функции, локальные имена, идиомы</p></div></div>
 <div style="display:flex; gap:40px; align-items:center"><p style="width:80px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; text-align:right; color:#8A6D00">04</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:30px; font-weight:700; line-height:1.3; color:#201B10">NumPy</p><p style="font-size:24px; line-height:1.35; color:#201B10">цикл уходит в C и BLAS</p></div></div>
 <div style="display:flex; gap:40px; align-items:center"><p style="width:80px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; text-align:right; color:#8A6D00">05</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:30px; font-weight:700; line-height:1.3; color:#201B10">Numba или Cython</p><p style="font-size:24px; line-height:1.35; color:#201B10">компиляция горячего цикла в машинный код</p></div></div>
-<div style="display:flex; gap:40px; align-items:center"><p style="width:80px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; text-align:right; color:#8A6D00">06</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:30px; font-weight:700; line-height:1.3; color:#201B10">Процессы и GPU</p><p style="font-size:24px; line-height:1.35; color:#201B10">параллельные вычисления</p></div></div>
+<div style="display:flex; gap:40px; align-items:center"><p style="width:80px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; text-align:right; color:#8A6D00">06</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:30px; font-weight:700; line-height:1.3; color:#201B10">Потоки, процессы и GPU</p><p style="font-size:24px; line-height:1.35; color:#201B10">все ядра процессора и видеокарта</p></div></div>
 </div>
 </div>
 <div style="flex:1; display:flex; flex-direction:column; gap:24px">
@@ -87,7 +88,7 @@
 </div>
 </div>
 </div>
-<aside hidden>Изложение. Способы ускорения удобно выстроить по возрастанию цены. Сначала измерение: без профиля неизвестно, что ускорять. Затем алгоритм и структура данных: замена квадратичного алгоритма на n log n или списка на множество меняет асимптотику, чего никакая компиляция не обеспечивает. Приёмы самого языка дают выигрыш от нескольких процентов до нескольких раз и не требуют дополнительных затрат. NumPy переносит цикл в скомпилированный код и библиотеку линейной алгебры BLAS. Если задача не векторизуется, горячий цикл компилируют в машинный код через Numba или Cython. Последняя ступень — параллельные вычисления на нескольких ядрах или на видеокарте. Чем ниже ступень, тем больше зависимостей и тем сложнее код, поэтому переходить к следующему шагу имеет смысл, только пока расчёт не укладывается в требуемое время.</aside>
+<aside hidden>Изложение. Способы ускорения удобно выстроить по возрастанию цены. Сначала измерение: без профиля неизвестно, что ускорять. Затем алгоритм и структура данных: замена квадратичного алгоритма на n log n или списка на множество меняет асимптотику, чего никакая компиляция не обеспечивает. Приёмы самого языка дают выигрыш от нескольких процентов до нескольких раз и не требуют дополнительных затрат. NumPy переносит цикл в скомпилированный код и библиотеку линейной алгебры BLAS. Если задача не векторизуется, горячий цикл компилируют в машинный код через Numba или Cython. Последняя ступень — параллельные вычисления: потоки, процессы и сборка без GIL на нескольких ядрах или видеокарта. Чем ниже ступень, тем больше зависимостей и тем сложнее код, поэтому переходить к следующему шагу имеет смысл, только пока расчёт не укладывается в требуемое время.</aside>
 </section>
 <section id="sec-slow" data-transition="fade" style="background:#FFE2D1; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:row; gap:64px">
 <div style="flex:1; display:flex; flex-direction:column; justify-content:space-between">
@@ -113,7 +114,10 @@
 <p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#E85400; background:#FFFFFF; padding:14px 0px; border-radius:20px">Компиляция</p>
 <div style="width:4px; height:20px; background:#FF5F00"></div>
 <div style="width:16px; height:16px; background:#FF5F00; border-radius:50%"></div>
-<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#E85400; background:#FFFFFF; padding:14px 0px; border-radius:20px">NumPy и параллелизм</p>
+<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#E85400; background:#FFFFFF; padding:14px 0px; border-radius:20px">NumPy и BLAS</p>
+<div style="width:4px; height:20px; background:#FF5F00"></div>
+<div style="width:16px; height:16px; background:#FF5F00; border-radius:50%"></div>
+<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#E85400; background:#FFFFFF; padding:14px 0px; border-radius:20px">Потоки, процессы и GPU</p>
 </div>
 <aside hidden>Изложение. В первой части рассмотрим, откуда берётся разница со скоростью C. Гибкость Python препятствует оптимизациям: всякая оптимизация опирается на предположения, а интерпретатору почти ничего не позволено считать заранее известным.</aside>
 </section>
@@ -229,7 +233,7 @@ paint(S[S.length-1][1],0);
 if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(function(){paint(F0+&quot; &quot;,1);setTimeout(tick,700)},2500);
 &lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
 "></iframe>
-<aside hidden>Демонстрация. python3 -m timeit измеряет одну и ту же сумму миллиона целых чисел тремя способами; ключ -s задаёт подготовку, которая в замер не входит. Цикл for с накоплением выполняется за 12,7 мс: на каждой итерации интерпретатор достаёт объект из списка, выбирает операцию сложения по типам и создаёт новый объект-результат. Встроенная функция sum делает то же самое в цикле на C — 2,5 мс, в пять раз быстрее. NumPy хранит числа подряд как 8-байтовые целые и суммирует их без объектов — 0,23 мс, ещё в десять раз быстрее. Последняя команда объясняет разницу: sys.getsizeof(10**6) показывает 28 байт на одно целое число, а список из миллиона элементов занимает 8 000 056 байт только под ссылки на объекты.</aside>
+<aside hidden>Демонстрация. python3 -m timeit измеряет одну и ту же сумму миллиона целых чисел тремя способами; ключ -s задаёт подготовку, которая в замер не входит. Цикл for с накоплением выполняется за 12,7 мс: на каждой итерации интерпретатор достаёт объект из списка, выбирает операцию сложения по типам и создаёт новый объект-результат. Встроенная функция sum делает то же самое в цикле на C — 2,5 мс, в пять раз быстрее. NumPy хранит числа подряд как 8-байтовые целые и суммирует их без объектов — 0,23 мс, ещё в десять раз быстрее. Последняя команда объясняет разницу: sys.getsizeof(10**6) показывает 28 байт на одно целое число, а список из миллиона элементов занимает 8 000 056 байт только под ссылки на объекты.</aside>
 </section>
 <section id="sec-meas" data-transition="fade" style="background:#E3F5FF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:row; gap:64px">
 <div style="flex:1; display:flex; flex-direction:column; justify-content:space-between">
@@ -255,7 +259,10 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 <p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#0B8FD6; background:#FFFFFF; padding:14px 0px; border-radius:20px">Компиляция</p>
 <div style="width:4px; height:20px; background:#73CCFE"></div>
 <div style="width:16px; height:16px; background:#73CCFE; border-radius:50%"></div>
-<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#0B8FD6; background:#FFFFFF; padding:14px 0px; border-radius:20px">NumPy и параллелизм</p>
+<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#0B8FD6; background:#FFFFFF; padding:14px 0px; border-radius:20px">NumPy и BLAS</p>
+<div style="width:4px; height:20px; background:#73CCFE"></div>
+<div style="width:16px; height:16px; background:#73CCFE; border-radius:50%"></div>
+<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#0B8FD6; background:#FFFFFF; padding:14px 0px; border-radius:20px">Потоки, процессы и GPU</p>
 </div>
 <aside hidden>Изложение. Вторая часть посвящена измерению. Прежде чем ускорять, необходимо выяснить, требуется ли ускорение вообще и какую часть программы ускорять: на эти вопросы отвечают замер времени и профилировщик.</aside>
 </section>
@@ -379,7 +386,7 @@ paint(S[S.length-1][1],0);
 if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(function(){paint(F0+&quot; &quot;,1);setTimeout(tick,700)},2500);
 &lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
 "></iframe>
-<aside hidden>Демонстрация. Файл rev.py содержит две функции разворота строки из 26 букв: reverse_loop собирает результат сложением строк в цикле, reverse_slice возвращает срез s[::-1]. python3 -m timeit с подготовкой from rev import … измеряет каждую: цикл выполняется за 527 нс, срез — за 42 нс, в 12 раз быстрее. Число запусков timeit подобрал сам — 500 000 и 5 000 000, — чтобы каждый прогон длился достаточно долго, и вывел лучшее из пяти прогонов. Ключи -n 1000 -r 3 задают число запусков и прогонов вручную; результат почти не меняется, потому что срез стабилен по времени.</aside>
+<aside hidden>Демонстрация. Файл rev.py содержит две функции разворота строки из 26 букв: reverse_loop собирает результат сложением строк в цикле, reverse_slice возвращает срез s[::-1]. python3 -m timeit с подготовкой from rev import … измеряет каждую: цикл выполняется за 527 нс, срез — за 42 нс, в 12 раз быстрее. Число запусков timeit подобрал сам — 500 000 и 5 000 000, — чтобы каждый прогон длился достаточно долго, и вывел лучшее из пяти прогонов. Ключи -n 1000 -r 3 задают число запусков и прогонов вручную; результат почти не меняется, потому что срез стабилен по времени.</aside>
 </section>
 <section id="meas-profilers" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -494,7 +501,7 @@ paint(S[S.length-1][1],0);
 if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(function(){paint(F0+&quot; &quot;,1);setTimeout(tick,700)},2500);
 &lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
 "></iframe>
-<aside hidden>Демонстрация. Декоратор @profile отмечает функцию matrix_product, а kernprof -l -v запускает программу под line_profiler и печатает время каждой строки отмеченной функции; ключ -u 1e-3 выводит время в миллисекундах. Тело внутреннего цикла Z[i][k] += X[i][j] * Y[j][k] выполнено 4 194 304 раза и заняло 60,7 процента времени функции, сама строка внутреннего цикла for — 38,7 процента; остальные строки — доли процента. Профиль позволяет установить, что именно ускорять: обращения по индексам во внутреннем цикле. Общее время под line_profiler — 1,28 с вместо 0,3 с без него: построчное профилирование замедляет программу в несколько раз, поэтому абсолютные времена под профилировщиком не сравнивают с обычными замерами, сравнивают только доли.</aside>
+<aside hidden>Демонстрация. Декоратор @profile отмечает функцию matrix_product, а kernprof -l -v запускает программу под line_profiler и печатает время каждой строки отмеченной функции; ключ -u 1e-3 выводит время в миллисекундах. Тело внутреннего цикла Z[i][k] += X[i][j] * Y[j][k] выполнено 4 194 304 раза и заняло 60,7 процента времени функции, сама строка внутреннего цикла for — 38,7 процента; остальные строки — доли процента. Профиль позволяет установить, что именно ускорять: обращения по индексам во внутреннем цикле. Общее время под line_profiler — 1,28 с вместо 0,3 с без него: построчное профилирование замедляет программу в несколько раз, поэтому абсолютные времена под профилировщиком не сравнивают с обычными замерами, сравнивают только доли.</aside>
 </section>
 <section id="demo-pyspy" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -565,7 +572,10 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 <p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#0F9E50; background:#FFFFFF; padding:14px 0px; border-radius:20px">Компиляция</p>
 <div style="width:4px; height:20px; background:#2AE881"></div>
 <div style="width:16px; height:16px; background:#2AE881; border-radius:50%"></div>
-<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#0F9E50; background:#FFFFFF; padding:14px 0px; border-radius:20px">NumPy и параллелизм</p>
+<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#0F9E50; background:#FFFFFF; padding:14px 0px; border-radius:20px">NumPy и BLAS</p>
+<div style="width:4px; height:20px; background:#2AE881"></div>
+<div style="width:16px; height:16px; background:#2AE881; border-radius:50%"></div>
+<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#0F9E50; background:#FFFFFF; padding:14px 0px; border-radius:20px">Потоки, процессы и GPU</p>
 </div>
 <aside hidden>Изложение. Третья часть объединяет приёмы, не требующие ничего, кроме самого языка. Выигрыш обычно скромнее, чем у компиляции, но и затраты отсутствуют: код остаётся обычным Python, понятным любому коллеге. Все числа в этой части получены на стенде с Python 3.12.</aside>
 </section>
@@ -760,7 +770,10 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 <p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#7C62F0; background:#FFFFFF; padding:14px 0px; border-radius:20px">Компиляция</p>
 <div style="width:4px; height:20px; background:#B6A3FF"></div>
 <div style="width:16px; height:16px; background:#B6A3FF; border-radius:50%"></div>
-<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#7C62F0; background:#FFFFFF; padding:14px 0px; border-radius:20px">NumPy и параллелизм</p>
+<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#7C62F0; background:#FFFFFF; padding:14px 0px; border-radius:20px">NumPy и BLAS</p>
+<div style="width:4px; height:20px; background:#B6A3FF"></div>
+<div style="width:16px; height:16px; background:#B6A3FF; border-radius:50%"></div>
+<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#7C62F0; background:#FFFFFF; padding:14px 0px; border-radius:20px">Потоки, процессы и GPU</p>
 </div>
 <aside hidden>Изложение. Четвёртая часть посвящена памяти. Расчёт, не помещающийся в оперативную память, не выполняется вовсе или многократно замедляется: выделение памяти завершается ошибкой MemoryError, а при подкачке данные читаются с диска. Кроме того, компактные данные быстрее обрабатываются: процессор читает их из кеша, а не из памяти.</aside>
 </section>
@@ -900,7 +913,10 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 <p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#201B10; background:#FCE300; padding:14px 0px; border-radius:20px">Компиляция</p>
 <div style="width:4px; height:20px; background:#FCE300"></div>
 <div style="width:16px; height:16px; background:#FCE300; border-radius:50%"></div>
-<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#8A6D00; background:#FFFFFF; padding:14px 0px; border-radius:20px">NumPy и параллелизм</p>
+<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#8A6D00; background:#FFFFFF; padding:14px 0px; border-radius:20px">NumPy и BLAS</p>
+<div style="width:4px; height:20px; background:#FCE300"></div>
+<div style="width:16px; height:16px; background:#FCE300; border-radius:50%"></div>
+<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#8A6D00; background:#FFFFFF; padding:14px 0px; border-radius:20px">Потоки, процессы и GPU</p>
 </div>
 <aside hidden>Изложение. В пятой части рассматривается компиляция горячего цикла в машинный код. Приёмы языка ускоряют умножение матриц лишь в 2,8 раза; дальнейшему ускорению препятствует сам интерпретатор, и выигрыш в десятки и сотни раз обеспечивает только компиляция — при первом вызове, через Numba, или заранее, через Cython.</aside>
 </section>
@@ -1166,8 +1182,8 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 <section id="sec-vec" data-transition="fade" style="background:#FFEAFE; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:row; gap:64px">
 <div style="flex:1; display:flex; flex-direction:column; justify-content:space-between">
 <div style="display:flex; flex-direction:column; gap:40px">
-<h1 style="align-self:start; font-size:96px; font-weight:800; line-height:1.15; color:#201B10; background:#FF87FF; padding:0px 16px">NumPy и параллелизм</h1>
-<p style="font-size:44px; line-height:1.3; color:#201B10">Векторизация, BLAS, процессы, GIL и видеокарта</p>
+<h1 style="align-self:start; font-size:96px; font-weight:800; line-height:1.15; color:#201B10; background:#FF87FF; padding:0px 16px">NumPy и BLAS</h1>
+<p style="font-size:44px; line-height:1.3; color:#201B10">Векторизация: цикл в коде на C, библиотека BLAS, тип данных и плата памятью</p>
 </div>
 <p style="font-family:'Jersey 10', 'Courier New', monospace; font-size:280px; line-height:0.8; color:#FF87FF">06</p>
 </div>
@@ -1187,9 +1203,12 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 <p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#D640D6; background:#FFFFFF; padding:14px 0px; border-radius:20px">Компиляция</p>
 <div style="width:4px; height:20px; background:#FF87FF"></div>
 <div style="width:16px; height:16px; background:#FF87FF; border-radius:50%"></div>
-<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#201B10; background:#FF87FF; padding:14px 0px; border-radius:20px">NumPy и параллелизм</p>
+<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#201B10; background:#FF87FF; padding:14px 0px; border-radius:20px">NumPy и BLAS</p>
+<div style="width:4px; height:20px; background:#FF87FF"></div>
+<div style="width:16px; height:16px; background:#FF87FF; border-radius:50%"></div>
+<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#D640D6; background:#FFFFFF; padding:14px 0px; border-radius:20px">Потоки, процессы и GPU</p>
 </div>
-<aside hidden>Изложение. Шестая часть возвращается к векторизации: прежде чем компилировать Python, имеет смысл попытаться не писать циклы вообще. Затем рассматривается параллельное выполнение — процессы, освобождение GIL и видеокарта.</aside>
+<aside hidden>Изложение. Шестая часть возвращается к векторизации: прежде чем компилировать Python, имеет смысл попытаться не писать циклы вообще. Рассмотрим, за счёт чего NumPy выполняет операцию над массивом быстрее цикла, какую роль играет библиотека BLAS и почему тип данных определяет скорость не меньше, чем запись выражения.</aside>
 </section>
 <section id="vec-numpy" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1255,63 +1274,484 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 "></iframe>
 <aside hidden>Демонстрация. python3 -m timeit измеряет умножение матриц 64×64 средствами NumPy. Для массивов float64 из np.random.rand оператор @ выполняется за 19 мкс: вызов уходит в BLAS. Для целочисленных массивов из np.random.randint те же размеры перемножаются за 79 мкс, вчетверо медленнее: BLAS не работает с целыми, и NumPy использует собственный цикл. Последняя команда печатает версию NumPy, 2.5.3, и имя библиотеки BLAS, с которой собран wheel-пакет NumPy, — scipy-openblas. Для сравнения: чистый Python тратит на то же умножение 17,7 мс, в 900 раз больше.</aside>
 </section>
-<section id="vec-parallel" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
-<div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
-<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10">Процессы,</h2>
-<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#FF87FF; padding:0px 14px">потоки и GIL</h2>
+<section id="sec-par" data-transition="fade" style="background:#D9FBFB; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:row; gap:64px">
+<div style="flex:1; display:flex; flex-direction:column; justify-content:space-between">
+<div style="display:flex; flex-direction:column; gap:40px">
+<h1 style="align-self:start; font-size:96px; font-weight:800; line-height:1.15; color:#201B10; background:#3DDBD9; padding:0px 16px">Потоки, процессы и GPU</h1>
+<p style="font-size:44px; line-height:1.3; color:#201B10">GIL, пул процессов, Python без GIL, модель CUDA</p>
 </div>
-<table style="font-size:26px; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; border:2px solid #201B10">
-<tr style="background:#FF87FF"><th style="width:22%; color:#201B10">Задача</th><th style="width:42%; color:#201B10">Средство</th><th style="width:36%; color:#201B10">Почему</th></tr>
-<tr style="background:#FFFFFF"><td>вычисления на CPU</td><td>процессы: ProcessPoolExecutor, multiprocessing, joblib</td><td>GIL пропускает в интерпретатор один поток</td></tr>
-<tr style="background:#FFEAFE"><td>циклы Numba и Cython</td><td>prange, nogil</td><td>скомпилированный код освобождает GIL</td></tr>
-<tr style="background:#FFFFFF"><td>ожидание ввода-вывода</td><td>потоки, asyncio</td><td>во время ожидания GIL свободен</td></tr>
-<tr style="background:#FFEAFE"><td>сборка без GIL</td><td>python3.13t и новее</td><td>потоки на всех ядрах</td></tr>
-</table>
-<div style="display:flex; gap:32px">
-<div style="background:#D4FAE6; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
-<p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#2AE881; padding:2px 12px">Для физика</p>
-<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">Перебор параметров установки — естественная задача для процессов: расчёты независимы.</p>
+<p style="font-family:'Jersey 10', 'Courier New', monospace; font-size:280px; line-height:0.8; color:#3DDBD9">07</p>
 </div>
-<div style="background:#F0EDFF; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
-<p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Пояснение</p>
-<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">Подробно — главы книги «Многопоточность и GIL» и «Асинхронность».</p>
+<div style="width:400px; display:flex; flex-direction:column; justify-content:center; align-items:center">
+<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#007D79; background:#FFFFFF; padding:14px 0px; border-radius:20px">Причины медленности</p>
+<div style="width:4px; height:20px; background:#3DDBD9"></div>
+<div style="width:16px; height:16px; background:#3DDBD9; border-radius:50%"></div>
+<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#007D79; background:#FFFFFF; padding:14px 0px; border-radius:20px">Измерение</p>
+<div style="width:4px; height:20px; background:#3DDBD9"></div>
+<div style="width:16px; height:16px; background:#3DDBD9; border-radius:50%"></div>
+<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#007D79; background:#FFFFFF; padding:14px 0px; border-radius:20px">Приёмы языка</p>
+<div style="width:4px; height:20px; background:#3DDBD9"></div>
+<div style="width:16px; height:16px; background:#3DDBD9; border-radius:50%"></div>
+<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#007D79; background:#FFFFFF; padding:14px 0px; border-radius:20px">Память</p>
+<div style="width:4px; height:20px; background:#3DDBD9"></div>
+<div style="width:16px; height:16px; background:#3DDBD9; border-radius:50%"></div>
+<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#007D79; background:#FFFFFF; padding:14px 0px; border-radius:20px">Компиляция</p>
+<div style="width:4px; height:20px; background:#3DDBD9"></div>
+<div style="width:16px; height:16px; background:#3DDBD9; border-radius:50%"></div>
+<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#007D79; background:#FFFFFF; padding:14px 0px; border-radius:20px">NumPy и BLAS</p>
+<div style="width:4px; height:20px; background:#3DDBD9"></div>
+<div style="width:16px; height:16px; background:#3DDBD9; border-radius:50%"></div>
+<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#201B10; background:#3DDBD9; padding:14px 0px; border-radius:20px">Потоки, процессы и GPU</p>
 </div>
-</div>
-<aside hidden>Изложение. Глобальная блокировка интерпретатора, GIL, пропускает в интерпретатор CPython только один поток одновременно, поэтому потоки не ускоряют вычисления на чистом Python. Вычислительные задачи распараллеливают процессами: concurrent.futures.ProcessPoolExecutor, модуль multiprocessing или пакет joblib запускают несколько интерпретаторов, у каждого своя блокировка; накладными расходами являются запуск процессов и передача данных между ними. Скомпилированный код может освободить GIL: Numba с prange и Cython с prange из модуля cython.parallel позволяют выполнять циклы на нескольких ядрах внутри одного процесса, а функцию Cython с блоком nogil можно вызывать одновременно из нескольких потоков. Для задач, которые в основном ожидают ввода-вывода, достаточно потоков или asyncio: во время ожидания GIL свободен. Начиная с Python 3.13 существует отдельная сборка интерпретатора без GIL, в которой потоки выполняют код Python на всех ядрах: в 3.13 она экспериментальная, с 3.14 поддерживается официально (PEP 779), а расширения на C должны её поддерживать. Подробно эти темы разобраны в главах книги «Многопоточность и GIL» и «Асинхронность».
-Для физиков: перебор параметров установки или ансамбль независимых расчётов — естественная задача для пула процессов: каждый расчёт выполняется в своём процессе, а результаты собираются в конце.</aside>
+<aside hidden>Изложение. Седьмая часть посвящена параллельным вычислениям. Рассмотренные выше способы, за исключением prange и многопоточной библиотеки BLAS, ускоряют работу одного ядра, тогда как виртуальной машине стенда доступны два ядра, рабочему компьютеру — от четырёх до шестнадцати, а видеокарта содержит тысячи простых вычислителей. Рассмотрим различие процессов и потоков, глобальную блокировку интерпретатора и её влияние на вычисления и ожидание, пул процессов, сборку CPython без GIL и модель вычислений CUDA.</aside>
 </section>
-<section id="vec-gpu" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
+<section id="par-threads" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
-<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10">Итог</h2>
-<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#FF87FF; padding:0px 14px">замеров</h2>
+<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10">Процессы</h2>
+<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#3DDBD9; padding:0px 14px">и потоки</h2>
 </div>
 <div style="display:flex; gap:48px; align-items:start">
-<div style="width:1060px; display:flex; flex-direction:column; gap:24px">
-<table style="font-size:26px; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; border:2px solid #201B10">
-<tr style="background:#FF87FF"><th style="width:30%; color:#201B10">Шаг</th><th style="width:26%; color:#201B10">Выигрыш на стенде</th><th style="width:44%; color:#201B10">На чём измерено</th></tr>
-<tr style="background:#FFFFFF"><td>приёмы языка</td><td>в 2,8 раза</td><td>умножение матриц на списках</td></tr>
-<tr style="background:#FFEAFE"><td>Numba, @njit</td><td>в 217 раз</td><td>умножение матриц после прогрева</td></tr>
-<tr style="background:#FFFFFF"><td>Cython с типами</td><td>в 165 раз</td><td>к чистому Python на списках</td></tr>
-<tr style="background:#FFEAFE"><td>NumPy и BLAS</td><td>в 900 раз</td><td>умножение матриц float64</td></tr>
-<tr style="background:#FFFFFF"><td>prange, два ядра</td><td>почти в 2 раза</td><td>к последовательной версии Numba</td></tr>
-</table>
+<div style="width:840px; display:flex; flex-direction:column; gap:24px">
+<div style="background:#F4F1EA; border-radius:18px; padding:22px 28px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; line-height:1.45; color:#201B10">import math<br>from concurrent.futures import ThreadPoolExecutor<br> <br>def integrate(f, a, b, *, n_iter=1000):<br>    acc, step = 0, (b - a) / n_iter<br>    for i in range(n_iter):<br>        acc += f(a + i * step) * step<br>    return acc<br> <br>def integrate_async(ex, f, a, b, *, n_jobs, n_iter):<br>    step = (b - a) / n_jobs<br>    fs = [ex.submit(integrate, f, a + i * step,<br>                    a + (i + 1) * step,<br>                    n_iter=n_iter // n_jobs)<br>          for i in range(n_jobs)]<br>    return sum(f.result() for f in fs)<br> <br>with ThreadPoolExecutor(max_workers=2) as ex:<br>    integrate_async(ex, math.cos, 0.0, math.pi / 2,<br>                    n_jobs=2, n_iter=10**7)</p></div>
 </div>
 <div style="flex:1; display:flex; flex-direction:column; gap:24px">
+<div style="position:relative; width:824px; height:250px; flex-shrink:0">
+<div style="position:absolute; left:0px; top:0px; width:390px; height:250px; background:#D9FBFB; border-radius:18px"></div>
+<p style="position:absolute; left:0px; top:12px; width:390px; font-size:26px; line-height:1.3; text-align:center; color:#201B10; font-weight:700">Процесс 1</p>
+<div style="position:absolute; left:20px; top:64px; width:350px; height:70px; background:#FFFFFF; border-radius:18px; padding:10px 16px; display:flex; align-items:center; justify-content:center"><p style="font-size:26px; font-weight:700; line-height:1.3; text-align:center; color:#201B10">общая память</p></div>
+<div style="position:absolute; left:20px; top:156px; width:165px; height:70px; background:#3DDBD9; border-radius:18px; padding:10px 16px; display:flex; align-items:center; justify-content:center"><p style="font-size:26px; font-weight:700; line-height:1.3; text-align:center; color:#201B10">поток 1</p></div>
+<div style="position:absolute; left:205px; top:156px; width:165px; height:70px; background:#3DDBD9; border-radius:18px; padding:10px 16px; display:flex; align-items:center; justify-content:center"><p style="font-size:26px; font-weight:700; line-height:1.3; text-align:center; color:#201B10">поток 2</p></div>
+<div style="position:absolute; left:434px; top:0px; width:390px; height:250px; background:#D9FBFB; border-radius:18px"></div>
+<p style="position:absolute; left:434px; top:12px; width:390px; font-size:26px; line-height:1.3; text-align:center; color:#201B10; font-weight:700">Процесс 2</p>
+<div style="position:absolute; left:454px; top:64px; width:350px; height:70px; background:#FFFFFF; border-radius:18px; padding:10px 16px; display:flex; align-items:center; justify-content:center"><p style="font-size:26px; font-weight:700; line-height:1.3; text-align:center; color:#201B10">своя память</p></div>
+<div style="position:absolute; left:454px; top:156px; width:350px; height:70px; background:#3DDBD9; border-radius:18px; padding:10px 16px; display:flex; align-items:center; justify-content:center"><p style="font-size:26px; font-weight:700; line-height:1.3; text-align:center; color:#201B10">поток 1</p></div>
+</div>
+<div style="display:flex; flex-direction:column; gap:18px">
+<div style="display:flex; gap:40px; align-items:center"><p style="width:70px; font-family:'Jersey 10', 'Courier New', monospace; font-size:70px; line-height:0.8; text-align:right; color:#007D79">01</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:28px; font-weight:700; line-height:1.3; color:#201B10">Поток</p><p style="font-size:24px; line-height:1.35; color:#201B10">threading.Thread: start() и join(); общие данные защищают Lock и очередь queue.Queue</p></div></div>
+<div style="display:flex; gap:40px; align-items:center"><p style="width:70px; font-family:'Jersey 10', 'Courier New', monospace; font-size:70px; line-height:0.8; text-align:right; color:#007D79">02</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:28px; font-weight:700; line-height:1.3; color:#201B10">Исполнитель</p><p style="font-size:24px; line-height:1.35; color:#201B10">ThreadPoolExecutor и ProcessPoolExecutor: submit() возвращает Future, блок with закрывает пул</p></div></div>
+<div style="display:flex; gap:40px; align-items:center"><p style="width:70px; font-family:'Jersey 10', 'Courier New', monospace; font-size:70px; line-height:0.8; text-align:right; color:#007D79">03</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:28px; font-weight:700; line-height:1.3; color:#201B10">Future</p><p style="font-size:24px; line-height:1.35; color:#201B10">result() ожидает результат, done() проверяет готовность, add_done_callback() — обработчик</p></div></div>
+</div>
+</div>
+</div>
+<aside hidden>Изложение. Процесс представляет собой запущенную программу, которой операционная система выделяет собственное адресное пространство и системные ресурсы, например открытые файлы. Процессы изолированы друг от друга, и данные между ними приходится копировать. Поток исполняется внутри процесса, имеет собственный стек вызовов и разделяет с другими потоками память процесса: все потоки видят одни и те же объекты, поэтому обмен данными не требует копирования, но одновременное изменение общих данных приводит к гонкам. Порядком исполнения процессов и потоков распоряжается операционная система. В Python поток является обычным системным потоком: класс threading.Thread получает функцию и аргументы, метод start запускает поток, а join ожидает его завершения. Общие данные защищает мьютекс threading.Lock, а обмен между потоками удобнее строить на потокобезопасной очереди queue.Queue по схеме «производитель — потребитель». Принудительно завершить поток нельзя: поток получает флаг, по которому завершается сам и освобождает захваченные ресурсы.
+Модуль concurrent.futures скрывает эти детали за интерфейсом исполнителя. Метод submit ставит вызов функции в очередь пула и возвращает объект Future — обёртку над ещё не завершённым вычислением: result ожидает результат, done проверяет готовность, add_done_callback регистрирует обработчик завершения. Блок with закрывает пул и дожидается всех задач. Сквозным примером части служит интеграл методом прямоугольников из главы книги «Многопоточность и GIL»: integrate суммирует значения f на равномерном разбиении отрезка, а integrate_async делит отрезок на n_jobs частей и передаёт каждую исполнителю. У ThreadPoolExecutor и ProcessPoolExecutor один интерфейс, поэтому одна и та же функция распределяет работу и по потокам, и по процессам.</aside>
+</section>
+<section id="par-gil" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
+<div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
+<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#3DDBD9; padding:0px 14px">GIL:</h2>
+<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10">глобальная блокировка</h2>
+</div>
+<div style="display:flex; gap:48px; align-items:start">
+<div style="width:820px; display:flex; flex-direction:column; gap:24px">
+<div style="position:relative; width:820px; height:390px; flex-shrink:0">
+<p style="position:absolute; left:0px; top:0px; width:820px; font-size:26px; line-height:1.3; text-align:left; color:#201B10; font-weight:700">Вычисления: потоки исполняются по очереди</p>
+<p style="position:absolute; left:0px; top:58px; width:150px; font-size:26px; line-height:1.3; text-align:left; color:#201B10">поток 1</p>
+<div style="position:absolute; left:160px; top:50px; width:110px; height:56px; background:#3DDBD9; border-radius:10px; padding:10px 16px; display:flex; align-items:center; justify-content:center"><p style="font-size:24px; font-weight:700; line-height:1.3; text-align:center; color:#201B10">GIL</p></div>
+<div style="position:absolute; left:380px; top:50px; width:110px; height:56px; background:#3DDBD9; border-radius:10px; padding:10px 16px; display:flex; align-items:center; justify-content:center"><p style="font-size:24px; font-weight:700; line-height:1.3; text-align:center; color:#201B10">GIL</p></div>
+<div style="position:absolute; left:600px; top:50px; width:110px; height:56px; background:#3DDBD9; border-radius:10px; padding:10px 16px; display:flex; align-items:center; justify-content:center"><p style="font-size:24px; font-weight:700; line-height:1.3; text-align:center; color:#201B10">GIL</p></div>
+<p style="position:absolute; left:0px; top:124px; width:150px; font-size:26px; line-height:1.3; text-align:left; color:#201B10">поток 2</p>
+<div style="position:absolute; left:270px; top:116px; width:110px; height:56px; background:#3DDBD9; border-radius:10px; padding:10px 16px; display:flex; align-items:center; justify-content:center"><p style="font-size:24px; font-weight:700; line-height:1.3; text-align:center; color:#201B10">GIL</p></div>
+<div style="position:absolute; left:490px; top:116px; width:110px; height:56px; background:#3DDBD9; border-radius:10px; padding:10px 16px; display:flex; align-items:center; justify-content:center"><p style="font-size:24px; font-weight:700; line-height:1.3; text-align:center; color:#201B10">GIL</p></div>
+<div style="position:absolute; left:710px; top:116px; width:110px; height:56px; background:#3DDBD9; border-radius:10px; padding:10px 16px; display:flex; align-items:center; justify-content:center"><p style="font-size:24px; font-weight:700; line-height:1.3; text-align:center; color:#201B10">GIL</p></div>
+<p style="position:absolute; left:0px; top:206px; width:820px; font-size:26px; line-height:1.3; text-align:left; color:#201B10; font-weight:700">Ожидание: на время ввода-вывода GIL свободен</p>
+<p style="position:absolute; left:0px; top:264px; width:150px; font-size:26px; line-height:1.3; text-align:left; color:#201B10">поток 1</p>
+<div style="position:absolute; left:160px; top:256px; width:110px; height:56px; background:#3DDBD9; border-radius:10px; padding:10px 16px; display:flex; align-items:center; justify-content:center"><p style="font-size:24px; font-weight:700; line-height:1.3; text-align:center; color:#201B10">GIL</p></div>
+<div style="position:absolute; left:270px; top:256px; width:330px; height:56px; background:#FFFFFF; border-radius:10px; padding:10px 16px; display:flex; align-items:center; justify-content:center; border:3px dashed #201B10"><p style="font-size:24px; font-weight:700; line-height:1.3; text-align:center; color:#201B10">ожидание</p></div>
+<div style="position:absolute; left:600px; top:256px; width:110px; height:56px; background:#3DDBD9; border-radius:10px; padding:10px 16px; display:flex; align-items:center; justify-content:center"><p style="font-size:24px; font-weight:700; line-height:1.3; text-align:center; color:#201B10">GIL</p></div>
+<p style="position:absolute; left:0px; top:330px; width:150px; font-size:26px; line-height:1.3; text-align:left; color:#201B10">поток 2</p>
+<div style="position:absolute; left:270px; top:322px; width:330px; height:56px; background:#3DDBD9; border-radius:10px; padding:10px 16px; display:flex; align-items:center; justify-content:center"><p style="font-size:24px; font-weight:700; line-height:1.3; text-align:center; color:#201B10">вычисления, GIL</p></div>
+</div>
+<div style="background:#F4F1EA; border-radius:18px; padding:22px 28px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; line-height:1.45; color:#201B10">@njit(nogil=True)       # Numba: без GIL<br>def cos_sum(a, b, n): ...<br> <br>with nogil:             # Cython: только типы C<br>    for i in range(n_iter):<br>        acc += cos(a + i * step) * step</p></div>
+</div>
+<div style="flex:1; display:flex; flex-direction:column; gap:24px">
+<div style="display:flex; flex-direction:column; gap:18px">
+<div style="display:flex; gap:40px; align-items:center"><p style="width:70px; font-family:'Jersey 10', 'Courier New', monospace; font-size:70px; line-height:0.8; text-align:right; color:#007D79">01</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:28px; font-weight:700; line-height:1.3; color:#201B10">Мьютекс интерпретатора</p><p style="font-size:24px; line-height:1.35; color:#201B10">байт-код исполняет один поток; GIL защищает счётчики ссылок</p></div></div>
+<div style="display:flex; gap:40px; align-items:center"><p style="width:70px; font-family:'Jersey 10', 'Courier New', monospace; font-size:70px; line-height:0.8; text-align:right; color:#007D79">02</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:28px; font-weight:700; line-height:1.3; color:#201B10">Переключение</p><p style="font-size:24px; line-height:1.35; color:#201B10">ожидающий поток запрашивает GIL через 5 мс: sys.getswitchinterval()</p></div></div>
+<div style="display:flex; gap:40px; align-items:center"><p style="width:70px; font-family:'Jersey 10', 'Courier New', monospace; font-size:70px; line-height:0.8; text-align:right; color:#007D79">03</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:28px; font-weight:700; line-height:1.3; color:#201B10">Освобождение</p><p style="font-size:24px; line-height:1.35; color:#201B10">блокирующий ввод-вывод, time.sleep, NumPy, Cython с nogil, Numba с nogil=True</p></div></div>
+</div>
 <div style="background:#F0EDFF; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Пояснение</p>
-<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">Видеокарта — следующая ступень: CuPy повторяет интерфейс NumPy на GPU, пакет numba-cuda компилирует ядра CUDA.</p>
+<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">Потоки обычной сборки CPython обеспечивают конкурентность — чередование задач, но не параллельное исполнение кода на Python.</p>
+</div>
+</div>
+</div>
+<aside hidden>Изложение. Глобальная блокировка интерпретатора (global interpreter lock, GIL) представляет собой мьютекс, который в каждый момент времени позволяет исполнять байт-код только одному потоку. Внутреннее состояние CPython, прежде всего счётчики ссылок у каждого объекта, не защищено от одновременного изменения, и одна общая блокировка является самым простым способом обеспечить его целостность. Поток, ожидающий GIL, по истечении интервала переключения, по умолчанию 5 мс (sys.getswitchinterval()), требует освободить блокировку, и потоки исполняются по очереди. Таким образом, в обычной сборке CPython потоки обеспечивают конкурентность — чередование задач, но не параллелизм — одновременное выполнение на нескольких ядрах.
+Влияние GIL зависит от характера задачи. Если программа вычисляет на чистом Python, потоки не дают выигрыша: к прежнему времени добавляются переключения. Если программа ожидает — читает файл, получает данные по сети, опрашивает прибор, — на время блокирующего вызова поток освобождает GIL, и остальные потоки продолжают работу; для такой задачи потоков достаточно. Освободить GIL может и скомпилированный код, не обращающийся к объектам Python. NumPy делает это внутри длинных операций над массивами; в Cython для этого предусмотрен блок with nogil, в котором допустимы только типы C; Numba освобождает блокировку на время выполнения функции, скомпилированной с параметром nogil=True. Параметр parallel=True с циклом prange, рассмотренный в части о компиляции, также распределяет итерации по ядрам без участия GIL.</aside>
+</section>
+<section id="demo-gil" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
+<div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
+<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#FF87FF; padding:0px 14px">Демонстрация:</h2>
+<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10">потоки и GIL</h2>
+</div>
+<div style="width:596px; display:flex; flex-direction:column; gap:28px">
+<div style="display:flex; flex-direction:column; gap:16px">
+<div style="display:flex; gap:18px; align-items:center"><p style="width:56px; font-family:'Jersey 10', 'Courier New', monospace; font-size:60px; line-height:0.8; text-align:right; color:#D640D6">01</p><p style="flex:1; font-size:25px; line-height:1.35; color:#201B10">nproc: два ядра виртуальной машины</p></div>
+<div style="display:flex; gap:18px; align-items:center"><p style="width:56px; font-family:'Jersey 10', 'Courier New', monospace; font-size:60px; line-height:0.8; text-align:right; color:#D640D6">02</p><p style="flex:1; font-size:25px; line-height:1.35; color:#201B10">Чистый Python: 0,31 с в одном потоке, 0,32 в двух</p></div>
+<div style="display:flex; gap:18px; align-items:center"><p style="width:56px; font-family:'Jersey 10', 'Courier New', monospace; font-size:60px; line-height:0.8; text-align:right; color:#D640D6">03</p><p style="flex:1; font-size:25px; line-height:1.35; color:#201B10">NumPy и Numba с nogil=True: почти вдвое быстрее</p></div>
+<div style="display:flex; gap:18px; align-items:center"><p style="width:56px; font-family:'Jersey 10', 'Courier New', monospace; font-size:60px; line-height:0.8; text-align:right; color:#D640D6">04</p><p style="flex:1; font-size:25px; line-height:1.35; color:#201B10">@njit без nogil: 0,30 с в обоих случаях</p></div>
+<div style="display:flex; gap:18px; align-items:center"><p style="width:56px; font-family:'Jersey 10', 'Courier New', monospace; font-size:60px; line-height:0.8; text-align:right; color:#D640D6">05</p><p style="flex:1; font-size:25px; line-height:1.35; color:#201B10">Восемь ожиданий по 0,25 с: 2,02 → 0,25 с</p></div>
+</div>
+<div style="background:#F0EDFF; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
+<p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Что наблюдается</p>
+<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">Потоки ускоряют только код, освобождающий GIL: np.sin — в 1,97 раза, Numba с nogil=True — в 1,77, ожидание — в 8 раз; чистый Python — 0,99.</p>
+</div>
+</div>
+<div style="position:absolute; left:740px; top:196px; width:1076px; height:684px; background:#201B10; border-radius:24px"></div>
+<div style="position:absolute; left:772px; top:216px; width:16px; height:16px; background:#FF5F00; border-radius:50%"></div>
+<div style="position:absolute; left:800px; top:216px; width:16px; height:16px; background:#FCE300; border-radius:50%"></div>
+<div style="position:absolute; left:828px; top:216px; width:16px; height:16px; background:#2AE881; border-radius:50%"></div>
+<p style="position:absolute; left:872px; top:204px; width:800px; font-size:24px; color:#A7A7A7">root@lab — запись со стенда</p>
+<iframe class="embed" sandbox="allow-scripts" title="Запись демонстрации в терминале" style="position:absolute; left:756px; top:252px; width:1044px; height:612px" data-srcdoc="&lt;!doctype html&gt;&lt;html&gt;&lt;head&gt;&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;default-src &#x27;none&#x27;; script-src &#x27;unsafe-inline&#x27;; style-src &#x27;unsafe-inline&#x27;; font-src data:&quot;&gt;&lt;style&gt;html{-webkit-print-color-adjust:exact;print-color-adjust:exact}&lt;/style&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;style&gt;
+html,body{margin:0;height:100%;background:#201B10}
+pre{margin:0;box-sizing:border-box;height:100%;padding:20px 26px;color:#E9E6DF;font:20px/1.3 ui-monospace,Menlo,&quot;DejaVu Sans Mono&quot;,Consolas,monospace;white-space:pre-wrap;overflow:hidden}
+b{font-weight:400;color:#2AE881}i{font-style:normal;background:#E9E6DF;color:#201B10}
+&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;pre id=&quot;t&quot;&gt;&lt;/pre&gt;&lt;script&gt;
+var F0=&quot;root@lab:~#&quot;,S=[[&quot;nproc&quot;, &quot;root@lab:~# nproc\n2\nroot@lab:~#&quot;], [&quot;python3 threads.py&quot;, [0, 2, &quot;root@lab:~# python3 threads.py\n                     1 поток   2 потока   ускорение\nPython                 0.31 с     0.32 с      0.99\nNumPy, np.sin          0.12 с     0.06 с      1.97\nNumba, @njit           0.30 с     0.30 с      1.00\nNumba, nogil=True      0.30 с     0.17 с      1.77\nroot@lab:~#&quot;]], [&quot;python3 wait.py&quot;, [0, 8, &quot;root@lab:~# python3 wait.py\nпо очереди     2.02 с\n8 потоков      0.25 с\nускорение      7.98\nroot@lab:~#&quot;]]];
+for(var k=0,q=F0;k&lt;S.length;k++){var f=S[k][1];if(typeof f!==&quot;string&quot;){var L=q.split(&quot;\n&quot;);f=L.slice(f[0],f[0]+f[1]).concat(f[2]===null?[]:f[2].split(&quot;\n&quot;)).join(&quot;\n&quot;);S[k][1]=f}q=f}
+var T=document.getElementById(&quot;t&quot;),i=0,j=0,base=F0;
+function e(s){return s.replace(/&amp;/g,&quot;&amp;amp;&quot;).replace(/&lt;/g,&quot;&amp;lt;&quot;)}
+function paint(s,c){T.innerHTML=e(s).replace(/^(root@lab:[^#\n]*#|&gt;&gt;&gt;|\.\.\.)/gm,&quot;&lt;b&gt;$1&lt;/b&gt;&quot;)+(c?&quot;&lt;i&gt; &lt;/i&gt;&quot;:&quot;&quot;)}
+function tick(){
+ if(i&gt;=S.length){setTimeout(function(){i=0;j=0;base=F0;paint(base+&quot; &quot;,1);setTimeout(tick,900)},6000);return}
+ var c=S[i][0];
+ if(c&amp;&amp;j&lt;=c.length){paint(base+&quot; &quot;+c.slice(0,j),1);j++;setTimeout(tick,j===1?600:50);return}
+ paint(S[i][1],0);base=S[i][1];i++;j=0;
+ setTimeout(tick,1200+Math.min(base.split(&quot;\n&quot;).length*80,1800))
+}
+paint(S[S.length-1][1],0);
+if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(function(){paint(F0+&quot; &quot;,1);setTimeout(tick,700)},2500);
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
+"></iframe>
+<aside hidden>Демонстрация. Команда nproc подтверждает, что виртуальной машине стенда доступны два ядра, поэтому ускорение вычислений двумя потоками не может превысить двух раз. Скрипт threads.py выполняет одну и ту же работу двумя способами: обе половины подряд в одном потоке и по половине в каждом из двух потоков ThreadPoolExecutor; из трёх запусков берётся лучшее время. Интеграл на чистом Python занимает 0,31 с в одном потоке и 0,32 с в двух: байт-код исполняется по очереди, и выигрыша нет. Двадцатикратное вычисление np.sin над массивом из миллиона чисел ускоряется в 1,97 раза: цикл функции np.sin на C выполняется без GIL. Для Numba сравниваются две компиляции одной функции: с обычным @njit время в двух потоках не меняется, 0,30 с, поскольку скомпилированный код удерживает GIL, а с nogil=True сокращается до 0,17 с, в 1,77 раза. Скрипт wait.py моделирует опрос восьми приборов, каждый из которых отвечает через 0,25 с; ожидание ответа воспроизводит вызов time.sleep, освобождающий GIL так же, как блокирующий ввод-вывод. Опрос по очереди занимает 2,02 с, восемью потоками — 0,25 с: ожидания перекрываются, и ускорение в 8 раз не ограничено числом ядер.</aside>
+</section>
+<section id="par-procs" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
+<div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
+<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10">Пул</h2>
+<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#3DDBD9; padding:0px 14px">процессов</h2>
+</div>
+<div style="display:flex; gap:48px; align-items:start">
+<div style="width:900px; display:flex; flex-direction:column; gap:24px">
+<div style="background:#F4F1EA; border-radius:18px; padding:22px 28px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; line-height:1.45; color:#201B10">import math<br>from concurrent.futures import ProcessPoolExecutor<br> <br>from integ import integrate_async  # из модуля<br> <br>if __name__ == "__main__":         # модуль импортируется<br>    a, b = 0.0, math.pi / 2<br>    with ProcessPoolExecutor(max_workers=2) as ex:<br>        r = integrate_async(ex, math.cos, a, b,<br>                            n_jobs=2, n_iter=10**7)<br>        f = ex.submit(lambda x: x * x, 3)<br>        f.result()                 # PicklingError</p></div>
+<div style="background:#FFE2D1; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
+<p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#FF5F00; padding:2px 12px">Важно</p>
+<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">Функция и аргументы передаются через pickle, функция — по имени: lambda не передаётся, а функцию из ячейки блокнота при spawn и forkserver рабочий процесс не находит.</p>
+</div>
+</div>
+<div style="flex:1; display:flex; flex-direction:column; gap:24px">
+<table style="font-size:26px; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; border:2px solid #201B10">
+<tr style="background:#3DDBD9"><th style="width:27%; color:#201B10">Метод</th><th style="width:43%; color:#201B10">Новый процесс</th><th style="width:30%; color:#201B10">По умолчанию</th></tr>
+<tr style="background:#FFFFFF"><td>fork</td><td>копия родительского процесса</td><td>Linux по 3.13</td></tr>
+<tr style="background:#D9FBFB"><td>spawn</td><td>новый интерпретатор, импорт главного модуля</td><td>Windows, macOS с 3.8</td></tr>
+<tr style="background:#FFFFFF"><td>forkserver</td><td>копия заранее запущенного сервера</td><td>Linux с 3.14</td></tr>
+</table>
+<div style="background:#F0EDFF; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
+<p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Пояснение</p>
+<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">Запуск процессов и пересылка данных требуют времени: выигрыш дают крупные независимые задачи, а пул создаётся один раз.</p>
+</div>
+</div>
+</div>
+<aside hidden>Изложение. Поскольку GIL один на интерпретатор, наиболее прямой способ его обхода состоит в запуске нескольких интерпретаторов: каждый процесс имеет собственный GIL, и процессы вычисляют одновременно на разных ядрах. Модуль multiprocessing устроен подобно threading, а ProcessPoolExecutor из concurrent.futures имеет тот же интерфейс, что и пул потоков, поэтому integrate_async переходит на процессы заменой одного класса. Платой является изоляция: процессы не разделяют память, функция и её аргументы передаются рабочему процессу сериализацией модулем pickle, а результат возвращается тем же путём. Функция передаётся по имени модуля и функции, поэтому в пуле выполняются функции, определённые на верхнем уровне импортируемого модуля: lambda и вложенная функция не сериализуются: для lambda pickle возбуждает ошибку PicklingError, для вложенной функции до Python 3.14 — AttributeError, а функцию, определённую в интерактивном сеансе или в ячейке блокнота, рабочий процесс, запущенный методом spawn или forkserver, не находит, поскольку главный модуль такого сеанса импортировать нельзя. Ошибка сериализации не возникает в момент вызова submit: она сохраняется в объекте Future и возбуждается вызовом result(), поэтому результат каждой задачи необходимо запросить.
+Способ создания рабочего процесса задаёт метод запуска. Метод fork копирует родительский процесс целиком, spawn запускает новый интерпретатор и импортирует главный модуль, forkserver порождает процессы копированием заранее запущенного однопоточного сервера. По умолчанию в Windows и, начиная с Python 3.8, в macOS используется spawn, в Linux до версии 3.13 включительно — fork, а начиная с 3.14 — forkserver: копия процесса, в котором уже работают потоки, может унаследовать захваченные ими блокировки. При spawn и forkserver главный модуль импортируется в рабочем процессе заново, поэтому создание пула необходимо поместить под проверку if __name__ == "__main__". Запуск процессов и пересылка данных требуют времени, поэтому выигрыш дают крупные независимые задачи, а пул создаётся один раз и используется повторно. В Python 3.14 появился промежуточный вариант — InterpreterPoolExecutor: его рабочие потоки исполняют задачи в изолированных подынтерпретаторах одного процесса, у каждого из которых собственный GIL, а функция, аргументы и результат копируются между интерпретаторами: функции без замыканий и глобальных имён передаются напрямую, остальные — через pickle.</aside>
+</section>
+<section id="demo-procs" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
+<div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
+<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#FF87FF; padding:0px 14px">Демонстрация:</h2>
+<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10">пул процессов</h2>
+</div>
+<div style="width:596px; display:flex; flex-direction:column; gap:28px">
+<div style="display:flex; flex-direction:column; gap:16px">
+<div style="display:flex; gap:18px; align-items:center"><p style="width:56px; font-family:'Jersey 10', 'Courier New', monospace; font-size:60px; line-height:0.8; text-align:right; color:#D640D6">01</p><p style="flex:1; font-size:25px; line-height:1.35; color:#201B10">Python 3.12, метод fork: 0,31 → 0,18 с</p></div>
+<div style="display:flex; gap:18px; align-items:center"><p style="width:56px; font-family:'Jersey 10', 'Courier New', monospace; font-size:60px; line-height:0.8; text-align:right; color:#D640D6">02</p><p style="flex:1; font-size:25px; line-height:1.35; color:#201B10">Python 3.14, метод forkserver: 0,39 → 0,21 с</p></div>
+<div style="display:flex; gap:18px; align-items:center"><p style="width:56px; font-family:'Jersey 10', 'Courier New', monospace; font-size:60px; line-height:0.8; text-align:right; color:#D640D6">03</p><p style="flex:1; font-size:25px; line-height:1.35; color:#201B10">Запуск пула: 2 мс при fork, 30 мс при forkserver</p></div>
+<div style="display:flex; gap:18px; align-items:center"><p style="width:56px; font-family:'Jersey 10', 'Courier New', monospace; font-size:60px; line-height:0.8; text-align:right; color:#D640D6">04</p><p style="flex:1; font-size:25px; line-height:1.35; color:#201B10">lambda в пуле процессов: PicklingError</p></div>
+</div>
+<div style="background:#F0EDFF; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
+<p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Что наблюдается</p>
+<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">Два процесса на двух ядрах ускоряют чистый Python в 1,7–1,9 раза; forkserver запускает пул на порядок дольше fork; lambda не сериализуется.</p>
+</div>
+</div>
+<div style="position:absolute; left:740px; top:196px; width:1076px; height:684px; background:#201B10; border-radius:24px"></div>
+<div style="position:absolute; left:772px; top:216px; width:16px; height:16px; background:#FF5F00; border-radius:50%"></div>
+<div style="position:absolute; left:800px; top:216px; width:16px; height:16px; background:#FCE300; border-radius:50%"></div>
+<div style="position:absolute; left:828px; top:216px; width:16px; height:16px; background:#2AE881; border-radius:50%"></div>
+<p style="position:absolute; left:872px; top:204px; width:800px; font-size:24px; color:#A7A7A7">root@lab — запись со стенда</p>
+<iframe class="embed" sandbox="allow-scripts" title="Запись демонстрации в терминале" style="position:absolute; left:756px; top:252px; width:1044px; height:612px" data-srcdoc="&lt;!doctype html&gt;&lt;html&gt;&lt;head&gt;&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;default-src &#x27;none&#x27;; script-src &#x27;unsafe-inline&#x27;; style-src &#x27;unsafe-inline&#x27;; font-src data:&quot;&gt;&lt;style&gt;html{-webkit-print-color-adjust:exact;print-color-adjust:exact}&lt;/style&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;style&gt;
+html,body{margin:0;height:100%;background:#201B10}
+pre{margin:0;box-sizing:border-box;height:100%;padding:20px 26px;color:#E9E6DF;font:20px/1.3 ui-monospace,Menlo,&quot;DejaVu Sans Mono&quot;,Consolas,monospace;white-space:pre-wrap;overflow:hidden}
+b{font-weight:400;color:#2AE881}i{font-style:normal;background:#E9E6DF;color:#201B10}
+&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;pre id=&quot;t&quot;&gt;&lt;/pre&gt;&lt;script&gt;
+var F0=&quot;root@lab:~#&quot;,S=[[&quot;python3 procs.py&quot;, &quot;root@lab:~# python3 procs.py\nPython 3.12.3 | запуск процессов: fork\n1 процесс      0.31 с   интеграл 1.000000\n2 процесса     0.18 с   интеграл 1.000000\nзапуск пула       2 мс\nroot@lab:~#&quot;], [&quot;/opt/python3.14t/bin/python3.14t procs.py&quot;, [0, 5, &quot;root@lab:~# /opt/python3.14t/bin/python3.14t procs.py\nPython 3.14.8 | запуск процессов: forkserver\n1 процесс      0.39 с   интеграл 1.000000\n2 процесса     0.21 с   интеграл 1.000000\nзапуск пула      30 мс\nroot@lab:~#&quot;]], [&quot;python3 lam.py&quot;, [0, 10, &quot;root@lab:~# python3 lam.py\npow(2, 10) = 1024\nPicklingError: Can&#x27;t pickle \u003cfunction \u003clambda&gt; at 0xfabebb953560&gt;: attribute\nlookup \u003clambda&gt; on __main__ failed\nroot@lab:~#&quot;]]];
+for(var k=0,q=F0;k&lt;S.length;k++){var f=S[k][1];if(typeof f!==&quot;string&quot;){var L=q.split(&quot;\n&quot;);f=L.slice(f[0],f[0]+f[1]).concat(f[2]===null?[]:f[2].split(&quot;\n&quot;)).join(&quot;\n&quot;);S[k][1]=f}q=f}
+var T=document.getElementById(&quot;t&quot;),i=0,j=0,base=F0;
+function e(s){return s.replace(/&amp;/g,&quot;&amp;amp;&quot;).replace(/&lt;/g,&quot;&amp;lt;&quot;)}
+function paint(s,c){T.innerHTML=e(s).replace(/^(root@lab:[^#\n]*#|&gt;&gt;&gt;|\.\.\.)/gm,&quot;&lt;b&gt;$1&lt;/b&gt;&quot;)+(c?&quot;&lt;i&gt; &lt;/i&gt;&quot;:&quot;&quot;)}
+function tick(){
+ if(i&gt;=S.length){setTimeout(function(){i=0;j=0;base=F0;paint(base+&quot; &quot;,1);setTimeout(tick,900)},6000);return}
+ var c=S[i][0];
+ if(c&amp;&amp;j&lt;=c.length){paint(base+&quot; &quot;+c.slice(0,j),1);j++;setTimeout(tick,j===1?600:50);return}
+ paint(S[i][1],0);base=S[i][1];i++;j=0;
+ setTimeout(tick,1200+Math.min(base.split(&quot;\n&quot;).length*80,1800))
+}
+paint(S[S.length-1][1],0);
+if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(function(){paint(F0+&quot; &quot;,1);setTimeout(tick,700)},2500);
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
+"></iframe>
+<aside hidden>Демонстрация. Скрипт procs.py вычисляет тот же интеграл в одном процессе и в пуле ProcessPoolExecutor из двух процессов, а также печатает версию Python и метод запуска по умолчанию. На Python 3.12 в Linux пул создаёт процессы методом fork: один процесс считает 0,31 с, два — 0,18 с, в 1,7 раза быстрее, а запуск пула занимает 2 мс. Второй интерпретатор стенда, Python 3.14 (его особенность — отсутствие GIL — рассматривается на следующем слайде), использует новый метод по умолчанию, forkserver: расчёт ускоряется с 0,39 до 0,21 с, в 1,9 раза, а запуск пула занимает 30 мс, на порядок дольше, поскольку сначала запускается процесс-сервер. Ускорение на двух ядрах не превышает двух раз. Скрипт lam.py передаёт пулу встроенную функцию pow, которая сериализуется по имени и выполняется, а затем lambda: pickle не находит её по имени в модуле __main__, и вызов завершается ошибкой PicklingError.</aside>
+</section>
+<section id="par-ft" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
+<div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
+<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10">Python</h2>
+<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#3DDBD9; padding:0px 14px">без GIL</h2>
+</div>
+<div style="display:flex; gap:48px; align-items:start">
+<div style="width:860px; display:flex; flex-direction:column; gap:24px">
+<table style="font-size:26px; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; border:2px solid #201B10">
+<tr style="background:#3DDBD9"><th style="width:24%; color:#201B10">Версия</th><th style="width:76%; color:#201B10">Сборка без GIL</th></tr>
+<tr style="background:#FFFFFF"><td>3.13</td><td>экспериментальная, PEP 703: python3.13t</td></tr>
+<tr style="background:#D9FBFB"><td>3.14</td><td>поддерживаемая, PEP 779: python3.14t</td></tr>
+</table>
+<div style="background:#201B10; border-radius:18px; padding:22px 28px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; line-height:1.45; color:#E9E6DF">$ python3.14t -VV<br>Python 3.14.8 free-threading build ...<br>&gt;&gt;&gt; import sys; sys._is_gil_enabled()<br>False<br>$ python3.14t -X gil=1 app.py      # с GIL<br>$ PYTHON_GIL=1 python3.14t app.py  # то же</p></div>
+<div style="background:#F0EDFF; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
+<p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Пояснение</p>
+<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">Обычная сборка с GIL остаётся сборкой по умолчанию; свободнопоточная устанавливается рядом.</p>
+</div>
+</div>
+<div style="flex:1; display:flex; flex-direction:column; gap:24px">
+<div style="display:flex; flex-direction:column; gap:18px">
+<div style="display:flex; gap:40px; align-items:center"><p style="width:70px; font-family:'Jersey 10', 'Courier New', monospace; font-size:70px; line-height:0.8; text-align:right; color:#007D79">01</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:28px; font-weight:700; line-height:1.3; color:#201B10">Потоки на всех ядрах</p><p style="font-size:24px; line-height:1.35; color:#201B10">байт-код исполняется параллельно; list, dict и set защищены своими блокировками</p></div></div>
+<div style="display:flex; gap:40px; align-items:center"><p style="width:70px; font-family:'Jersey 10', 'Courier New', monospace; font-size:70px; line-height:0.8; text-align:right; color:#007D79">02</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:28px; font-weight:700; line-height:1.3; color:#201B10">Гонки остаются</p><p style="font-size:24px; line-height:1.35; color:#201B10">counter += 1 не атомарна: общие данные по-прежнему защищает Lock</p></div></div>
+<div style="display:flex; gap:40px; align-items:center"><p style="width:70px; font-family:'Jersey 10', 'Courier New', monospace; font-size:70px; line-height:0.8; text-align:right; color:#007D79">03</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:28px; font-weight:700; line-height:1.3; color:#201B10">Расширения на C</p><p style="font-size:24px; line-height:1.35; color:#201B10">объявляют поддержку; модуль без объявления снова включает GIL</p></div></div>
+<div style="display:flex; gap:40px; align-items:center"><p style="width:70px; font-family:'Jersey 10', 'Courier New', monospace; font-size:70px; line-height:0.8; text-align:right; color:#007D79">04</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:28px; font-weight:700; line-height:1.3; color:#201B10">Цена</p><p style="font-size:24px; line-height:1.35; color:#201B10">однопоточный код медленнее: в 3.13 — на 40 %, в 3.14 — на 1–8 %</p></div></div>
+</div>
+</div>
+</div>
+<aside hidden>Изложение. Начиная с Python 3.13 интерпретатор CPython собирается и без глобальной блокировки (PEP 703). Такая сборка устанавливается рядом с обычной, её исполняемый файл имеет суффикс t — python3.13t, python3.14t, — а потоки в ней исполняют байт-код одновременно на всех ядрах. В 3.13 сборка была экспериментальной; в 3.14 она официально поддерживается (PEP 779), но сборкой по умолчанию не является. Работает ли GIL, позволяет узнать функция sys._is_gil_enabled(); в свободнопоточной сборке блокировку можно включить ключом -X gil=1 или переменной окружения PYTHON_GIL=1.
+Без GIL интерпретатор защищает своё состояние иначе: встроенные типы — список, словарь, множество — снабжены собственными блокировками, поэтому их одновременное изменение не нарушает целостности объектов. Атомарными операции программы от этого не становятся: составное действие над общими данными, например counter += 1, состоит из чтения, сложения и записи, и гонки в программе по-прежнему устраняет Lock. Расширения на C должны объявить, что не полагаются на GIL; при импорте модуля без такого объявления интерпретатор снова включает блокировку и выводит предупреждение. Однопоточный код в свободнопоточной сборке выполняется медленнее. В 3.13, где специализирующий адаптивный интерпретатор в этой сборке был отключён, замедление составляло в среднем около 40 процентов на наборе тестов pyperformance; в 3.14 специализация включена, и по документации замедление составляет от 1 процента на macOS с процессором aarch64 до 8 процентов на Linux с x86-64; расход памяти при этом выше. Пакеты wheel для свободнопоточной сборки NumPy выпускает с версии 2.1, Numba — с версии 0.65, и обе библиотеки называют эту поддержку экспериментальной. Таким образом, сборка без GIL позволяет распараллелить потоками код на чистом Python, но требует и потокобезопасной программы, и подготовленных расширений.</aside>
+</section>
+<section id="demo-ft" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
+<div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
+<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#FF87FF; padding:0px 14px">Демонстрация:</h2>
+<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10">Python без GIL</h2>
+</div>
+<div style="width:596px; display:flex; flex-direction:column; gap:28px">
+<div style="display:flex; flex-direction:column; gap:16px">
+<div style="display:flex; gap:18px; align-items:center"><p style="width:56px; font-family:'Jersey 10', 'Courier New', monospace; font-size:60px; line-height:0.8; text-align:right; color:#D640D6">01</p><p style="flex:1; font-size:25px; line-height:1.35; color:#201B10">python3.14t -VV: free-threading build</p></div>
+<div style="display:flex; gap:18px; align-items:center"><p style="width:56px; font-family:'Jersey 10', 'Courier New', monospace; font-size:60px; line-height:0.8; text-align:right; color:#D640D6">02</p><p style="flex:1; font-size:25px; line-height:1.35; color:#201B10">-X gil=1: два потока — 0,39 с, как один</p></div>
+<div style="display:flex; gap:18px; align-items:center"><p style="width:56px; font-family:'Jersey 10', 'Courier New', monospace; font-size:60px; line-height:0.8; text-align:right; color:#D640D6">03</p><p style="flex:1; font-size:25px; line-height:1.35; color:#201B10">-X gil=0: два потока — 0,20 с вместо 0,38</p></div>
+<div style="display:flex; gap:18px; align-items:center"><p style="width:56px; font-family:'Jersey 10', 'Courier New', monospace; font-size:60px; line-height:0.8; text-align:right; color:#D640D6">04</p><p style="flex:1; font-size:25px; line-height:1.35; color:#201B10">Счётчик без Lock: 1 118 818 из 2 000 000</p></div>
+</div>
+<div style="background:#F0EDFF; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
+<p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Что наблюдается</p>
+<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">Без GIL чистый Python в двух потоках на двух ядрах ускоряется в 1,9 раза; счётчик без Lock теряет 44 % увеличений, с Lock результат точный.</p>
+</div>
+</div>
+<div style="position:absolute; left:740px; top:196px; width:1076px; height:684px; background:#201B10; border-radius:24px"></div>
+<div style="position:absolute; left:772px; top:216px; width:16px; height:16px; background:#FF5F00; border-radius:50%"></div>
+<div style="position:absolute; left:800px; top:216px; width:16px; height:16px; background:#FCE300; border-radius:50%"></div>
+<div style="position:absolute; left:828px; top:216px; width:16px; height:16px; background:#2AE881; border-radius:50%"></div>
+<p style="position:absolute; left:872px; top:204px; width:800px; font-size:24px; color:#A7A7A7">root@lab — запись со стенда</p>
+<iframe class="embed" sandbox="allow-scripts" title="Запись демонстрации в терминале" style="position:absolute; left:756px; top:252px; width:1044px; height:612px" data-srcdoc="&lt;!doctype html&gt;&lt;html&gt;&lt;head&gt;&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;default-src &#x27;none&#x27;; script-src &#x27;unsafe-inline&#x27;; style-src &#x27;unsafe-inline&#x27;; font-src data:&quot;&gt;&lt;style&gt;html{-webkit-print-color-adjust:exact;print-color-adjust:exact}&lt;/style&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;style&gt;
+html,body{margin:0;height:100%;background:#201B10}
+pre{margin:0;box-sizing:border-box;height:100%;padding:20px 26px;color:#E9E6DF;font:20px/1.3 ui-monospace,Menlo,&quot;DejaVu Sans Mono&quot;,Consolas,monospace;white-space:pre-wrap;overflow:hidden}
+b{font-weight:400;color:#2AE881}i{font-style:normal;background:#E9E6DF;color:#201B10}
+&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;pre id=&quot;t&quot;&gt;&lt;/pre&gt;&lt;script&gt;
+var F0=&quot;root@lab:~#&quot;,S=[[&quot;/opt/python3.14t/bin/python3.14t -VV&quot;, &quot;root@lab:~# /opt/python3.14t/bin/python3.14t -VV\nPython 3.14.8 free-threading build (main, Oct  1 2026, 21:01:11) [Clang 22.1.3 ]\nroot@lab:~#&quot;], [&quot;/opt/python3.14t/bin/python3.14t -X gil=1 ft.py&quot;, [0, 2, &quot;root@lab:~# /opt/python3.14t/bin/python3.14t -X gil=1 ft.py\nGIL включён: True\nпотоков: 1    0.39 с   интеграл 1.000000\nпотоков: 2    0.39 с   интеграл 1.000000\nroot@lab:~#&quot;]], [&quot;/opt/python3.14t/bin/python3.14t -X gil=0 ft.py&quot;, [0, 6, &quot;root@lab:~# /opt/python3.14t/bin/python3.14t -X gil=0 ft.py\nGIL включён: False\nпотоков: 1    0.38 с   интеграл 1.000000\nпотоков: 2    0.20 с   интеграл 1.000000\nroot@lab:~#&quot;]], [&quot;/opt/python3.14t/bin/python3.14t -X gil=0 race.py&quot;, [0, 10, &quot;root@lab:~# /opt/python3.14t/bin/python3.14t -X gil=0 race.py\nбез Lock: 1118818\nс Lock: 2000000\nroot@lab:~#&quot;]]];
+for(var k=0,q=F0;k&lt;S.length;k++){var f=S[k][1];if(typeof f!==&quot;string&quot;){var L=q.split(&quot;\n&quot;);f=L.slice(f[0],f[0]+f[1]).concat(f[2]===null?[]:f[2].split(&quot;\n&quot;)).join(&quot;\n&quot;);S[k][1]=f}q=f}
+var T=document.getElementById(&quot;t&quot;),i=0,j=0,base=F0;
+function e(s){return s.replace(/&amp;/g,&quot;&amp;amp;&quot;).replace(/&lt;/g,&quot;&amp;lt;&quot;)}
+function paint(s,c){T.innerHTML=e(s).replace(/^(root@lab:[^#\n]*#|&gt;&gt;&gt;|\.\.\.)/gm,&quot;&lt;b&gt;$1&lt;/b&gt;&quot;)+(c?&quot;&lt;i&gt; &lt;/i&gt;&quot;:&quot;&quot;)}
+function tick(){
+ if(i&gt;=S.length){setTimeout(function(){i=0;j=0;base=F0;paint(base+&quot; &quot;,1);setTimeout(tick,900)},6000);return}
+ var c=S[i][0];
+ if(c&amp;&amp;j&lt;=c.length){paint(base+&quot; &quot;+c.slice(0,j),1);j++;setTimeout(tick,j===1?600:50);return}
+ paint(S[i][1],0);base=S[i][1];i++;j=0;
+ setTimeout(tick,1200+Math.min(base.split(&quot;\n&quot;).length*80,1800))
+}
+paint(S[S.length-1][1],0);
+if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(function(){paint(F0+&quot; &quot;,1);setTimeout(tick,700)},2500);
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
+"></iframe>
+<aside hidden>Демонстрация. На стенде установлен интерпретатор CPython 3.14.8 в свободнопоточной сборке, без сторонних пакетов; ключ -VV печатает пометку free-threading build. Скрипт ft.py вычисляет интеграл на чистом Python пулом из одного и из двух потоков и печатает значение sys._is_gil_enabled(). С ключом -X gil=1 блокировка включена, и два потока считают столько же, сколько один, — 0,39 с. С ключом -X gil=0 тот же код в двух потоках выполняется за 0,20 с вместо 0,38 с, в 1,9 раза быстрее: потоки исполняют байт-код одновременно на двух ядрах. Отметим, что один поток считает здесь 0,38 с, тогда как Python 3.12 в демонстрации «пул процессов» — 0,31 с; это сравнение смешивает версию интерпретатора и параметры его сборки и цену отказа от GIL не измеряет: оценка 1–8 % относится к обычной и свободнопоточной сборкам одной версии на наборе тестов pyperformance. Скрипт race.py показывает, что отсутствие GIL не делает программу потокобезопасной: два потока увеличивают общий счётчик по миллиону раз, и без Lock итог составляет 1 118 818 вместо 2 000 000. Чтение, сложение и запись одного потока перемежаются с теми же действиями другого, и 44 процента увеличений теряются; с Lock результат точный.</aside>
+</section>
+<section id="gpu-simt" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
+<div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
+<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10">Видеокарта:</h2>
+<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#3DDBD9; padding:0px 14px">SIMT и warp</h2>
+</div>
+<div style="display:flex; gap:48px; align-items:start">
+<div style="width:880px; display:flex; flex-direction:column; gap:24px">
+<table style="font-size:26px; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; border:2px solid #201B10">
+<tr style="background:#3DDBD9"><th style="width:34%; color:#201B10"></th><th style="width:33%; color:#201B10">CPU</th><th style="width:33%; color:#201B10">GPU</th></tr>
+<tr style="background:#FFFFFF"><td>ядра</td><td>4–64 сложных</td><td>тысячи простых</td></tr>
+<tr style="background:#D9FBFB"><td>оптимизирован под</td><td>задержку одной задачи</td><td>пропускную способность</td></tr>
+<tr style="background:#FFFFFF"><td>задержку памяти скрывают</td><td>большие кеши</td><td>тысячи нитей</td></tr>
+<tr style="background:#D9FBFB"><td>полоса памяти</td><td>десятки ГБ/с</td><td>сотни ГБ/с — единицы ТБ/с</td></tr>
+<tr style="background:#FFFFFF"><td>нагрузка</td><td>ветвистая, последовательная</td><td>однотипная над массивами</td></tr>
+</table>
+<div style="background:#D4FAE6; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
+<p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#2AE881; padding:2px 12px">Для физика</p>
+<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">Частицы, узлы сетки, события детектора — одна формула над миллионами независимых элементов.</p>
+</div>
+</div>
+<div style="flex:1; display:flex; flex-direction:column; gap:24px">
+<div style="display:flex; flex-direction:column; gap:18px">
+<div style="display:flex; gap:40px; align-items:center"><p style="width:70px; font-family:'Jersey 10', 'Courier New', monospace; font-size:70px; line-height:0.8; text-align:right; color:#007D79">01</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:28px; font-weight:700; line-height:1.3; color:#201B10">Warp и SIMT</p><p style="font-size:24px; line-height:1.35; color:#201B10">32 нити выполняют одну инструкцию над разными данными</p></div></div>
+<div style="display:flex; gap:40px; align-items:center"><p style="width:70px; font-family:'Jersey 10', 'Courier New', monospace; font-size:70px; line-height:0.8; text-align:right; color:#007D79">02</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:28px; font-weight:700; line-height:1.3; color:#201B10">Дивергенция</p><p style="font-size:24px; line-height:1.35; color:#201B10">ветви if внутри warp выполняются по очереди</p></div></div>
+<div style="display:flex; gap:40px; align-items:center"><p style="width:70px; font-family:'Jersey 10', 'Courier New', monospace; font-size:70px; line-height:0.8; text-align:right; color:#007D79">03</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:28px; font-weight:700; line-height:1.3; color:#201B10">Иерархия памяти</p><p style="font-size:24px; line-height:1.35; color:#201B10">регистры нити, разделяемая память блока, глобальная память карты</p></div></div>
+<div style="display:flex; gap:40px; align-items:center"><p style="width:70px; font-family:'Jersey 10', 'Courier New', monospace; font-size:70px; line-height:0.8; text-align:right; color:#007D79">04</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:28px; font-weight:700; line-height:1.3; color:#201B10">Объединение обращений</p><p style="font-size:24px; line-height:1.35; color:#201B10">запросы warp сливаются в 32-байтные транзакции: соседним нитям — соседние адреса</p></div></div>
+</div>
+</div>
+</div>
+<aside hidden>Изложение. Процессор оптимизирован под задержку: одна цепочка инструкций должна выполниться как можно быстрее, для чего ядро располагает предсказателем переходов, внеочередным исполнением и большими кешами. Видеокарта оптимизирована под пропускную способность: тысячи простых ядер выполняют максимальный объём однотипной работы в секунду, а задержку памяти скрывают не кешами, а числом нитей — пока одни ожидают данные, вычисляют другие. Нити исполняются группами по 32, называемыми warp; все нити warp в каждый момент выполняют одну инструкцию над разными данными, и эта модель называется SIMT (Single Instruction, Multiple Threads). Если внутри warp код ветвится, обе ветви выполняются по очереди, а нити другой ветви простаивают; это явление называется дивергенцией, и сильно ветвящийся код на видеокарте ускоряется плохо.
+Память видеокарты устроена ступенями: регистры отдельной нити, разделяемая память блока нитей объёмом порядка ста килобайт на мультипроцессор и глобальная память карты объёмом в гигабайты, задержка которой достигает сотен тактов. Обращения нитей одного warp к глобальной памяти объединяются в минимальное число 32-байтных транзакций: если соседние нити читают соседние четырёхбайтные числа, 32 нитям достаточно четырёх транзакций, а при чтении с большим шагом каждой нити требуется собственная транзакция, и полоса памяти расходуется впустую. Поэтому данные на видеокарте располагают так, чтобы соседние нити обращались к соседним элементам массива. Для физика это означает, что видеокарта подходит для задач массового параллелизма данных: движение миллионов частиц, пересчёт узлов разностной сетки, обработка событий детектора.</aside>
+</section>
+<section id="gpu-model" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
+<div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
+<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10">Модель</h2>
+<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#3DDBD9; padding:0px 14px">CUDA</h2>
+</div>
+<div style="display:flex; gap:48px; align-items:start">
+<div style="width:800px; display:flex; flex-direction:column; gap:24px">
+<div style="position:relative; width:800px; height:400px; flex-shrink:0">
+<div style="position:absolute; left:0px; top:0px; width:800px; height:236px; background:#D9FBFB; border-radius:18px"></div>
+<p style="position:absolute; left:0px; top:12px; width:800px; font-size:26px; line-height:1.3; text-align:center; color:#201B10; font-weight:700">Сетка (grid): 3 блока по 4 нити, n = 10</p>
+<div style="position:absolute; left:20px; top:64px; width:244px; height:152px; background:#FFFFFF; border-radius:18px"></div>
+<p style="position:absolute; left:20px; top:78px; width:244px; font-size:24px; line-height:1.3; text-align:center; color:#201B10; font-weight:700">блок 0: i = 0…3</p>
+<div style="position:absolute; left:26px; top:136px; width:52px; height:52px; background:#3DDBD9; border-radius:8px; padding:10px 16px; display:flex; align-items:center; justify-content:center; padding:0px"><p style="font-size:24px; font-weight:700; line-height:1.3; text-align:center; color:#201B10">0</p></div>
+<div style="position:absolute; left:86px; top:136px; width:52px; height:52px; background:#3DDBD9; border-radius:8px; padding:10px 16px; display:flex; align-items:center; justify-content:center; padding:0px"><p style="font-size:24px; font-weight:700; line-height:1.3; text-align:center; color:#201B10">1</p></div>
+<div style="position:absolute; left:146px; top:136px; width:52px; height:52px; background:#3DDBD9; border-radius:8px; padding:10px 16px; display:flex; align-items:center; justify-content:center; padding:0px"><p style="font-size:24px; font-weight:700; line-height:1.3; text-align:center; color:#201B10">2</p></div>
+<div style="position:absolute; left:206px; top:136px; width:52px; height:52px; background:#3DDBD9; border-radius:8px; padding:10px 16px; display:flex; align-items:center; justify-content:center; padding:0px"><p style="font-size:24px; font-weight:700; line-height:1.3; text-align:center; color:#201B10">3</p></div>
+<div style="position:absolute; left:278px; top:64px; width:244px; height:152px; background:#FFFFFF; border-radius:18px"></div>
+<p style="position:absolute; left:278px; top:78px; width:244px; font-size:24px; line-height:1.3; text-align:center; color:#201B10; font-weight:700">блок 1: i = 4…7</p>
+<div style="position:absolute; left:284px; top:136px; width:52px; height:52px; background:#3DDBD9; border-radius:8px; padding:10px 16px; display:flex; align-items:center; justify-content:center; padding:0px"><p style="font-size:24px; font-weight:700; line-height:1.3; text-align:center; color:#201B10">0</p></div>
+<div style="position:absolute; left:344px; top:136px; width:52px; height:52px; background:#3DDBD9; border-radius:8px; padding:10px 16px; display:flex; align-items:center; justify-content:center; padding:0px"><p style="font-size:24px; font-weight:700; line-height:1.3; text-align:center; color:#201B10">1</p></div>
+<div style="position:absolute; left:404px; top:136px; width:52px; height:52px; background:#3DDBD9; border-radius:8px; padding:10px 16px; display:flex; align-items:center; justify-content:center; padding:0px"><p style="font-size:24px; font-weight:700; line-height:1.3; text-align:center; color:#201B10">2</p></div>
+<div style="position:absolute; left:464px; top:136px; width:52px; height:52px; background:#3DDBD9; border-radius:8px; padding:10px 16px; display:flex; align-items:center; justify-content:center; padding:0px"><p style="font-size:24px; font-weight:700; line-height:1.3; text-align:center; color:#201B10">3</p></div>
+<div style="position:absolute; left:536px; top:64px; width:244px; height:152px; background:#FFFFFF; border-radius:18px"></div>
+<p style="position:absolute; left:536px; top:78px; width:244px; font-size:24px; line-height:1.3; text-align:center; color:#201B10; font-weight:700">блок 2: i = 8…11</p>
+<div style="position:absolute; left:542px; top:136px; width:52px; height:52px; background:#3DDBD9; border-radius:8px; padding:10px 16px; display:flex; align-items:center; justify-content:center; padding:0px"><p style="font-size:24px; font-weight:700; line-height:1.3; text-align:center; color:#201B10">0</p></div>
+<div style="position:absolute; left:602px; top:136px; width:52px; height:52px; background:#3DDBD9; border-radius:8px; padding:10px 16px; display:flex; align-items:center; justify-content:center; padding:0px"><p style="font-size:24px; font-weight:700; line-height:1.3; text-align:center; color:#201B10">1</p></div>
+<div style="position:absolute; left:662px; top:136px; width:52px; height:52px; background:#E0DDD5; border-radius:8px; padding:10px 16px; display:flex; align-items:center; justify-content:center; padding:0px"><p style="font-size:24px; font-weight:700; line-height:1.3; text-align:center; color:#201B10">2</p></div>
+<div style="position:absolute; left:722px; top:136px; width:52px; height:52px; background:#E0DDD5; border-radius:8px; padding:10px 16px; display:flex; align-items:center; justify-content:center; padding:0px"><p style="font-size:24px; font-weight:700; line-height:1.3; text-align:center; color:#201B10">3</p></div>
+<p style="position:absolute; left:0px; top:266px; width:800px; font-size:28px; line-height:1.3; text-align:center; color:#201B10; font-weight:700">i = blockIdx.x · blockDim.x + threadIdx.x</p>
+<p style="position:absolute; left:0px; top:316px; width:800px; font-size:26px; line-height:1.3; text-align:center; color:#201B10">Нить 1 блока 2: i = 2 · 4 + 1 = 9; серые нити 2 и 3 блока 2 простаивают: i ≥ n</p>
+</div>
+<div style="position:relative; width:800px; height:150px; flex-shrink:0">
+<div style="position:absolute; left:0px; top:0px; width:320px; height:150px; background:#E3F5FF; border-radius:18px; padding:10px 16px; display:flex; flex-direction:column; gap:6px; align-items:center; justify-content:center"><p style="font-size:28px; font-weight:700; line-height:1.25; text-align:center; color:#201B10">Host</p><p style="font-size:24px; line-height:1.3; text-align:center; color:#201B10">CPU и оперативная<br>память</p></div>
+<x-connector x1="330" y1="50" x2="470" y2="50" style="color:#201B10; border-width:4px"></x-connector>
+<x-connector x1="470" y1="104" x2="330" y2="104" style="color:#201B10; border-width:4px"></x-connector>
+<p style="position:absolute; left:320px; top:60px; width:160px; font-size:24px; line-height:1.3; text-align:center; color:#201B10">PCIe</p>
+<div style="position:absolute; left:480px; top:0px; width:320px; height:150px; background:#D9FBFB; border-radius:18px; padding:10px 16px; display:flex; flex-direction:column; gap:6px; align-items:center; justify-content:center"><p style="font-size:28px; font-weight:700; line-height:1.25; text-align:center; color:#201B10">Device</p><p style="font-size:24px; line-height:1.3; text-align:center; color:#201B10">GPU и память<br>карты</p></div>
+</div>
+</div>
+<div style="flex:1; display:flex; flex-direction:column; gap:24px">
+<div style="background:#F4F1EA; border-radius:18px; padding:22px 28px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; line-height:1.45; color:#201B10">from numba import cuda<br>@cuda.jit<br>def add_kernel(a, b, out):<br>    i = cuda.grid(1)        # глобальный индекс<br>    if i &lt; out.size:        # лишние нити не работают<br>        out[i] = a[i] + b[i]<br> <br>d_a, d_b = cuda.to_device(a), cuda.to_device(b)<br>d_out = cuda.device_array_like(d_a)<br>tpb = 256                   # нитей в блоке<br>bpg = (n + tpb - 1) // tpb  # блоков<br>add_kernel[bpg, tpb](d_a, d_b, d_out)<br>out = d_out.copy_to_host()  # device → host</p></div>
+<div style="background:#F0EDFF; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
+<p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Пояснение</p>
+<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">Встроенный numba.cuda устарел с Numba 0.61; NVIDIA развивает numba-cuda-mlir, numba-cuda только сопровождается.</p>
+</div>
+</div>
+</div>
+<aside hidden>Изложение. CUDA представляет собой платформу NVIDIA для вычислений общего назначения на видеокарте, и её терминологией пользуются все инструменты для GPU. Host объединяет процессор и оперативную память, device — видеокарту и её память; адресные пространства у них разные, и данные копируются между ними явно. Ядром (kernel) называется функция, которую host запускает на device: её одновременно исполняют тысячи нитей, каждая со своим элементом данных. Нити организованы в сетку блоков. Блок целиком выполняется на одном мультипроцессоре, и его нити могут обмениваться данными через разделяемую память, а блоки друг от друга не зависят и распределяются по мультипроцессорам в произвольном порядке.
+Глобальный индекс нити получим из номера блока, размера блока и номера нити в блоке: i = blockIdx.x · blockDim.x + threadIdx.x; например, нить 5 в блоке 3 при блоках по 256 нитей обрабатывает элемент 773. Привычный цикл for исчезает: вместо него запускается n нитей. В Numba ядро записывается функцией с декоратором @cuda.jit; cuda.grid(1) возвращает глобальный индекс, а проверка i &lt; out.size необходима, поскольку число нитей кратно размеру блока и может превышать число элементов. Конфигурация запуска — число блоков и число нитей в блоке — указывается в квадратных скобках; размер блока выбирают кратным 32, обычно от 128 до 512 нитей. Ядро ничего не возвращает и записывает результат в переданный массив, а cuda.to_device и copy_to_host явно копируют данные между host и device. С версии Numba 0.61 встроенный модуль numba.cuda объявлен устаревшим, и поддержка CUDA перешла в пакет NVIDIA numba-cuda. В 2026 году numba-cuda переведён в режим сопровождения: новые возможности NVIDIA развивает в пакете numba-cuda-mlir, совместимом с ядрами numba-cuda, и для большинства программ переход на него сводится к замене импорта from numba import cuda на from numba_cuda_mlir import cuda; код, использующий API расширения Numba, требует переработки, а сам пакет поддерживает видеокарты вычислительной способности не ниже 7.0.</aside>
+</section>
+<section id="gpu-data" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
+<div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
+<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10">Данные</h2>
+<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#3DDBD9; padding:0px 14px">на видеокарте</h2>
+</div>
+<div style="display:flex; gap:48px; align-items:start">
+<div style="width:860px; display:flex; flex-direction:column; gap:24px">
+<div style="background:#F4F1EA; border-radius:18px; padding:22px 28px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; line-height:1.45; color:#201B10">import cupy as cp       # numpy — тот же код на CPU<br> <br>h = q * dt / (2 * m)              # схема Бориса<br>t = h * B0<br>s = 2 * t / (1 + t * t)<br>rng = cp.random.default_rng(42)   # сразу на GPU<br>x = rng.standard_normal(N, dtype=cp.float32) * 1e-3<br>y = rng.standard_normal(N, dtype=cp.float32) * 1e-3<br>vx = rng.standard_normal(N, dtype=cp.float32) * 1e5<br>vy = rng.standard_normal(N, dtype=cp.float32) * 1e5<br>y0 = float(y.mean())              # центр облака<br>for step in range(n_steps):<br>    vx += h * E0                  # полшага поля E<br>    px, py = vx + vy * t, vy - vx * t<br>    vx, vy = vx + py * s, vy - px * s  # поворот<br>    vx += h * E0<br>    x += vx * dt<br>    y += vy * dt<br>v = (float(y.mean()) - y0) / (n_steps * dt)  # на host</p></div>
+</div>
+<div style="flex:1; display:flex; flex-direction:column; gap:24px">
+<div style="display:flex; flex-direction:column; gap:18px">
+<div style="display:flex; gap:40px; align-items:center"><p style="width:70px; font-family:'Jersey 10', 'Courier New', monospace; font-size:70px; line-height:0.8; text-align:right; color:#007D79">01</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:28px; font-weight:700; line-height:1.3; color:#201B10">Шина и память карты</p><p style="font-size:24px; line-height:1.35; color:#201B10">PCIe x16 — 16–64 ГБ/с; память GPU — до нескольких ТБ/с</p></div></div>
+<div style="display:flex; gap:40px; align-items:center"><p style="width:70px; font-family:'Jersey 10', 'Courier New', monospace; font-size:70px; line-height:0.8; text-align:right; color:#007D79">02</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:28px; font-weight:700; line-height:1.3; color:#201B10">Оценка для 1 ГБ</p><p style="font-size:24px; line-height:1.35; color:#201B10">пересылка при 16 ГБ/с — около 60 мс, y = 2x на карте — около 2 мс</p></div></div>
+<div style="display:flex; gap:40px; align-items:center"><p style="width:70px; font-family:'Jersey 10', 'Courier New', monospace; font-size:70px; line-height:0.8; text-align:right; color:#007D79">03</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:28px; font-weight:700; line-height:1.3; color:#201B10">Асинхронный запуск</p><p style="font-size:24px; line-height:1.35; color:#201B10">вызов ставит ядро в очередь; замер — после прогрева и synchronize()</p></div></div>
+<div style="display:flex; gap:40px; align-items:center"><p style="width:70px; font-family:'Jersey 10', 'Courier New', monospace; font-size:70px; line-height:0.8; text-align:right; color:#007D79">04</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:28px; font-weight:700; line-height:1.3; color:#201B10">CuPy</p><p style="font-size:24px; line-height:1.35; color:#201B10">интерфейс NumPy на GPU; cp.asnumpy и cp.asarray копируют данные</p></div></div>
 </div>
 <div style="background:#FFE2D1; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#FF5F00; padding:2px 12px">Важно</p>
-<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">Главное правило GPU: данные хранятся на видеокарте; пересылка через шину сводит выигрыш на нет.</p>
+<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">Данные создаются на карте и остаются там до конца расчёта; на host возвращается результат.</p>
+</div>
+</div>
+</div>
+<aside hidden>Изложение. Видеокарта соединена с процессором шиной PCIe, полоса которой составляет десятки гигабайт в секунду, тогда как память самой карты передаёт от сотен гигабайт до единиц терабайт в секунду: в примере из руководства NVIDIA по оптимизации — 16 ГБ/с у шины PCIe x16 третьего поколения против 898 ГБ/с у памяти Tesla V100. Оценим цену пересылки на примере гигабайта данных: копирование через PCIe третьего поколения занимает около 60 мс, а поэлементная операция y = 2x на карте прочитает и запишет два гигабайта примерно за 2 мс. Таким образом, при малом числе операций на байт пересылка обходится дороже вычисления, и главное правило вычислений на GPU состоит в том, чтобы создать данные на карте один раз, выполнить там всю цепочку шагов и вернуть только результат.
+Самый короткий путь к видеокарте из Python обеспечивает CuPy — реализация интерфейса NumPy поверх CUDA: массивы размещаются в памяти карты, операции над ними выполняет GPU, а cp.asnumpy и cp.asarray копируют данные в одну и в другую сторону. Пример на слайде, взятый из главы книги «CUDA и вычисления на GPU», моделирует дрейф электронов в скрещенных полях E = (E0, 0, 0) и B = (0, 0, B0) схемой Бориса. Массивы создаются генератором cp.random сразу на карте, каждая арифметическая операция над массивами выполняется отдельным ядром над всеми частицами, а на host возвращается одно число — скорость дрейфа, которая по теории равна по модулю E0/B0, направлена против оси y и не зависит ни от заряда, ни от массы. Запуск ядер асинхронный: вызов ставит работу в очередь и возвращается сразу, поэтому при замере времени необходимо дождаться завершения вызовом synchronize или воспользоваться функцией cupyx.profiler.benchmark, а первый вызов, компилирующий ядра, в замер не включают. Замена первой строки на import numpy as cp даёт версию для процессора, пригодную для отладки на машине без видеокарты.</aside>
+</section>
+<section id="demo-cuda" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
+<div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
+<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#FF87FF; padding:0px 14px">Демонстрация:</h2>
+<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10">ядро CUDA на CPU</h2>
+</div>
+<div style="width:596px; display:flex; flex-direction:column; gap:28px">
+<div style="display:flex; flex-direction:column; gap:16px">
+<div style="display:flex; gap:18px; align-items:center"><p style="width:56px; font-family:'Jersey 10', 'Courier New', monospace; font-size:60px; line-height:0.8; text-align:right; color:#D640D6">01</p><p style="flex:1; font-size:25px; line-height:1.35; color:#201B10">cuda.is_available(): видеокарты на стенде нет</p></div>
+<div style="display:flex; gap:18px; align-items:center"><p style="width:56px; font-family:'Jersey 10', 'Courier New', monospace; font-size:60px; line-height:0.8; text-align:right; color:#D640D6">02</p><p style="flex:1; font-size:25px; line-height:1.35; color:#201B10">Симулятор CUDA: ядро на CPU, 3 блока по 4 нити</p></div>
+<div style="display:flex; gap:18px; align-items:center"><p style="width:56px; font-family:'Jersey 10', 'Courier New', monospace; font-size:60px; line-height:0.8; text-align:right; color:#D640D6">03</p><p style="flex:1; font-size:25px; line-height:1.35; color:#201B10">Индекс i = блок · 4 + нить; нити с i = 10 и 11 простаивают</p></div>
+<div style="display:flex; gap:18px; align-items:center"><p style="width:56px; font-family:'Jersey 10', 'Courier New', monospace; font-size:60px; line-height:0.8; text-align:right; color:#D640D6">04</p><p style="flex:1; font-size:25px; line-height:1.35; color:#201B10">Дрейф 10⁵ электронов: NumPy вместо CuPy</p></div>
+</div>
+<div style="background:#F0EDFF; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
+<p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Что наблюдается</p>
+<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">Симулятор проверяет индексы, а не скорость; скорость дрейфа −9,998·10⁴ м/с совпадает с −E0/B0 с точностью 0,02 %.</p>
+</div>
+</div>
+<div style="position:absolute; left:740px; top:196px; width:1076px; height:684px; background:#201B10; border-radius:24px"></div>
+<div style="position:absolute; left:772px; top:216px; width:16px; height:16px; background:#FF5F00; border-radius:50%"></div>
+<div style="position:absolute; left:800px; top:216px; width:16px; height:16px; background:#FCE300; border-radius:50%"></div>
+<div style="position:absolute; left:828px; top:216px; width:16px; height:16px; background:#2AE881; border-radius:50%"></div>
+<p style="position:absolute; left:872px; top:204px; width:800px; font-size:24px; color:#A7A7A7">root@lab — запись со стенда</p>
+<iframe class="embed" sandbox="allow-scripts" title="Запись демонстрации в терминале" style="position:absolute; left:756px; top:252px; width:1044px; height:612px" data-srcdoc="&lt;!doctype html&gt;&lt;html&gt;&lt;head&gt;&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;default-src &#x27;none&#x27;; script-src &#x27;unsafe-inline&#x27;; style-src &#x27;unsafe-inline&#x27;; font-src data:&quot;&gt;&lt;style&gt;html{-webkit-print-color-adjust:exact;print-color-adjust:exact}&lt;/style&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;style&gt;
+html,body{margin:0;height:100%;background:#201B10}
+pre{margin:0;box-sizing:border-box;height:100%;padding:20px 26px;color:#E9E6DF;font:20px/1.3 ui-monospace,Menlo,&quot;DejaVu Sans Mono&quot;,Consolas,monospace;white-space:pre-wrap;overflow:hidden}
+b{font-weight:400;color:#2AE881}i{font-style:normal;background:#E9E6DF;color:#201B10}
+&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;pre id=&quot;t&quot;&gt;&lt;/pre&gt;&lt;script&gt;
+var F0=&quot;root@lab:~#&quot;,S=[[&quot;python3 -c \&quot;from numba import cuda; print(cuda.is_available())\&quot;&quot;, &quot;root@lab:~# python3 -c \&quot;from numba import cuda; print(cuda.is_available())\&quot;\nFalse\nroot@lab:~#&quot;], [&quot;NUMBA_ENABLE_CUDASIM=1 python3 kernel.py&quot;, [0, 2, &quot;root@lab:~# NUMBA_ENABLE_CUDASIM=1 python3 kernel.py\nсимулятор: True | блоков: 3 | нитей: 12\ni      0 1 2 3 4 5 6 7 8 9\nблок   0 0 0 0 1 1 1 1 2 2\nнить   0 1 2 3 0 1 2 3 0 1\nout    10 11 12 13 14 15 16 17 18 19\nroot@lab:~#&quot;]], [&quot;python3 drift.py&quot;, [0, 8, &quot;root@lab:~# python3 drift.py\nчастиц 100000, шагов 2144, расчёт 0.3 с\nдрейф vy = -9.9983e+04 м/с\nтеория   = -1.0000e+05 м/с  (−E0/B0)\nroot@lab:~#&quot;]]];
+for(var k=0,q=F0;k&lt;S.length;k++){var f=S[k][1];if(typeof f!==&quot;string&quot;){var L=q.split(&quot;\n&quot;);f=L.slice(f[0],f[0]+f[1]).concat(f[2]===null?[]:f[2].split(&quot;\n&quot;)).join(&quot;\n&quot;);S[k][1]=f}q=f}
+var T=document.getElementById(&quot;t&quot;),i=0,j=0,base=F0;
+function e(s){return s.replace(/&amp;/g,&quot;&amp;amp;&quot;).replace(/&lt;/g,&quot;&amp;lt;&quot;)}
+function paint(s,c){T.innerHTML=e(s).replace(/^(root@lab:[^#\n]*#|&gt;&gt;&gt;|\.\.\.)/gm,&quot;&lt;b&gt;$1&lt;/b&gt;&quot;)+(c?&quot;&lt;i&gt; &lt;/i&gt;&quot;:&quot;&quot;)}
+function tick(){
+ if(i&gt;=S.length){setTimeout(function(){i=0;j=0;base=F0;paint(base+&quot; &quot;,1);setTimeout(tick,900)},6000);return}
+ var c=S[i][0];
+ if(c&amp;&amp;j&lt;=c.length){paint(base+&quot; &quot;+c.slice(0,j),1);j++;setTimeout(tick,j===1?600:50);return}
+ paint(S[i][1],0);base=S[i][1];i++;j=0;
+ setTimeout(tick,1200+Math.min(base.split(&quot;\n&quot;).length*80,1800))
+}
+paint(S[S.length-1][1],0);
+if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(function(){paint(F0+&quot; &quot;,1);setTimeout(tick,700)},2500);
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
+"></iframe>
+<aside hidden>Демонстрация. На стенде видеокарты нет: cuda.is_available() возвращает False, и запуск ядра без симулятора завершается ошибкой поиска драйвера CUDA. Переменная окружения NUMBA_ENABLE_CUDASIM=1 включает симулятор CUDA, входящий в Numba: ядро выполняется на процессоре интерпретатором Python, блоки — по одному, а нити блока — потоками Python. Симулятор предназначен для отладки и проверки индексов, операций уровня warp не поддерживает и о скорости вычислений на видеокарте ничего не говорит. Скрипт kernel.py запускает ядро сложения векторов для 10 элементов с блоками по 4 нити: блоков получается 3, нитей — 12, и каждая нить записывает номер своего блока и свой номер в блоке. Таблица подтверждает формулу индекса: элемент 9 обрабатывает нить 1 блока 2, 2 · 4 + 1 = 9, а нити 2 и 3 последнего блока не проходят проверку i &lt; out.size и простаивают. Скрипт drift.py повторяет пример с дрейфом, в котором вместо CuPy импортирован NumPy: 10⁵ электронов за 2144 шага рассчитываются на процессоре за 0,3 с, и скорость дрейфа −9,9983·10⁴ м/с отличается от теоретической −E0/B0 = −10⁵ м/с на 0,02 %. Число шагов выбрано равным шести ларморовским периодам: облако начинает движение со средней скоростью, равной нулю, его центр движется по циклоиде, и средняя скорость совпадает со скоростью дрейфа только за целое число периодов.</aside>
+</section>
+<section id="par-summary" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
+<div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
+<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10">Итог</h2>
+<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#3DDBD9; padding:0px 14px">замеров</h2>
+</div>
+<table style="font-size:26px; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; border:2px solid #201B10">
+<tr style="background:#3DDBD9"><th style="width:36%; color:#201B10">Задача</th><th style="width:34%; color:#201B10">Средство</th><th style="width:30%; color:#201B10">Выигрыш на стенде</th></tr>
+<tr style="background:#FFFFFF"><td>цикл Python над списками</td><td>приёмы языка</td><td>в 2,8 раза</td></tr>
+<tr style="background:#D9FBFB"><td>числовой цикл</td><td>Numba и Cython</td><td>в 217 и 165 раз</td></tr>
+<tr style="background:#FFFFFF"><td>линейная алгебра</td><td>NumPy и BLAS</td><td>в 900 раз</td></tr>
+<tr style="background:#D9FBFB"><td>цикл Numba, операции NumPy</td><td>prange, nogil=True, потоки</td><td>в 1,8–2 раза</td></tr>
+<tr style="background:#FFFFFF"><td>чистый Python на всех ядрах</td><td>пул процессов, python3.14t</td><td>в 1,7–1,9 раза</td></tr>
+<tr style="background:#D9FBFB"><td>ожидание ввода-вывода</td><td>потоки, asyncio</td><td>в 8 раз при восьми ожиданиях</td></tr>
+<tr style="background:#FFFFFF"><td>массовый параллелизм данных</td><td>GPU: CuPy, numba-cuda-mlir</td><td>видеокарты на стенде нет</td></tr>
+</table>
+<div style="display:flex; gap:32px">
+<div style="background:#FFE2D1; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
+<p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#FF5F00; padding:2px 12px">Важно</p>
+<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">На двух ядрах стенда параллелизм дал не больше двух раз, компиляция и векторизация — сотни.</p>
 </div>
 <div style="background:#D4FAE6; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#2AE881; padding:2px 12px">Для физика</p>
-<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">Подробно — глава книги «CUDA и вычисления на GPU».</p>
+<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">Перебор параметров установки — естественная задача для пула процессов: расчёты независимы.</p>
 </div>
 </div>
-</div>
-<aside hidden>Изложение. Итог измерений на стенде сведён в таблицу. Приёмы языка ускорили умножение матриц на списках в 2,8 раза. Numba после прогрева — в 217 раз по сравнению с чистым Python. Cython с объявленными типами — в 165 раз по сравнению с тем же чистым Python на списках. NumPy с BLAS — в 900 раз, без единой строки на C. Параллельный prange на двух ядрах виртуальной машины ускорил последовательную версию Numba почти вдвое: параллелизм обеспечивает ускорение не больше числа ядер, а на практике меньше. Следующей ступенью является видеокарта: CuPy повторяет интерфейс NumPy на GPU, а Numba с пакетом numba-cuda компилирует собственные ядра CUDA: начиная с Numba 0.61 встроенная поддержка CUDA объявлена устаревшей. Главное правило вычислений на GPU — данные должны храниться на видеокарте: пересылка массивов через шину на каждом шаге сводит выигрыш на нет. Этому посвящена глава книги «CUDA и вычисления на GPU».</aside>
+<aside hidden>Изложение. Итог измерений лекции сведён в таблицу по задачам. Приёмы языка ускорили умножение матриц на списках в 2,8 раза; Numba после прогрева — в 217 раз, Cython с объявленными типами — в 165 раз по сравнению с чистым Python на списках, NumPy с BLAS — в 900 раз. Параллельные средства ограничены числом ядер: prange в Numba ускорил расчёт пространственного заряда почти вдвое, потоки с NumPy и с Numba nogil=True — в 1,8–2 раза, а пул из двух процессов и свободнопоточная сборка ускорили интеграл на чистом Python в 1,7–1,9 раза. Для ожидания ввода-вывода достаточно потоков, и число ядер их не ограничивает: восемь ожиданий перекрылись, и опрос ускорился в 8 раз. Видеокарты на стенде нет, поэтому её выигрыш не измерялся; он определяется размером задачи, числом операций на байт данных и тем, остаются ли данные на карте. Таким образом, к параллельным вычислениям переходят после того, как горячий цикл ускорен на одном ядре: два ядра дают не больше двух раз, тогда как компиляция и векторизация — сотни. Подробно эти темы разобраны в главах книги «Многопоточность и GIL», «Асинхронность» и «CUDA и вычисления на GPU».
+Для физиков: перебор параметров установки или ансамбль независимых расчётов — естественная задача для пула процессов: каждый расчёт выполняется в своём процессе, а результаты собираются в конце.</aside>
 </section>
 <section id="summary" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1323,9 +1763,10 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 <div style="display:flex; gap:40px; align-items:center"><p style="width:80px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; text-align:right; color:#8A6D00">02</p><p style="flex:1; font-size:30px; line-height:1.35; color:#201B10">Ускоряют только измеренное: timeit для фрагмента, cProfile и line_profiler для программы, py-spy для работающего процесса.</p></div>
 <div style="display:flex; gap:40px; align-items:center"><p style="width:80px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; text-align:right; color:#8A6D00">03</p><p style="flex:1; font-size:30px; line-height:1.35; color:#201B10">Структура данных и алгоритм важнее микрооптимизаций; любой совет проверяется замером на своей версии Python.</p></div>
 <div style="display:flex; gap:40px; align-items:center"><p style="width:80px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; text-align:right; color:#8A6D00">04</p><p style="flex:1; font-size:30px; line-height:1.35; color:#201B10">Память измеряют tracemalloc; числа хранят в массивах, объекты — со __slots__.</p></div>
-<div style="display:flex; gap:40px; align-items:center"><p style="width:80px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; text-align:right; color:#8A6D00">05</p><p style="flex:1; font-size:30px; line-height:1.35; color:#201B10">NumPy, Numba и Cython ускоряют горячий цикл в десятки и сотни раз; процессы и GPU — следующий шаг.</p></div>
+<div style="display:flex; gap:40px; align-items:center"><p style="width:80px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; text-align:right; color:#8A6D00">05</p><p style="flex:1; font-size:30px; line-height:1.35; color:#201B10">NumPy, Numba и Cython ускоряют горячий цикл в десятки и сотни раз.</p></div>
+<div style="display:flex; gap:40px; align-items:center"><p style="width:80px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; text-align:right; color:#8A6D00">06</p><p style="flex:1; font-size:30px; line-height:1.35; color:#201B10">Потоки ускоряют ожидание и код без GIL; Python на всех ядрах — процессы или сборка без GIL; работа над массивами — видеокарта.</p></div>
 </div>
-<aside hidden>Изложение. Подведём итог. Python работает медленно не потому, что плохо написан, а вследствие своей гибкости: тип каждого значения выясняется при выполнении, почти всё может быть изменено по ходу работы программы, а цикл интерпретатора работает с объектами в куче. Ускорять имеет смысл только измеренное: timeit отвечает на вопрос, какой из двух фрагментов быстрее, cProfile и line_profiler — где программа проводит время, py-spy — чем занят уже работающий расчёт. Самый дешёвый выигрыш даёт смена структуры данных или алгоритма; микрооптимизации дают проценты, а рекомендации устаревают с выходом новых версий интерпретатора, поэтому каждая проверяется замером. Память измеряют tracemalloc, а не getsizeof; числа хранят в массивах, а многочисленные объекты — со __slots__. NumPy, Numba и Cython переносят горячий цикл в машинный код и ускоряют его в десятки и сотни раз; следующие шаги — процессы и видеокарта. Таким образом, общее правило остаётся прежним: сначала правильно, потом быстро.</aside>
+<aside hidden>Изложение. Подведём итог. Python работает медленно не потому, что плохо написан, а вследствие своей гибкости: тип каждого значения выясняется при выполнении, почти всё может быть изменено по ходу работы программы, а цикл интерпретатора работает с объектами в куче. Ускорять имеет смысл только измеренное: timeit отвечает на вопрос, какой из двух фрагментов быстрее, cProfile и line_profiler — где программа проводит время, py-spy — чем занят уже работающий расчёт. Самый дешёвый выигрыш даёт смена структуры данных или алгоритма; микрооптимизации дают проценты, а рекомендации устаревают с выходом новых версий интерпретатора, поэтому каждая проверяется замером. Память измеряют tracemalloc, а не getsizeof; числа хранят в массивах, а многочисленные объекты — со __slots__. NumPy, Numba и Cython переносят горячий цикл в машинный код и ускоряют его в десятки и сотни раз. Потоки в обычной сборке CPython ускоряют ожидание ввода-вывода и код, освобождающий GIL, — NumPy, Numba с nogil=True, Cython с блоком with nogil; вычисления на чистом Python распределяют по ядрам пул процессов или свободнопоточная сборка Python 3.14, а однотипную работу над миллионами элементов выполняет видеокарта, если данные остаются в её памяти. Таким образом, общее правило остаётся прежним: сначала правильно, потом быстро, и только затем параллельно.</aside>
 </section>
 <section id="exercises" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1334,11 +1775,13 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 </div>
 <div style="display:flex; gap:48px; align-items:start">
 <div style="width:1080px; display:flex; flex-direction:column; gap:24px">
-<div style="display:flex; flex-direction:column; gap:26px">
+<div style="display:flex; flex-direction:column; gap:18px">
 <div style="display:flex; gap:40px; align-items:center"><p style="width:80px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; text-align:right; color:#8A6D00">01</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:30px; font-weight:700; line-height:1.3; color:#201B10">Профиль своего кода</p><p style="font-size:24px; line-height:1.35; color:#201B10">cProfile и line_profiler на программе из проекта: какая функция и строка горячие</p></div></div>
 <div style="display:flex; gap:40px; align-items:center"><p style="width:80px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; text-align:right; color:#8A6D00">02</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:30px; font-weight:700; line-height:1.3; color:#201B10">Пространственный заряд</p><p style="font-size:24px; line-height:1.35; color:#201B10">версия со сглаживанием r² + ε² на Numba; проверка закона N² и выигрыша prange</p></div></div>
 <div style="display:flex; gap:40px; align-items:center"><p style="width:80px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; text-align:right; color:#8A6D00">03</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:30px; font-weight:700; line-height:1.3; color:#201B10">Память частиц</p><p style="font-size:24px; line-height:1.35; color:#201B10">список объектов, __slots__ и массив структур NumPy для миллиона частиц</p></div></div>
 <div style="display:flex; gap:40px; align-items:center"><p style="width:80px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; text-align:right; color:#8A6D00">04</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:30px; font-weight:700; line-height:1.3; color:#201B10">Векторизация блоками</p><p style="font-size:24px; line-height:1.35; color:#201B10">силы без массивов N×N: разбиение на блоки и сравнение с Numba</p></div></div>
+<div style="display:flex; gap:40px; align-items:center"><p style="width:80px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; text-align:right; color:#8A6D00">05</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:30px; font-weight:700; line-height:1.3; color:#201B10">Параллельный перебор</p><p style="font-size:24px; line-height:1.35; color:#201B10">ансамбль расчётов в пуле процессов и в потоках python3.14t: ускорение и число ядер</p></div></div>
+<div style="display:flex; gap:40px; align-items:center"><p style="width:80px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; text-align:right; color:#8A6D00">06</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:30px; font-weight:700; line-height:1.3; color:#201B10">Дрейф на видеокарте</p><p style="font-size:24px; line-height:1.35; color:#201B10">пример с CuPy в Colab: время с пересылкой массивов на каждом шаге и без неё</p></div></div>
 </div>
 </div>
 <div style="flex:1; display:flex; flex-direction:column; gap:24px">
@@ -1352,21 +1795,22 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 </div>
 </div>
 </div>
-<aside hidden>Изложение. Отдельного задания к лекции нет: упражнения служат самопроверке. Первое — снять профиль программы из собственного проекта cProfile и line_profiler и найти горячие функцию и строку. Второе — добавить к расчёту пространственного заряда сглаживание, заменив r² на r² + ε², скомпилировать функцию Numba и проверить, что время растёт как N², а prange ускоряет расчёт не больше числа ядер. Третье — сравнить память под миллион частиц в виде списка объектов, объектов со __slots__ и массива структур NumPy. Четвёртое — векторизовать расчёт сил блоками, без массивов N×N целиком, и сравнить время и память с версией Numba. Каждое ускорение сравнивается с исходной версией на тех же данных и проверяется тестом.</aside>
+<aside hidden>Изложение. Отдельного задания к лекции нет: упражнения служат самопроверке. Первое — снять профиль программы из собственного проекта cProfile и line_profiler и найти горячие функцию и строку. Второе — добавить к расчёту пространственного заряда сглаживание, заменив r² на r² + ε², скомпилировать функцию Numba и проверить, что время растёт как N², а prange ускоряет расчёт не больше числа ядер. Третье — сравнить память под миллион частиц в виде списка объектов, объектов со __slots__ и массива структур NumPy. Четвёртое — векторизовать расчёт сил блоками, без массивов N×N целиком, и сравнить время и память с версией Numba. Пятое — распределить ансамбль независимых расчётов, например интегралов с разными параметрами, по пулу процессов и по потокам свободнопоточного интерпретатора python3.14t и сопоставить ускорение с числом ядер. Шестое — выполнить пример с дрейфом частиц на CuPy в Google Colab и сравнить время расчёта, при котором массивы остаются на видеокарте, со временем расчёта, при котором они на каждом шаге копируются на host и обратно. Каждое ускорение сравнивается с исходной версией на тех же данных и проверяется тестом.</aside>
 </section>
 <section id="sources" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <h2 style="align-self:start; font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#B6A3FF; padding:0px 14px">Источники</h2>
-<div style="display:flex; flex-direction:column; gap:10px">
+<div style="display:flex; flex-direction:column; gap:4px">
 <div style="display:flex; gap:28px; align-items:baseline"><p style="width:60px; font-family:'Jersey 10', 'Courier New', monospace; font-size:56px; line-height:0.8; text-align:right; color:#7C62F0">1</p><div style="flex:1; display:flex; flex-direction:column; gap:2px"><p style="font-size:26px; line-height:1.35; color:#201B10">Книга курса: раздел «Ускорение расчётов», главы об оптимизации, скорости, GIL и CUDA</p><p style="font-size:24px; color:#6B665C"><a href="https://phys-dev.github.io/soft-dev-book/">phys-dev.github.io/soft-dev-book</a></p></div></div>
 <div style="display:flex; gap:28px; align-items:baseline"><p style="width:60px; font-family:'Jersey 10', 'Courier New', monospace; font-size:56px; line-height:0.8; text-align:right; color:#7C62F0">2</p><div style="flex:1; display:flex; flex-direction:column; gap:2px"><p style="font-size:26px; line-height:1.35; color:#201B10">Лебедев С. Быстрее, Python, ещё быстрее. – Computer Science Center, 2015</p><p style="font-size:24px; color:#6B665C"><a href="https://www.youtube.com/watch?v=-lMiAKKyLFI">youtube.com/watch?v=-lMiAKKyLFI</a></p></div></div>
-<div style="display:flex; gap:28px; align-items:baseline"><p style="width:60px; font-family:'Jersey 10', 'Courier New', monospace; font-size:56px; line-height:0.8; text-align:right; color:#7C62F0">3</p><div style="flex:1; display:flex; flex-direction:column; gap:2px"><p style="font-size:26px; line-height:1.35; color:#201B10">timeit, cProfile, tracemalloc — документация Python</p><p style="font-size:24px; color:#6B665C"><a href="https://docs.python.org/3/library/profile.html">docs.python.org/3/library/profile.html</a></p></div></div>
-<div style="display:flex; gap:28px; align-items:baseline"><p style="width:60px; font-family:'Jersey 10', 'Courier New', monospace; font-size:56px; line-height:0.8; text-align:right; color:#7C62F0">4</p><div style="flex:1; display:flex; flex-direction:column; gap:2px"><p style="font-size:26px; line-height:1.35; color:#201B10">py-spy — документация; line_profiler — kernprof.readthedocs.io</p><p style="font-size:24px; color:#6B665C"><a href="https://github.com/benfred/py-spy">github.com/benfred/py-spy</a></p></div></div>
-<div style="display:flex; gap:28px; align-items:baseline"><p style="width:60px; font-family:'Jersey 10', 'Courier New', monospace; font-size:56px; line-height:0.8; text-align:right; color:#7C62F0">5</p><div style="flex:1; display:flex; flex-direction:column; gap:2px"><p style="font-size:26px; line-height:1.35; color:#201B10">Numba — документация</p><p style="font-size:24px; color:#6B665C"><a href="https://numba.readthedocs.io/">numba.readthedocs.io</a></p></div></div>
-<div style="display:flex; gap:28px; align-items:baseline"><p style="width:60px; font-family:'Jersey 10', 'Courier New', monospace; font-size:56px; line-height:0.8; text-align:right; color:#7C62F0">6</p><div style="flex:1; display:flex; flex-direction:column; gap:2px"><p style="font-size:26px; line-height:1.35; color:#201B10">Cython — документация</p><p style="font-size:24px; color:#6B665C"><a href="https://cython.readthedocs.io/">cython.readthedocs.io</a></p></div></div>
-<div style="display:flex; gap:28px; align-items:baseline"><p style="width:60px; font-family:'Jersey 10', 'Courier New', monospace; font-size:56px; line-height:0.8; text-align:right; color:#7C62F0">7</p><div style="flex:1; display:flex; flex-direction:column; gap:2px"><p style="font-size:26px; line-height:1.35; color:#201B10">Knuth D. Structured Programming with go to Statements. – ACM Computing Surveys, 1974</p><p style="font-size:24px; color:#6B665C"><a href="https://dl.acm.org/doi/10.1145/356635.356640">dl.acm.org/doi/10.1145/356635.356640</a></p></div></div>
-<div style="display:flex; gap:28px; align-items:baseline"><p style="width:60px; font-family:'Jersey 10', 'Courier New', monospace; font-size:56px; line-height:0.8; text-align:right; color:#7C62F0">8</p><div style="flex:1"><p style="font-size:26px; line-height:1.35; color:#201B10">Gorelick M., Ozsvald I. High Performance Python. – 2nd ed. – O'Reilly, 2020</p></div></div>
+<div style="display:flex; gap:28px; align-items:baseline"><p style="width:60px; font-family:'Jersey 10', 'Courier New', monospace; font-size:56px; line-height:0.8; text-align:right; color:#7C62F0">3</p><div style="flex:1; display:flex; flex-direction:column; gap:2px"><p style="font-size:26px; line-height:1.35; color:#201B10">Лебедев С. Многопоточность и GIL. – Computer Science Center, 2015</p><p style="font-size:24px; color:#6B665C"><a href="https://www.youtube.com/watch?v=nR8WhdcRJwM">youtube.com/watch?v=nR8WhdcRJwM</a></p></div></div>
+<div style="display:flex; gap:28px; align-items:baseline"><p style="width:60px; font-family:'Jersey 10', 'Courier New', monospace; font-size:56px; line-height:0.8; text-align:right; color:#7C62F0">4</p><div style="flex:1; display:flex; flex-direction:column; gap:2px"><p style="font-size:26px; line-height:1.35; color:#201B10">timeit, cProfile, tracemalloc, concurrent.futures, multiprocessing, free threading — документация Python</p><p style="font-size:24px; color:#6B665C"><a href="https://docs.python.org/3/howto/free-threading-python.html">docs.python.org/3/howto/free-threading-python.html</a></p></div></div>
+<div style="display:flex; gap:28px; align-items:baseline"><p style="width:60px; font-family:'Jersey 10', 'Courier New', monospace; font-size:56px; line-height:0.8; text-align:right; color:#7C62F0">5</p><div style="flex:1; display:flex; flex-direction:column; gap:2px"><p style="font-size:26px; line-height:1.35; color:#201B10">py-spy — документация; line_profiler — kernprof.readthedocs.io</p><p style="font-size:24px; color:#6B665C"><a href="https://github.com/benfred/py-spy">github.com/benfred/py-spy</a></p></div></div>
+<div style="display:flex; gap:28px; align-items:baseline"><p style="width:60px; font-family:'Jersey 10', 'Courier New', monospace; font-size:56px; line-height:0.8; text-align:right; color:#7C62F0">6</p><div style="flex:1; display:flex; flex-direction:column; gap:2px"><p style="font-size:26px; line-height:1.35; color:#201B10">Numba — документация; numba-cuda и numba-cuda-mlir — nvidia.github.io; CuPy — docs.cupy.dev</p><p style="font-size:24px; color:#6B665C"><a href="https://numba.readthedocs.io/">numba.readthedocs.io</a></p></div></div>
+<div style="display:flex; gap:28px; align-items:baseline"><p style="width:60px; font-family:'Jersey 10', 'Courier New', monospace; font-size:56px; line-height:0.8; text-align:right; color:#7C62F0">7</p><div style="flex:1; display:flex; flex-direction:column; gap:2px"><p style="font-size:26px; line-height:1.35; color:#201B10">Cython — документация</p><p style="font-size:24px; color:#6B665C"><a href="https://cython.readthedocs.io/">cython.readthedocs.io</a></p></div></div>
+<div style="display:flex; gap:28px; align-items:baseline"><p style="width:60px; font-family:'Jersey 10', 'Courier New', monospace; font-size:56px; line-height:0.8; text-align:right; color:#7C62F0">8</p><div style="flex:1; display:flex; flex-direction:column; gap:2px"><p style="font-size:26px; line-height:1.35; color:#201B10">Knuth D. Structured Programming with go to Statements. – ACM Computing Surveys, 1974</p><p style="font-size:24px; color:#6B665C"><a href="https://dl.acm.org/doi/10.1145/356635.356640">dl.acm.org/doi/10.1145/356635.356640</a></p></div></div>
+<div style="display:flex; gap:28px; align-items:baseline"><p style="width:60px; font-family:'Jersey 10', 'Courier New', monospace; font-size:56px; line-height:0.8; text-align:right; color:#7C62F0">9</p><div style="flex:1"><p style="font-size:26px; line-height:1.35; color:#201B10">Gorelick M., Ozsvald I. High Performance Python. – 3rd ed. – O'Reilly, 2025</p></div></div>
 </div>
-<aside hidden>Изложение. Основой лекции служат главы раздела книги курса «Ускорение расчётов»; сквозной пример с умножением матриц и порядок изложения инструментов следуют лекции «Быстрее, Python, ещё быстрее» курса Python Computer Science Center 2015 года. Для самостоятельного изучения рекомендуются документация модулей timeit, cProfile и tracemalloc, документация line_profiler, py-spy, Numba и Cython, статья Д. Кнута 1974 года и книга «High Performance Python».</aside>
+<aside hidden>Изложение. Основой лекции служат главы раздела книги курса «Ускорение расчётов»; сквозной пример с умножением матриц и порядок изложения инструментов следуют лекции «Быстрее, Python, ещё быстрее» курса Python Computer Science Center 2015 года, а часть о потоках и процессах — лекции «Многопоточность и GIL» того же курса. Для самостоятельного изучения рекомендуются документация модулей timeit, cProfile, tracemalloc, concurrent.futures и multiprocessing, руководство по свободнопоточной сборке Python, документация line_profiler, py-spy, Numba, numba-cuda и numba-cuda-mlir, Cython и CuPy, статья Д. Кнута 1974 года и книга «High Performance Python».</aside>
 </section>
 <section id="end" data-transition="fade" style="background:#FFF9C1; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:row; gap:64px">
 <div style="flex:1; display:flex; flex-direction:column; justify-content:space-between">

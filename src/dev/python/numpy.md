@@ -4,9 +4,9 @@
 >
 > Приложение представляет собой перевод с сокращениями учебника [«Python Numpy Tutorial»](https://cs231n.github.io/python-numpy-tutorial/) курса CS231n Стэнфордского университета; автор — Дж. Джонсон, исходный текст распространяется по [лицензии MIT](https://github.com/cs231n/cs231n.github.io/blob/master/LICENSE), © 2015 Andrej Karpathy.
 
-> **Слайды к главе.** Индексация, broadcasting и типы массивов изложены также во второй и третьей частях лекции «NumPy и pandas» с демонстрациями в терминале; слайды лекции доступны [на сайте книги](https://phys-dev.github.io/soft-dev-book/slides/lecture-10.html#/sec-idx) и [в PDF](https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-10.pdf).
+> **Слайды к главе.** Индексация, broadcasting и типы массивов изложены также во второй и третьей частях лекции «NumPy, pandas и SciPy» с демонстрациями в терминале; слайды лекции доступны [на сайте книги](https://phys-dev.github.io/soft-dev-book/slides/lecture-10.html#/sec-idx) и [в PDF](https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-10.pdf).
 
-<iframe src="../../slides/lecture-10.html#/sec-idx" title="Слайды лекции «NumPy и pandas»: индексы и векторы" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
+<iframe src="../../slides/lecture-10.html#/sec-idx" title="Слайды лекции «NumPy, pandas и SciPy»: индексы и векторы" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
 
 
 NumPy является основной библиотекой для научных вычислений на Python: она предоставляет высокопроизводительный объект многомерного массива и инструменты для работы с такими массивами.
