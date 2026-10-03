@@ -184,9 +184,9 @@
 </blockquote>
 <p>В настоящей главе рассматриваются приёмы, не требующие ничего, кроме самого языка; компиляторы и векторизация рассматриваются в следующей главе. Выигрыш обычно скромнее, зато цена нулевая: код остаётся обычным Python, доступным для чтения любому коллеге.</p>
 <blockquote>
-<p><strong>Слайды к главе.</strong> Приёмы языка и экономия памяти изложены также в третьей и четвёртой частях лекции «Оптимизация» с демонстрациями в терминале; слайды лекции доступны <a href="https://phys-dev.github.io/soft-dev-book/slides/lecture-09.html#/sec-lang">на сайте книги</a> и <a href="https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-09.pdf">в PDF</a>.</p>
+<p><strong>Слайды к главе.</strong> Приёмы языка и экономия памяти изложены также в третьей и четвёртой частях лекции «Оптимизация и параллельные вычисления» с демонстрациями в терминале; слайды лекции доступны <a href="https://phys-dev.github.io/soft-dev-book/slides/lecture-09.html#/sec-lang">на сайте книги</a> и <a href="https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-09.pdf">в PDF</a>.</p>
 </blockquote>
-<iframe src="../slides/lecture-09.html#/sec-lang" title="Слайды лекции «Оптимизация»: приёмы языка" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
+<iframe src="../slides/lecture-09.html#/sec-lang" title="Слайды лекции «Оптимизация и параллельные вычисления»: приёмы языка" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
 <h2 id="Объекты-оптимизации"><a class="header" href="#Объекты-оптимизации">Объекты оптимизации</a></h2>
 <p>Оптимизация не сводится к правке кода, так как уровней, пригодных для ускорения уже написанной программы, несколько.</p>
 <h3 id="1-Общая-архитектура"><a class="header" href="#1-Общая-архитектура">1. Общая архитектура</a></h3>
@@ -639,7 +639,7 @@ def copy_cached(elements):
 </ol>
 <h2 id="Оптимизация-памяти"><a class="header" href="#Оптимизация-памяти">Оптимизация памяти</a></h2>
 <p>Расчёт, не помещающийся в оперативную память, не выполняется вовсе или многократно замедляется: выделение памяти завершается ошибкой <code>MemoryError</code>, а при подкачке данные читаются с диска.</p>
-<iframe src="../slides/lecture-09.html#/sec-mem" title="Слайды лекции «Оптимизация»: память" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
+<iframe src="../slides/lecture-09.html#/sec-mem" title="Слайды лекции «Оптимизация и параллельные вычисления»: память" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
 <h3 id="Измерение-памяти"><a class="header" href="#Измерение-памяти">Измерение памяти</a></h3>
 <p>Измерение памяти в Python затруднено, и первый способ, подсказанный документацией, вводит в заблуждение.</p>
 <pre><code class="language-python">import sys

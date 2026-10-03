@@ -179,21 +179,24 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="Многопоточность-и-gil"><a class="header" href="#Многопоточность-и-gil">Многопоточность и GIL</a></h1>
-<p>Следующим шагом после профилирования, векторизации и JIT-компиляции является использование всех ядер процессора, а не одного. В Python это непросто, и рассмотрение необходимо начать с основ: что представляет собой процесс, что представляет собой поток и почему в Python второе не даёт ожидаемого результата.</p>
+<p>Следующим шагом после профилирования, векторизации и JIT-компиляции является использование всех ядер процессора, а не одного. В Python это непросто, и рассмотрение необходимо начать с основ: что представляет собой процесс, что представляет собой поток и почему в обычной сборке CPython потоки не ускоряют вычисления.</p>
+<p>Листинги главы выполнены в IPython на той же виртуальной машине с двумя ядрами под Python 3.12, что и в предыдущих главах; на ней же записаны демонстрации лекции «Оптимизация и параллельные вычисления». Сценарии раздела о сборке без GIL запущены на этой машине интерпретатором CPython 3.14 в свободнопоточной сборке. На машине с другим числом ядер числа будут иными.</p>
+<blockquote>
+<p><strong>Слайды к главе.</strong> Процессы и потоки, глобальная блокировка интерпретатора, пул процессов и сборка Python без GIL изложены также в седьмой части лекции «Оптимизация и параллельные вычисления» с демонстрациями в терминале; слайды лекции доступны <a href="https://phys-dev.github.io/soft-dev-book/slides/lecture-09.html#/sec-par">на сайте книги</a> и <a href="https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-09.pdf">в PDF</a>.</p>
+</blockquote>
+<iframe src="../slides/lecture-09.html#/sec-par" title="Слайды лекции «Оптимизация и параллельные вычисления»: потоки и процессы" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
 <h2 id="Необходимый-минимум-процессы-и-потоки"><a class="header" href="#Необходимый-минимум-процессы-и-потоки">Необходимый минимум: процессы и потоки</a></h2>
 <h3 id="Процесс"><a class="header" href="#Процесс">Процесс</a></h3>
 <p><strong>Процесс</strong> — запущенная программа, и операционная система выделяет каждому процессу собственное, изолированное от остальных состояние:</p>
 <ul>
 <li>виртуальное адресное пространство, то есть собственную память, скрытую от остальных процессов;</li>
-<li>указатель на исполняемую инструкцию;</li>
-<li>стек вызовов;</li>
 <li>системные ресурсы, например открытые файловые дескрипторы.</li>
 </ul>
 <p>Несколько задач, которые необходимо выполнять одновременно, можно распределить по разным процессам. Процессы, разведённые по своим адресным пространствам, не мешают друг другу, однако и обмен данными между ними затруднён: общей памяти у них нет.</p>
 <h3 id="Поток"><a class="header" href="#Поток">Поток</a></h3>
-<p><strong>Поток</strong> исполняется независимо от других потоков, как и процесс, но существует <em>внутри</em> процесса и разделяет с ним адресное пространство и системные ресурсы. Два потока одного процесса могут свободно работать с общими данными, поскольку они видят одни и те же объекты, размещённые в общей памяти.</p>
+<p><strong>Поток</strong> исполняется независимо от других потоков, как и процесс, но существует <em>внутри</em> процесса и разделяет с ним адресное пространство и системные ресурсы. Собственными у каждого потока остаются указатель на исполняемую инструкцию, значения регистров и стек вызовов. Два потока одного процесса могут свободно работать с общими данными, поскольку они видят одни и те же объекты, размещённые в общей памяти.</p>
 <p>Это удобно до тех пор, пока два потока не обратятся к одним данным одновременно: в этом случае возникают гонки, о которых сказано ниже.</p>
-<p>Порядком исполнения как процессов, так и потоков распоряжается операционная система, поочерёдно выделяющая каждому по нескольку тактов процессора.</p>
+<p>Порядком исполнения как процессов, так и потоков распоряжается операционная система, поочерёдно выделяющая каждому кванты времени порядка миллисекунды, то есть миллионы тактов процессора.</p>
 <h2 id="Модуль-threading"><a class="header" href="#Модуль-threading">Модуль <code>threading</code></a></h2>
 <p>Поток в Python является обычным системным потоком, и его исполнением управляет операционная система, а не интерпретатор. Создать поток можно классом <code>Thread</code>, объявленным в модуле стандартной библиотеки <code>threading</code>.</p>
 <pre><code class="language-python">import time
@@ -232,21 +235,25 @@ def countdown(n):
 0 left
 </code></pre>
 <p>Этот подход ограничивает повторное использование кода: функциональность, заключённая в класс <code>CountdownThread</code>, доступна только в отдельном потоке.</p>
-<p>У потока есть имя, по умолчанию <code>Thread-N</code>; имя, заданное разработчиком, лучше читается в журналах.</p>
+<p>У потока есть имя. По умолчанию оно имеет вид <code>Thread-N</code>, где N — порядковый номер, а начиная с Python 3.10 у потока с функцией в <code>target</code> к номеру добавляется имя этой функции. Имя, заданное разработчиком, лучше читается в журналах.</p>
 <pre><code class="language-python">Thread().name
 </code></pre>
-<pre><code>'Thread-6'
+<pre><code>'Thread-3'
+</code></pre>
+<pre><code class="language-python">Thread(target=countdown).name
+</code></pre>
+<pre><code>'Thread-4 (countdown)'
 </code></pre>
 <pre><code class="language-python">Thread(name="NumberCruncher").name
 </code></pre>
 <pre><code>'NumberCruncher'
 </code></pre>
-<p>У каждого активного потока есть идентификатор, неотрицательное число, выданное операционной системой и уникальное среди всех активных потоков.</p>
+<p>У каждого запущенного потока есть идентификатор <code>ident</code> — ненулевое число, уникальное среди работающих потоков; после завершения потока тот же идентификатор может получить другой поток. Номер, присвоенный потоку операционной системой, хранит атрибут <code>native_id</code> (с Python 3.8).</p>
 <pre><code class="language-python">t = Thread()
 t.start()
-t.ident
+t.ident, t.native_id
 </code></pre>
-<pre><code>123145519448064
+<pre><code>(271580801397120, 39650)
 </code></pre>
 <p>Дождаться завершения потока позволяет метод <code>join</code>: вызывающий поток блокируется, пока <code>t</code> не завершит работу; повторный <code>join</code> на уже завершившемся потоке возвращается мгновенно.</p>
 <pre><code class="language-python">t = Thread(target=time.sleep, args=(5, )) 
@@ -288,12 +295,16 @@ t.start()
 <li><code>RLock</code>, рекурсивный мьютекс, разрешающий потоку, владеющему мьютексом, захватывать его более одного раза.</li>
 <li><code>Semaphore</code>, вариация мьютекса, захватываемая не более фиксированного числа раз.</li>
 <li><code>BoundedSemaphore</code>, семафор, следящий за тем, чтобы его захватывали и освобождали одинаковое число раз.</li>
+<li><code>Condition</code>, условная переменная: поток ожидает в методе <code>wait</code>, пока другой поток не сообщит методом <code>notify</code> об изменении общего состояния.</li>
+<li><code>Event</code>, событие: флаг, установки которого методом <code>set</code> потоки ожидают в методе <code>wait</code>.</li>
+<li><code>Barrier</code>, барьер: потоки ожидают у него, пока барьера не достигнет заданное число потоков, и затем продолжают работу вместе.</li>
 </ul>
-<p>Все примитивы синхронизации реализуют единый интерфейс:</p>
+<p>Блокировки, семафоры и условные переменные реализуют единый интерфейс:</p>
 <ul>
 <li>метод <code>acquire</code> захватывает примитив синхронизации,</li>
 <li>а метод <code>release</code> освобождает его.</li>
 </ul>
+<p>У событий и барьеров интерфейс собственный, поскольку они ничего не захватывают.</p>
 <pre><code class="language-python">from threading import Lock
 
 
@@ -303,13 +314,13 @@ class SharedCounter:
         self._lock = Lock()
     
     def increment(self, delta=1):
-        self._lock.acquire()
-        self._value += delta
-        self._lock.release()
+        with self._lock:
+            self._value += delta
     
     def get(self):
         return self._value
 </code></pre>
+<p>Захват и освобождение удобнее записывать блоком <code>with</code>: блокировка освобождается и тогда, когда внутри блока возникает исключение. При явных вызовах <code>acquire</code> и <code>release</code> исключение между ними, например при попытке прибавить к числу строку, оставило бы блокировку захваченной, и следующий вызов <code>increment</code> в любом потоке ожидал бы её бесконечно.</p>
 <h2 id="Модуль-queue"><a class="header" href="#Модуль-queue">Модуль <code>queue</code></a></h2>
 <p>Обмен данными между потоками с ручной расстановкой мьютексов неудобен. Обычно применяется готовая очередь; модуль <code>queue</code> реализует несколько потокобезопасных вариантов.</p>
 <ul>
@@ -333,7 +344,7 @@ def master(q):
     # очереди не будут обработаны
     q.join()
 </code></pre>
-<h2 id="Модуль-futures"><a class="header" href="#Модуль-futures">Модуль <code>futures</code></a></h2>
+<h2 id="Модуль-concurrentfutures"><a class="header" href="#Модуль-concurrentfutures">Модуль <code>concurrent.futures</code></a></h2>
 <p>Модуль <code>concurrent.futures</code> предоставляет абстрактный класс <code>Executor</code> и его реализацию над пулом потоков, <code>ThreadPoolExecutor</code>. Интерфейс исполнителя состоит из трёх методов.</p>
 <pre><code class="language-python">from concurrent.futures import *
 </code></pre>
@@ -342,21 +353,12 @@ def master(q):
 <pre><code class="language-python">executor.submit(print, "Hello, world!")
 </code></pre>
 <pre><code>Hello, world!
-
-
-
-
-&lt;Future at 0x1043b1d90 state=running&gt;
+&lt;Future at 0xf700558a6270 state=finished returned NoneType&gt;
 </code></pre>
 <pre><code class="language-python">list(executor.map(print, ["Knock?", "Knock!"]))
 </code></pre>
 <pre><code>Knock?
 Knock!
-
-
-
-
-
 [None, None]
 </code></pre>
 <pre><code class="language-python">executor.shutdown()
@@ -393,9 +395,17 @@ Knock!
 </ul>
 <pre><code class="language-python">f.add_done_callback(print)
 </code></pre>
-<pre><code>&lt;Future at 0x1043b7f10 state=finished returned list&gt;
+<pre><code>&lt;Future at 0xf7005422bb90 state=finished returned list&gt;
 </code></pre>
-<h2 id="Пример-с-модулем-futures-integrate"><a class="header" href="#Пример-с-модулем-futures-integrate">Пример с модулем <code>futures</code>: <code>integrate</code></a></h2>
+<p>Исключение, возникшее в задаче, вызывающий поток не прерывает: оно сохраняется в объекте <code>Future</code>, метод <code>exception</code> возвращает его, а <code>result</code> возбуждает повторно.</p>
+<pre><code class="language-python">with ThreadPoolExecutor(max_workers=4) as executor:
+    f = executor.submit(int, "x")
+print(repr(f.exception()))
+</code></pre>
+<pre><code>ValueError("invalid literal for int() with base 10: 'x'")
+</code></pre>
+<p>Поэтому результат каждой задачи необходимо запросить: иначе ошибка так и останется в объекте <code>Future</code> незамеченной.</p>
+<h2 id="Пример-с-модулем-concurrentfutures-integrate"><a class="header" href="#Пример-с-модулем-concurrentfutures-integrate">Пример с модулем <code>concurrent.futures</code>: <code>integrate</code></a></h2>
 <p>Проверим это на вычислительной задаче: численное интегрирование методом прямоугольников, циклом по заданному разбиению отрезка.</p>
 <pre><code class="language-python">import math
 
@@ -406,47 +416,55 @@ def integrate(f, a, b, *, n_iter=1000):
         acc += f(a + i * step) * step
     return acc
 </code></pre>
-<pre><code class="language-python">integrate(math.cos, 0, math.pi / 2)
+<pre><code class="language-python">integrate(math.cos, 0.0, math.pi / 2)
 </code></pre>
 <pre><code>1.0007851925466296
 </code></pre>
+<p>Нижний предел здесь и далее записан вещественным числом <code>0.0</code>. При целом <code>0</code> выражение <code>a + i * step</code> складывает целое число с вещественным, а такое сложение специализирующий интерпретатор CPython 3.12 не ускоряет: на машине главы расчёт с <code>n_iter=10**6</code> занимает 41 мс вместо 32 мс. Параллельные версии ниже получают вещественные границы частей, и целый предел поставил бы последовательную версию в невыгодное положение.</p>
+<p>Параллельная версия делит отрезок на <code>n_jobs</code> частей и передаёт каждую пулу потоков; пул создаётся в блоке <code>with</code> и закрывается при выходе из функции.</p>
 <pre><code class="language-python">from functools import partial
 
 def integrate_async(f, a, b, *, n_jobs, n_iter=1000):
-    executor = ThreadPoolExecutor(max_workers=n_jobs)
-    spawn = partial(executor.submit, integrate, f,
-                    n_iter=n_iter // n_jobs)
-    step = (b-a)/n_jobs
-    fs=[spawn(a+i*step,a+(i+1)*step)
-        for i in range(n_jobs)]
-    return sum(f.result() for f in as_completed(fs))
+    with ThreadPoolExecutor(max_workers=n_jobs) as executor:
+        spawn = partial(executor.submit, integrate, f,
+                        n_iter=n_iter // n_jobs)
+        step = (b - a) / n_jobs
+        fs = [spawn(a + i * step, a + (i + 1) * step)
+              for i in range(n_jobs)]
+        return sum(f.result() for f in as_completed(fs))
 </code></pre>
-<pre><code class="language-python">integrate_async(math.cos, 0, math.pi / 2, n_jobs=2)
+<pre><code class="language-python">integrate_async(math.cos, 0.0, math.pi / 2, n_jobs=2)
 </code></pre>
 <pre><code>1.0007851925466305
 </code></pre>
 <h2 id="Параллелизм-и-конкурентность"><a class="header" href="#Параллелизм-и-конкурентность">Параллелизм и конкурентность</a></h2>
-<p>Сравним производительность последовательной и параллельной версий <code>integrate</code> магической командой <code>timeit</code>.</p>
+<p>Различим два понятия. <strong>Конкурентностью</strong> называется способность программы вести несколько задач одновременно, переключаясь между ними, а <strong>параллелизмом</strong> — одновременное выполнение задач на нескольких ядрах. Конкурентная программа может выполняться и на одном ядре, параллельная — только на нескольких. Сравним производительность последовательной и параллельной версий <code>integrate</code> магической командой <code>timeit</code>.</p>
 <pre><code class="language-python">%%timeit -n100
-integrate(math.cos, 0, math.pi / 2, n_iter=10**6)
+integrate(math.cos, 0.0, math.pi / 2, n_iter=10**6)
 </code></pre>
-<pre><code>154 ms ± 2.28 ms per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>31.8 ms ± 213 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
 <pre><code class="language-python">%%timeit -n100
-integrate_async(math.cos, 0, math.pi / 2, n_iter=10**6, n_jobs=2)
+integrate_async(math.cos, 0.0, math.pi / 2, n_iter=10**6, n_jobs=2)
 </code></pre>
-<pre><code>142 ms ± 2.11 ms per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>31.9 ms ± 243 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
 <h3 id="Глобальная-блокировка-интерпретатора"><a class="header" href="#Глобальная-блокировка-интерпретатора">Глобальная блокировка интерпретатора</a></h3>
-<p>Два потока вместо одного дали выигрыш в проценты вместо ожидаемого двукратного ускорения. Причиной является <strong>GIL</strong> (global interpreter lock, глобальная блокировка интерпретатора).</p>
-<p>GIL представляет собой мьютекс, гарантирующий, что в каждый момент времени байт-код исполняет только один поток. Внутреннее состояние интерпретатора (в первую очередь счётчики ссылок у каждого объекта) не защищено от одновременного доступа, и глобальная блокировка является самым простым способом не позволить двум потокам одновременно нарушить его целостность. Платой за простоту является результат приведённого выше замера.</p>
-<p>Следствие: <strong>в обычной сборке CPython потоки не ускоряют вычисления.</strong> Сколько бы их ни было, байт-код исполняется по очереди, а к вычислениям добавляются накладные расходы на переключение, из-за которых многопоточная версия иногда оказывается даже медленнее однопоточной.</p>
+<p>Два потока вместо одного не дали никакого выигрыша: 31,9 мс против 31,8 мс у последовательной версии, хотя на двух ядрах можно было ожидать двукратного ускорения. Причиной является <strong>GIL</strong> (global interpreter lock, глобальная блокировка интерпретатора).</p>
+<p>GIL представляет собой мьютекс, гарантирующий, что в каждый момент времени байт-код исполняет только один поток. Внутреннее состояние интерпретатора (в первую очередь счётчики ссылок у каждого объекта) не защищено от одновременного доступа, и глобальная блокировка является самым простым способом не позволить двум потокам одновременно нарушить его целостность. Поток, ожидающий блокировку, по истечении интервала переключения требует её освободить, и потоки исполняют байт-код по очереди; интервал по умолчанию составляет 5 мс.</p>
+<pre><code class="language-python">import sys
+
+sys.getswitchinterval()
+</code></pre>
+<pre><code>0.005
+</code></pre>
+<p>Следствие: <strong>в обычной сборке CPython потоки не ускоряют вычисления на чистом Python.</strong> Сколько бы их ни было, байт-код исполняется по очереди, а к вычислениям добавляются накладные расходы на переключение, из-за которых многопоточная версия иногда оказывается даже медленнее однопоточной. Таким образом, потоки обычной сборки обеспечивают конкурентность, но не параллелизм.</p>
 <h3 id="Влияние-gil-на-разные-задачи"><a class="header" href="#Влияние-gil-на-разные-задачи">Влияние GIL на разные задачи</a></h3>
 <p>Мешает ли GIL, зависит от того, чем занята программа.</p>
-<p>Если программа <strong>вычисляет</strong>, потоки бесполезны. Обойти GIL можно двумя путями: перейти к отдельным процессам, у каждого из которых свой интерпретатор со своим GIL (об этом сказано ниже), или перейти к скомпилированному коду, способному освобождать GIL.</p>
+<p>Если программа <strong>вычисляет</strong> на чистом Python, потоки бесполезны. Обойти GIL можно несколькими путями, и все они рассматриваются ниже: перейти к отдельным процессам, у каждого из которых свой интерпретатор со своим GIL; перейти к скомпилированному коду, способному освобождать GIL; наконец, воспользоваться сборкой интерпретатора без GIL.</p>
 <p>Если программа <strong>ожидает</strong>, то есть читает файл, получает данные по сети, опрашивает прибор, на время ожидания поток освобождает GIL, и остальные потоки работают. Для такой нагрузки потоки подходят, и проигрыша от блокировки нет.</p>
 <p>NumPy на длинных операциях также освобождает GIL: пока перемножаются большие матрицы, интерпретатор свободен для остальных потоков. Поэтому многопоточность в сочетании с NumPy работает лучше, чем можно было бы ожидать.</p>
-<p>Оговорка «в обычной сборке CPython» существенна. Начиная с 3.13 интерпретатор собирается и вовсе без глобальной блокировки (PEP 703): такая сборка устанавливается рядом с обычной и называется <code>python3.13t</code>, а с 3.14 режим свободных потоков официально поддержан (PEP 779), и потоки в нём вычисляют параллельно, без процессов и без Cython. Платой являются 5–10 %, потерянные на однопоточном коде, и неготовность части C-расширений, написанных в расчёте на то, что блокировка защитит их сама. Определить, в какой сборке выполняется программа, позволяет <code>sys._is_gil_enabled()</code>, возвращающий <code>False</code> в свободнопоточной сборке. Пока она не стала используемой по умолчанию, всё изложенное в настоящей главе относится к обычной сборке.</p>
+<p>Оговорка «в обычной сборке CPython» существенна: начиная с версии 3.13 интерпретатор собирается и вовсе без глобальной блокировки. Этой сборке посвящён раздел «Сборка Python без GIL» в конце главы, а до него всё изложенное относится к обычной сборке.</p>
 <h3 id="c-и-cython-освобождение-gil"><a class="header" href="#c-и-cython-освобождение-gil">C и Cython: освобождение GIL</a></h3>
 <p>Скомпилированный код может освободить GIL явно, на то время, пока он не обращается к объектам Python. В Cython для этого предусмотрен блок <code>with nogil</code>, внутри которого допустимы только типы C, зато остальные потоки работают параллельно.</p>
 <pre><code class="language-python">%load_ext Cython
@@ -466,21 +484,46 @@ def integrate(f, double a, double b, long n_iter):
 </code></pre>
 <p>Первый аргумент здесь оставлен только ради совместимости с <code>integrate_async</code>, а сама функция жёстко привязана к <code>cos</code>: вызвать функцию Python <code>f</code> внутри <code>with nogil</code> невозможно.</p>
 <pre><code class="language-python">%%timeit -n100
-integrate_async(math.cos, 0, math.pi / 2, n_iter=10**6, n_jobs=2)
+integrate_async(math.cos, 0.0, math.pi / 2, n_iter=10**6, n_jobs=2)
 </code></pre>
-<pre><code>5.88 ms ± 126 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>1.79 ms ± 32.9 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
-<p>Те же два потока, тот же <code>integrate_async</code>, и 5.88 мс вместо 142. Этот выигрыш является составным. Потоков два, поэтому на снятие GIL приходится не более двукратного ускорения; остальное, примерно двенадцатикратное, обеспечила компиляция в машинный код. Таким образом, сначала применяется Cython, и только затем распараллеливается уже скомпилированный код.</p>
+<p>Те же два потока, тот же <code>integrate_async</code>, и 1,79 мс вместо 31,9. Этот выигрыш является составным. Потоков два, поэтому на снятие GIL приходится не более двукратного ускорения; остальное, примерно девятикратное, обеспечила компиляция в машинный код. Отсюда порядок действий: сначала применяется Cython, и только затем распараллеливается уже скомпилированный код.</p>
 <blockquote>
-<p><strong>О замерах ниже.</strong> Ячейка выше переопределила имя <code>integrate</code>: теперь под ним находится скомпилированная Cython-версия. Замеры двух следующих разделов — про процессы и про <code>joblib</code> — сняты не с неё, а с исходной, чистой Python-версии в свежем ядре; для их повторения необходимо перезапустить блокнот, пропустив ячейку с <code>%%cython</code>. В противном случае передать Cython-функцию в пул процессов и вовсе не удастся: она находится в модуле <code>_cython_magic_&lt;hash&gt;</code> из <code>~/.ipython/cython</code>, который отсутствует в <code>sys.path</code>.</p>
+<p><strong>О замерах ниже.</strong> Ячейка выше переопределила имя <code>integrate</code>: теперь под ним находится скомпилированная Cython-версия, жёстко привязанная к <code>cos</code>. Разделы о процессах и о <code>joblib</code> используют чистую Python-версию, которую следующий раздел записывает в модуль <code>workers.py</code>, поэтому для их повторения перезапускать блокнот не требуется.</p>
 </blockquote>
 <h2 id="Модуль-multiprocessing"><a class="header" href="#Модуль-multiprocessing">Модуль <code>multiprocessing</code></a></h2>
 <h3 id="Процессы-как-способ-обойти-gil"><a class="header" href="#Процессы-как-способ-обойти-gil">Процессы как способ обойти GIL</a></h3>
 <p>Поскольку глобальная блокировка одна на интерпретатор, самым прямым способом её обхода является запуск нескольких интерпретаторов. Именно это и обеспечивают процессы: у каждого свой GIL, друг другу они не мешают, и на восьми ядрах восемь процессов вычисляют одновременно.</p>
 <p>Платой является изоляция. Процессы не разделяют память, поэтому всё, что необходимо передать между ними, приходится сериализовать и копировать. Для расчёта, в котором каждому процессу передаётся часть работы и забирается число, это несущественно; для задачи с большим общим состоянием накладные расходы на пересылку могут поглотить весь выигрыш.</p>
-<p>За работу с процессами отвечает модуль <code>multiprocessing</code>, устроенный аналогично <code>threading</code>.</p>
-<pre><code class="language-python">import multiprocessing as mp
+<p>За работу с процессами отвечает модуль <code>multiprocessing</code>, устроенный аналогично <code>threading</code>. Функция, которую выполняет дочерний процесс, передаётся ему по имени и должна импортироваться из модуля: при методах запуска spawn (macOS, Windows) и forkserver (Linux начиная с Python 3.14) функция из ячейки блокнота в дочернем процессе не находится, и он завершается ошибкой <code>AttributeError</code>. Поэтому функции примеров этого раздела записываются в файл <code>workers.py</code> и импортируются из него; туда же помещена чистая Python-версия <code>integrate</code> для следующих разделов.</p>
+<pre><code class="language-python">%%writefile workers.py
+import time
+
+
+def countdown(n):
+    for i in range(n):
+        print(n - i - 1, "left")
+        time.sleep(1)
+
+
+def ponger(conn):
+    conn.send("pong")
+
+
+def integrate(f, a, b, *, n_iter=1000):
+    acc = 0
+    step = (b - a) / n_iter
+    for i in range(n_iter):
+        acc += f(a + i * step) * step
+    return acc
 </code></pre>
+<pre><code>Writing workers.py
+</code></pre>
+<pre><code class="language-python">import multiprocessing as mp
+from workers import countdown, ponger, integrate
+</code></pre>
+<p>После импорта имя <code>integrate</code> снова указывает на чистую Python-версию.</p>
 <pre><code class="language-python">p = mp.Process(target=countdown, args=(5, ))
 </code></pre>
 <pre><code class="language-python">p.start()
@@ -492,9 +535,6 @@ integrate_async(math.cos, 0, math.pi / 2, n_iter=10**6, n_jobs=2)
 0 left
 </code></pre>
 <p>Примитивы синхронизации те же: мьютексы, семафоры, условные переменные. Для обмена данными между процессами предусмотрен <code>Pipe</code>, соединение двух процессов поверх сокетов.</p>
-<pre><code class="language-python">def ponger(conn):
-    conn.send("pong")
-</code></pre>
 <pre><code class="language-python">parent_conn, child_conn = mp.Pipe()
 p = mp.Process(target=ponger, args=(child_conn, ))
 </code></pre>
@@ -506,8 +546,16 @@ p = mp.Process(target=ponger, args=(child_conn, ))
 </code></pre>
 <pre><code class="language-python">p.join()
 </code></pre>
+<h3 id="Методы-запуска-процессов"><a class="header" href="#Методы-запуска-процессов">Методы запуска процессов</a></h3>
+<p>Способ создания дочернего процесса задаёт метод запуска. Метод <code>fork</code> копирует родительский процесс целиком, вместе с его памятью и уже определёнными функциями. Метод <code>spawn</code> запускает новый интерпретатор, который импортирует главный модуль программы и получает функцию и аргументы в сериализованном виде. Метод <code>forkserver</code> при первом обращении запускает однопоточный процесс-сервер, а рабочие процессы порождает копированием этого сервера. По умолчанию в Windows и, начиная с Python 3.8, в macOS используется <code>spawn</code>, в Linux до версии 3.13 включительно — <code>fork</code>, а начиная с 3.14 — <code>forkserver</code>.</p>
+<pre><code class="language-python">mp.get_start_method()
+</code></pre>
+<pre><code>'fork'
+</code></pre>
+<p>Смена метода по умолчанию в Linux объясняется потоками. Копия процесса наследует блокировки, захваченные другими его потоками, но не сами эти потоки, и может навсегда остановиться на такой блокировке; начиная с Python 3.12 вызов <code>fork</code> в процессе с несколькими потоками сопровождается предупреждением <code>DeprecationWarning</code>. Метод выбирается функцией <code>mp.set_start_method</code> в начале программы или передаётся пулу явно: <code>ProcessPoolExecutor(mp_context=mp.get_context("spawn"))</code>. При <code>spawn</code> и <code>forkserver</code> главный модуль программы импортируется в каждом рабочем процессе заново. Поэтому в сценарии создание процессов помещают под проверку <code>if __name__ == "__main__":</code>, иначе рабочий процесс, импортируя модуль, попытается снова создать дочерние процессы, и программа завершится ошибкой <code>RuntimeError</code>.</p>
+<p>Оценим цену запуска. На машине главы, под Python 3.12 и 3.14, пул из двух процессов запускается методом <code>fork</code> за 1–4 мс, методом <code>spawn</code> — за 16–28 мс; <code>forkserver</code> тратит 19–28 мс на первый запуск, пока стартует сервер, а следующие пулы порождает за 3–6 мс.</p>
 <h2 id="Процессы-и-производительность"><a class="header" href="#Процессы-и-производительность">Процессы и производительность</a></h2>
-<p>Реализация <code>integrate_async</code> на пуле потоков работала долго; рассмотрим пул процессов.</p>
+<p>Реализация <code>integrate_async</code> на пуле потоков работала долго; рассмотрим пул процессов. <code>ProcessPoolExecutor</code> имеет тот же интерфейс, что и пул потоков, а функция <code>integrate</code> теперь импортирована из модуля <code>workers.py</code>.</p>
 <pre><code class="language-python">from concurrent.futures import ProcessPoolExecutor
 </code></pre>
 <pre><code class="language-python">def integrate_async(executor, f, a, b, *, n_jobs, n_iter=1000):
@@ -520,32 +568,34 @@ p = mp.Process(target=ponger, args=(child_conn, ))
 
     return sum(f.result() for f in as_completed(fs))
 </code></pre>
-<p>Пул принимается аргументом, а не создаётся внутри. Запуск
-процесса стоит десятки миллисекунд: на macOS и Windows интерпретатор запускается
-заново, целиком, а начиная с Python 3.14 и на Linux место <code>fork</code> занял
-<code>forkserver</code>, порождающий процессы от отдельного чистого сервера. Наследования
-всего состояния родителя больше нет нигде, поэтому и функция, передаваемая
-в пул, должна находиться в импортируемом модуле, а не в ячейке блокнота. Пул,
-созданный внутри измеряемой функции, превратит замер вычислений в замер запуска интерпретатора.
-Кроме того, <code>ProcessPoolExecutor</code>, оставленный без закрытия, оставляет процессы работающими,
-и за сотню итераций <code>%%timeit</code> их число на машине станет значительным.</p>
+<p>Пул принимается аргументом, а не создаётся внутри: пул, созданный внутри измеряемой функции, превратил бы замер вычислений в замер запуска процессов. Кроме того, <code>ProcessPoolExecutor</code>, оставленный без закрытия, оставляет процессы работающими, и за сотню итераций <code>%%timeit</code> их число на машине станет значительным. Поэтому пул открывается блоком <code>with</code> и прогревается первым вызовом, а последовательная и параллельная версии измеряются в одном прогоне.</p>
 <pre><code class="language-python">with ProcessPoolExecutor(max_workers=2) as executor:
-    integrate_async(executor, math.cos, 0, math.pi / 2,
+    integrate_async(executor, math.cos, 0.0, math.pi / 2,
                     n_iter=10**6, n_jobs=2)          # прогрев
-    %timeit -n5 integrate_async(executor, math.cos, 0, math.pi / 2, \
+    %timeit -n5 integrate(math.cos, 0.0, math.pi / 2, n_iter=10**6)
+    %timeit -n5 integrate_async(executor, math.cos, 0.0, math.pi / 2, \
                                 n_iter=10**6, n_jobs=2)
 </code></pre>
-<pre><code>21 ms ± 0.2 ms per loop (mean ± std. dev. of 5 runs, 5 loops each)
+<pre><code>31.8 ms ± 88.3 μs per loop (mean ± std. dev. of 7 runs, 5 loops each)
+19.9 ms ± 709 μs per loop (mean ± std. dev. of 7 runs, 5 loops each)
 </code></pre>
-<p>В этом же прогоне последовательный расчёт занимает 44 мс, а два процесса дают 21 мс,
-то есть двукратное ускорение на паре ядер: у каждого процесса свой GIL.
-С числами из разделов выше эту пару сопоставлять нельзя: она снята отдельно.</p>
+<p>Последовательный расчёт занимает 31,8 мс, а два процесса — 19,9 мс, то есть в 1,6 раза меньше: у каждого процесса свой GIL, и оба ядра заняты вычислениями. До двукратного ускорения недостаёт накладных расходов: задачи и результаты пересылаются между процессами, и при расчёте длительностью в десятки миллисекунд эти расходы заметны.</p>
+<h3 id="Передача-функции-и-аргументов"><a class="header" href="#Передача-функции-и-аргументов">Передача функции и аргументов</a></h3>
+<p>Функция и её аргументы передаются рабочему процессу сериализацией модулем <code>pickle</code>, а результат возвращается тем же путём. Функция при этом сериализуется по имени модуля и функции, поэтому в пуле выполняются функции верхнего уровня импортируемого модуля, а lambda и вложенная функция не сериализуются. Ошибка возникает не в момент вызова <code>submit</code>: сериализацию выполняет служебный поток пула, и исключение сохраняется в объекте <code>Future</code> до вызова <code>result</code>.</p>
+<pre><code class="language-python">with ProcessPoolExecutor(max_workers=2) as executor:
+    f = executor.submit(lambda x: x * x, 3)   # submit исключения не возбуждает
+    try:
+        f.result()                            # ошибка сериализации возбуждается здесь
+    except Exception as exc:
+        print(type(exc).__name__, exc)
+</code></pre>
+<pre><code>PicklingError Can't pickle &lt;function &lt;lambda&gt; at 0xf700564b99e0&gt;: attribute lookup &lt;lambda&gt; on __main__ failed
+</code></pre>
+<p>Для lambda модуль <code>pickle</code> возбуждает <code>PicklingError</code>, а для вложенной функции до Python 3.13 включительно — <code>AttributeError</code>, начиная с 3.14 — тоже <code>PicklingError</code>. Без вызова <code>result</code> такая ошибка осталась бы незамеченной: блок <code>with</code> закрыл бы пул без сообщений.</p>
+<h3 id="Пул-подынтерпретаторов"><a class="header" href="#Пул-подынтерпретаторов">Пул подынтерпретаторов</a></h3>
+<p>В Python 3.14 появился промежуточный вариант между пулом потоков и пулом процессов — <code>InterpreterPoolExecutor</code> из того же модуля <code>concurrent.futures</code>. Его рабочие потоки исполняют задачи в изолированных подынтерпретаторах одного процесса, и у каждого подынтерпретатора собственный GIL, поэтому вычисления на чистом Python выполняются параллельно и в обычной сборке. Общих изменяемых объектов у подынтерпретаторов нет: функция, аргументы и результат копируются из одного интерпретатора в другой. Функции без замыканий и без обращений к глобальным именам передаются непосредственно, остальные — через <code>pickle</code>, и такие функции, как и для пула процессов, должны импортироваться из модуля. Модуль расширения, не поддерживающий подынтерпретаторы, в них не импортируется: попытка завершается ошибкой <code>ImportError</code>.</p>
 <h2 id="Пакет-joblib"><a class="header" href="#Пакет-joblib">Пакет <code>joblib</code></a></h2>
-<p>Пакет <code>joblib</code> предоставляет параллельный аналог цикла <code>for</code> для независимых итераций, которые необходимо распределить по ядрам. Выбор между потоками и процессами задаётся аргументом <code>backend</code> конструктора.</p>
-<p>Замеры ниже выполнены на <strong>исходной</strong>, чистой Python-версии <code>integrate</code>. Если в блокноте
-уже выполнена ячейка с <code>%%cython</code>, имя <code>integrate</code> указывает на скомпилированную
-функцию, и числа получатся на порядок меньше. Сравнивать их с результатами
-до Cython нельзя; для повторения замеров отсюда необходимо определить <code>integrate</code> заново.</p>
+<p>Пакет <code>joblib</code> предоставляет параллельный аналог цикла <code>for</code> для независимых итераций, которые необходимо распределить по ядрам. Выбор между потоками и процессами задаётся аргументом <code>backend</code> конструктора: по умолчанию, начиная с версии 0.12, используется <code>loky</code> — собственный пул процессов joblib, сохраняемый между вызовами, а <code>"threading"</code> и <code>"multiprocessing"</code> указываются явно. Функция <code>integrate</code> в этом разделе — по-прежнему чистая Python-версия из <code>workers.py</code>.</p>
 <pre><code class="language-python">from joblib import Parallel, delayed
 
 def integrate_async(f, a, b, *, n_jobs, n_iter=1000, backend=None):
@@ -555,25 +605,64 @@ def integrate_async(f, a, b, *, n_jobs, n_iter=1000, backend=None):
                                  a + (i + 1) * step,
                                  n_iter=n_iter // n_jobs)
               for i in range(n_jobs))
-        return sum(parallel(fs))   # внутри with: пул переиспользуется
+        return sum(parallel(fs))   # пул существует только внутри одного вызова
 </code></pre>
 <pre><code class="language-python">%%timeit -n100
-integrate_async(math.cos, 0, math.pi / 2, n_iter=10**6, n_jobs=2, backend="threading")
+integrate_async(math.cos, 0.0, math.pi / 2, n_iter=10**6, n_jobs=2, backend="threading")
 </code></pre>
-<pre><code>104 ms ± 280 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>45 ms ± 426 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
 <pre><code class="language-python">%%timeit -n100
-integrate_async(math.cos, 0, math.pi / 2, n_iter=10**6, n_jobs=2, backend="multiprocessing")
+integrate_async(math.cos, 0.0, math.pi / 2, n_iter=10**6, n_jobs=2, backend="multiprocessing")
 </code></pre>
-<pre><code>290 ms ± 1.13 ms per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>41.6 ms ± 405 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
-<p>Сам по себе <code>joblib</code> ничего не ускоряет: он распределяет работу, которая упирается в тот же GIL на потоках или в ту же сериализацию на процессах.</p>
+<p>Бэкенд по умолчанию запускает рабочие процессы при первом вызове, поэтому перед замером выполняется прогрев.</p>
+<pre><code class="language-python">integrate_async(math.cos, 0.0, math.pi / 2, n_iter=10**6, n_jobs=2)   # прогрев: запуск процессов loky
+</code></pre>
+<pre><code>1.0000007853979973
+</code></pre>
+<pre><code class="language-python">%%timeit -n100
+integrate_async(math.cos, 0.0, math.pi / 2, n_iter=10**6, n_jobs=2)
+</code></pre>
+<pre><code>23.4 ms ± 396 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+</code></pre>
+<p>Сам по себе <code>joblib</code> ничего не ускоряет. На потоках работа упирается в тот же GIL, и к 31,8 мс последовательного расчёта добавляются расходы самого joblib: получается 45 мс. Бэкенд <code>"multiprocessing"</code> при каждом вызове <code>integrate_async</code> заново запускает и останавливает рабочие процессы: 41,6 мс против 19,9 мс у заранее запущенного пула из предыдущего раздела, то есть больше половины времени замера уходит на запуск и остановку. Бэкенд по умолчанию, <code>loky</code>, сохраняет процессы между вызовами и на двух процессах даёт ускорение — 23,4 мс против 31,8 мс; от <code>ProcessPoolExecutor</code> его отделяют накладные расходы joblib на каждый вызов.</p>
 <h2 id="jit-компилятор-numba"><a class="header" href="#jit-компилятор-numba">JIT-компилятор <code>numba</code></a></h2>
-<p>Numba из главы <a href="./perf.html">«Скорость выполнения программ»</a> обходит GIL одновременно с ускорением: декоратор <code>@jit(nopython=True, parallel=True)</code> компилирует функцию в машинный код, освобождающий блокировку, после чего цикл <code>prange</code> распределяется по ядрам.</p>
-<pre><code class="language-python">import math
-from numba import jit, prange
+<p>Numba из главы <a href="./perf.html">«Скорость выполнения программ»</a> освобождает GIL только по запросу. Обычная функция <code>@jit(nopython=True)</code> без <code>parallel=True</code> удерживает GIL всё время вызова; чтобы несколько потоков Python выполняли её одновременно, её компилируют с параметром <code>nogil=True</code>. Покажем разницу на том же интеграле, записанном для Numba.</p>
+<pre><code class="language-python">from numba import jit, prange
 
-@jit(nopython=True, parallel=True, fastmath=True)
+def cos_sum(a, b, n_iter):
+    acc = 0.0
+    step = (b - a) / n_iter
+    for i in range(n_iter):
+        acc += math.cos(a + i * step) * step
+    return acc
+
+held = jit(nopython=True)(cos_sum)                    # удерживает GIL
+released = jit(nopython=True, nogil=True)(cos_sum)    # освобождает GIL
+
+def in_two_threads(func, a, b, n_iter):
+    mid = (a + b) / 2
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        fs = [executor.submit(func, a, mid, n_iter // 2),
+              executor.submit(func, mid, b, n_iter // 2)]
+        return sum(f.result() for f in fs)
+
+for func in (held, released):
+    func(0.0, 1.0, 10)                                # компиляция для вещественных a и b
+</code></pre>
+<pre><code class="language-python">%timeit -n100 held(0.0, math.pi / 2, 10**6)
+%timeit -n100 in_two_threads(held, 0.0, math.pi / 2, 10**6)
+%timeit -n100 in_two_threads(released, 0.0, math.pi / 2, 10**6)
+</code></pre>
+<pre><code>2.96 ms ± 20 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+3.1 ms ± 22.9 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+1.81 ms ± 60.4 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+</code></pre>
+<p>Функция без <code>nogil=True</code> в двух потоках выполняется не быстрее, чем в одном: 3,1 мс против 2,96 мс, поскольку GIL удерживается всё время вызова и потоки работают по очереди. С <code>nogil=True</code> потоки вычисляют одновременно, и время сокращается до 1,81 мс.</p>
+<p>Параметр <code>parallel=True</code> избавляет и от потоков Python: декоратор <code>@jit(nopython=True, parallel=True)</code> компилирует функцию в машинный код, а цикл <code>prange</code> распределяет по ядрам сама Numba, без участия GIL.</p>
+<pre><code class="language-python">@jit(nopython=True, parallel=True, fastmath=True)
 def integrate(a, b, n_iter=1000):
     acc = 0
     step = (b - a) / n_iter
@@ -581,15 +670,113 @@ def integrate(a, b, n_iter=1000):
         acc += math.cos(a + i * step) * step
     return acc
 </code></pre>
+<pre><code class="language-python">integrate(0.0, math.pi / 2, n_iter=10**6)   # компиляция при первом вызове
+</code></pre>
+<pre><code>1.0000007853979516
+</code></pre>
 <pre><code class="language-python">%%timeit -n100
-integrate(0, math.pi / 2, n_iter=10**6)
+integrate(0.0, math.pi / 2, n_iter=10**6)
 </code></pre>
-<pre><code>5.11 ms ± 983 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+<pre><code>1.83 ms ± 95.1 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </code></pre>
+<p>Цикл <code>prange</code> той же длины занимает 1,83 мс, столько же, сколько два потока с <code>nogil=True</code>: на двух ядрах параллелизм дал меньше двух раз, а основной выигрыш перед чистым Python с его 31,8 мс по-прежнему обеспечивает компиляция.</p>
+<h2 id="Сборка-python-без-gil"><a class="header" href="#Сборка-python-без-gil">Сборка Python без GIL</a></h2>
+<p>Начиная с версии 3.13 интерпретатор CPython собирается и без глобальной блокировки (PEP 703). Такая сборка называется свободнопоточной (free-threaded), устанавливается рядом с обычной, и её исполняемый файл имеет суффикс <code>t</code>: <code>python3.13t</code>, <code>python3.14t</code>. В 3.13 сборка была экспериментальной, в 3.14 она поддерживается официально (PEP 779), но по умолчанию по-прежнему устанавливается обычная сборка. Потоки свободнопоточной сборки исполняют байт-код одновременно на всех ядрах, и вычисления на чистом Python распараллеливаются без процессов и без компиляции.</p>
+<pre><code class="language-python">!python3.14t -VV
+</code></pre>
+<pre><code>Python 3.14.8 free-threading build (main, Oct  1 2026, 21:01:11) [Clang 22.1.3 ]
+</code></pre>
+<p>Саму сборку определяют строка «free-threading build» в выводе <code>python -VV</code> и значение <code>sysconfig.get_config_var("Py_GIL_DISABLED")</code>, равное 1. Включена ли блокировка в работающем процессе, сообщает функция <code>sys._is_gil_enabled()</code> (с Python 3.13): в свободнопоточной сборке она возвращает <code>False</code>, если GIL не включён ключом <code>-X gil=1</code>, переменной окружения <code>PYTHON_GIL=1</code> или импортом неподготовленного расширения.</p>
+<pre><code class="language-python">!python3.14t -c "import sys, sysconfig; print(sysconfig.get_config_var('Py_GIL_DISABLED'), sys._is_gil_enabled())"
+!PYTHON_GIL=1 python3.14t -c "import sys; print(sys._is_gil_enabled())"
+</code></pre>
+<pre><code>1 False
+True
+</code></pre>
+<p>Рассмотрим тот же интеграл на чистом Python в одном и в двух потоках. Сценарий <code>ft.py</code> печатает состояние блокировки и лучшее время из трёх запусков.</p>
+<pre><code class="language-python">%%writefile ft.py
+import math
+import sys
+import time
+from concurrent.futures import ThreadPoolExecutor
+
+from workers import integrate
+
+
+def integrate_threads(f, a, b, *, n_jobs, n_iter):
+    step = (b - a) / n_jobs
+    with ThreadPoolExecutor(max_workers=n_jobs) as executor:
+        fs = [executor.submit(integrate, f, a + i * step, a + (i + 1) * step,
+                              n_iter=n_iter // n_jobs)
+              for i in range(n_jobs)]
+        return sum(f.result() for f in fs)
+
+
+print("GIL включён:", sys._is_gil_enabled())
+for n_jobs in (1, 2):
+    times = []
+    for _ in range(3):
+        t0 = time.perf_counter()
+        integrate_threads(math.cos, 0.0, math.pi / 2, n_jobs=n_jobs, n_iter=10**7)
+        times.append(time.perf_counter() - t0)
+    print(f"потоков: {n_jobs}, время {min(times):.2f} с")
+</code></pre>
+<pre><code>Writing ft.py
+</code></pre>
+<pre><code class="language-python">!python3.14t -X gil=1 ft.py
+</code></pre>
+<pre><code>GIL включён: True
+потоков: 1, время 0.38 с
+потоков: 2, время 0.38 с
+</code></pre>
+<pre><code class="language-python">!python3.14t ft.py
+</code></pre>
+<pre><code>GIL включён: False
+потоков: 1, время 0.38 с
+потоков: 2, время 0.21 с
+</code></pre>
+<p>С включённой блокировкой два потока считают столько же, сколько один, — 0,38 с, а без неё — 0,21 с, в 1,8 раза быстрее: потоки исполняют байт-код одновременно на двух ядрах. Однопоточное время здесь нельзя сравнивать с замерами Python 3.12 выше: различаются и версия интерпретатора, и параметры его сборки, а цена отказа от GIL, о которой сказано ниже, относится к двум сборкам одной версии.</p>
+<p>Отсутствие GIL не делает программу потокобезопасной. Встроенные типы — список, словарь, множество — защищены собственными внутренними блокировками, и их одновременное изменение не нарушает целостности объектов. Однако составное действие над общими данными, например <code>counter += 1</code>, по-прежнему состоит из чтения, сложения и записи, и эти шаги двух потоков могут перемежаться. Проверим это на счётчике, который два потока увеличивают по миллиону раз.</p>
+<pre><code class="language-python">%%writefile race.py
+import threading
+
+counter = 0
+lock = threading.Lock()
+
+
+def bump(n, guarded):
+    global counter
+    for _ in range(n):
+        if guarded:
+            with lock:
+                counter += 1
+        else:
+            counter += 1
+
+
+for guarded in (False, True):
+    counter = 0
+    threads = [threading.Thread(target=bump, args=(10**6, guarded)) for _ in range(2)]
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
+    print("с Lock:" if guarded else "без Lock:", counter)
+</code></pre>
+<pre><code>Writing race.py
+</code></pre>
+<pre><code class="language-python">!python3.14t race.py
+</code></pre>
+<pre><code>без Lock: 1037029
+с Lock: 2000000
+</code></pre>
+<p>Без <code>Lock</code> потеряно 962 971 увеличение из 2 000 000, почти половина: чтение, сложение и запись одного потока перемежаются с теми же шагами другого, и результат одного из них затирается. С <code>Lock</code> результат точный. Свободнопоточная сборка требует той же синхронизации доступа к общим данным, что и любая многопоточная программа.</p>
+<p>Модули расширения на C должны объявить, что не полагаются на GIL: в C для этого служит слот <code>Py_mod_gil</code> при инициализации модуля, в Cython начиная с версии 3.1 — директива <code>freethreading_compatible</code>. При импорте модуля без такого объявления свободнопоточный интерпретатор снова включает блокировку для всего процесса и выводит предупреждение <code>RuntimeWarning</code>, в котором сказано, что оставить GIL выключенным на свой риск позволяют <code>PYTHON_GIL=0</code> и <code>-X gil=0</code>. NumPy выпускает пакеты wheel для свободнопоточной сборки с версии 2.1, Numba — с версии 0.65, и обе библиотеки называют эту поддержку экспериментальной.</p>
+<p>Платой за отказ от блокировки являются потери на однопоточном коде — по руководству по свободнопоточной сборке Python 3.14 в среднем от 1 % на macOS с процессором aarch64 до 8 % на Linux с x86-64 на наборе тестов pyperformance (в обзоре изменений 3.14 — «примерно 5–10 %», в 3.13 — около 40 %), — повышенный расход памяти и неготовность части C-расширений, написанных в расчёте на то, что блокировка защитит их сама. Таким образом, сборка без GIL позволяет распараллелить потоками код на чистом Python, но требует и потокобезопасной программы, и подготовленных расширений.</p>
 <h2 id="Резюме"><a class="header" href="#Резюме">Резюме</a></h2>
 <p>Перед выбором инструмента необходимо ответить на один вопрос: <strong>программа вычисляет или ожидает?</strong></p>
-<p>Если программа ожидает сети, диска, прибора, ответа пользователя, используются потоки. GIL на время ожидания освобождается, потоки дёшевы, и десятки одновременно висящих ожиданий обходятся почти бесплатно. Если ожиданий предстоят тысячи, требуется перейти к асинхронности, рассматриваемой в следующей главе.</p>
-<p>Если программа вычисляет, потоки в обычной сборке CPython не помогут, сколько бы их ни было. Существует три пути: вынести расчёт в отдельные процессы через <code>multiprocessing</code>, где у каждого свой интерпретатор и свой GIL; перейти к скомпилированному коду на Cython или C, способному освобождать GIL; или, что обычно проще всего, поручить расчёт NumPy, освобождающему блокировку самостоятельно.</p>
+<p>Если программа ожидает сети, диска, прибора, ответа пользователя, используются потоки. GIL на время ожидания освобождается, потоки дёшевы, и десятки одновременных ожиданий обходятся почти бесплатно. Если ожиданий предстоят тысячи, требуется перейти к асинхронности, рассматриваемой в следующей главе.</p>
+<p>Если программа вычисляет, потоки в обычной сборке CPython не помогут, сколько бы их ни было. Существует четыре пути: вынести расчёт в отдельные процессы через <code>multiprocessing</code> или <code>ProcessPoolExecutor</code>, где у каждого свой интерпретатор и свой GIL; перейти к скомпилированному коду на Cython, Numba или C, способному освобождать GIL; поручить расчёт NumPy, освобождающему блокировку самостоятельно, что обычно проще всего; наконец, начиная с Python 3.14 потоки на чистом Python распараллеливает официально поддерживаемая свободнопоточная сборка, если к ней готовы используемые расширения.</p>
 <p>Прежде чем распараллеливать, необходимо <strong>измерить</strong>. Часто узкое место находится не там, где предполагалось, и одна правка алгоритма даёт больше, чем любое количество потоков.</p>
 
                     </main>

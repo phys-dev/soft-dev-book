@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Лекция 10. NumPy и pandas</title>
+<title>Лекция 10. NumPy, pandas и SciPy</title>
 <!-- Собрано web/slides.py из презентации. Вручную не править: правки
      вносятся в презентацию, затем страница собирается заново. -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&amp;display=swap">
@@ -16,8 +16,8 @@
 <section id="cover" data-transition="fade" style="background:#E3F5FF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:row; gap:64px">
 <div style="flex:1; display:flex; flex-direction:column; justify-content:space-between">
 <div style="display:flex; flex-direction:column; gap:32px">
-<h1 style="font-size:104px; font-weight:800; line-height:1.1; color:#201B10">NumPy и pandas</h1>
-<p style="font-size:36px; line-height:1.4; color:#201B10">Массивы и таблицы для данных эксперимента: устройство ndarray, индексация, векторные операции, типы, группировка, слияние и временные ряды</p>
+<h1 style="font-size:92px; font-weight:800; line-height:1.1; color:#201B10">NumPy, pandas и SciPy</h1>
+<p style="font-size:36px; line-height:1.4; color:#201B10">Массивы, таблицы и численные методы для данных эксперимента: устройство ndarray, индексация, типы, группировка, временные ряды, интегралы, уравнения и подгонка кривых</p>
 </div>
 <div style="display:flex; flex-direction:column; gap:6px">
 <p style="font-size:34px; line-height:1.35; color:#201B10">Вячеслав Федоров</p>
@@ -29,31 +29,31 @@
 <div style="width:420px; display:flex; flex-direction:column; justify-content:center; align-items:center">
 <div style="width:320px; height:320px; background:#73CCFE; border-radius:32px; display:flex; align-items:center; justify-content:center"><p style="font-family:'Jersey 10', 'Courier New', monospace; font-size:170px; line-height:1.1; color:#201B10">np</p></div>
 </div>
-<aside hidden>Изложение. Десятая лекция посвящена двум библиотекам, на которых основана обработка данных в Python. NumPy предоставляет многомерный массив чисел одного типа и операции над ним целиком; pandas предоставляет таблицу с именованными столбцами разных типов и индексом, размечающим строки. Почти весь научный стек Python — SciPy, Matplotlib, scikit-learn — принимает и возвращает массивы NumPy, поэтому от понимания устройства массива зависят и скорость, и правильность расчёта. В рамках лекции рассматриваются устройство массива и способы его создания, индексация и векторные операции, типы элементов и чтение файлов, затем таблицы pandas: отбор, группировка, объединение, временные ряды, пропуски и скорость. Надпись на титуле — np, общепринятое сокращение имени numpy при импорте; на последнем слайде — pd, такое же сокращение для pandas.
-Демонстрации. Слайды с розовым выделением слова «Демонстрация» отмечают места, где изложение прерывается для работы в терминале виртуальной машины lab. На каждом таком слайде проигрывается запись тех же команд; числа в записях получены на этой виртуальной машине с двумя ядрами, Python 3.12, NumPy 2.5 и pandas 3.0, далее называемой стендом. На другой машине иными будут времена, но не результаты вычислений.</aside>
+<aside hidden>Изложение. Десятая лекция посвящена трём библиотекам, на которых основана обработка данных в Python. NumPy предоставляет многомерный массив чисел одного типа и операции над ним целиком; pandas предоставляет таблицу с именованными столбцами разных типов и индексом, размечающим строки; SciPy предоставляет численные методы — интегрирование, решение дифференциальных уравнений, оптимизацию, подгонку кривых и интерполяцию. Почти весь научный стек Python — SciPy, Matplotlib, scikit-learn — принимает и возвращает массивы NumPy, поэтому от понимания устройства массива зависят и скорость, и правильность расчёта. В рамках лекции рассматриваются устройство массива и способы его создания, индексация и векторные операции, типы элементов и чтение файлов, затем таблицы pandas: отбор, группировка, объединение, пропуски и временные ряды, и в завершение — численные методы SciPy на физических задачах: закон излучения Планка, затухающий осциллятор и измерение эмиттанса пучка. Надпись на титуле — np, общепринятое сокращение имени numpy при импорте; на последнем слайде — pd, такое же сокращение для pandas.
+Демонстрации. Слайды с розовым выделением слова «Демонстрация» отмечают места, где изложение прерывается для работы в терминале виртуальной машины lab. На каждом таком слайде проигрывается запись тех же команд; числа в записях получены на этой виртуальной машине с двумя ядрами, Python 3.12, NumPy 2.5, pandas 3.0 и SciPy 1.18, далее называемой стендом. На другой машине иными будут времена, а последние знаки вещественных результатов могут отличаться в пределах округления.</aside>
 </section>
 <section id="plan" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-direction:column; gap:20px">
 <h2 style="align-self:start; font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#73CCFE; padding:0px 14px">Содержание</h2>
-<p style="font-size:32px; line-height:1.4; color:#6B665C">От массива чисел до таблицы с группировкой и временными рядами</p>
+<p style="font-size:32px; line-height:1.4; color:#6B665C">От массива чисел до таблиц, временных рядов и численных методов</p>
 </div>
 <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:36px; padding:0px 24px">
 <div style="display:flex; gap:40px; align-items:center"><p style="width:110px; font-family:'Jersey 10', 'Courier New', monospace; font-size:120px; line-height:0.8; text-align:right; color:#0B8FD6">01</p><p style="font-size:44px; color:#201B10">Массив NumPy</p></div>
 <div style="display:flex; gap:40px; align-items:center"><p style="width:110px; font-family:'Jersey 10', 'Courier New', monospace; font-size:120px; line-height:0.8; text-align:right; color:#0B8FD6">02</p><p style="font-size:44px; color:#201B10">Индексы и векторы</p></div>
 <div style="display:flex; gap:40px; align-items:center"><p style="width:110px; font-family:'Jersey 10', 'Courier New', monospace; font-size:120px; line-height:0.8; text-align:right; color:#0B8FD6">03</p><p style="font-size:44px; color:#201B10">Типы и файлы</p></div>
 <div style="display:flex; gap:40px; align-items:center"><p style="width:110px; font-family:'Jersey 10', 'Courier New', monospace; font-size:120px; line-height:0.8; text-align:right; color:#0B8FD6">04</p><p style="font-size:44px; color:#201B10">Таблицы pandas</p></div>
-<div style="display:flex; gap:40px; align-items:center"><p style="width:110px; font-family:'Jersey 10', 'Courier New', monospace; font-size:120px; line-height:0.8; text-align:right; color:#0B8FD6">05</p><p style="font-size:44px; color:#201B10">Группы и слияние</p></div>
-<div style="display:flex; gap:40px; align-items:center"><p style="width:110px; font-family:'Jersey 10', 'Courier New', monospace; font-size:120px; line-height:0.8; text-align:right; color:#0B8FD6">06</p><p style="font-size:44px; color:#201B10">Время и скорость</p></div>
+<div style="display:flex; gap:40px; align-items:center"><p style="width:110px; font-family:'Jersey 10', 'Courier New', monospace; font-size:120px; line-height:0.8; text-align:right; color:#0B8FD6">05</p><p style="font-size:44px; color:#201B10">Группы и время</p></div>
+<div style="display:flex; gap:40px; align-items:center"><p style="width:110px; font-family:'Jersey 10', 'Courier New', monospace; font-size:120px; line-height:0.8; text-align:right; color:#0B8FD6">06</p><p style="font-size:44px; color:#201B10">Численные методы</p></div>
 </div>
-<aside hidden>Изложение. Лекция состоит из шести частей. Первые три посвящены NumPy: устройство массива и его отличие от списка; индексация, срезы и маски, векторные операции по осям, broadcasting и линейная алгебра; типы элементов, переполнение, точность и чтение массивов из файлов. Последние три посвящены pandas: таблица и её первичный осмотр, отбор строк и столбцов и копирование при записи; группировка и объединение таблиц; временные ряды, пропущенные значения и скорость обработки.</aside>
+<aside hidden>Изложение. Лекция состоит из шести частей. Первые три посвящены NumPy: устройство массива и его отличие от списка; индексация, срезы и маски, векторные операции по осям, broadcasting и линейная алгебра; типы элементов, переполнение, точность и чтение массивов из файлов. Четвёртая и пятая посвящены pandas: таблица и её первичный осмотр, отбор строк и столбцов и копирование при записи; группировка, объединение таблиц, пропущенные значения и временные ряды. Шестая часть посвящена SciPy: физические константы, интегралы и задача Коши, минимум и корень, подгонка кривых с погрешностями параметров и интерполяция.</aside>
 </section>
 <section id="why" style="background:#73CCFE; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:row; gap:48px">
 <div style="flex:1; display:flex; flex-direction:column; justify-content:center; gap:40px">
 <h1 style="font-size:120px; font-weight:800; line-height:1.05; color:#201B10">Цель лекции</h1>
-<p style="font-size:44px; line-height:1.35; color:#201B10">Обрабатывать данные эксперимента операциями над целыми массивами и таблицами, без циклов Python</p>
-<p style="font-size:32px; line-height:1.45; color:#201B10">Сигналы, поля и ансамбли частиц хранятся в массивах NumPy, журналы приборов, каталоги и результаты серий измерений — в таблицах pandas. Обе библиотеки переносят цикл по элементам в скомпилированный код. Задача разработчика — записать расчёт как операцию над массивом и проверить, что результат совпадает с прямым вычислением.</p>
+<p style="font-size:44px; line-height:1.35; color:#201B10">Обрабатывать данные эксперимента операциями над целыми массивами и таблицами и готовыми численными методами, без циклов Python</p>
+<p style="font-size:32px; line-height:1.45; color:#201B10">Сигналы, поля и ансамбли частиц хранятся в массивах NumPy, журналы приборов, каталоги и результаты серий измерений — в таблицах pandas, а интегралы, уравнения движения и подгонку моделей вычисляет SciPy. Цикл по элементам выполняет скомпилированный код. Задача разработчика — записать расчёт как операцию над массивом или вызов готового метода и проверить результат прямым вычислением или точным решением.</p>
 </div>
-<aside hidden>Изложение. Физик обращается к языку программирования ради данных: осциллограммы, показания датчиков, координаты и импульсы макрочастиц, результаты серий измерений. Однородные числовые данные удобно хранить в массивах NumPy, где числа одного типа хранятся в памяти подряд, а разнородные записи с именованными полями — в таблицах pandas, где у каждого столбца свой тип. Обе библиотеки построены на одной идее: цикл по элементам выполняется не интерпретатором, а скомпилированным кодом, поэтому расчёт записывается как операция над массивом или столбцом целиком. Такая запись короче и быстрее, но не освобождает от проверки: векторную формулу необходимо сверить с прямым вычислением на небольших данных.</aside>
+<aside hidden>Изложение. Физик обращается к языку программирования ради данных: осциллограммы, показания датчиков, координаты и импульсы макрочастиц, результаты серий измерений. Однородные числовые данные удобно хранить в массивах NumPy, где числа одного типа хранятся в памяти подряд, а разнородные записи с именованными полями — в таблицах pandas, где у каждого столбца свой тип. Обе библиотеки построены на одной идее: цикл по элементам выполняется не интерпретатором, а скомпилированным кодом, поэтому расчёт записывается как операция над массивом или столбцом целиком. Такая запись короче и быстрее, но не освобождает от проверки: векторную формулу необходимо сверить с прямым вычислением на небольших данных. Третья библиотека, SciPy, предоставляет поверх тех же массивов готовые численные методы — интегрирование, решение уравнений, оптимизацию и подгонку моделей, — и результат такого метода проверяется сравнением с точным решением или с известной константой.</aside>
 </section>
 <section id="stack" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -86,11 +86,11 @@
 </div>
 <div style="background:#D4FAE6; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#2AE881; padding:2px 12px">Для физика</p>
-<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">Курс: NumPy и pandas — эта лекция, графики — следующая, численные методы и машинное обучение — главы книги «SciPy» и «Машинное обучение».</p>
+<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">Курс: NumPy, pandas и SciPy — эта лекция, графики — следующая, машинное обучение — глава книги «Машинное обучение».</p>
 </div>
 </div>
 </div>
-<aside hidden>Изложение. Научный стек Python устроен слоями. Основанием стека является NumPy с многомерным массивом ndarray: числа одного типа хранятся подряд, а операции над ними выполняются циклами на C. Над массивом надстроены остальные библиотеки: pandas хранит столбцы таблицы в массивах и добавляет к ним метки строк и столбцов; SciPy реализует численные методы — интегрирование, решение уравнений, оптимизацию, подгонку кривых, обработку сигналов; Matplotlib строит графики по массивам; scikit-learn обучает модели на матрицах признаков. Таким образом, массив служит общим форматом данных, что позволяет передавать результат одной библиотеки в другую без преобразований. В курсе NumPy и pandas рассматриваются в этой лекции, построение графиков — в следующей, численные методы и машинное обучение — в главах книги «SciPy» и «Машинное обучение».</aside>
+<aside hidden>Изложение. Научный стек Python устроен слоями. Основанием стека является NumPy с многомерным массивом ndarray: числа одного типа хранятся подряд, а операции над ними выполняются циклами на C. Над массивом надстроены остальные библиотеки: pandas хранит столбцы таблицы в массивах и добавляет к ним метки строк и столбцов; SciPy реализует численные методы — интегрирование, решение уравнений, оптимизацию, подгонку кривых, обработку сигналов; Matplotlib строит графики по массивам; scikit-learn обучает модели на матрицах признаков. Таким образом, массив служит общим форматом данных, что позволяет передавать результат одной библиотеки в другую без преобразований. В курсе NumPy, pandas и основные численные методы SciPy рассматриваются в этой лекции, построение графиков — в следующей, машинное обучение — в главе книги «Машинное обучение».</aside>
 </section>
 <section id="sec-arr" data-transition="fade" style="background:#FFE2D1; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:row; gap:64px">
 <div style="flex:1; display:flex; flex-direction:column; justify-content:space-between">
@@ -113,10 +113,10 @@
 <p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#E85400; background:#FFFFFF; padding:14px 0px; border-radius:20px">Таблицы pandas</p>
 <div style="width:4px; height:20px; background:#FF5F00"></div>
 <div style="width:16px; height:16px; background:#FF5F00; border-radius:50%"></div>
-<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#E85400; background:#FFFFFF; padding:14px 0px; border-radius:20px">Группы и слияние</p>
+<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#E85400; background:#FFFFFF; padding:14px 0px; border-radius:20px">Группы и время</p>
 <div style="width:4px; height:20px; background:#FF5F00"></div>
 <div style="width:16px; height:16px; background:#FF5F00; border-radius:50%"></div>
-<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#E85400; background:#FFFFFF; padding:14px 0px; border-radius:20px">Время и скорость</p>
+<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#E85400; background:#FFFFFF; padding:14px 0px; border-radius:20px">Численные методы</p>
 </div>
 <aside hidden>Изложение. В первой части рассмотрим, чем массив NumPy отличается от списка Python и почему эта разница даёт выигрыш и в памяти, и во времени. Далее описываются устройство ndarray — буфер данных, тип элементов, форма и шаги — и способы создания массивов.</aside>
 </section>
@@ -323,10 +323,10 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 <p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#0B8FD6; background:#FFFFFF; padding:14px 0px; border-radius:20px">Таблицы pandas</p>
 <div style="width:4px; height:20px; background:#73CCFE"></div>
 <div style="width:16px; height:16px; background:#73CCFE; border-radius:50%"></div>
-<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#0B8FD6; background:#FFFFFF; padding:14px 0px; border-radius:20px">Группы и слияние</p>
+<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#0B8FD6; background:#FFFFFF; padding:14px 0px; border-radius:20px">Группы и время</p>
 <div style="width:4px; height:20px; background:#73CCFE"></div>
 <div style="width:16px; height:16px; background:#73CCFE; border-radius:50%"></div>
-<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#0B8FD6; background:#FFFFFF; padding:14px 0px; border-radius:20px">Время и скорость</p>
+<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#0B8FD6; background:#FFFFFF; padding:14px 0px; border-radius:20px">Численные методы</p>
 </div>
 <aside hidden>Изложение. Вторая часть посвящена тому, как выбирать части массива и как записывать вычисления над массивами без циклов: срезы и маски, операции по осям, правила broadcasting и линейная алгебра.</aside>
 </section>
@@ -628,11 +628,11 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 </div>
 <div style="background:#F0EDFF; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Пояснение</p>
-<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">Интегрирование, оптимизация и подгонка кривых — в SciPy, глава книги «SciPy».</p>
+<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">Интегрирование, оптимизация и подгонка кривых — в SciPy, шестая часть лекции.</p>
 </div>
 </div>
 </div>
-<aside hidden>Изложение. Модуль np.linalg предоставляет основные операции линейной алгебры поверх библиотек BLAS и LAPACK. Оператор @ вызывает матричное произведение np.matmul. Систему линейных уравнений A x = b решает np.linalg.solve; вычисление обратной матрицы и умножение на неё медленнее и теряет точность на плохо обусловленных матрицах. Собственные значения и векторы симметричной матрицы находит eigh, произвольной — eig; svd, matrix_rank и norm дают сингулярное разложение, ранг и нормы. Модуль np.fft вычисляет дискретное преобразование Фурье: rfft — для вещественного сигнала, rfftfreq — соответствующие частоты. Функция einsum позволяет записывать свёртки по индексам в нотации Эйнштейна. Для физика типичным примером является линейная оптика пучка: матрица перехода через магнитную структуру равна произведению матриц отдельных элементов. Численные методы — интегрирование, оптимизация, подгонка кривых, специальные функции — собраны в SciPy, которому посвящена отдельная глава книги.</aside>
+<aside hidden>Изложение. Модуль np.linalg предоставляет основные операции линейной алгебры поверх библиотек BLAS и LAPACK. Оператор @ вызывает матричное произведение np.matmul. Систему линейных уравнений A x = b решает np.linalg.solve; вычисление обратной матрицы и умножение на неё медленнее и теряет точность на плохо обусловленных матрицах. Собственные значения и векторы симметричной матрицы находит eigh, произвольной — eig; svd, matrix_rank и norm дают сингулярное разложение, ранг и нормы. Модуль np.fft вычисляет дискретное преобразование Фурье: rfft — для вещественного сигнала, rfftfreq — соответствующие частоты. Функция einsum позволяет записывать свёртки по индексам в нотации Эйнштейна. Для физика типичным примером является линейная оптика пучка: матрица перехода через магнитную структуру равна произведению матриц отдельных элементов. Численные методы — интегрирование, оптимизация, подгонка кривых, специальные функции — собраны в SciPy, которому посвящена шестая часть лекции; модуль scipy.linalg повторяет и расширяет np.linalg.</aside>
 </section>
 <section id="sec-dt" data-transition="fade" style="background:#D4FAE6; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:row; gap:64px">
 <div style="flex:1; display:flex; flex-direction:column; justify-content:space-between">
@@ -655,10 +655,10 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 <p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#0F9E50; background:#FFFFFF; padding:14px 0px; border-radius:20px">Таблицы pandas</p>
 <div style="width:4px; height:20px; background:#2AE881"></div>
 <div style="width:16px; height:16px; background:#2AE881; border-radius:50%"></div>
-<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#0F9E50; background:#FFFFFF; padding:14px 0px; border-radius:20px">Группы и слияние</p>
+<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#0F9E50; background:#FFFFFF; padding:14px 0px; border-radius:20px">Группы и время</p>
 <div style="width:4px; height:20px; background:#2AE881"></div>
 <div style="width:16px; height:16px; background:#2AE881; border-radius:50%"></div>
-<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#0F9E50; background:#FFFFFF; padding:14px 0px; border-radius:20px">Время и скорость</p>
+<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#0F9E50; background:#FFFFFF; padding:14px 0px; border-radius:20px">Численные методы</p>
 </div>
 <aside hidden>Изложение. Третья часть посвящена типам элементов массива: сколько памяти занимает элемент, какой диапазон и точность он обеспечивает и как ошибки переполнения и округления проявляются без сообщений. Завершается часть чтением и записью массивов.</aside>
 </section>
@@ -858,10 +858,10 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 <p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#201B10; background:#B6A3FF; padding:14px 0px; border-radius:20px">Таблицы pandas</p>
 <div style="width:4px; height:20px; background:#B6A3FF"></div>
 <div style="width:16px; height:16px; background:#B6A3FF; border-radius:50%"></div>
-<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#7C62F0; background:#FFFFFF; padding:14px 0px; border-radius:20px">Группы и слияние</p>
+<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#7C62F0; background:#FFFFFF; padding:14px 0px; border-radius:20px">Группы и время</p>
 <div style="width:4px; height:20px; background:#B6A3FF"></div>
 <div style="width:16px; height:16px; background:#B6A3FF; border-radius:50%"></div>
-<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#7C62F0; background:#FFFFFF; padding:14px 0px; border-radius:20px">Время и скорость</p>
+<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#7C62F0; background:#FFFFFF; padding:14px 0px; border-radius:20px">Численные методы</p>
 </div>
 <aside hidden>Изложение. В четвёртой части перейдём от однородных массивов к таблицам. Рассматриваются устройство Series и DataFrame, чтение таблицы из файла и её первичный осмотр, отбор строк и столбцов по меткам, номерам и условиям и правило копирования при записи, действующее с pandas 3.0.</aside>
 </section>
@@ -1111,8 +1111,8 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 <section id="sec-grp" data-transition="fade" style="background:#FFF9C1; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:row; gap:64px">
 <div style="flex:1; display:flex; flex-direction:column; justify-content:space-between">
 <div style="display:flex; flex-direction:column; gap:40px">
-<h1 style="align-self:start; font-size:96px; font-weight:800; line-height:1.15; color:#201B10; background:#FCE300; padding:0px 16px">Группы и слияние</h1>
-<p style="font-size:44px; line-height:1.3; color:#201B10">Группировка, сводные таблицы, объединение таблиц</p>
+<h1 style="align-self:start; font-size:96px; font-weight:800; line-height:1.15; color:#201B10; background:#FCE300; padding:0px 16px">Группы и время</h1>
+<p style="font-size:44px; line-height:1.3; color:#201B10">Группировка, объединение и пропуски, временные ряды</p>
 </div>
 <p style="font-family:'Jersey 10', 'Courier New', monospace; font-size:280px; line-height:0.8; color:#FCE300">05</p>
 </div>
@@ -1129,12 +1129,12 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 <p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#8A6D00; background:#FFFFFF; padding:14px 0px; border-radius:20px">Таблицы pandas</p>
 <div style="width:4px; height:20px; background:#FCE300"></div>
 <div style="width:16px; height:16px; background:#FCE300; border-radius:50%"></div>
-<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#201B10; background:#FCE300; padding:14px 0px; border-radius:20px">Группы и слияние</p>
+<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#201B10; background:#FCE300; padding:14px 0px; border-radius:20px">Группы и время</p>
 <div style="width:4px; height:20px; background:#FCE300"></div>
 <div style="width:16px; height:16px; background:#FCE300; border-radius:50%"></div>
-<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#8A6D00; background:#FFFFFF; padding:14px 0px; border-radius:20px">Время и скорость</p>
+<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#8A6D00; background:#FFFFFF; padding:14px 0px; border-radius:20px">Численные методы</p>
 </div>
-<aside hidden>Изложение. Пятая часть посвящена двум операциям, которые позволяют заменить большую часть циклов по строкам: группировке со сводными вычислениями и объединению таблиц по ключу.</aside>
+<aside hidden>Изложение. Пятая часть посвящена операциям, которые позволяют заменить большую часть циклов по строкам: группировке со сводными вычислениями и объединению таблиц по ключу. Затем рассматриваются пропущенные значения, неизбежные в реальных данных, и журналы приборов — показания с меткой времени.</aside>
 </section>
 <section id="grp-split" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1168,9 +1168,13 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Пояснение</p>
 <p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">size считает строки группы, count — непустые значения столбца.</p>
 </div>
+<div style="background:#FFE2D1; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
+<p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#FF5F00; padding:2px 12px">Важно</p>
+<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">apply с axis=1 — цикл Python по строкам: сначала ищется векторная операция.</p>
 </div>
 </div>
-<aside hidden>Изложение. Группировка устроена по схеме «разбиение — применение — объединение». Метод groupby разбивает таблицу на группы по значениям одного или нескольких столбцов, но сам ничего не вычисляет: он возвращает объект, ожидающий сводной операции. Сводная операция — mean, sum, size, agg со списком функций или с именованными результатами — применяется к каждой группе, а результаты объединяются в Series или DataFrame, индексом которого служат значения ключа. На слайде таблица пассажиров разбита по классу каюты: 216, 184 и 491 пассажир, и среднее по столбцу Survived даёт долю выживших — 0,630, 0,473 и 0,242. Сводная таблица pivot_table раскладывает ту же свёртку по двум ключам — по строкам и по столбцам. Функция pd.cut разбивает непрерывную величину, например возраст, на интервалы, которые затем служат ключом группировки. Метод transform возвращает результат свёртки для каждой строки исходной таблицы, что позволяет заполнить пропущенный возраст медианой его группы: для трёх классов она равна 37, 29 и 24 годам. Методы size и count различаются: size считает строки группы, count — только непустые значения выбранного столбца.</aside>
+</div>
+<aside hidden>Изложение. Группировка устроена по схеме «разбиение — применение — объединение». Метод groupby разбивает таблицу на группы по значениям одного или нескольких столбцов, но сам ничего не вычисляет: он возвращает объект, ожидающий сводной операции. Сводная операция — mean, sum, size, agg со списком функций или с именованными результатами — применяется к каждой группе, а результаты объединяются в Series или DataFrame, индексом которого служат значения ключа. На слайде таблица пассажиров разбита по классу каюты: 216, 184 и 491 пассажир, и среднее по столбцу Survived даёт долю выживших — 0,630, 0,473 и 0,242. Сводная таблица pivot_table раскладывает ту же свёртку по двум ключам — по строкам и по столбцам. Функция pd.cut разбивает непрерывную величину, например возраст, на интервалы, которые затем служат ключом группировки. Метод transform возвращает результат свёртки для каждой строки исходной таблицы, что позволяет заполнить пропущенный возраст медианой его группы: для трёх классов она равна 37, 29 и 24 годам. Методы size и count различаются: size считает строки группы, count — только непустые значения выбранного столбца. Сводные операции, как и арифметика над столбцами, выполняются в скомпилированном коде. Метод apply с axis=1, напротив, вызывает функцию Python для каждой строки и создаёт для неё объект Series, то есть представляет собой цикл Python; к нему прибегают лишь тогда, когда векторной записи не нашлось.</aside>
 </section>
 <section id="demo-groupby" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1220,11 +1224,11 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 <section id="grp-merge" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
 <h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10">Объединение</h2>
-<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#FCE300; padding:0px 14px">таблиц</h2>
+<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#FCE300; padding:0px 14px">и пропуски</h2>
 </div>
 <div style="display:flex; gap:48px; align-items:start">
-<div style="width:900px; flex-shrink:0; display:flex; flex-direction:column; gap:24px">
-<div style="background:#F4F1EA; border-radius:18px; padding:22px 28px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; line-height:1.45; color:#201B10">ports = pd.DataFrame({"Embarked": ["C", "Q", "S"],<br>    "Port": ["Cherbourg", "Queenstown", "Southampton"]})<br> <br>df.merge(ports, on="Embarked", how="left",<br>         validate="m:1", indicator=True)<br> <br>pd.concat([run1, run2], ignore_index=True)<br>left.join(right)   # по индексу</p></div>
+<div style="width:860px; flex-shrink:0; display:flex; flex-direction:column; gap:24px">
+<div style="background:#F4F1EA; border-radius:18px; padding:22px 28px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; line-height:1.45; color:#201B10">m = df.merge(ports, on="Embarked", how="left",<br>             validate="m:1", indicator=True)<br>pd.concat([run1, run2], ignore_index=True)<br> <br>df.isna().sum()             # пропуски по столбцам<br>df.dropna(subset=["Age"])   # строки без пропуска<br>df["Embarked"].fillna("S")  # подстановка значения<br>s.ffill(), s.interpolate()  # по соседним точкам</p></div>
 </div>
 <div style="flex:1; display:flex; flex-direction:column; gap:24px">
 <table style="font-size:26px; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; border:2px solid #201B10">
@@ -1234,92 +1238,22 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 <tr style="background:#FFFFFF"><td>right</td><td>все строки правой</td></tr>
 <tr style="background:#FFF9C1"><td>outer</td><td>все строки обеих</td></tr>
 </table>
+<div style="background:#FFE2D1; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
+<p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#FF5F00; padding:2px 12px">Важно</p>
+<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">Сводки пропускают NaN: средний возраст считается по 714 пассажирам из 891.</p>
+</div>
 <div style="background:#F0EDFF; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Пояснение</p>
-<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">validate проверяет кратность ключей, indicator добавляет столбец _merge с источником строки.</p>
+<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">Пропуск: NaN в числах и строках, pd.NA в Int64 и boolean, NaT в датах.</p>
 </div>
 </div>
 </div>
-<aside hidden>Изложение. Метод merge объединяет две таблицы по значениям ключевых столбцов, как соединение в SQL. Аргумент how задаёт, какие строки попадут в результат: inner — только строки, ключ которых есть в обеих таблицах; left — все строки левой таблицы, а там, где пары нет, столбцы правой заполняются NaN; right и outer — соответственно все строки правой и обеих. Аргумент validate проверяет ожидаемую кратность: значение "m:1" означает, что ключ в правой таблице является уникальным, и при дубликате merge завершается ошибкой вместо того, чтобы без предупреждения размножить строки. Аргумент indicator=True добавляет столбец _merge, показывающий, из какой таблицы пришла строка. В примере к пассажирам по коду порта посадки присоединяется справочник портов. Метод join объединяет таблицы по индексу, а pd.concat склеивает таблицы одинаковой структуры, например результаты двух серий измерений, одну под другой.</aside>
-</section>
-<section id="demo-merge" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
-<div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
-<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#FF87FF; padding:0px 14px">Демонстрация:</h2>
-<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10">объединение таблиц</h2>
-</div>
-<div style="width:596px; display:flex; flex-direction:column; gap:28px">
-<div style="display:flex; flex-direction:column; gap:16px">
-<div style="display:flex; gap:18px; align-items:center"><p style="width:56px; font-family:'Jersey 10', 'Courier New', monospace; font-size:60px; line-height:0.8; text-align:right; color:#D640D6">01</p><p style="flex:1; font-size:25px; line-height:1.35; color:#201B10">Справочник портов посадки</p></div>
-<div style="display:flex; gap:18px; align-items:center"><p style="width:56px; font-family:'Jersey 10', 'Courier New', monospace; font-size:60px; line-height:0.8; text-align:right; color:#D640D6">02</p><p style="flex:1; font-size:25px; line-height:1.35; color:#201B10">merge: how="left", validate и indicator</p></div>
-<div style="display:flex; gap:18px; align-items:center"><p style="width:56px; font-family:'Jersey 10', 'Courier New', monospace; font-size:60px; line-height:0.8; text-align:right; color:#D640D6">03</p><p style="flex:1; font-size:25px; line-height:1.35; color:#201B10">Строки без пары</p></div>
-<div style="display:flex; gap:18px; align-items:center"><p style="width:56px; font-family:'Jersey 10', 'Courier New', monospace; font-size:60px; line-height:0.8; text-align:right; color:#D640D6">04</p><p style="flex:1; font-size:25px; line-height:1.35; color:#201B10">Медиана тарифа по портам</p></div>
-<div style="display:flex; gap:18px; align-items:center"><p style="width:56px; font-family:'Jersey 10', 'Courier New', monospace; font-size:60px; line-height:0.8; text-align:right; color:#D640D6">05</p><p style="flex:1; font-size:25px; line-height:1.35; color:#201B10">Дубликат ключа и validate</p></div>
-</div>
-<div style="background:#F0EDFF; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
-<p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Что наблюдается</p>
-<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">891 строка и 14 столбцов; у двух пассажиров порт неизвестен, и Port равен NaN. Дубликат ключа в справочнике validate отвергает ошибкой MergeError.</p>
-</div>
-</div>
-<div style="position:absolute; left:740px; top:196px; width:1076px; height:684px; background:#201B10; border-radius:24px"></div>
-<div style="position:absolute; left:772px; top:216px; width:16px; height:16px; background:#FF5F00; border-radius:50%"></div>
-<div style="position:absolute; left:800px; top:216px; width:16px; height:16px; background:#FCE300; border-radius:50%"></div>
-<div style="position:absolute; left:828px; top:216px; width:16px; height:16px; background:#2AE881; border-radius:50%"></div>
-<p style="position:absolute; left:872px; top:204px; width:800px; font-size:24px; color:#A7A7A7">root@lab — запись со стенда</p>
-<iframe class="embed" sandbox="allow-scripts" title="Запись демонстрации в терминале" style="position:absolute; left:756px; top:252px; width:1044px; height:612px" data-srcdoc="&lt;!doctype html&gt;&lt;html&gt;&lt;head&gt;&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;default-src &#x27;none&#x27;; script-src &#x27;unsafe-inline&#x27;; style-src &#x27;unsafe-inline&#x27;; font-src data:&quot;&gt;&lt;style&gt;html{-webkit-print-color-adjust:exact;print-color-adjust:exact}&lt;/style&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;style&gt;
-html,body{margin:0;height:100%;background:#201B10}
-pre{margin:0;box-sizing:border-box;height:100%;padding:20px 26px;color:#E9E6DF;font:20px/1.3 ui-monospace,Menlo,&quot;DejaVu Sans Mono&quot;,Consolas,monospace;white-space:pre-wrap;overflow:hidden}
-b{font-weight:400;color:#2AE881}i{font-style:normal;background:#E9E6DF;color:#201B10}
-&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;pre id=&quot;t&quot;&gt;&lt;/pre&gt;&lt;script&gt;
-var F0=&quot;root@lab:~#&quot;,S=[[&quot;python3 -q&quot;, &quot;root@lab:~# python3 -q\n&gt;&gt;&gt;&quot;], [&quot;import pandas as pd&quot;, [0, 1, &quot;&gt;&gt;&gt; import pandas as pd\n&gt;&gt;&gt;&quot;]], [&quot;df = pd.read_csv(\&quot;titanic.csv\&quot;)&quot;, [0, 2, &quot;&gt;&gt;&gt; df = pd.read_csv(\&quot;titanic.csv\&quot;)\n&gt;&gt;&gt;&quot;]], [&quot;ports = pd.DataFrame({\&quot;Embarked\&quot;: [\&quot;C\&quot;, \&quot;Q\&quot;, \&quot;S\&quot;],&quot;, [0, 3, &quot;&gt;&gt;&gt; ports = pd.DataFrame({\&quot;Embarked\&quot;: [\&quot;C\&quot;, \&quot;Q\&quot;, \&quot;S\&quot;],\n...&quot;]], [&quot;    \&quot;Port\&quot;: [\&quot;Cherbourg\&quot;, \&quot;Queenstown\&quot;, \&quot;Southampton\&quot;]})&quot;, [0, 4, &quot;...     \&quot;Port\&quot;: [\&quot;Cherbourg\&quot;, \&quot;Queenstown\&quot;, \&quot;Southampton\&quot;]})\n&gt;&gt;&gt;&quot;]], [&quot;m = df.merge(ports, how=\&quot;left\&quot;, validate=\&quot;m:1\&quot;, indicator=True)&quot;, [0, 5, &quot;&gt;&gt;&gt; m = df.merge(ports, how=\&quot;left\&quot;, validate=\&quot;m:1\&quot;, indicator=True)\n&gt;&gt;&gt;&quot;]], [&quot;m.shape&quot;, [0, 6, &quot;&gt;&gt;&gt; m.shape\n(891, 14)\n&gt;&gt;&gt;&quot;]], [&quot;m[\&quot;_merge\&quot;].value_counts()&quot;, [0, 8, &quot;&gt;&gt;&gt; m[\&quot;_merge\&quot;].value_counts()\n_merge\nboth          889\nleft_only       2\nright_only      0\nName: count, dtype: int64\n&gt;&gt;&gt;&quot;]], [&quot;m.loc[m[\&quot;_merge\&quot;] == \&quot;left_only\&quot;, [\&quot;PassengerId\&quot;, \&quot;Port\&quot;]]&quot;, [0, 14, &quot;&gt;&gt;&gt; m.loc[m[\&quot;_merge\&quot;] == \&quot;left_only\&quot;, [\&quot;PassengerId\&quot;, \&quot;Port\&quot;]]\n     PassengerId Port\n61            62  NaN\n829          830  NaN\n&gt;&gt;&gt;&quot;]], [&quot;m.groupby(\&quot;Port\&quot;)[\&quot;Fare\&quot;].median()&quot;, [3, 15, &quot;&gt;&gt;&gt; m.groupby(\&quot;Port\&quot;)[\&quot;Fare\&quot;].median()\nPort\nCherbourg      29.70\nQueenstown      7.75\nSouthampton    13.00\nName: Fare, dtype: float64\n&gt;&gt;&gt;&quot;]], [&quot;bad = pd.concat([ports, ports.head(1)])&quot;, [1, 20, &quot;&gt;&gt;&gt; bad = pd.concat([ports, ports.head(1)])\n&gt;&gt;&gt;&quot;]], [&quot;try:&quot;, [1, 20, &quot;&gt;&gt;&gt; try:\n...&quot;]], [&quot;    df.merge(bad, validate=\&quot;m:1\&quot;)&quot;, [1, 20, &quot;...     df.merge(bad, validate=\&quot;m:1\&quot;)\n...&quot;]], [&quot;except pd.errors.MergeError as err:&quot;, [1, 20, &quot;... except pd.errors.MergeError as err:\n...&quot;]], [&quot;    print(str(err).splitlines()[0])&quot;, [1, 20, &quot;...     print(str(err).splitlines()[0])\n...&quot;]], [&quot;&quot;, [2, 20, &quot;Merge keys are not unique in right dataset; not a many-to-one merge\n&gt;&gt;&gt;&quot;]]];
-for(var k=0,q=F0;k&lt;S.length;k++){var f=S[k][1];if(typeof f!==&quot;string&quot;){var L=q.split(&quot;\n&quot;);f=L.slice(f[0],f[0]+f[1]).concat(f[2]===null?[]:f[2].split(&quot;\n&quot;)).join(&quot;\n&quot;);S[k][1]=f}q=f}
-var T=document.getElementById(&quot;t&quot;),i=0,j=0,base=F0;
-function e(s){return s.replace(/&amp;/g,&quot;&amp;amp;&quot;).replace(/&lt;/g,&quot;&amp;lt;&quot;)}
-function paint(s,c){T.innerHTML=e(s).replace(/^(root@lab:[^#\n]*#|&gt;&gt;&gt;|\.\.\.)/gm,&quot;&lt;b&gt;$1&lt;/b&gt;&quot;)+(c?&quot;&lt;i&gt; &lt;/i&gt;&quot;:&quot;&quot;)}
-function tick(){
- if(i&gt;=S.length){setTimeout(function(){i=0;j=0;base=F0;paint(base+&quot; &quot;,1);setTimeout(tick,900)},6000);return}
- var c=S[i][0];
- if(c&amp;&amp;j&lt;=c.length){paint(base+&quot; &quot;+c.slice(0,j),1);j++;setTimeout(tick,j===1?600:50);return}
- paint(S[i][1],0);base=S[i][1];i++;j=0;
- setTimeout(tick,1200+Math.min(base.split(&quot;\n&quot;).length*80,1800))
-}
-paint(S[S.length-1][1],0);
-if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(function(){paint(F0+&quot; &quot;,1);setTimeout(tick,700)},2500);
-&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
-"></iframe>
-<aside hidden>Демонстрация. Справочник ports сопоставляет кодам C, Q и S порты Шербур, Квинстаун и Саутгемптон. merge с how="left" присоединяет его к таблице пассажиров по общему столбцу Embarked; результат содержит 891 строку и 14 столбцов — добавились Port и _merge. Столбец _merge показывает, что пара в справочнике есть у 889 строк и нет у двух: у пассажиров с номерами 62 и 830 порт посадки не указан, и Port для них равен NaN. Медиана тарифа по портам — 29,70 для Шербура, 7,75 для Квинстауна и 13,00 для Саутгемптона. Затем в справочник намеренно добавляется повторная строка для порта C. merge с validate="m:1" завершается ошибкой MergeError с сообщением о неуникальных ключах правой таблицы; без этой проверки строки пассажиров из Шербура удвоились бы без предупреждения.</aside>
-</section>
-<section id="sec-ts" data-transition="fade" style="background:#FFEAFE; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:row; gap:64px">
-<div style="flex:1; display:flex; flex-direction:column; justify-content:space-between">
-<div style="display:flex; flex-direction:column; gap:40px">
-<h1 style="align-self:start; font-size:96px; font-weight:800; line-height:1.15; color:#201B10; background:#FF87FF; padding:0px 16px">Время и скорость</h1>
-<p style="font-size:44px; line-height:1.3; color:#201B10">Временные ряды, пропущенные значения, скорость и форматы</p>
-</div>
-<p style="font-family:'Jersey 10', 'Courier New', monospace; font-size:280px; line-height:0.8; color:#FF87FF">06</p>
-</div>
-<div style="width:400px; display:flex; flex-direction:column; justify-content:center; align-items:center">
-<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#D640D6; background:#FFFFFF; padding:14px 0px; border-radius:20px">Массив NumPy</p>
-<div style="width:4px; height:20px; background:#FF87FF"></div>
-<div style="width:16px; height:16px; background:#FF87FF; border-radius:50%"></div>
-<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#D640D6; background:#FFFFFF; padding:14px 0px; border-radius:20px">Индексы и векторы</p>
-<div style="width:4px; height:20px; background:#FF87FF"></div>
-<div style="width:16px; height:16px; background:#FF87FF; border-radius:50%"></div>
-<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#D640D6; background:#FFFFFF; padding:14px 0px; border-radius:20px">Типы и файлы</p>
-<div style="width:4px; height:20px; background:#FF87FF"></div>
-<div style="width:16px; height:16px; background:#FF87FF; border-radius:50%"></div>
-<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#D640D6; background:#FFFFFF; padding:14px 0px; border-radius:20px">Таблицы pandas</p>
-<div style="width:4px; height:20px; background:#FF87FF"></div>
-<div style="width:16px; height:16px; background:#FF87FF; border-radius:50%"></div>
-<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#D640D6; background:#FFFFFF; padding:14px 0px; border-radius:20px">Группы и слияние</p>
-<div style="width:4px; height:20px; background:#FF87FF"></div>
-<div style="width:16px; height:16px; background:#FF87FF; border-radius:50%"></div>
-<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#201B10; background:#FF87FF; padding:14px 0px; border-radius:20px">Время и скорость</p>
-</div>
-<aside hidden>Изложение. Последняя часть посвящена журналам приборов — данным с меткой времени, — пропущенным значениям, которые в таких журналах неизбежны, и скорости обработки таблиц: векторные операции, apply, категории и столбцовый формат Parquet.</aside>
+<aside hidden>Изложение. Метод merge объединяет две таблицы по значениям ключевых столбцов, как соединение в SQL. Аргумент how задаёт, какие строки попадут в результат: inner — строки с ключом в обеих таблицах, left — все строки левой таблицы с NaN в столбцах правой там, где пары нет, right и outer — все строки правой и обеих таблиц. Аргумент validate проверяет кратность ключей: при значении "m:1" дубликат ключа в правой таблице вызывает ошибку MergeError вместо незаметного размножения строк; indicator=True добавляет столбец _merge с источником строки. В примере к пассажирам присоединяется справочник портов посадки ports — таблица из столбцов Embarked и Port с названиями портов для кодов C, Q и S, — и у двух пассажиров без порта столбец Port получает NaN. Функция pd.concat склеивает таблицы одинаковой структуры, например две серии измерений. Пропуск обозначается значением NaN в вещественных и строковых столбцах, pd.NA — в столбцах Int64 и boolean, NaT — в датах. Сумма маски isna по столбцам показывает число пропусков; dropna удаляет строки с пропуском, fillna подставляет значение, ffill переносит предыдущее значение вперёд, interpolate заполняет пропуск по соседним точкам. Сводные операции по умолчанию пропускают NaN: средний возраст вычисляется по 714 значениям из 891, поэтому число непустых значений необходимо проверять до вычисления сводок. Выбор стратегии является решением о данных, а не о коде: заполнение медианой сужает распределение, а удаление строк смещает выборку, если пропуски связаны с другими признаками, — возраст неизвестен у 28 % пассажиров третьего класса и лишь у 14 и 6 % пассажиров первого и второго.</aside>
 </section>
 <section id="ts-time" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
 <h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10">Временные</h2>
-<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#FF87FF; padding:0px 14px">ряды</h2>
+<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#FCE300; padding:0px 14px">ряды</h2>
 </div>
 <div style="display:flex; gap:48px; align-items:start">
 <div style="width:860px; flex-shrink:0; display:flex; flex-direction:column; gap:24px">
@@ -1327,11 +1261,11 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 </div>
 <div style="flex:1; display:flex; flex-direction:column; gap:24px">
 <table style="font-size:26px; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; border:2px solid #201B10">
-<tr style="background:#FF87FF"><th style="width:32%; color:#201B10">Метод</th><th style="width:68%; color:#201B10">Что делает</th></tr>
+<tr style="background:#FCE300"><th style="width:32%; color:#201B10">Метод</th><th style="width:68%; color:#201B10">Что делает</th></tr>
 <tr style="background:#FFFFFF"><td>resample</td><td>равномерная сетка, свёртка по интервалам</td></tr>
-<tr style="background:#FFEAFE"><td>rolling</td><td>окно до текущей точки</td></tr>
+<tr style="background:#FFF9C1"><td>rolling</td><td>окно до текущей точки</td></tr>
 <tr style="background:#FFFFFF"><td>shift, diff</td><td>сдвиг и разность соседних</td></tr>
-<tr style="background:#FFEAFE"><td>interpolate</td><td>заполнение пропусков; по времени — с method='time'</td></tr>
+<tr style="background:#FFF9C1"><td>interpolate</td><td>заполнение пропусков; по времени — с method='time'</td></tr>
 </table>
 <div style="background:#D4FAE6; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#2AE881; padding:2px 12px">Для физика</p>
@@ -1387,78 +1321,133 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 "></iframe>
 <aside hidden>Демонстрация. Синтетический журнал установки vacuum.csv за один час создан заранее скриптом make_log.py с генератором случайных чисел: время опроса с шагом от 1,5 до 2,5 с, давление p около 40 нПа с всплеском до 440 нПа в 12:40, ток пучка I около 150 мА, медленно убывающий со временем жизни 10 ч, около процента пропущенных показаний тока и трёхминутная пауза записи с 12:20. После чтения с parse_dates и index_col таблица содержит 1708 показаний двух величин, а индекс имеет тип datetime64 с микросекундным разрешением — умолчание pandas 3.0. Разность соседних меток времени показывает самую длинную паузу — 3 мин 4 с, а isna — 17 пропусков тока. resample по 10 минутам с разными свёртками для столбцов даёт максимум давления и средний ток в каждом интервале: всплеск виден в интервале с 12:40 как максимум 434,2 нПа, а ток убывает от 148,8 до 136,9 мА. Скользящее среднее давления по минутному окну достигает максимума в 12:41:01, почти через минуту после начала всплеска: окно оканчивается в текущей точке, и среднее максимально, когда в окне оказывается весь всплеск. Интерполяция по времени заполняет все пропуски тока.</aside>
 </section>
-<section id="ts-missing" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
+<section id="sec-sci" data-transition="fade" style="background:#FFEAFE; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:row; gap:64px">
+<div style="flex:1; display:flex; flex-direction:column; justify-content:space-between">
+<div style="display:flex; flex-direction:column; gap:40px">
+<h1 style="align-self:start; font-size:96px; font-weight:800; line-height:1.15; color:#201B10; background:#FF87FF; padding:0px 16px">Численные методы</h1>
+<p style="font-size:44px; line-height:1.3; color:#201B10">SciPy: константы, интегралы и уравнения, минимум и корень, подгонка кривых, интерполяция</p>
+</div>
+<p style="font-family:'Jersey 10', 'Courier New', monospace; font-size:280px; line-height:0.8; color:#FF87FF">06</p>
+</div>
+<div style="width:400px; display:flex; flex-direction:column; justify-content:center; align-items:center">
+<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#D640D6; background:#FFFFFF; padding:14px 0px; border-radius:20px">Массив NumPy</p>
+<div style="width:4px; height:20px; background:#FF87FF"></div>
+<div style="width:16px; height:16px; background:#FF87FF; border-radius:50%"></div>
+<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#D640D6; background:#FFFFFF; padding:14px 0px; border-radius:20px">Индексы и векторы</p>
+<div style="width:4px; height:20px; background:#FF87FF"></div>
+<div style="width:16px; height:16px; background:#FF87FF; border-radius:50%"></div>
+<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#D640D6; background:#FFFFFF; padding:14px 0px; border-radius:20px">Типы и файлы</p>
+<div style="width:4px; height:20px; background:#FF87FF"></div>
+<div style="width:16px; height:16px; background:#FF87FF; border-radius:50%"></div>
+<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#D640D6; background:#FFFFFF; padding:14px 0px; border-radius:20px">Таблицы pandas</p>
+<div style="width:4px; height:20px; background:#FF87FF"></div>
+<div style="width:16px; height:16px; background:#FF87FF; border-radius:50%"></div>
+<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#D640D6; background:#FFFFFF; padding:14px 0px; border-radius:20px">Группы и время</p>
+<div style="width:4px; height:20px; background:#FF87FF"></div>
+<div style="width:16px; height:16px; background:#FF87FF; border-radius:50%"></div>
+<p style="width:400px; font-size:28px; font-weight:700; line-height:1.4; text-align:center; color:#201B10; background:#FF87FF; padding:14px 0px; border-radius:20px">Численные методы</p>
+</div>
+<aside hidden>Изложение. Последняя часть посвящена SciPy — библиотеке численных методов, построенной поверх NumPy. Рассмотрим физические константы, вычисление интегралов и решение задачи Коши, поиск минимума и корня, подгонку модели к измерениям с оценкой погрешностей параметров на примере измерения эмиттанса пучка и интерполяцию табличных данных.</aside>
+</section>
+<section id="sci-map" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
-<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10">Пропущенные</h2>
-<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#FF87FF; padding:0px 14px">значения</h2>
+<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10">Подмодули</h2>
+<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#FF87FF; padding:0px 14px">и константы</h2>
 </div>
 <div style="display:flex; gap:48px; align-items:start">
-<div style="width:860px; flex-shrink:0; display:flex; flex-direction:column; gap:24px">
-<div style="background:#F4F1EA; border-radius:18px; padding:22px 28px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:26px; line-height:1.45; color:#201B10">df.isna().sum()           # по столбцам<br>df.dropna(subset=["Age"])  # строки без пропуска<br>df["Embarked"].fillna("S")<br>s.ffill(), s.bfill()      # соседним значением<br>s.interpolate()           # по соседям<br>df["Age"].mean()          # NaN пропускаются</p></div>
+<div style="width:760px; flex-shrink:0; display:flex; flex-direction:column; gap:24px">
+<table style="font-size:26px; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; border:2px solid #201B10">
+<tr style="background:#FF87FF"><th style="width:38%; color:#201B10">Подмодуль</th><th style="width:62%; color:#201B10">Задачи</th></tr>
+<tr style="background:#FFFFFF"><td>constants</td><td>константы CODATA, единицы</td></tr>
+<tr style="background:#FFEAFE"><td>integrate</td><td>интегралы, задача Коши</td></tr>
+<tr style="background:#FFFFFF"><td>optimize</td><td>минимум, корни, подгонка</td></tr>
+<tr style="background:#FFEAFE"><td>interpolate</td><td>интерполяция таблиц</td></tr>
+<tr style="background:#FFFFFF"><td>linalg</td><td>системы, разложения, спектр</td></tr>
+<tr style="background:#FFEAFE"><td>signal, fft</td><td>фильтры, спектры сигналов</td></tr>
+<tr style="background:#FFFFFF"><td>stats, special</td><td>распределения, спецфункции</td></tr>
+</table>
+<div style="background:#F0EDFF; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
+<p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Пояснение</p>
+<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">Многие методы реализуют алгоритмы QUADPACK, ODEPACK, MINPACK и LAPACK; аргументы и результаты — массивы NumPy.</p>
+</div>
 </div>
 <div style="flex:1; display:flex; flex-direction:column; gap:24px">
-<table style="font-size:26px; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; border:2px solid #201B10">
-<tr style="background:#FF87FF"><th style="width:56%; color:#201B10">Тип столбца</th><th style="width:44%; color:#201B10">Пропуск</th></tr>
-<tr style="background:#FFFFFF"><td>float64</td><td>NaN</td></tr>
-<tr style="background:#FFEAFE"><td>str</td><td>NaN</td></tr>
-<tr style="background:#FFFFFF"><td>Int64, boolean</td><td>pd.NA</td></tr>
-<tr style="background:#FFEAFE"><td>datetime64</td><td>NaT</td></tr>
-</table>
-<div style="background:#FFE2D1; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
-<p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#FF5F00; padding:2px 12px">Важно</p>
-<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">Сводки пропускают NaN: средний возраст считается по 714 пассажирам, а не по 891.</p>
+<div style="background:#F4F1EA; border-radius:18px; padding:22px 28px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; line-height:1.45; color:#201B10">from scipy import constants as C<br> <br>C.c, C.h, C.k, C.e      # точные в СИ<br>C.physical_constants["electron mass"]<br># (9.1093837139e-31, 'kg', 2.8e-40)<br> <br>E = 13.6 * C.eV         # эВ в джоули<br>C.h * C.c / E / C.nano  # 91.2 нм<br>C.find("Bohr")          # поиск по названию</p></div>
+<div style="background:#D4FAE6; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
+<p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#2AE881; padding:2px 12px">Для физика</p>
+<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">Формулы записываются в СИ, а данные вводятся в привычных единицах через множители eV, nano, milli.</p>
 </div>
 </div>
 </div>
-<aside hidden>Изложение. В реальных данных пропуски присутствуют всегда: прибор не ответил, поле осталось пустым, строка журнала потеряна. pandas обозначает пропуск в вещественных и строковых столбцах значением NaN, в целых и логических столбцах с поддержкой пропусков, Int64 и boolean, — значением pd.NA, в датах — NaT. Метод isna строит маску пропусков, а её сумма по столбцам показывает, сколько значений отсутствует. Затем выбирается стратегия: dropna удаляет строки с пропуском, fillna подставляет значение, ffill и bfill переносят соседнее значение вперёд или назад, interpolate заполняет пропуск по соседним точкам. Сводные операции по умолчанию пропускают NaN: средний возраст пассажиров «Титаника» вычисляется по 714 известным значениям, а не по 891 пассажиру. Это удобно, но скрывает масштаб пропусков, поэтому число непустых значений необходимо проверять до вычисления сводок. Выбор стратегии заполнения является решением о данных, а не о коде: заполнение медианой сужает распределение, а удаление строк смещает выборку, если пропуски связаны с другими признаками: возраст неизвестен у 28 % пассажиров третьего класса и лишь у 14 и 6 % пассажиров первого и второго.</aside>
+<aside hidden>Изложение. SciPy является библиотекой численных методов, построенной поверх NumPy: её функции принимают и возвращают массивы NumPy. Библиотека разделена на подмодули по областям, перечисленные в таблице; linalg повторяет и расширяет np.linalg, например LU-разложением и матричной экспонентой expm. Принято импортировать нужный подмодуль: from scipy import optimize. Многие методы реализуют проверенные десятилетиями алгоритмы QUADPACK, ODEPACK, MINPACK и LAPACK, поэтому, прежде чем программировать численный метод самостоятельно, его ищут в SciPy. Подмодуль constants содержит константы CODATA 2022 в СИ; скорость света, а с 2019 года и постоянные Планка и Больцмана и элементарный заряд точны по определению единиц. Словарь physical_constants возвращает по названию кортеж из значения, единицы и погрешности, функция find ищет названия по подстроке, а множители eV, nano, milli переводят привычные единицы в СИ: энергия 13,6 эВ, умноженная на C.eV, даёт джоули, и длина волны фотона hc/E равна 91,2 нм — граница серии Лаймана.</aside>
 </section>
-<section id="ts-speed" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
+<section id="sci-planck" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
-<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10">Скорость</h2>
-<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#FF87FF; padding:0px 14px">и форматы</h2>
+<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10">Закон Планка:</h2>
+<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#FF87FF; padding:0px 14px">интеграл и корень</h2>
 </div>
 <div style="display:flex; gap:48px; align-items:start">
 <div style="width:900px; flex-shrink:0; display:flex; flex-direction:column; gap:24px">
-<table style="font-size:26px; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; border:2px solid #201B10">
-<tr style="background:#FF87FF"><th style="width:52%; color:#201B10">Способ</th><th style="width:48%; color:#201B10">Как выполняется</th></tr>
-<tr style="background:#FFFFFF"><td>df['a'] * df['b'], np.where</td><td>векторно, по столбцу</td></tr>
-<tr style="background:#FFEAFE"><td>.str, .dt</td><td>векторно, для строк и дат</td></tr>
-<tr style="background:#FFFFFF"><td>df.apply(f, axis=1)</td><td>цикл Python по строкам</td></tr>
-<tr style="background:#FFEAFE"><td>iterrows</td><td>цикл и объект на строку</td></tr>
-</table>
-<div style="background:#F0EDFF; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
-<p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Пояснение</p>
-<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">Повторяющиеся строки — тип category: целые коды и словарь значений.</p>
-</div>
+<div style="background:#F4F1EA; border-radius:18px; padding:22px 28px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; line-height:1.45; color:#201B10">from scipy import integrate, optimize<br> <br># интеграл x^3/(e^x - 1) от 0 до inf равен pi^4/15<br>f = lambda x: x**3 * np.exp(-x) / (1 - np.exp(-x))<br>I, err = integrate.quad(f, 0, np.inf)<br>sigma = 2 * np.pi * C.k**4 / (C.h**3 * C.c**2) * I<br> <br># максимум спектра: (x - 5) e^x + 5 = 0<br>g = lambda x: (x - 5) * np.exp(x) + 5<br>x = optimize.brentq(g, 1, 10)   # g(1) &lt; 0 &lt; g(10)<br>b = C.h * C.c / (x * C.k)       # lambda_max * T = b</p></div>
 </div>
 <div style="flex:1; display:flex; flex-direction:column; gap:24px">
-<div style="background:#F0EDFF; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
-<p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Пояснение</p>
-<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">CSV — текст без типов; Parquet хранит столбцы с типами и сжатием и читает только нужные столбцы.</p>
-</div>
 <div style="background:#FFE2D1; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#FF5F00; padding:2px 12px">Важно</p>
-<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">apply — последнее средство: сначала ищется векторная операция над столбцами.</p>
+<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">e^x переполняет float64 при x &gt; 709: множитель e^-x в числителе и знаменателе устраняет переполнение.</p>
+</div>
+<div style="background:#F0EDFF; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
+<p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Пояснение</p>
+<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">quad возвращает интеграл и оценку абсолютной погрешности; пределы могут быть бесконечными.</p>
+</div>
+<div style="background:#F0EDFF; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
+<p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Пояснение</p>
+<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">brentq ищет корень на отрезке, на концах которого функция имеет разные знаки; root решает системы.</p>
 </div>
 </div>
 </div>
-<aside hidden>Изложение. Скорость работы с таблицей определяется тем же, что и у NumPy: выполняется ли цикл по элементам в скомпилированном коде. Арифметика над столбцами, np.where и np.select, методы аксессоров .str для строк и .dt для дат работают векторно. Метод apply с axis=1 вызывает функцию Python для каждой строки, создавая для неё объект Series, и представляет собой цикл Python; iterrows ещё медленнее. Таким образом, apply — последнее средство, к которому прибегают, когда векторной записи не нашлось. Экономию памяти обеспечивает тип category: столбец с немногими повторяющимися строковыми значениями хранится как целые коды и словарь значений. Формат файла тоже влияет на скорость: CSV — текст без типов, который приходится разбирать при каждом чтении, а Parquet хранит столбцы в двоичном виде с типами и сжатием, и при чтении можно загрузить только нужные столбцы.</aside>
+<aside hidden>Изложение. Рассмотрим две задачи, связанные с законом излучения абсолютно чёрного тела. Интегрирование формулы Планка по частотам после замены x = hν/kT приводит к интегралу I = ∫x³/(eˣ − 1)dx от нуля до бесконечности, равному π⁴/15, и постоянная Стефана—Больцмана выражается через него как σ = 2πk⁴I/(h³c²). Функция quad реализует адаптивную квадратуру QUADPACK: она принимает функцию и пределы, в том числе бесконечные, и возвращает значение интеграла и оценку абсолютной погрешности; допуски по умолчанию epsabs и epsrel равны 1,49·10⁻⁸. Подынтегральное выражение записано с множителем e⁻ˣ в числителе и знаменателе: eˣ при x &gt; 709 превышает наибольшее число float64, и NumPy возвращает бесконечность с предупреждением. Для x³/(eˣ − 1) деление на бесконечность даёт верный ноль, однако в близком интеграле ∫x⁴eˣ/(eˣ − 1)²dx возникает отношение двух бесконечностей, и quad возвращает nan. Вторая задача — поиск максимума спектра по длинам волн — приводит к трансцендентному уравнению (x − 5)eˣ + 5 = 0. Функция brentq находит корень методом Брента на отрезке, на концах которого функция имеет разные знаки, и при этом условии сходится гарантированно; по корню x ≈ 4,965 постоянная Вина вычисляется как b = hc/(xk). Системы нелинейных уравнений решает функция root.</aside>
 </section>
-<section id="demo-speed" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
+<section id="sci-ode" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
+<div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
+<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10">Задача Коши:</h2>
+<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#FF87FF; padding:0px 14px">solve_ivp</h2>
+</div>
+<div style="display:flex; gap:48px; align-items:start">
+<div style="width:860px; flex-shrink:0; display:flex; flex-direction:column; gap:24px">
+<div style="background:#F4F1EA; border-radius:18px; padding:22px 28px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; line-height:1.45; color:#201B10">from scipy.integrate import solve_ivp<br> <br>def rhs(t, y, g, w0):       # y = [x, v]<br>    x, v = y<br>    return [v, -2 * g * v - w0**2 * x]<br> <br>sol = solve_ivp(rhs, (0, 10), [1.0, 0.0],<br>                args=(0.3, 2 * np.pi),<br>                t_eval=np.linspace(0, 10, 501),<br>                rtol=1e-8, atol=1e-10)<br>x, v = sol.y                # форма (2, 501)</p></div>
+</div>
+<div style="flex:1; display:flex; flex-direction:column; gap:24px">
+<table style="font-size:26px; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; border:2px solid #201B10">
+<tr style="background:#FF87FF"><th style="width:34%; color:#201B10">Метод</th><th style="width:66%; color:#201B10">Применение</th></tr>
+<tr style="background:#FFFFFF"><td>RK45</td><td>по умолчанию, нежёсткие задачи</td></tr>
+<tr style="background:#FFEAFE"><td>DOP853</td><td>высокая точность</td></tr>
+<tr style="background:#FFFFFF"><td>Radau, BDF</td><td>жёсткие задачи</td></tr>
+<tr style="background:#FFEAFE"><td>LSODA</td><td>автоматический выбор, ODEPACK</td></tr>
+</table>
+<div style="background:#FFE2D1; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
+<p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#FF5F00; padding:2px 12px">Важно</p>
+<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">По умолчанию rtol = 1e-3 и atol = 1e-6: около трёх верных знаков. Допуски задаются явно.</p>
+</div>
+</div>
+</div>
+<aside hidden>Изложение. Обыкновенные дифференциальные уравнения решает функция solve_ivp; её название означает задачу с начальными условиями, то есть задачу Коши. Она интегрирует систему первого порядка dy/dt = f(t, y), поэтому уравнение затухающего осциллятора x'' + 2γx' + ω₀²x = 0 сводится к системе: введём вектор состояния y = [x, v] и получим x' = v, v' = −2γv − ω₀²x. Параметры модели передаются через аргумент args, а не через глобальные переменные, что позволяет решать ту же систему с другими параметрами без изменения кода. Аргумент t_eval задаёт моменты, в которые сохраняется решение, а шаг интегрирования метод выбирает сам. Результат содержит моменты t, решение y формы «число компонент × число моментов», число вычислений правой части nfev и признак success. По умолчанию применяется явный метод Рунге—Кутты RK45 с допусками rtol = 10⁻³ и atol = 10⁻⁶: локальная ошибка шага поддерживается меньше atol + rtol·|y|, что соответствует примерно трём верным знакам, поэтому для расчёта, сравниваемого с измерением, допуски необходимо задавать явно. Для высокой точности документация рекомендует DOP853, для жёстких систем, где масштабы времени различаются на порядки, как в цепочках распадов, — неявные методы Radau и BDF; LSODA из библиотеки ODEPACK сам определяет жёсткость и переключается между методами Адамса и BDF.</aside>
+</section>
+<section id="demo-numeric" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
 <h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#FF87FF; padding:0px 14px">Демонстрация:</h2>
-<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10">скорость и форматы</h2>
+<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10">Планк и осциллятор</h2>
 </div>
 <div style="width:596px; display:flex; flex-direction:column; gap:28px">
 <div style="display:flex; flex-direction:column; gap:16px">
-<div style="display:flex; gap:18px; align-items:center"><p style="width:56px; font-family:'Jersey 10', 'Courier New', monospace; font-size:60px; line-height:0.8; text-align:right; color:#D640D6">01</p><p style="flex:1; font-size:25px; line-height:1.35; color:#201B10">apply по строкам и векторное умножение</p></div>
-<div style="display:flex; gap:18px; align-items:center"><p style="width:56px; font-family:'Jersey 10', 'Courier New', monospace; font-size:60px; line-height:0.8; text-align:right; color:#D640D6">02</p><p style="flex:1; font-size:25px; line-height:1.35; color:#201B10">Столбец меток: str и category</p></div>
-<div style="display:flex; gap:18px; align-items:center"><p style="width:56px; font-family:'Jersey 10', 'Courier New', monospace; font-size:60px; line-height:0.8; text-align:right; color:#D640D6">03</p><p style="flex:1; font-size:25px; line-height:1.35; color:#201B10">Миллион строк в CSV и Parquet</p></div>
-<div style="display:flex; gap:18px; align-items:center"><p style="width:56px; font-family:'Jersey 10', 'Courier New', monospace; font-size:60px; line-height:0.8; text-align:right; color:#D640D6">04</p><p style="flex:1; font-size:25px; line-height:1.35; color:#201B10">Время чтения</p></div>
+<div style="display:flex; gap:18px; align-items:center"><p style="width:56px; font-family:'Jersey 10', 'Courier New', monospace; font-size:60px; line-height:0.8; text-align:right; color:#D640D6">01</p><p style="flex:1; font-size:25px; line-height:1.35; color:#201B10">Константа: значение, единица, погрешность</p></div>
+<div style="display:flex; gap:18px; align-items:center"><p style="width:56px; font-family:'Jersey 10', 'Courier New', monospace; font-size:60px; line-height:0.8; text-align:right; color:#D640D6">02</p><p style="flex:1; font-size:25px; line-height:1.35; color:#201B10">Интеграл Планка через quad</p></div>
+<div style="display:flex; gap:18px; align-items:center"><p style="width:56px; font-family:'Jersey 10', 'Courier New', monospace; font-size:60px; line-height:0.8; text-align:right; color:#D640D6">03</p><p style="flex:1; font-size:25px; line-height:1.35; color:#201B10">Переполнение e^x в исходной записи</p></div>
+<div style="display:flex; gap:18px; align-items:center"><p style="width:56px; font-family:'Jersey 10', 'Courier New', monospace; font-size:60px; line-height:0.8; text-align:right; color:#D640D6">04</p><p style="flex:1; font-size:25px; line-height:1.35; color:#201B10">Постоянные Стефана—Больцмана и Вина</p></div>
+<div style="display:flex; gap:18px; align-items:center"><p style="width:56px; font-family:'Jersey 10', 'Courier New', monospace; font-size:60px; line-height:0.8; text-align:right; color:#D640D6">05</p><p style="flex:1; font-size:25px; line-height:1.35; color:#201B10">Осциллятор: допуски solve_ivp</p></div>
 </div>
 <div style="background:#F0EDFF; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Что наблюдается</p>
-<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">apply — 372 мс, U * I — 0,3 мс; category в 12 раз компактнее str. Parquet занимает 16 МиБ против 41 МиБ у CSV и читается за 21 мс против 163 мс.</p>
+<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">Интеграл совпал с точным значением до 3e-15, σ и b — с CODATA. С допусками по умолчанию ошибка решения 2e-3, с rtol = 1e-8 — 1e-8 при 4796 вычислениях правой части вместо 428.</p>
 </div>
 </div>
 <div style="position:absolute; left:740px; top:196px; width:1076px; height:684px; background:#201B10; border-radius:24px"></div>
@@ -1471,7 +1460,7 @@ html,body{margin:0;height:100%;background:#201B10}
 pre{margin:0;box-sizing:border-box;height:100%;padding:20px 26px;color:#E9E6DF;font:20px/1.3 ui-monospace,Menlo,&quot;DejaVu Sans Mono&quot;,Consolas,monospace;white-space:pre-wrap;overflow:hidden}
 b{font-weight:400;color:#2AE881}i{font-style:normal;background:#E9E6DF;color:#201B10}
 &lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;pre id=&quot;t&quot;&gt;&lt;/pre&gt;&lt;script&gt;
-var F0=&quot;root@lab:~#&quot;,S=[[&quot;python3 speed.py&quot;, &quot;root@lab:~# python3 speed.py\napply(axis=1):    371.7 мс\nU * I:              0.3 мс\nkind: str 2.29 МиБ, category 0.19 МиБ\nruns.csv       41.0 МиБ, чтение   163 мс\nruns.parquet   16.0 МиБ, чтение    21 мс\nroot@lab:~#&quot;]];
+var F0=&quot;root@lab:~#&quot;,S=[[&quot;python3 -q&quot;, &quot;root@lab:~# python3 -q\n&gt;&gt;&gt;&quot;], [&quot;import numpy as np&quot;, [0, 1, &quot;&gt;&gt;&gt; import numpy as np\n&gt;&gt;&gt;&quot;]], [&quot;from scipy import constants as C, integrate, optimize&quot;, [0, 2, &quot;&gt;&gt;&gt; from scipy import constants as C, integrate, optimize\n&gt;&gt;&gt;&quot;]], [&quot;C.physical_constants[\&quot;electron mass\&quot;]&quot;, [0, 3, &quot;&gt;&gt;&gt; C.physical_constants[\&quot;electron mass\&quot;]\n(9.1093837139e-31, &#x27;kg&#x27;, 2.8e-40)\n&gt;&gt;&gt;&quot;]], [&quot;f = lambda x: x**3 * np.exp(-x) / (1 - np.exp(-x))&quot;, [0, 5, &quot;&gt;&gt;&gt; f = lambda x: x**3 * np.exp(-x) / (1 - np.exp(-x))\n&gt;&gt;&gt;&quot;]], [&quot;I, err = integrate.quad(f, 0, np.inf)&quot;, [0, 6, &quot;&gt;&gt;&gt; I, err = integrate.quad(f, 0, np.inf)\n&gt;&gt;&gt;&quot;]], [&quot;I, err, np.pi**4 / 15&quot;, [0, 7, &quot;&gt;&gt;&gt; I, err, np.pi**4 / 15\n(6.493939402266831, 2.628470539040253e-09, 6.493939402266828)\n&gt;&gt;&gt;&quot;]], [&quot;integrate.quad(lambda x: x**3 / (np.exp(x) - 1), 0, np.inf)&quot;, [0, 9, &quot;&gt;&gt;&gt; integrate.quad(lambda x: x**3 / (np.exp(x) - 1), 0, np.inf)\n\u003cstdin&gt;:1: RuntimeWarning: overflow encountered in exp\n(6.49393940226683, 2.628470028924825e-09)\n&gt;&gt;&gt;&quot;]], [&quot;2 * np.pi * C.k**4 / (C.h**3 * C.c**2) * I, C.sigma&quot;, [0, 12, &quot;&gt;&gt;&gt; 2 * np.pi * C.k**4 / (C.h**3 * C.c**2) * I, C.sigma\n(5.670374419184433e-08, 5.6703744191844314e-08)\n&gt;&gt;&gt;&quot;]], [&quot;x = optimize.brentq(lambda x: (x - 5) * np.exp(x) + 5, 1, 10)&quot;, [0, 14, &quot;&gt;&gt;&gt; x = optimize.brentq(lambda x: (x - 5) * np.exp(x) + 5, 1, 10)\n&gt;&gt;&gt;&quot;]], [&quot;x, C.h * C.c / (x * C.k), C.Wien&quot;, [0, 15, &quot;&gt;&gt;&gt; x, C.h * C.c / (x * C.k), C.Wien\n(4.965114231744276, 0.0028977719551851727, 0.0028977719551851727)\n&gt;&gt;&gt;&quot;]], [&quot;exit()&quot;, [0, 17, &quot;&gt;&gt;&gt; exit()\nroot@lab:~#&quot;]], [&quot;python3 osc.py&quot;, [3, 15, &quot;root@lab:~# python3 osc.py\nx&#x27;&#x27; + 2·0.3·x&#x27; + (2π)²·x = 0, x(0) = 1, v(0) = 0, t от 0 до 10 с\nметод   допуски                  nfev   max|x - точное|\nRK45    по умолчанию              428   2.2e-03\nRK45    rtol=1e-08, atol=1e-10   4796   1.0e-08\nDOP853  rtol=1e-10, atol=1e-12   2954   1.1e-10\nroot@lab:~#&quot;]]];
 for(var k=0,q=F0;k&lt;S.length;k++){var f=S[k][1];if(typeof f!==&quot;string&quot;){var L=q.split(&quot;\n&quot;);f=L.slice(f[0],f[0]+f[1]).concat(f[2]===null?[]:f[2].split(&quot;\n&quot;)).join(&quot;\n&quot;);S[k][1]=f}q=f}
 var T=document.getElementById(&quot;t&quot;),i=0,j=0,base=F0;
 function e(s){return s.replace(/&amp;/g,&quot;&amp;amp;&quot;).replace(/&lt;/g,&quot;&amp;lt;&quot;)}
@@ -1487,7 +1476,140 @@ paint(S[S.length-1][1],0);
 if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(function(){paint(F0+&quot; &quot;,1);setTimeout(tick,700)},2500);
 &lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
 "></iframe>
-<aside hidden>Демонстрация. Скрипт speed.py создаёт таблицу из 200 000 строк: напряжение U, ток I и метку серии kind с тремя значениями. Произведение U·I через apply с axis=1 вычисляется 372 мс, векторное умножение столбцов — 0,3 мс, на три порядка быстрее. Столбец меток в типе str занимает 2,29 МиБ, а в типе category — 0,19 МиБ, в 12 раз меньше: хранятся целые коды и словарь из трёх значений. Затем таблица, повторённая пять раз до миллиона строк, записывается в CSV и в Parquet. Текстовый файл занимает 41 МиБ и читается 163 мс, Parquet — 16 МиБ и 21 мс: двоичные столбцы с типами не требуют разбора текста.</aside>
+<aside hidden>Демонстрация. В интерактивном интерпретаторе импортируются NumPy и подмодули constants, integrate и optimize. Словарь physical_constants по названию electron mass возвращает кортеж из значения 9,1093837139·10⁻³¹, единицы kg и погрешности 2,8·10⁻⁴⁰ — данные CODATA 2022. Функция quad по подынтегральному выражению в устойчивой записи даёт 6,493939402266831 с оценкой погрешности 2,6·10⁻⁹; точное значение π⁴/15 = 6,493939402266828 отличается на 3·10⁻¹⁵, то есть фактическая ошибка почти на шесть порядков меньше оценки. Тот же интеграл в исходной записи x³/(eˣ − 1) вычисляется верно, но интерпретатор печатает предупреждение RuntimeWarning: overflow encountered in exp — при больших x экспонента переполнилась, и верный результат получен лишь потому, что деление на бесконечность даёт ноль. Умножив интеграл на 2πk⁴/(h³c²), получим постоянную Стефана—Больцмана 5,670374419184433·10⁻⁸ Вт/(м²·К⁴); константа C.sigma отличается от неё лишь в шестнадцатом знаке, на уровне округления float64. Функция brentq находит корень x = 4,965114231744276, и постоянная Вина hc/(xk) = 2,8977719551851727·10⁻³ м·К совпадает с C.Wien во всех знаках. Затем интерпретатор закрывается, и скрипт osc.py решает уравнение затухающего осциллятора с γ = 0,3 с⁻¹ и ω₀ = 2π рад/с на интервале 10 с, сравнивая решение с точным в 501 точке. С допусками по умолчанию метод RK45 вычисляет правую часть 428 раз, и наибольшая ошибка координаты составляет 2,2·10⁻³ при начальном отклонении 1. С rtol = 10⁻⁸ и atol = 10⁻¹⁰ ошибка уменьшается до 1,0·10⁻⁸ ценой 4796 вычислений. Метод восьмого порядка DOP853 с rtol = 10⁻¹⁰ достигает ошибки 1,1·10⁻¹⁰ за 2954 вычисления: при высоких требованиях к точности метод высокого порядка оказывается выгоднее.</aside>
+</section>
+<section id="sci-fit" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
+<div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
+<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10">Минимум</h2>
+<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#FF87FF; padding:0px 14px">и подгонка</h2>
+</div>
+<div style="display:flex; gap:48px; align-items:start">
+<div style="width:860px; flex-shrink:0; display:flex; flex-direction:column; gap:24px">
+<div style="background:#F4F1EA; border-radius:18px; padding:22px 28px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; line-height:1.45; color:#201B10">lj = lambda r: 4 * (r**-12 - r**-6)<br>res = optimize.minimize(lj, x0=1.5)<br>res.x, res.fun            # [1.1225], -1.0<br> <br>def model(t, n0, tau):    # t, затем параметры<br>    return n0 * np.exp(-t / tau)<br> <br>popt, pcov = optimize.curve_fit(model, t, y,<br>    p0=(5, 1), sigma=dy, absolute_sigma=True)<br>perr = np.sqrt(np.diag(pcov))   # погрешности</p></div>
+</div>
+<div style="flex:1; display:flex; flex-direction:column; gap:24px">
+<table style="font-size:26px; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; border:2px solid #201B10">
+<tr style="background:#FF87FF"><th style="width:42%; color:#201B10">Аргументы</th><th style="width:58%; color:#201B10">Погрешности из pcov</th></tr>
+<tr style="background:#FFFFFF"><td>без sigma</td><td>точки равноценны; масштаб по разбросу остатков</td></tr>
+<tr style="background:#FFEAFE"><td>sigma=dy</td><td>dy — относительные веса; масштаб по χ²</td></tr>
+<tr style="background:#FFFFFF"><td>sigma=dy, absolute_sigma=True</td><td>dy — ошибки измерений; без масштаба</td></tr>
+</table>
+<div style="background:#FFE2D1; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
+<p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#FF5F00; padding:2px 12px">Важно</p>
+<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">Без p0 все параметры начинаются с 1: для нелинейной модели p0 задаётся явно.</p>
+</div>
+</div>
+</div>
+<aside hidden>Изложение. Функция minimize ищет минимум функции одной или многих переменных, начиная с приближения x0; без ограничений по умолчанию применяется квазиньютоновский метод BFGS. Для потенциала Леннард-Джонса V(r) = 4[(1/r)¹² − (1/r)⁶] в безразмерных единицах получим минимум при r = 2^(1/6) ≈ 1,122 глубиной −1. Найденный минимум является локальным: метод сходится к одному из минимумов, обычно ближайшему к x0, и глобального минимума не гарантирует. Функция curve_fit подгоняет параметры модели к данным методом наименьших квадратов, для задачи без ограничений — методом Левенберга—Марквардта из MINPACK. Модель принимает независимую переменную первым аргументом, параметры — следующими; без начального приближения p0 все параметры начинаются с единицы, и нелинейная подгонка может не сойтись. Результатом являются параметры popt и ковариационная матрица pcov, корни диагональных элементов которой дают стандартные погрешности. Смысл погрешностей определяют аргументы sigma и absolute_sigma. Без sigma все точки равноценны, и pcov масштабируется по разбросу остатков. С sigma минимизируется χ² = Σ(rᵢ/σᵢ)², но по умолчанию, при absolute_sigma=False, учитываются лишь относительные значения sigma: pcov масштабируется так, чтобы приведённый χ² был равен единице. При absolute_sigma=True sigma считается стандартными ошибками измерений, и pcov отражает именно их; приведённый χ² около единицы тогда подтверждает согласие модели и оценки ошибок с данными. Таким образом, без absolute_sigma погрешности параметров описывают разброс точек вокруг модели, а не точность прибора. Сами погрешности из pcov основаны на линейном приближении модели вблизи оптимума.</aside>
+</section>
+<section id="sci-emit" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
+<div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
+<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10">Измерение</h2>
+<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#FF87FF; padding:0px 14px">эмиттанса</h2>
+</div>
+<div style="display:flex; gap:48px; align-items:start">
+<div style="width:860px; flex-shrink:0; display:flex; flex-direction:column; gap:24px">
+<div style="position:relative; width:860px; height:230px; flex-shrink:0">
+<div style="position:absolute; left:0px; top:40px; width:200px; height:150px; background:#FFEAFE; border-radius:18px; padding:10px 16px; display:flex; flex-direction:column; gap:6px; align-items:center; justify-content:center"><p style="font-size:28px; font-weight:700; line-height:1.25; text-align:center; color:#201B10">Пучок</p><p style="font-size:24px; line-height:1.3; text-align:center; color:#201B10">ε, β0, α0</p></div>
+<x-connector x1="200" y1="115" x2="290" y2="115" style="color:#201B10; border-width:4px"></x-connector>
+<div style="position:absolute; left:290px; top:20px; width:170px; height:190px; background:#FF87FF; border-radius:18px; padding:10px 16px; display:flex; flex-direction:column; gap:6px; align-items:center; justify-content:center"><p style="font-size:28px; font-weight:700; line-height:1.25; text-align:center; color:#201B10">Линза</p><p style="font-size:26px; line-height:1.3; text-align:center; color:#201B10">k = 1/f</p></div>
+<x-connector x1="460" y1="115" x2="680" y2="115" style="color:#201B10; border-width:4px"></x-connector>
+<p style="position:absolute; left:460px; top:64px; width:220px; font-size:26px; line-height:1.3; text-align:center; color:#201B10">l = 1,2 м</p>
+<div style="position:absolute; left:680px; top:20px; width:180px; height:190px; background:#F4F1EA; border-radius:18px; padding:10px 16px; display:flex; flex-direction:column; gap:6px; align-items:center; justify-content:center"><p style="font-size:28px; font-weight:700; line-height:1.25; text-align:center; color:#201B10">Экран</p><p style="font-size:24px; line-height:1.3; text-align:center; color:#201B10">размер σ</p></div>
+</div>
+<div style="background:#F4F1EA; border-radius:18px; padding:22px 28px"><p style="font-size:28px; font-weight:700; line-height:1.5; color:#201B10">σ²(k) = ε·(R11²·β0 − 2·R11·R12·α0 + R12²·γ0)<br>R11 = 1 − k·l,  R12 = l,  γ0 = (1 + α0²)/β0</p></div>
+<div style="background:#D4FAE6; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
+<p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#2AE881; padding:2px 12px">Для физика</p>
+<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">Скан: 25 значений k от −1,5 до 1,5 1/м, ошибка размера 20 мкм; минимум модели 0,158 мм при k = 1,08 1/м.</p>
+</div>
+</div>
+<div style="flex:1; display:flex; flex-direction:column; gap:24px">
+<div style="display:flex; flex-direction:column; gap:22px">
+<div style="display:flex; gap:40px; align-items:center"><p style="width:80px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; text-align:right; color:#D640D6">01</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:28px; font-weight:700; line-height:1.3; color:#201B10">Парабола по k</p><p style="font-size:24px; line-height:1.35; color:#201B10">три коэффициента дают ε, β0 и α0</p></div></div>
+<div style="display:flex; gap:40px; align-items:center"><p style="width:80px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; text-align:right; color:#D640D6">02</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:28px; font-weight:700; line-height:1.3; color:#201B10">Веса после возведения в квадрат</p><p style="font-size:24px; line-height:1.35; color:#201B10">ошибка σ² равна 2σ·dσ и мала у перетяжки</p></div></div>
+<div style="display:flex; gap:40px; align-items:center"><p style="width:80px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; text-align:right; color:#D640D6">03</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:28px; font-weight:700; line-height:1.3; color:#201B10">Подгонка с весами</p><p style="font-size:24px; line-height:1.35; color:#201B10">sigma = 2σ·20 мкм, absolute_sigma=True</p></div></div>
+</div>
+<div style="background:#FFE2D1; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
+<p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#FF5F00; padding:2px 12px">Важно</p>
+<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">Преобразование данных, выпрямляющее модель, меняет и веса точек; тот же эффект даёт логарифмирование экспоненты.</p>
+</div>
+</div>
+</div>
+<aside hidden>Изложение. Эмиттанс — площадь, занимаемая пучком в фазовой плоскости «координата — угол», делённая на π, — является основной мерой качества пучка: он определяет, до какого размера пучок может быть сфокусирован. Углы частиц непосредственно не измеряются, поэтому применяется метод скана квадрупольной линзой: изменяя оптическую силу линзы k = 1/f, снимают размер пучка σ на люминофорном экране. В тонколинзовом приближении линза и промежуток l до экрана дают матрицу перехода с элементами R11 = 1 − kl и R12 = l, и квадрат размера выражается через эмиттанс ε и параметры Твисса β0, α0, γ0 в месте линзы формулой на слайде. Зависимость σ² от k представляет собой параболу, три коэффициента которой однозначно определяют три искомые величины, и задача сводится к подгонке функцией curve_fit. Возведение в квадрат, однако, меняет веса точек: погрешность квадрата равна 2σ·dσ и мала у перетяжки, где пучок узкий и где сосредоточена основная информация об эмиттансе. Подгонка без весов приписывает всем точкам одинаковую погрешность и занижает вклад перетяжки, поэтому пересчитанные погрешности передаются в sigma. Отсюда общее правило: преобразование данных, выпрямляющее модель, меняет и веса точек; тот же эффект даёт логарифмирование экспоненты. Модельный скан совпадает со сканом лекции 11: l = 1,2 м, 25 значений k от −1,5 до 1,5 1/м, ошибка размера 20 мкм, истинные ε = 0,12 мкм, или 0,12 мм·мрад, β0 = 6,94 м и α0 = −1,69; минимум размера по модели, 0,158 мм, достигается при k = 1,08 1/м. На линейном ускорителе инжектора ЦКП «СКИФ» эмиттанс измеряется тем же методом, но размер рассчитывается полной моделью ускорителя, а подгонка выполняется методом COBYQA, не требующим производных.</aside>
+</section>
+<section id="demo-emit" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:40px">
+<div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
+<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#FF87FF; padding:0px 14px">Демонстрация:</h2>
+<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10">подгонка эмиттанса</h2>
+</div>
+<div style="width:596px; display:flex; flex-direction:column; gap:28px">
+<div style="display:flex; flex-direction:column; gap:16px">
+<div style="display:flex; gap:18px; align-items:center"><p style="width:56px; font-family:'Jersey 10', 'Courier New', monospace; font-size:60px; line-height:0.8; text-align:right; color:#D640D6">01</p><p style="flex:1; font-size:25px; line-height:1.35; color:#201B10">25 измерений размера с ошибкой 20 мкм</p></div>
+<div style="display:flex; gap:18px; align-items:center"><p style="width:56px; font-family:'Jersey 10', 'Courier New', monospace; font-size:60px; line-height:0.8; text-align:right; color:#D640D6">02</p><p style="flex:1; font-size:25px; line-height:1.35; color:#201B10">Подгонка σ² без весов</p></div>
+<div style="display:flex; gap:18px; align-items:center"><p style="width:56px; font-family:'Jersey 10', 'Courier New', monospace; font-size:60px; line-height:0.8; text-align:right; color:#D640D6">03</p><p style="flex:1; font-size:25px; line-height:1.35; color:#201B10">Веса sigma = 2σ·20 мкм</p></div>
+<div style="display:flex; gap:18px; align-items:center"><p style="width:56px; font-family:'Jersey 10', 'Courier New', monospace; font-size:60px; line-height:0.8; text-align:right; color:#D640D6">04</p><p style="flex:1; font-size:25px; line-height:1.35; color:#201B10">absolute_sigma=True: ошибки измерений</p></div>
+<div style="display:flex; gap:18px; align-items:center"><p style="width:56px; font-family:'Jersey 10', 'Courier New', monospace; font-size:60px; line-height:0.8; text-align:right; color:#D640D6">05</p><p style="flex:1; font-size:25px; line-height:1.35; color:#201B10">χ²/dof, корреляция, перетяжка</p></div>
+</div>
+<div style="background:#F0EDFF; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
+<p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Что наблюдается</p>
+<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">Без весов ε = 0,126 ± 0,045 мкм, с весами и absolute_sigma=True — 0,119 ± 0,009 мкм, в пять раз точнее. χ²/dof = 0,74. Перетяжка: 0,166 мм без весов и 0,157 мм с весами при 0,158 мм у модели.</p>
+</div>
+</div>
+<div style="position:absolute; left:740px; top:196px; width:1076px; height:684px; background:#201B10; border-radius:24px"></div>
+<div style="position:absolute; left:772px; top:216px; width:16px; height:16px; background:#FF5F00; border-radius:50%"></div>
+<div style="position:absolute; left:800px; top:216px; width:16px; height:16px; background:#FCE300; border-radius:50%"></div>
+<div style="position:absolute; left:828px; top:216px; width:16px; height:16px; background:#2AE881; border-radius:50%"></div>
+<p style="position:absolute; left:872px; top:204px; width:800px; font-size:24px; color:#A7A7A7">root@lab — запись со стенда</p>
+<iframe class="embed" sandbox="allow-scripts" title="Запись демонстрации в терминале" style="position:absolute; left:756px; top:252px; width:1044px; height:612px" data-srcdoc="&lt;!doctype html&gt;&lt;html&gt;&lt;head&gt;&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;default-src &#x27;none&#x27;; script-src &#x27;unsafe-inline&#x27;; style-src &#x27;unsafe-inline&#x27;; font-src data:&quot;&gt;&lt;style&gt;html{-webkit-print-color-adjust:exact;print-color-adjust:exact}&lt;/style&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;style&gt;
+html,body{margin:0;height:100%;background:#201B10}
+pre{margin:0;box-sizing:border-box;height:100%;padding:20px 26px;color:#E9E6DF;font:20px/1.3 ui-monospace,Menlo,&quot;DejaVu Sans Mono&quot;,Consolas,monospace;white-space:pre-wrap;overflow:hidden}
+b{font-weight:400;color:#2AE881}i{font-style:normal;background:#E9E6DF;color:#201B10}
+&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;pre id=&quot;t&quot;&gt;&lt;/pre&gt;&lt;script&gt;
+var F0=&quot;root@lab:~#&quot;,S=[[&quot;python3 quadfit.py&quot;, &quot;root@lab:~# python3 quadfit.py\n25 измерений, k от -1.5 до 1.5 1/м, ошибка размера 20 мкм\n            eps, мкм        beta0, м      alpha0\nбез весов   0.126 ± 0.045   6.58 ± 2.35   -1.61 ± 0.64\nsigma       0.119 ± 0.007   6.97 ± 0.44   -1.71 ± 0.12\n+ absolute  0.119 ± 0.009   6.97 ± 0.51   -1.71 ± 0.13\nистина      0.120           6.94          -1.69\nchi2/dof = 0.74, корреляция eps и beta0: -0.99\nперетяжка без весов: 0.166 мм при k = 1.08 1/м\nперетяжка с весами:  0.157 мм при k = 1.08 1/м\nперетяжка модели:    0.158 мм при k = 1.08 1/м\nroot@lab:~#&quot;]];
+for(var k=0,q=F0;k&lt;S.length;k++){var f=S[k][1];if(typeof f!==&quot;string&quot;){var L=q.split(&quot;\n&quot;);f=L.slice(f[0],f[0]+f[1]).concat(f[2]===null?[]:f[2].split(&quot;\n&quot;)).join(&quot;\n&quot;);S[k][1]=f}q=f}
+var T=document.getElementById(&quot;t&quot;),i=0,j=0,base=F0;
+function e(s){return s.replace(/&amp;/g,&quot;&amp;amp;&quot;).replace(/&lt;/g,&quot;&amp;lt;&quot;)}
+function paint(s,c){T.innerHTML=e(s).replace(/^(root@lab:[^#\n]*#|&gt;&gt;&gt;|\.\.\.)/gm,&quot;&lt;b&gt;$1&lt;/b&gt;&quot;)+(c?&quot;&lt;i&gt; &lt;/i&gt;&quot;:&quot;&quot;)}
+function tick(){
+ if(i&gt;=S.length){setTimeout(function(){i=0;j=0;base=F0;paint(base+&quot; &quot;,1);setTimeout(tick,900)},6000);return}
+ var c=S[i][0];
+ if(c&amp;&amp;j&lt;=c.length){paint(base+&quot; &quot;+c.slice(0,j),1);j++;setTimeout(tick,j===1?600:50);return}
+ paint(S[i][1],0);base=S[i][1];i++;j=0;
+ setTimeout(tick,1200+Math.min(base.split(&quot;\n&quot;).length*80,1800))
+}
+paint(S[S.length-1][1],0);
+if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(function(){paint(F0+&quot; &quot;,1);setTimeout(tick,700)},2500);
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
+"></iframe>
+<aside hidden>Демонстрация. Скрипт quadfit.py воспроизводит скан квадрупольной линзой с теми же данными, что и демонстрация лекции 11: генератор случайных чисел с зерном 42 добавляет к расчётным размерам нормальный шум 20 мкм в 25 точках. Модель sigma2 записана для квадрата размера, и curve_fit вызывается трижды с одним начальным приближением. Без весов получим ε = 0,126 ± 0,045 мкм, β0 = 6,58 ± 2,35 м и α0 = −1,61 ± 0,64: погрешность эмиттанса составляет 36 %. С sigma, равным пересчитанной погрешности квадрата 2σ·20 мкм, ε = 0,119 ± 0,007 мкм, β0 = 6,97 ± 0,44 м и α0 = −1,71 ± 0,12. С absolute_sigma=True значения параметров те же, а погрешности больше — 0,009 мкм, 0,51 м и 0,13: они отражают заданную ошибку 20 мкм, а не разброс остатков, и отличаются от предыдущей строки множителем, равным корню из приведённого χ². Сам приведённый χ² равен 0,74 и согласуется с единицей для 22 степеней свободы, поэтому оценка ошибки измерений не противоречит данным. Все три подгонки содержат истинные значения в пределах погрешностей, но взвешенная точнее в пять раз: погрешность эмиттанса около 7 % против 36 %. Коэффициент корреляции ε и β0 равен −0,99: параметры определяются совместно, и для величины, вычисляемой из нескольких параметров, необходима вся матрица pcov, а не только её диагональ. Наконец, размер в перетяжке по подгонке без весов равен 0,166 мм, по взвешенной — 0,157 мм при 0,158 мм у модели: подгонка без весов хуже всего описывает именно точки у перетяжки, которые несут информацию об эмиттансе. В лекции 11 по тем же 25 измерениям строится график с отрезками погрешностей.</aside>
+</section>
+<section id="sci-interp" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
+<div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
+<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10">Интерполяция</h2>
+<h2 style="font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#FF87FF; padding:0px 14px">таблицы</h2>
+</div>
+<div style="display:flex; gap:48px; align-items:start">
+<div style="width:900px; flex-shrink:0; display:flex; flex-direction:column; gap:24px">
+<div style="background:#F4F1EA; border-radius:18px; padding:22px 28px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; line-height:1.45; color:#201B10">from scipy import interpolate<br> <br>V = np.array([0.0, 1.0, 2.0, 3.0, 4.0, 5.0])  # мВ<br>T = np.array([0.0, 25.3, 50.1, 76.4, 101.8, 128.0])<br>np.interp(2.5, V, T)            # 63.25<br>spl = interpolate.CubicSpline(V, T)<br>spl(2.5)                        # 63.21<br>spl.derivative()(2.5)           # 26.5 °C/мВ<br>np.interp(6.0, V, T), spl(6.0)  # 128.0, 158.1</p></div>
+</div>
+<div style="flex:1; display:flex; flex-direction:column; gap:24px">
+<table style="font-size:24px; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; border:2px solid #201B10">
+<tr style="background:#FF87FF"><th style="width:30%; color:#201B10"></th><th style="width:33%; color:#201B10">np.interp</th><th style="width:37%; color:#201B10">CubicSpline</th></tr>
+<tr style="background:#FFFFFF"><td>между узлами</td><td>отрезки, излом</td><td>гладкая кривая</td></tr>
+<tr style="background:#FFEAFE"><td>за таблицей</td><td>крайнее значение</td><td>продолжение полинома</td></tr>
+<tr style="background:#FFFFFF"><td>производная</td><td>ступенчатая</td><td>spl.derivative()</td></tr>
+</table>
+<div style="background:#FFE2D1; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
+<p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#FF5F00; padding:2px 12px">Важно</p>
+<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">Интерполяция проходит через каждую точку, включая шум: шумные данные сглаживаются или подгоняются моделью.</p>
+</div>
+<div style="background:#F0EDFF; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
+<p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Пояснение</p>
+<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">interp1d отнесён к устаревшим интерфейсам: вместо него np.interp, CubicSpline, make_interp_spline.</p>
+</div>
+</div>
+</div>
+<aside hidden>Изложение. Калибровочная кривая или справочная таблица известна лишь в узлах, а значение требуется между ними. Рассмотрим калибровку термопары — шесть пар «напряжение — температура». Кусочно-линейная интерполяция соединяет соседние узлы отрезками; для неё достаточно функции np.interp, которая при 2,5 мВ даёт 63,25 °C. Кубический сплайн CubicSpline представляет собой кусочный кубический полином с непрерывными первой и второй производными: при 2,5 мВ он даёт 63,21 °C, а метод derivative возвращает производную как новую функцию: наклон калибровочной кривой dT/dV при 2,5 мВ равен 26,5 °C/мВ, что соответствует чувствительности термопары около 38 мкВ/°C. Таким образом, сплайн обеспечивает гладкую кривую и её производные, а линейная интерполяция не добавляет к данным ничего, кроме отрезков. За пределами таблицы np.interp возвращает крайнее значение 128,0, а сплайн по умолчанию продолжает крайний полином и при 6 мВ даёт 158,1 °C, поэтому экстраполяция требует осознанного решения. Класс interp1d в документации SciPy отнесён к устаревшим и вне таблицы по умолчанию возбуждает ValueError; для новых программ рекомендуются np.interp, CubicSpline и make_interp_spline. Интерполяция проходит точно через все узлы, включая испорченные шумом, поэтому шумные измерения сглаживаются функцией make_smoothing_spline или описываются моделью через curve_fit.</aside>
 </section>
 <section id="summary" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1500,8 +1622,9 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 <div style="display:flex; gap:40px; align-items:center"><p style="width:80px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; text-align:right; color:#0B8FD6">03</p><p style="flex:1; font-size:30px; line-height:1.35; color:#201B10">Тип элементов определяет память, диапазон и точность; переполнение и округление происходят без сообщений.</p></div>
 <div style="display:flex; gap:40px; align-items:center"><p style="width:80px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; text-align:right; color:#0B8FD6">04</p><p style="flex:1; font-size:30px; line-height:1.35; color:#201B10">Таблица pandas — столбцы-массивы с индексом; меняется только операцией над ней самой.</p></div>
 <div style="display:flex; gap:40px; align-items:center"><p style="width:80px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; text-align:right; color:#0B8FD6">05</p><p style="flex:1; font-size:30px; line-height:1.35; color:#201B10">groupby, merge, resample и rolling заменяют циклы по строкам; apply — последнее средство.</p></div>
+<div style="display:flex; gap:40px; align-items:center"><p style="width:80px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; text-align:right; color:#0B8FD6">06</p><p style="flex:1; font-size:30px; line-height:1.35; color:#201B10">SciPy — проверенные методы; допуски solve_ivp и веса curve_fit задаются явно, погрешности берутся из pcov.</p></div>
 </div>
-<aside hidden>Изложение. Подведём итог. Массив NumPy хранит числа одного типа подряд, а форма и шаги описывают, как читать этот буфер; поэтому срезы и транспонирование не копируют данные, а reshape копирует их, лишь когда шаги не позволяют иначе. Срез — представление, выборка по маске или списку индексов — копия, а запись по маске меняет исходный массив. Операции по осям и broadcasting заменяют циклы, но промежуточные массивы занимают память. Тип элементов определяет память, диапазон и точность, а переполнение целых и потеря точности вещественных происходят без сообщений. Таблица pandas состоит из столбцов-массивов с общим индексом; с версии 3.0 любой результат индексации ведёт себя как копия, и изменить таблицу можно только операцией над ней самой. Группировка, объединение, пересчёт на сетку и скользящие окна заменяют циклы по строкам, а apply остаётся последним средством.</aside>
+<aside hidden>Изложение. Подведём итог. Массив NumPy хранит числа одного типа подряд, а форма и шаги описывают, как читать этот буфер; поэтому срезы и транспонирование не копируют данные, а reshape копирует их, лишь когда шаги не позволяют иначе. Срез — представление, выборка по маске или списку индексов — копия, а запись по маске меняет исходный массив. Операции по осям и broadcasting заменяют циклы, но промежуточные массивы занимают память. Тип элементов определяет память, диапазон и точность, а переполнение целых и потеря точности вещественных происходят без сообщений. Таблица pandas состоит из столбцов-массивов с общим индексом; с версии 3.0 любой результат индексации ведёт себя как копия, и изменить таблицу можно только операцией над ней самой. Группировка, объединение, пересчёт на сетку и скользящие окна заменяют циклы по строкам, а apply остаётся последним средством. SciPy предоставляет проверенные численные методы, но точность и смысл результата задаются явно: допуски solve_ivp по умолчанию дают около трёх верных знаков, погрешности параметров curve_fit зависят от весов и аргумента absolute_sigma, а преобразование данных меняет веса точек.</aside>
 </section>
 <section id="exercises" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:24px">
@@ -1515,12 +1638,13 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 <div style="display:flex; gap:40px; align-items:center"><p style="width:80px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; text-align:right; color:#0B8FD6">02</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:30px; font-weight:700; line-height:1.3; color:#201B10">Матрицы перехода</p><p style="font-size:24px; line-height:1.35; color:#201B10">произведение матриц элементов канала через @ и сверка с циклом</p></div></div>
 <div style="display:flex; gap:40px; align-items:center"><p style="width:80px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; text-align:right; color:#0B8FD6">03</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:30px; font-weight:700; line-height:1.3; color:#201B10">Журнал установки</p><p style="font-size:24px; line-height:1.35; color:#201B10">CSV с датами: resample по минутам, скользящее среднее, поиск пропусков</p></div></div>
 <div style="display:flex; gap:40px; align-items:center"><p style="width:80px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; text-align:right; color:#0B8FD6">04</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:30px; font-weight:700; line-height:1.3; color:#201B10">Пассажиры «Титаника»</p><p style="font-size:24px; line-height:1.35; color:#201B10">доля выживших по полу, классу и возрасту; заполнение возраста медианой группы</p></div></div>
+<div style="display:flex; gap:40px; align-items:center"><p style="width:80px; font-family:'Jersey 10', 'Courier New', monospace; font-size:80px; line-height:0.8; text-align:right; color:#0B8FD6">05</p><div style="flex:1; display:flex; flex-direction:column; gap:6px"><p style="font-size:30px; font-weight:700; line-height:1.3; color:#201B10">Скан линзой</p><p style="font-size:24px; line-height:1.35; color:#201B10">подгонка σ(k) напрямую с ошибкой 20 мкм и сравнение с подгонкой σ²</p></div></div>
 </div>
 </div>
 <div style="flex:1; display:flex; flex-direction:column; gap:24px">
 <div style="background:#F0EDFF; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#B6A3FF; padding:2px 12px">Пояснение</p>
-<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">Каждый векторный расчёт сверяется с прямым циклом на небольших данных.</p>
+<p style="font-size:26px; line-height:1.4; color:#201B10; line-height:1.45">Каждый векторный расчёт сверяется с прямым циклом на небольших данных, численный — с точным решением.</p>
 </div>
 <div style="background:#D4FAE6; border-radius:20px; padding:24px 32px; display:flex; flex-direction:column; gap:12px">
 <p style="align-self:start; font-size:24px; font-weight:700; text-transform:uppercase; color:#201B10; background:#2AE881; padding:2px 12px">Для физика</p>
@@ -1528,20 +1652,21 @@ if(!matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches)setTimeout(
 </div>
 </div>
 </div>
-<aside hidden>Изложение. Отдельного задания к лекции нет: упражнения служат самопроверке. Первое — прочитать массив энергий частиц из файла .npy, построить гистограмму, вычислить среднее и разброс по осям и отобрать частицы по условию маской. Второе — вычислить матрицу перехода через последовательность элементов канала как произведение матриц и сверить результат с циклом. Третье — прочитать журнал установки с метками времени, пересчитать его на минутную сетку, сгладить скользящим средним и найти интервалы без показаний. Четвёртое — по таблице пассажиров «Титаника» вычислить долю выживших по полу, классу и возрастной группе и заполнить пропущенный возраст медианой группы. Каждый векторный расчёт сверяется с прямым циклом на небольших данных.</aside>
+<aside hidden>Изложение. Отдельного задания к лекции нет: упражнения служат самопроверке. Первое — прочитать массив энергий частиц из файла .npy, построить гистограмму, вычислить среднее и разброс по осям и отобрать частицы по условию маской. Второе — вычислить матрицу перехода через последовательность элементов канала как произведение матриц и сверить результат с циклом. Третье — прочитать журнал установки с метками времени, пересчитать его на минутную сетку, сгладить скользящим средним и найти интервалы без показаний. Четвёртое — по таблице пассажиров «Титаника» вычислить долю выживших по полу, классу и возрастной группе и заполнить пропущенный возраст медианой группы. Пятое — подогнать к данным скана квадрупольной линзой модель самого размера σ(k) с погрешностью 20 мкм и сравнить эмиттанс и его погрешность с подгонкой квадратов. Каждый векторный расчёт сверяется с прямым циклом на небольших данных, а численный — с точным решением там, где оно известно.</aside>
 </section>
 <section id="sources" style="background:#FFFFFF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:column; gap:48px">
 <h2 style="align-self:start; font-size:76px; font-weight:800; line-height:1.15; color:#201B10; background:#B6A3FF; padding:0px 14px">Источники</h2>
 <div style="display:flex; flex-direction:column; gap:10px">
-<div style="display:flex; gap:28px; align-items:baseline"><p style="width:60px; font-family:'Jersey 10', 'Courier New', monospace; font-size:56px; line-height:0.8; text-align:right; color:#7C62F0">1</p><div style="flex:1; display:flex; flex-direction:column; gap:2px"><p style="font-size:26px; line-height:1.35; color:#201B10">Книга курса: главы «Научные библиотеки Python», «NumPy и pandas», приложение «Массивы NumPy»</p><p style="font-size:24px; color:#6B665C"><a href="https://phys-dev.github.io/soft-dev-book/">phys-dev.github.io/soft-dev-book</a></p></div></div>
+<div style="display:flex; gap:28px; align-items:baseline"><p style="width:60px; font-family:'Jersey 10', 'Courier New', monospace; font-size:56px; line-height:0.8; text-align:right; color:#7C62F0">1</p><div style="flex:1; display:flex; flex-direction:column; gap:2px"><p style="font-size:26px; line-height:1.35; color:#201B10">Книга курса: главы «Научные библиотеки Python», «NumPy и pandas», «SciPy», приложение «Массивы NumPy»</p><p style="font-size:24px; color:#6B665C"><a href="https://phys-dev.github.io/soft-dev-book/">phys-dev.github.io/soft-dev-book</a></p></div></div>
 <div style="display:flex; gap:28px; align-items:baseline"><p style="width:60px; font-family:'Jersey 10', 'Courier New', monospace; font-size:56px; line-height:0.8; text-align:right; color:#7C62F0">2</p><div style="flex:1; display:flex; flex-direction:column; gap:2px"><p style="font-size:26px; line-height:1.35; color:#201B10">NumPy — документация</p><p style="font-size:24px; color:#6B665C"><a href="https://numpy.org/doc/stable/">numpy.org/doc/stable</a></p></div></div>
 <div style="display:flex; gap:28px; align-items:baseline"><p style="width:60px; font-family:'Jersey 10', 'Courier New', monospace; font-size:56px; line-height:0.8; text-align:right; color:#7C62F0">3</p><div style="flex:1; display:flex; flex-direction:column; gap:2px"><p style="font-size:26px; line-height:1.35; color:#201B10">pandas — документация и учебник для начинающих</p><p style="font-size:24px; color:#6B665C"><a href="https://pandas.pydata.org/docs/">pandas.pydata.org/docs</a></p></div></div>
 <div style="display:flex; gap:28px; align-items:baseline"><p style="width:60px; font-family:'Jersey 10', 'Courier New', monospace; font-size:56px; line-height:0.8; text-align:right; color:#7C62F0">4</p><div style="flex:1; display:flex; flex-direction:column; gap:2px"><p style="font-size:26px; line-height:1.35; color:#201B10">Что нового в pandas 3.0</p><p style="font-size:24px; color:#6B665C"><a href="https://pandas.pydata.org/docs/whatsnew/v3.0.0.html">pandas.pydata.org/docs/whatsnew/v3.0.0.html</a></p></div></div>
-<div style="display:flex; gap:28px; align-items:baseline"><p style="width:60px; font-family:'Jersey 10', 'Courier New', monospace; font-size:56px; line-height:0.8; text-align:right; color:#7C62F0">5</p><div style="flex:1; display:flex; flex-direction:column; gap:2px"><p style="font-size:26px; line-height:1.35; color:#201B10">Harris C. R. et al. Array programming with NumPy. – Nature, 2020. – Vol. 585</p><p style="font-size:24px; color:#6B665C"><a href="https://doi.org/10.1038/s41586-020-2649-2">doi.org/10.1038/s41586-020-2649-2</a></p></div></div>
-<div style="display:flex; gap:28px; align-items:baseline"><p style="width:60px; font-family:'Jersey 10', 'Courier New', monospace; font-size:56px; line-height:0.8; text-align:right; color:#7C62F0">6</p><div style="flex:1; display:flex; flex-direction:column; gap:2px"><p style="font-size:26px; line-height:1.35; color:#201B10">McKinney W. Python for Data Analysis. – 3rd ed. – O'Reilly, 2022</p><p style="font-size:24px; color:#6B665C"><a href="https://wesmckinney.com/book/">wesmckinney.com/book</a></p></div></div>
-<div style="display:flex; gap:28px; align-items:baseline"><p style="width:60px; font-family:'Jersey 10', 'Courier New', monospace; font-size:56px; line-height:0.8; text-align:right; color:#7C62F0">7</p><div style="flex:1; display:flex; flex-direction:column; gap:2px"><p style="font-size:26px; line-height:1.35; color:#201B10">Rougier N. From Python to NumPy. – 2017</p><p style="font-size:24px; color:#6B665C"><a href="https://www.labri.fr/perso/nrougier/from-python-to-numpy/">labri.fr/perso/nrougier/from-python-to-numpy</a></p></div></div>
+<div style="display:flex; gap:28px; align-items:baseline"><p style="width:60px; font-family:'Jersey 10', 'Courier New', monospace; font-size:56px; line-height:0.8; text-align:right; color:#7C62F0">5</p><div style="flex:1; display:flex; flex-direction:column; gap:2px"><p style="font-size:26px; line-height:1.35; color:#201B10">SciPy — документация</p><p style="font-size:24px; color:#6B665C"><a href="https://docs.scipy.org/doc/scipy/">docs.scipy.org/doc/scipy</a></p></div></div>
+<div style="display:flex; gap:28px; align-items:baseline"><p style="width:60px; font-family:'Jersey 10', 'Courier New', monospace; font-size:56px; line-height:0.8; text-align:right; color:#7C62F0">6</p><div style="flex:1; display:flex; flex-direction:column; gap:2px"><p style="font-size:26px; line-height:1.35; color:#201B10">Harris C. R. et al. Array programming with NumPy. – Nature, 2020. – Vol. 585</p><p style="font-size:24px; color:#6B665C"><a href="https://doi.org/10.1038/s41586-020-2649-2">doi.org/10.1038/s41586-020-2649-2</a></p></div></div>
+<div style="display:flex; gap:28px; align-items:baseline"><p style="width:60px; font-family:'Jersey 10', 'Courier New', monospace; font-size:56px; line-height:0.8; text-align:right; color:#7C62F0">7</p><div style="flex:1; display:flex; flex-direction:column; gap:2px"><p style="font-size:26px; line-height:1.35; color:#201B10">McKinney W. Python for Data Analysis. – 3rd ed. – O'Reilly, 2022</p><p style="font-size:24px; color:#6B665C"><a href="https://wesmckinney.com/book/">wesmckinney.com/book</a></p></div></div>
+<div style="display:flex; gap:28px; align-items:baseline"><p style="width:60px; font-family:'Jersey 10', 'Courier New', monospace; font-size:56px; line-height:0.8; text-align:right; color:#7C62F0">8</p><div style="flex:1; display:flex; flex-direction:column; gap:2px"><p style="font-size:26px; line-height:1.35; color:#201B10">Rougier N. From Python to NumPy. – 2017</p><p style="font-size:24px; color:#6B665C"><a href="https://www.labri.fr/perso/nrougier/from-python-to-numpy/">labri.fr/perso/nrougier/from-python-to-numpy</a></p></div></div>
 </div>
-<aside hidden>Изложение. Основой лекции служат главы книги курса «Научные библиотеки Python», «NumPy и pandas» и приложение «Массивы NumPy». Для самостоятельного изучения рекомендуются документация NumPy и pandas, включая учебник для начинающих и описание изменений pandas 3.0, обзорная статья разработчиков NumPy в журнале Nature, книга создателя pandas У. Маккинни «Python for Data Analysis», доступная в открытом виде на сайте автора (третье издание 2022 года описывает pandas 2.0, без копирования при записи и типа str), и книга Н. Ружье «From Python to NumPy» о векторной записи вычислений.</aside>
+<aside hidden>Изложение. Основой лекции служат главы книги курса «Научные библиотеки Python», «NumPy и pandas», «SciPy» и приложение «Массивы NumPy». Для самостоятельного изучения рекомендуются документация NumPy, pandas и SciPy, включая учебник pandas для начинающих, описание изменений pandas 3.0 и примеры к каждой функции SciPy, обзорная статья разработчиков NumPy в журнале Nature, книга создателя pandas У. Маккинни «Python for Data Analysis», доступная в открытом виде на сайте автора (третье издание 2022 года описывает pandas 2.0, без копирования при записи и типа str), и книга Н. Ружье «From Python to NumPy» о векторной записи вычислений.</aside>
 </section>
 <section id="end" data-transition="fade" style="background:#E3F5FF; color:#201B10; font-family:'JetBrains Mono', 'Courier New', monospace; padding:96px 104px; display:flex; flex-direction:row; gap:64px">
 <div style="flex:1; display:flex; flex-direction:column; justify-content:space-between">
