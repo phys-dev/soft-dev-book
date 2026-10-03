@@ -14,7 +14,7 @@
 | [Окружение и утилиты](./linux-tools-task.md) | [Инструменты Linux](../linux/tools.md), [Внутреннее устройство Linux](../linux/structure.md) | `phys-dev/linux-tools-task` |
 | [Долгоиграющие процессы](./linux-structure-task.md) | [Внутреннее устройство Linux](../linux/structure.md) | `phys-dev/linux-structure-task` |
 | [Задачи на Python](./python-algo-task.md) | [Введение в алгоритмы](../cs/basic-algos.md), [Сложность операций с коллекциями](../dev/python/o-notation.md) | `phys-dev/python-algo-task` |
-| [Деплой стартапа](./kitty-startup-task.md) | [От скрипта к приложению](../dev/app.md), [Docker](../dev/docker.md), [Сети и веб-технологии](../dev/web.md), [Базы данных](../dev/bd.md) | `phys-dev/kitty-startup-task` |
+| [Деплой стартапа](./kitty-startup-task.md) | [От скрипта к приложению](../dev/app.md), [Docker](../dev/docker.md), [Компьютерные сети](../dev/net.md), [Веб-технологии](../dev/web.md), [Базы данных](../dev/bd.md), [Работа с базами данных](../dev/bd-work.md), [Системный дизайн](../dev/system-design.md) | `phys-dev/kitty-startup-task` |
 | [Итоговый проект](./final-project-requirements.md) | вся книга | свой репозиторий |
 
 Адрес репозитория складывается из `https://github.com/` и имени из таблицы.
