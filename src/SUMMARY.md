@@ -54,6 +54,8 @@
 - [Базы данных](./dev/bd.md)
 - [Работа с базами данных](./dev/bd-work.md)
 - [Системный дизайн](./dev/system-design.md)
+- [Наблюдаемость](./dev/observability.md)
+- [Поиск неисправностей](./dev/troubleshooting.md)
 
 # Обработка данных
 

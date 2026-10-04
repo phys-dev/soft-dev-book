@@ -78,3 +78,11 @@
 48. Федоров В. В. KENV : свидетельство о государственной регистрации программы для ЭВМ № 2024611244 от 18.01.2024 / В. В. Федоров, Д. А. Никифоров, А. В. Петренко. – 2024.
 49. Федоров В. В. SCAUT : свидетельство о государственной регистрации программы для ЭВМ № 2025619977 от 21.04.2025 / В. В. Федоров, Д. А. Никифоров. – 2025.
 50. Федоров В. В. ACCUMULATOR : свидетельство о государственной регистрации программы для ЭВМ № 2026668488 от 07.07.2026 / В. В. Федоров. – 2026.
+
+## Эксплуатация программ
+
+51. Pivotto J. Prometheus: Up & Running. Infrastructure and Application Performance Monitoring / J. Pivotto, B. Brazil. – 2nd ed. – O'Reilly Media, 2023.
+52. Majors C. Observability Engineering: Achieving Production Excellence / C. Majors, L. Fong-Jones, G. Miranda. – O'Reilly Media, 2022.
+53. Gregg B. Systems Performance: Enterprise and the Cloud / B. Gregg. – 2nd ed. – Addison-Wesley, 2020.
+54. Davidovič Š. Incident Metrics in SRE: Critically Evaluating MTTR and Friends / Š. Davidovič. – O'Reilly Media, 2021. – Режим доступа: https://sre.google/resources/practices-and-processes/incident-metrics-in-sre/. Дата обращения: 04.10.2026.
+55. Pinheiro E. Failure Trends in a Large Disk Drive Population / E. Pinheiro, W.-D. Weber, L. A. Barroso // Proceedings of the 5th USENIX Conference on File and Storage Technologies (FAST'07). – San Jose, 2007. – P. 17–29.
