@@ -1,0 +1,876 @@
+<!DOCTYPE HTML>
+<html lang="ru" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Наблюдаемость - Разработка и применение программного обеспечения в физических исследованиях</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../intro/intro.html">О книге</a></li><li class="chapter-item expanded affix "><a href="../intro/about-me.html">О себе</a></li><li class="chapter-item expanded affix "><li class="part-title">Инструменты разработчика</li><li class="chapter-item expanded "><a href="../ai/intro.html"><strong aria-hidden="true">1.</strong> ИИ для разработки</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ai/context.html"><strong aria-hidden="true">1.1.</strong> Контекст и скорость изменений</a></li><li class="chapter-item expanded "><a href="../ai/develop.html"><strong aria-hidden="true">1.2.</strong> ИИ и разработчик</a></li><li class="chapter-item expanded "><a href="../ai/basic.html"><strong aria-hidden="true">1.3.</strong> Технические основы</a></li><li class="chapter-item expanded "><a href="../ai/instruments.html"><strong aria-hidden="true">1.4.</strong> Инструментарий</a></li><li class="chapter-item expanded "><a href="../ai/copilot.html"><strong aria-hidden="true">1.5.</strong> GitHub Copilot</a></li><li class="chapter-item expanded "><a href="../ai/qa.html"><strong aria-hidden="true">1.6.</strong> Вопросы и ответы</a></li></ol></li><li class="chapter-item expanded "><a href="../dev/git.html"><strong aria-hidden="true">2.</strong> Git</a></li><li class="chapter-item expanded affix "><li class="part-title">Операционная система Linux</li><li class="chapter-item expanded "><a href="../linux/intro.html"><strong aria-hidden="true">3.</strong> Основы Linux</a></li><li class="chapter-item expanded "><a href="../linux/tools.html"><strong aria-hidden="true">4.</strong> Инструменты</a></li><li class="chapter-item expanded "><a href="../linux/booting.html"><strong aria-hidden="true">5.</strong> Процесс загрузки</a></li><li class="chapter-item expanded "><a href="../linux/filesystems.html"><strong aria-hidden="true">6.</strong> Файловые системы</a></li><li class="chapter-item expanded "><a href="../linux/install-arch-linux.html"><strong aria-hidden="true">7.</strong> Установка Arch Linux</a></li><li class="chapter-item expanded "><a href="../linux/structure.html"><strong aria-hidden="true">8.</strong> Внутреннее устройство Linux</a></li><li class="chapter-item expanded "><a href="../dev/docker.html"><strong aria-hidden="true">9.</strong> Docker</a></li><li class="chapter-item expanded affix "><li class="part-title">Язык Python</li><li class="chapter-item expanded "><a href="../dev/python/init.html"><strong aria-hidden="true">10.</strong> Устройство интерпретатора Python</a></li><li class="chapter-item expanded "><a href="../dev/python/objects.html"><strong aria-hidden="true">11.</strong> Объекты и память</a></li><li class="chapter-item expanded "><a href="../dev/python/collections.html"><strong aria-hidden="true">12.</strong> Коллекции</a></li><li class="chapter-item expanded "><a href="../dev/python/o-notation.html"><strong aria-hidden="true">13.</strong> Сложность операций с коллекциями</a></li><li class="chapter-item expanded "><a href="../dev/python/functions.html"><strong aria-hidden="true">14.</strong> Функции</a></li><li class="chapter-item expanded "><a href="../dev/python/async.html"><strong aria-hidden="true">15.</strong> Итераторы, генераторы и корутины</a></li><li class="chapter-item expanded "><a href="../dev/python/decorators.html"><strong aria-hidden="true">16.</strong> Декораторы и functools</a></li><li class="chapter-item expanded "><a href="../dev/python/classes.html"><strong aria-hidden="true">17.</strong> Классы</a></li><li class="chapter-item expanded affix "><li class="part-title">Алгоритмы и структуры данных</li><li class="chapter-item expanded "><a href="../cs/intro.html"><strong aria-hidden="true">18.</strong> Роль алгоритмов в работе физика</a></li><li class="chapter-item expanded "><a href="../cs/basic-algos.html"><strong aria-hidden="true">19.</strong> Введение в алгоритмы</a></li><li class="chapter-item expanded "><a href="../cs/basic-structures.html"><strong aria-hidden="true">20.</strong> Основные структуры данных</a></li><li class="chapter-item expanded "><a href="../cs/recurs-and-sorts.html"><strong aria-hidden="true">21.</strong> Рекурсия и сортировки</a></li><li class="chapter-item expanded "><a href="../cs/hash-funcs.html"><strong aria-hidden="true">22.</strong> Хеш-функции</a></li><li class="chapter-item expanded "><a href="../cs/trees.html"><strong aria-hidden="true">23.</strong> Деревья</a></li><li class="chapter-item expanded "><a href="../cs/graphs.html"><strong aria-hidden="true">24.</strong> Графы</a></li><li class="chapter-item expanded affix "><li class="part-title">Инженерные практики</li><li class="chapter-item expanded "><a href="../dev/life.html"><strong aria-hidden="true">25.</strong> Жизненный цикл ПО</a></li><li class="chapter-item expanded "><a href="../dev/python/requirements.html"><strong aria-hidden="true">26.</strong> Требования к коду</a></li><li class="chapter-item expanded "><a href="../dev/app.html"><strong aria-hidden="true">27.</strong> От скрипта к приложению</a></li><li class="chapter-item expanded "><a href="../dev/net.html"><strong aria-hidden="true">28.</strong> Компьютерные сети</a></li><li class="chapter-item expanded "><a href="../dev/web.html"><strong aria-hidden="true">29.</strong> Веб-технологии</a></li><li class="chapter-item expanded "><a href="../dev/bd.html"><strong aria-hidden="true">30.</strong> Базы данных</a></li><li class="chapter-item expanded "><a href="../dev/bd-work.html"><strong aria-hidden="true">31.</strong> Работа с базами данных</a></li><li class="chapter-item expanded "><a href="../dev/system-design.html"><strong aria-hidden="true">32.</strong> Системный дизайн</a></li><li class="chapter-item expanded "><a href="../dev/observability.html" class="active"><strong aria-hidden="true">33.</strong> Наблюдаемость</a></li><li class="chapter-item expanded "><a href="../dev/troubleshooting.html"><strong aria-hidden="true">34.</strong> Поиск неисправностей</a></li><li class="chapter-item expanded affix "><li class="part-title">Обработка данных</li><li class="chapter-item expanded "><a href="../dev/python/intro.html"><strong aria-hidden="true">35.</strong> Научные библиотеки Python</a></li><li class="chapter-item expanded "><a href="../dev/python/numpy-and-pandas.html"><strong aria-hidden="true">36.</strong> NumPy и pandas</a></li><li class="chapter-item expanded "><a href="../dev/python/scipy.html"><strong aria-hidden="true">37.</strong> SciPy</a></li><li class="chapter-item expanded "><a href="../dev/python/visualization.html"><strong aria-hidden="true">38.</strong> Визуализация на Python</a></li><li class="chapter-item expanded "><a href="../ds/intro.html"><strong aria-hidden="true">39.</strong> Машинное обучение</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ds/basic.html"><strong aria-hidden="true">39.1.</strong> Основные понятия</a></li><li class="chapter-item expanded "><a href="../ds/ml.html"><strong aria-hidden="true">39.2.</strong> Классические алгоритмы</a></li><li class="chapter-item expanded "><a href="../ds/nn.html"><strong aria-hidden="true">39.3.</strong> Нейронные сети</a></li><li class="chapter-item expanded "><a href="../ds/tools.html"><strong aria-hidden="true">39.4.</strong> Инструменты: scikit-learn</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Ускорение расчётов</li><li class="chapter-item expanded "><a href="../perf/intro.html"><strong aria-hidden="true">40.</strong> С чего начинать оптимизацию</a></li><li class="chapter-item expanded "><a href="../dev/python/optimization.html"><strong aria-hidden="true">41.</strong> Причины низкой скорости Python</a></li><li class="chapter-item expanded "><a href="../perf/python-tricks.html"><strong aria-hidden="true">42.</strong> Оптимизация средствами самого Python</a></li><li class="chapter-item expanded "><a href="../perf/perf.html"><strong aria-hidden="true">43.</strong> Скорость выполнения программ</a></li><li class="chapter-item expanded "><a href="../perf/gil.html"><strong aria-hidden="true">44.</strong> Многопоточность и GIL</a></li><li class="chapter-item expanded "><a href="../perf/async.html"><strong aria-hidden="true">45.</strong> Асинхронность</a></li><li class="chapter-item expanded "><a href="../perf/cuda.html"><strong aria-hidden="true">46.</strong> CUDA и вычисления на GPU</a></li><li class="chapter-item expanded affix "><li class="part-title">Разбор реальных кодов</li><li class="chapter-item expanded "><a href="../examples/intro.html"><strong aria-hidden="true">47.</strong> Коды и скрипты</a></li><li class="chapter-item expanded "><a href="../examples/kenv.html"><strong aria-hidden="true">48.</strong> Уравнение огибающей Капчинского—Владимирского для пучка заряженных частиц</a></li><li class="chapter-item expanded "><a href="../examples/envelope-optimize.html"><strong aria-hidden="true">49.</strong> Оптимизация огибающей пучка заряженных частиц с помощью генетического алгоритма</a></li><li class="chapter-item expanded "><a href="../examples/redpic.html"><strong aria-hidden="true">50.</strong> Релятивистская разностная схема для расчёта динамики частиц</a></li><li class="chapter-item expanded "><a href="../examples/orbit-correction.html"><strong aria-hidden="true">51.</strong> Коррекция равновесной орбиты с применением матрицы отклика и нейронных сетей</a></li><li class="chapter-item expanded "><a href="../examples/cadquery/layout.html"><strong aria-hidden="true">52.</strong> Трёхмерная схема установки кодом</a></li><li class="chapter-item expanded "><a href="../examples/accumulator.html"><strong aria-hidden="true">53.</strong> Цифровой двойник ускорителя</a></li><li class="chapter-item expanded "><a href="../examples/sava.html"><strong aria-hidden="true">54.</strong> Мультиагентный помощник оператора</a></li><li class="chapter-item expanded "><a href="../examples/ai-scientist.html"><strong aria-hidden="true">55.</strong> Автономный исследователь на языковых моделях</a></li><li class="chapter-item expanded "><a href="../examples/async-api.html"><strong aria-hidden="true">56.</strong> Асинхронное API для кинотеатра</a></li><li class="chapter-item expanded affix "><li class="part-title">Практикум</li><li class="chapter-item expanded "><a href="../practicum/intro.html"><strong aria-hidden="true">57.</strong> Структура заданий</a></li><li class="chapter-item expanded "><a href="../practicum/review-code-task.html"><strong aria-hidden="true">58.</strong> Ревью чужого кода</a></li><li class="chapter-item expanded "><a href="../practicum/markov-chain-task.html"><strong aria-hidden="true">59.</strong> Генерация текста на основе данных</a></li><li class="chapter-item expanded "><a href="../practicum/booting-linux-task.html"><strong aria-hidden="true">60.</strong> Установка Arch Linux вручную с RAID1 и UEFI</a></li><li class="chapter-item expanded "><a href="../practicum/linux-tools-task.html"><strong aria-hidden="true">61.</strong> Настройка окружения и работа с утилитами</a></li><li class="chapter-item expanded "><a href="../practicum/linux-structure-task.html"><strong aria-hidden="true">62.</strong> Работа с долгоиграющими процессами</a></li><li class="chapter-item expanded "><a href="../practicum/python-algo-task.html"><strong aria-hidden="true">63.</strong> Решение задач на Python и анализ сложности</a></li><li class="chapter-item expanded "><a href="../practicum/kitty-startup-task.html"><strong aria-hidden="true">64.</strong> Деплой стартапа</a></li><li class="chapter-item expanded "><a href="../practicum/final-project-requirements.html"><strong aria-hidden="true">65.</strong> Итоговый проект</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Приложение. Экспресс-курс</li><li class="chapter-item expanded "><a href="../dev/python/basics.html"><strong aria-hidden="true">66.</strong> Основы языка</a></li><li class="chapter-item expanded "><a href="../dev/python/numpy.html"><strong aria-hidden="true">67.</strong> Массивы NumPy</a></li><li class="chapter-item expanded "><a href="../dev/python/matplotlib.html"><strong aria-hidden="true">68.</strong> Графики Matplotlib</a></li><li class="chapter-item expanded affix "><a href="../resume/intro.html">Заключение</a></li><li class="chapter-item expanded affix "><a href="../resume/literature.html">Литература и статьи</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Разработка и применение программного обеспечения в физических исследованиях</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/phys-dev/soft-dev-book/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="Наблюдаемость"><a class="header" href="#Наблюдаемость">Наблюдаемость</a></h1>
+<p>Служба, которую разработчик запустил и проверил вручную, со временем начинает работать без него: ночью, в выходные, под нагрузкой, которой не было при отладке. Отказ такой службы обнаруживается либо её собственными средствами, либо пользователями — сменой установки, которая не может открыть данные последнего запуска, или скриптом обработки, который всю ночь получал пустые ответы. Разница между этими случаями измеряется часами простоя и потерянными данными.</p>
+<p>Термин «наблюдаемость» заимствован из теории управления: в работе Р. Калмана 1960 года система называется наблюдаемой, если её внутреннее состояние можно восстановить по выходным сигналам за конечное время. В эксплуатации программ смысл тот же. Программа является <strong>наблюдаемой</strong>, если по тому, что она сообщает о себе, — по журналам, метрикам и трассировкам — можно понять, что происходит внутри неё, в том числе в ситуации, которую никто заранее не предусмотрел [52]. Мониторинг в узком смысле отвечает на заранее заданные вопросы: работает ли служба, не заполнен ли диск. Наблюдаемость позволяет задавать новые вопросы к уже собранным данным, не выпуская новую версию программы.</p>
+<p>В настоящей главе рассматриваются четыре задачи: запись журналов, сбор метрик, трассировка запросов и оповещение дежурного. Последовательно разобраны журналы, метрики и их хранение в Prometheus, трассировки OpenTelemetry, построение панелей и правила оповещений по целям уровня обслуживания, а в завершение перечисленные приёмы применены к программам физической установки. Глава продолжает раздел «Журналы, метрики и трассировки» главы <a href="./system-design.html">«Системный дизайн»</a>, где введены три вида сигналов, идентификатор запроса и пороги скорости расходования бюджета ошибок, и раздел «Логирование вместо print» главы <a href="./app.html">«От скрипта к приложению»</a>. Действия при уже случившемся отказе рассмотрены в следующей главе, <a href="./troubleshooting.html">«Поиск неисправностей»</a>.</p>
+<p>Сквозным примером главы служат две программы ускорительного комплекса. Служба вакуумной системы опрашивает контроллер вакуумметров и сообщает давление в секторах, а архив измерений выдаёт данные запусков сотрудникам и их скриптам по HTTP. Листинги главы выполнены под Python 3.11 с prometheus-client 0.26.0 и opentelemetry-sdk 1.45.0, команда jq — в версии 1.7.1. Демонстрации лекции «Наблюдаемость» записаны на виртуальной машине под Ubuntu 24.04 с Python 3.12, Prometheus 3.15 и node_exporter 1.12; на ней выполнены приведённые в главе команды journalctl и promtool и проверены конфигурация и правила Prometheus, а числа со ссылкой на демонстрацию к лекции взяты из этих записей.</p>
+<blockquote>
+<p><strong>Слайды к главе.</strong> Составляющие простоя, журналы, метрики, сбор и хранение, трассировки, панели и оповещения изложены также в лекции «Наблюдаемость» с демонстрациями в терминале; слайды лекции доступны <a href="https://phys-dev.github.io/soft-dev-book/slides/lecture-19.html#/cover">на сайте книги</a> и <a href="https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-19.pdf">в PDF</a>.</p>
+</blockquote>
+<iframe src="../slides/lecture-19.html#/cover" title="Слайды лекции «Наблюдаемость»" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
+<h2 id="Зачем-наблюдать"><a class="header" href="#Зачем-наблюдать">Зачем наблюдать</a></h2>
+<blockquote>
+<p><strong>Слайды к главе.</strong> Составляющие простоя, цена надёжности, симптомы и причины и средние времена восстановления изложены также в первой части лекции «Наблюдаемость» с демонстрацией в терминале; слайды лекции доступны <a href="https://phys-dev.github.io/soft-dev-book/slides/lecture-19.html#/sec-why">на сайте книги</a> и <a href="https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-19.pdf">в PDF</a>.</p>
+</blockquote>
+<iframe src="../slides/lecture-19.html#/sec-why" title="Слайды лекции «Наблюдаемость»: зачем наблюдать" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
+<h3 id="Из-чего-складывается-простой"><a class="header" href="#Из-чего-складывается-простой">Из чего складывается простой</a></h3>
+<p>Время, в течение которого служба не выполняет свою функцию, складывается из нескольких отрезков. <strong>Обнаружение</strong> длится от начала отказа до первого сигнала о нём — оповещения или сообщения пользователя. <strong>Реакция</strong> — от сигнала до момента, когда дежурный приступил к работе. <strong>Локализация</strong> — от начала работы до момента, когда найден отказавший компонент. <strong>Восстановление</strong> — от найденной причины до возобновления работы. В отрасли эти отрезки обозначают сокращениями MTTD, MTTA и MTTR (среднее время обнаружения, подтверждения и восстановления), причём буква R в разных организациях означает то восстановление работы, то устранение причины. После восстановления наступает холодная фаза: разбор причин и меры, исключающие повторение.</p>
+<p>Наблюдаемость сокращает первые три отрезка. Без метрик и оповещений обнаружение определяется тем, когда пользователь заметит отказ и сообщит о нём; без журналов и трассировок локализация превращается в перебор компонентов. Восстановление же зависит в основном от того, как устроены выкатка и откат версий.</p>
+<p>Средние значения этих отрезков плохо подходят для оценки работы и её изменений [54]. Распределение длительностей инцидентов сильно скошено вправо и близко к логнормальному: большинство инцидентов короткие, а немногие длятся во много раз дольше. Инцидентов же за квартал обычно единицы или десятки, и среднее определяется одним-двумя долгими случаями. Оценим этот эффект моделированием. Пусть длительности простоев установки распределены логнормально с медианой 27 мин, за квартал случается от 8 до 14 инцидентов, а начиная с пятого квартала процесс улучшен так, что длительность каждого инцидента уменьшается на 20 %. В одной реализации средние по кварталам улучшенного периода составили 33, 45, 51 и 25 мин против 29, 27, 15 и 21 мин до улучшения; среднее седьмого квартала, 51 мин при медиане 11 мин, определил один инцидент длительностью 218 мин. Среди 10 000 повторений опыта в 30 % случаев среднее за кварталы 7–8 оказалось не лучше среднего за кварталы 1–2. Таким образом, при десятке событий в квартал тренд среднего неотличим от случайных колебаний. Тот же недостаток, как показано в отчёте [54], имеют медиана и другие сводные показатели, поэтому инциденты разбирают по отдельности, а для оценки изменения выбирают величину, которую оно затрагивает непосредственно, например время обнаружения, или показатели уровня обслуживания, рассмотренные в разделе об оповещениях.</p>
+<p>Надёжность требует затрат. Основной способ её повышения представляет собой резервирование, и каждая дополнительная девятка доступности в десять раз уменьшает допустимый простой: при 99,9 % за сутки допускается \(24 \cdot 3600 \cdot 0{,}001 = 86{,}4\) с, или 1 мин 26 с. Не каждой программе необходимы три девятки. Ночной пересчёт калибровок, отложенный на час, ничего не нарушает, а выдача данных смене во время сеанса требует большего. Цели уровня обслуживания и таблица девяток приведены в разделе «SLI, SLO и SLA» главы <a href="./system-design.html">«Системный дизайн»</a>.</p>
+<h3 id="Симптомы-и-причины"><a class="header" href="#Симптомы-и-причины">Симптомы и причины</a></h3>
+<p><strong>Симптом</strong> представляет собой то, что видит пользователь: ошибки, долгие ответы, устаревшие данные. <strong>Причина</strong> объясняет симптом: переполненный диск, исчерпанная память, отставшая реплика базы. Для смены установки симптом выглядит так: «запуск 42 не открывается в архиве», а причина может состоять в том, что реплика базы метаданных отстала на час. Симптомов немного, и каждый из них означает, что пользователи уже пострадали; причин много, и большая часть из них к симптомам не приводит.</p>
+<p>Различают два способа наблюдения [23]. <strong>Чёрный ящик</strong> проверяет службу снаружи так же, как пользователь: запрашивает страницу и измеряет время ответа. Такая проверка обнаруживает отказ, который уже случился, в том числе отказ сети или балансировщика, невидимый изнутри службы. <strong>Белый ящик</strong> опирается на сведения, которые служба сообщает о себе: счётчики запросов, длину очередей, время обращения к базе. Он позволяет заметить приближение отказа — рост очереди или заполнение диска — и указывает, в каком компоненте искать причину. Отсюда вытекает правило, принятое в книге Google SRE: дежурного вызывают по симптомам, а причины выводят на панели, которые дежурный просматривает, когда симптом уже обнаружен; исключение составляют несомненные и неминуемые причины, например почти заполненный диск [23].</p>
+<h2 id="Журналы"><a class="header" href="#Журналы">Журналы</a></h2>
+<blockquote>
+<p><strong>Слайды к главе.</strong> Структурированная запись, уровни и порог, контекст запроса, журнал systemd и цена хранения изложены также во второй части лекции «Наблюдаемость» с демонстрациями в терминале; слайды лекции доступны <a href="https://phys-dev.github.io/soft-dev-book/slides/lecture-19.html#/sec-logs">на сайте книги</a> и <a href="https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-19.pdf">в PDF</a>.</p>
+</blockquote>
+<iframe src="../slides/lecture-19.html#/sec-logs" title="Слайды лекции «Наблюдаемость»: журналы" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
+<p>Журнал представляет собой последовательность записей о событиях: служба запущена, вакуумметр не ответил, запрос завершился ошибкой. Каждая запись относится к моменту времени и содержит уровень важности, источник и сообщение. Журнал отвечает на вопрос, что произошло с конкретным запросом или циклом работы, и служит основным материалом расследования. Основы модуля <code>logging</code> — логгер на модуль, уровни, вывод в консоль и файл — изложены в разделе «Логирование вместо print» главы <a href="./app.html">«От скрипта к приложению»</a>; здесь рассматривается журнал службы, который читают не только люди, но и программы.</p>
+<h3 id="Структурированная-запись"><a class="header" href="#Структурированная-запись">Структурированная запись</a></h3>
+<p>Строка вида <code>WARNING vacuum: VG04 6.2e-06 Pa above threshold</code> удобна человеку, но программа извлекает из неё давление и имя датчика регулярным выражением, которое перестаёт работать при первом изменении формулировки, а многострочная трассировка стека в таком журнале распадается на отдельные записи. <strong>Структурированный журнал</strong> записывает каждое событие одной строкой JSON с постоянным набором полей: время, уровень, сообщение и поля самого события. Отбор записей по полям выполняется без разбора текста — утилитой jq или системами хранения журналов Loki и Elasticsearch.</p>
+<pre><code class="language-python">import contextvars
+import json
+import logging
+import sys
+
+cycle = contextvars.ContextVar("cycle", default=0)    # номер цикла опроса
+
+
+class JsonFormatter(logging.Formatter):
+    def format(self, record):
+        doc = {"t": self.formatTime(record, "%H:%M:%S"), "lvl": record.levelname,
+               "cyc": cycle.get(), **getattr(record, "fields", {}), "msg": record.getMessage()}
+        return json.dumps(doc, ensure_ascii=False, separators=(",", ":"))
+
+
+handler = logging.StreamHandler(sys.stdout)
+handler.setFormatter(JsonFormatter())
+log = logging.getLogger("vacuum")
+log.addHandler(handler)
+log.setLevel(logging.INFO)
+
+cycle.set(3)
+log.info("норма", extra={"fields": {"vg": "VG01", "p": 2.0e-07}})
+log.warning("выше порога", extra={"fields": {"vg": "VG04", "p": 6.2e-06}})
+log.debug("коды АЦП", extra={"fields": {"vg": "VG04", "adc": [2045, 2046]}})
+</code></pre>
+<pre><code>{"t":"14:27:38","lvl":"INFO","cyc":3,"vg":"VG01","p":2e-07,"msg":"норма"}
+{"t":"14:27:38","lvl":"WARNING","cyc":3,"vg":"VG04","p":6.2e-06,"msg":"выше порога"}
+</code></pre>
+<p>Форматтер собирает словарь из полей записи и сериализует его функцией <code>json.dumps</code>: параметр <code>ensure_ascii=False</code> сохраняет кириллицу читаемой, а <code>separators</code> убирает лишние пробелы. Поля события передаются аргументом <code>extra</code> — модуль <code>logging</code> превращает ключи этого словаря в атрибуты записи, и форматтер читает атрибут <code>fields</code>. Номер цикла опроса берётся из контекстной переменной, о которой сказано ниже. Отладочная запись при пороге INFO не выводится. Если вывод службы сохранён в файл <code>vacuum.json</code>, записи выше уровня INFO с нужными полями отбирает одна команда:</p>
+<pre><code class="language-bash">jq -c 'select(.lvl != "INFO") | {t, vg, p, msg}' vacuum.json
+</code></pre>
+<pre><code>{"t":"14:27:38","vg":"VG04","p":0.0000062,"msg":"выше порога"}
+</code></pre>
+<p>Утилита jq выводит то же число в десятичной записи. Состав полей согласуют для всех служб системы: одинаковые имена времени, уровня и идентификатора запроса позволяют объединить журналы нескольких программ в один поток и отбирать записи одним выражением. Трассировку стека при исключении записывают в одно поле: стандартный форматтер получает её текст методом <code>formatException</code>, а форматтер JSON помещает этот текст в отдельный ключ, и запись остаётся одной строкой.</p>
+<h3 id="Уровни-и-порог"><a class="header" href="#Уровни-и-порог">Уровни и порог</a></h3>
+<p>Модуль <code>logging</code> определяет пять уровней: DEBUG (10), INFO (20), WARNING (30), ERROR (40) и CRITICAL (50). Порог, заданный логгеру или обработчику, отсекает записи с уровнем ниже порога. Вызов <code>log.debug()</code> при пороге INFO завершается сразу после сравнения уровней: запись не создаётся, а сообщение не форматируется, если аргументы переданы отдельно (<code>log.debug("коды %s", adc)</code>), а не подставлены заранее в f-строку. Сами аргументы при этом вычисляются до вызова, поэтому дорогое вычисление, требуемое только для отладочной записи, выполняют под проверкой <code>log.isEnabledFor(logging.DEBUG)</code>. Отладочные вызовы, таким образом, остаются в коде службы, а их сообщения выводятся, только когда порог понижен до DEBUG.</p>
+<p>Для службы обычно выбирают порог INFO. Отладочный порог необходим во время расследования, и включать его требуется без перезапуска: перезапуск сбрасывает именно то состояние, в котором проявляется неисправность, — заполненную очередь, зависшее соединение с прибором. Распространённый способ состоит в обработчике сигнала, который переключает порог работающего процесса:</p>
+<pre><code class="language-python">import logging
+import os
+import signal
+import sys
+
+logging.basicConfig(stream=sys.stdout, level=logging.INFO, format="%(levelname)-7s %(message)s")
+log = logging.getLogger("vacuum")
+pending = []                                    # отметки обработчика сигнала
+
+
+def on_usr1(signum, frame):
+    """Меняет порог и оставляет отметку; запись в журнал — уже в основном цикле."""
+    root = logging.getLogger()
+    root.setLevel(logging.DEBUG if root.level == logging.INFO else logging.INFO)
+    pending.append(signum)
+
+
+signal.signal(signal.SIGUSR1, on_usr1)
+for c in range(1, 5):
+    if c == 3:
+        os.kill(os.getpid(), signal.SIGUSR1)    # в работе сигнал посылает администратор: kill -USR1 PID
+    while pending:
+        pending.pop()
+        log.warning("порог журнала: %s", logging.getLevelName(logging.getLogger().level))
+    log.debug("цикл %d: коды АЦП %s", c, [2040 + c, 2051 - c])
+    log.info("цикл %d: давление в норме", c)
+</code></pre>
+<pre><code>INFO    цикл 1: давление в норме
+INFO    цикл 2: давление в норме
+WARNING порог журнала: DEBUG
+DEBUG   цикл 3: коды АЦП [2043, 2048]
+INFO    цикл 3: давление в норме
+DEBUG   цикл 4: коды АЦП [2044, 2047]
+INFO    цикл 4: давление в норме
+</code></pre>
+<p>Обработчик сигнала только меняет порог и оставляет отметку, а сообщение о смене порога записывает основной цикл. Python выполняет обработчик в главном потоке между инструкциями байт-кода, и запись из обработчика может прервать незавершённую запись в тот же поток вывода; документация модуля <code>logging</code> прямо предупреждает, что из асинхронных обработчиков сигналов журнал может быть недоступен. В работающей системе сигнал посылают командой <code>kill -USR1</code> с идентификатором процесса, а службе systemd — командой <code>systemctl kill -s USR1</code> с именем службы. Повторный сигнал возвращает порог INFO.</p>
+<p>Объём записей ограничивают и другими средствами: трассировку стека повторяющейся ошибки выводят один раз за интервал с числом повторений, а частое однотипное событие заменяют счётчиком — метрикой, рассмотренной в следующем разделе.</p>
+<h3 id="Контекст-запроса"><a class="header" href="#Контекст-запроса">Контекст запроса</a></h3>
+<p>Отдельная запись редко объясняет отказ; объясняет его цепочка записей одного запроса или цикла, проходящая через несколько функций, потоков и служб. Цепочку связывает идентификатор, присутствующий во всех её записях: номер цикла опроса, идентификатор запроса, назначенный nginx на входе в систему (раздел «Журналы, метрики и трассировки» главы <a href="./system-design.html">«Системный дизайн»</a>), или идентификатор трассы OpenTelemetry, рассмотренный ниже.</p>
+<p>Передавать идентификатор аргументом через все функции неудобно. Модуль <code>contextvars</code> позволяет хранить его в <strong>контекстной переменной</strong>: значение, установленное методом <code>set</code>, видно всему коду текущего контекста, а форматтер читает его методом <code>get</code>, как в листинге выше. Задачи asyncio получают копию контекста в момент создания, поэтому идентификаторы параллельно обрабатываемых запросов не смешиваются; функция <code>asyncio.to_thread</code> переносит контекст в рабочий поток сама. Новый поток, созданный модулем <code>threading</code>, в обычной сборке Python начинает работу с пустым контекстом, и значение необходимо передавать явно: функция <code>contextvars.copy_context()</code> возвращает копию текущего контекста, а её метод <code>run</code> выполняет в ней функцию потока. Начиная с Python 3.14 ту же копию можно передать параметром <code>context</code> конструктора <code>threading.Thread</code>.</p>
+<h3 id="Журнал-службы-systemd"><a class="header" href="#Журнал-службы-systemd">Журнал службы systemd</a></h3>
+<p>Программе не требуется самой управлять файлами журнала: ей достаточно писать записи в стандартный вывод. Методология The Twelve-Factor App рассматривает журнал как поток событий: приложение выводит его, а сбор, хранение и ротацию обеспечивает среда выполнения. Для службы systemd такой средой является journald: стандартный вывод и поток ошибок службы по умолчанию попадают в системный журнал, где каждая запись получает поля <code>_PID</code>, <code>_SYSTEMD_UNIT</code>, <code>PRIORITY</code> и другие. Уровень записи journald определяет по префиксу <code>&lt;N&gt;</code> в начале строки (параметр <code>SyslogLevelPrefix</code>, по умолчанию включён): 3 означает ошибку, 4 — предупреждение, 6 — информационное сообщение, 7 — отладку. Префикс удаляется из текста сообщения и сохраняется в поле <code>PRIORITY</code>.</p>
+<pre><code class="language-python">import logging
+import sys
+
+SYSLOG = {logging.DEBUG: 7, logging.INFO: 6, logging.WARNING: 4, logging.ERROR: 3, logging.CRITICAL: 2}
+
+
+class PrefixFormatter(logging.Formatter):
+    """Префикс &lt;N&gt; в начале строки journald читает как уровень syslog и убирает из сообщения."""
+    def format(self, record):
+        return f"&lt;{SYSLOG[record.levelno]}&gt;{super().format(record)}"
+
+
+handler = logging.StreamHandler(sys.stdout)
+handler.setFormatter(PrefixFormatter("%(name)s: %(message)s"))
+log = logging.getLogger("vacuum")
+log.addHandler(handler)
+log.setLevel(logging.INFO)
+
+log.info("цикл %d завершён", 1)
+log.error("цикл %d: %s не отвечает", 2, "VG06")
+log.warning("цикл %d: %s давление %.1e Па выше порога", 4, "VG04", 7.5e-06)
+</code></pre>
+<pre><code>&lt;6&gt;vacuum: цикл 1 завершён
+&lt;3&gt;vacuum: цикл 2: VG06 не отвечает
+&lt;4&gt;vacuum: цикл 4: VG04 давление 7.5e-06 Па выше порога
+</code></pre>
+<p>Записи службы затем отбирают средствами journalctl по полям, а не по тексту: ключ <code>-p warning</code> оставляет уровни от emerg до warning, а вывод в формате JSON передаёт поля записи программе. В демонстрации к лекции сценарий <code>journal_svc.py</code> с тем же форматтером запущен как временная служба systemd; кроме приведённых строк он сообщает о завершении каждого из шести циклов. После завершения службы команды отбора дали следующий вывод:</p>
+<pre><code class="language-bash">systemd-run -q -u l19-vacuum --collect python3 $PWD/journal_svc.py
+journalctl -u l19-vacuum -p warning -S -1min -o cat
+journalctl -u l19-vacuum -p 4 -S -1min -o json | jq -r .PRIORITY
+</code></pre>
+<pre><code>vacuum: цикл 2: VG06 не отвечает
+vacuum: цикл 4: VG04 давление 7.5e-06 Па выше порога
+3
+4
+</code></pre>
+<p>В выводе нет ни префиксов, ни записей уровня INFO: journald убрал префиксы из текста и сохранил уровни в поле <code>PRIORITY</code>, по которому ключ <code>-p</code> отбирает записи, — в виде имени уровня (<code>warning</code>) или его номера (<code>4</code>). Ключ <code>-S -1min</code> ограничивает вывод записями за последнюю минуту.</p>
+<p>Контейнер Docker аналогично передаёт стандартный вывод драйверу журналов — по умолчанию <code>json-file</code>, который без параметров <code>max-size</code> и <code>max-file</code> журнал не ротирует, — а в Kubernetes среда выполнения записывает вывод контейнеров в файлы на узле, откуда их обычно забирает агент, запущенный на каждом узле. Во всех случаях программа пишет в стандартный вывод, а куда попадёт запись, решает среда.</p>
+<h3 id="Объём-и-срок-хранения"><a class="header" href="#Объём-и-срок-хранения">Объём и срок хранения</a></h3>
+<p>У службы без собственных данных журнал обычно является главным потребителем дискового пространства, и его объём оценивают заранее как произведение числа записей в сутки, среднего размера записи и срока хранения. Оценим три политики записи для службы сбора данных с 200 каналами, оцифровываемыми с частотой 10 Гц. Средняя запись JSON того же вида, что в листинге выше, занимает 85 байт и сжимается gzip в 12,2 раза:</p>
+<div class="table-wrapper"><table><thead><tr><th>Политика записи</th><th>Записей в сутки</th><th>В сутки</th><th>За год</th><th>За год со сжатием</th></tr></thead><tbody>
+<tr><td>каждый отсчёт канала</td><td>\(1{,}73 \cdot 10^{8}\)</td><td>14,6 ГБ</td><td>5,3 ТБ</td><td>438,9 ГБ</td></tr>
+<tr><td>каждый цикл опроса раз в секунду</td><td>86 400</td><td>7,3 МБ</td><td>2,7 ГБ</td><td>219,4 МБ</td></tr>
+<tr><td>только изменения состояния</td><td>около 1000</td><td>84,7 кБ</td><td>30,9 МБ</td><td>2,5 МБ</td></tr>
+</tbody></table>
+</div>
+<p>Таким образом, отсчёты каналов являются данными и хранятся в архиве измерений, а журнал предназначен для событий. Срок хранения и ротацию задаёт среда: journald ограничивает объём журнала параметром <code>SystemMaxUse</code> (по умолчанию 10 % файловой системы, но не более 4 ГиБ), для файлов журнала применяют logrotate, а записи старше нескольких недель хранят сжатыми или удаляют. Сам конвейер доставки журналов тоже может отказать незаметно, поэтому за ним наблюдают метрикой — числом принятых записей в минуту: падение этого числа до нуля означает отказ доставки, а не исчезновение событий.</p>
+<h2 id="Метрики"><a class="header" href="#Метрики">Метрики</a></h2>
+<blockquote>
+<p><strong>Слайды к главе.</strong> Модель данных Prometheus, типы метрик, экспортёр, метки и кардинальность, гистограммы и оценка квантилей изложены также в третьей части лекции «Наблюдаемость» с демонстрациями в терминале; слайды лекции доступны <a href="https://phys-dev.github.io/soft-dev-book/slides/lecture-19.html#/sec-metrics">на сайте книги</a> и <a href="https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-19.pdf">в PDF</a>.</p>
+</blockquote>
+<iframe src="../slides/lecture-19.html#/sec-metrics" title="Слайды лекции «Наблюдаемость»: метрики" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
+<p><strong>Метрика</strong> представляет собой число, которое служба сообщает о себе и которое наблюдается во времени: число обработанных запросов, длительность ответа, давление в секторе, заполнение диска. В отличие от журнала, метрика не описывает отдельные события, а сводит их в число, поэтому объём её хранения почти не зависит от нагрузки: счётчик запросов занимает одинаковое место при десяти и при десяти тысячах запросов в секунду. По метрикам строят графики и оповещения. Фактическим стандартом для метрик служб стала модель Prometheus [51]; её текстовый формат экспозиции, на основе которого создана спецификация OpenMetrics, читают и другие системы, например VictoriaMetrics и OpenTelemetry Collector.</p>
+<h3 id="Модель-данных-и-формат"><a class="header" href="#Модель-данных-и-формат">Модель данных и формат</a></h3>
+<p>Временной ряд в Prometheus определяется именем метрики и набором <strong>меток</strong> — пар «имя — значение»; отсчёт ряда состоит из метки времени с точностью до миллисекунды и числа с плавающей точкой двойной точности. Ряды <code>vacuum_pressure_pascals{sector="ring",gauge="VG02"}</code> и <code>vacuum_pressure_pascals{sector="linac",gauge="VG01"}</code> относятся к одной метрике, но хранятся отдельно. Prometheus сам опрашивает службы: раз в заданный интервал он запрашивает у каждой цели адрес <code>/metrics</code> и получает текст в формате экспозиции. Строки <code># HELP</code> и <code># TYPE</code> описывают метрику и её тип, а каждая следующая строка содержит имя, метки в фигурных скобках и значение.</p>
+<p>Значения выражают в базовых единицах, перечисленных в руководстве Prometheus по именованию метрик: в секундах, а не миллисекундах, в байтах, а не мегабайтах, в метрах, вольтах и амперах, а температуру — в градусах Цельсия. Давления в этом перечне нет, и по тому же правилу его выражают в паскалях. Единицу указывают суффиксом имени во множественном числе (<code>_seconds</code>, <code>_bytes</code>, <code>_pascals</code>), а имя накопительного счётчика оканчивается на <code>_total</code>. Базовые единицы позволяют складывать и делить метрики разных служб без пересчёта, а суффикс сообщает единицу каждому, кто читает выражение в файле правил или подпись графика, и исключает совпадение имён метрик, выраженных в разных единицах.</p>
+<h3 id="Типы-метрик"><a class="header" href="#Типы-метрик">Типы метрик</a></h3>
+<p>Библиотеки инструментирования Prometheus предлагают четыре основных типа метрик. Сам сервер хранит все типы, кроме нативных гистограмм, о которых сказано ниже, как обычные ряды чисел, а тип определяет прежде всего то, какими функциями метрику обрабатывают в запросах.</p>
+<div class="table-wrapper"><table><thead><tr><th>Тип</th><th>Поведение</th><th>Пример</th><th>Типичная обработка</th></tr></thead><tbody>
+<tr><td>counter (счётчик)</td><td>только растёт, обнуляется при перезапуске</td><td>запросы, ошибки, срабатывания триггера</td><td><code>rate</code>, <code>increase</code></td></tr>
+<tr><td>gauge (мгновенное значение)</td><td>растёт и убывает</td><td>давление, длина очереди, память</td><td>значение, <code>max_over_time</code></td></tr>
+<tr><td>histogram (гистограмма)</td><td>счётчики попаданий в корзины</td><td>длительность запроса</td><td><code>histogram_quantile</code></td></tr>
+<tr><td>summary (сводка)</td><td>квантили, вычисленные службой</td><td>длительность запроса</td><td>только по одному экземпляру</td></tr>
+</tbody></table>
+</div>
+<p>События считают счётчиком, а не мгновенным значением. Рассмотрим модель системы сбора данных: триггер срабатывает 50 раз в секунду, на 70-й секунде происходит вспышка 400 срабатываний в секунду длительностью 3 с, на 90-й секунде служба перезапускается, а Prometheus опрашивает её раз в 15 с.</p>
+<pre><code class="language-python">def increase(samples):
+    """Приращение счётчика по отсчётам опроса: уменьшение значения означает перезапуск."""
+    return sum(cur - prev if cur &gt;= prev else cur for prev, cur in zip(samples, samples[1:]))
+
+
+rate = [400 if 70 &lt;= t &lt; 73 else 50 for t in range(120)]   # срабатываний триггера за секунду t
+counter, total = [], 0
+for t, n in enumerate(rate):
+    if t == 90:
+        total = 0                                         # служба перезапущена
+    total += n
+    counter.append(total)
+
+scrapes = range(14, 120, 15)                              # опрос раз в 15 с
+samples = [counter[t] for t in scrapes]
+print("отсчёты счётчика:", samples)
+print("последний минус первый:", samples[-1] - samples[0])
+print("с учётом сброса:", increase(samples), " на самом деле:", sum(rate[15:120]))
+print("мгновенное значение в опросах:", {rate[t] for t in scrapes}, " максимум:", max(rate))
+</code></pre>
+<pre><code>отсчёты счётчика: [750, 1500, 2250, 3000, 4800, 5550, 750, 1500]
+последний минус первый: 750
+с учётом сброса: 6300  на самом деле: 6300
+мгновенное значение в опросах: {50}  максимум: 400
+</code></pre>
+<p>Разность последнего и первого отсчётов показывает 750 срабатываний вместо 6300: перезапуск обнулил счётчик. Функция <code>increase</code> учитывает сброс: уменьшение значения означает, что счётчик начат заново, и новое значение целиком является приращением. Так же поступают функции <code>rate</code> и <code>increase</code> языка запросов PromQL; кроме того, они экстраполируют приращение до границ окна, поэтому их результат бывает дробным. События между последним опросом и перезапуском при этом теряются, но в модели перезапуск происходит сразу после опроса. Мгновенное значение «срабатываний за последнюю секунду» в моменты опроса всегда равно 50, и вспышка между опросами не видна, тогда как счётчик учитывает каждое событие независимо от того, когда его прочитали. Обратная ошибка состоит в счётчике для убывающей величины: если число занятых соединений оформить счётчиком, функция <code>rate</code> воспримет каждое его уменьшение как перезапуск.</p>
+<p>Гистограмма и сводка описывают распределение величины, чаще всего длительности запросов. Гистограмма хранит счётчики попаданий в корзины, и квантиль по ним вычисляет Prometheus; сводка вычисляет квантили в самой службе. Различие существенно при нескольких экземплярах службы и рассмотрено ниже, в разделе о квантилях.</p>
+<h3 id="Экспортёр"><a class="header" href="#Экспортёр">Экспортёр</a></h3>
+<p>Служба на Python выставляет метрики библиотекой prometheus_client. Для собственного кода достаточно прямого инструментирования: объекты <code>Counter</code>, <code>Gauge</code> и <code>Histogram</code> изменяются в местах событий, например <code>REQS.labels(code="200").inc()</code>, а библиотека отдаёт их текущие значения. Если же метрики берутся из другой системы — контроллера, прибора, внешнего API, — пишут <strong>экспортёр</strong>: программу, которая при каждом обращении Prometheus опрашивает источник и переводит ответ в формат экспозиции. Руководство Prometheus по написанию экспортёров предписывает синхронный опрос: экспортёр не запускает собственных таймеров, а читает источник в момент запроса <code>/metrics</code> и при каждом запросе создаёт метрики заново, а не обновляет глобальные объекты прямого инструментирования. Тогда возраст данных совпадает с моментом опроса, а отказ источника виден сразу; кроме того, два одновременных опроса не мешают друг другу, а ряд исчезнувшего датчика не остаётся в ответе. В prometheus_client синхронный опрос реализуется собственным коллектором — классом с методом <code>collect</code>, который возвращает семейства метрик.</p>
+<pre><code class="language-python">import random
+import urllib.request
+
+from prometheus_client import CollectorRegistry, start_http_server
+from prometheus_client.core import CounterMetricFamily, GaugeMetricFamily
+
+GAUGES = {"VG01": "linac", "VG02": "ring", "VG03": "ring"}
+rng = random.Random(19)
+
+
+def read_gauge(name):
+    """Модель контроллера; в службе здесь запрос к прибору или к EPICS с тайм-аутом."""
+    if name == "VG03" and rng.random() &lt; 0.5:
+        raise TimeoutError(name)
+    return float(f"{rng.lognormvariate(-15.4, 0.3):.3e}")
+
+
+class VacuumCollector:
+    def __init__(self):
+        self.errors = dict.fromkeys(GAUGES, 0)
+
+    def collect(self):                          # вызывается при каждом запросе /metrics
+        p = GaugeMetricFamily("vacuum_pressure_pascals", "Давление", labels=["sector", "gauge"])
+        for gauge, sector in GAUGES.items():
+            try:
+                p.add_metric([sector, gauge], read_gauge(gauge))
+            except TimeoutError:
+                self.errors[gauge] += 1
+        yield GaugeMetricFamily("vacuum_up", "Контроллер ответил", value=1 if p.samples else 0)
+        yield p
+        err = CounterMetricFamily("vacuum_gauge_errors", "Неудачные чтения", labels=["gauge"])
+        for gauge, n in self.errors.items():
+            err.add_metric([gauge], n)
+        yield err
+
+
+registry = CollectorRegistry()
+registry.register(VacuumCollector())
+server, _ = start_http_server(9101, addr="127.0.0.1", registry=registry)
+text = urllib.request.urlopen("http://127.0.0.1:9101/metrics", timeout=5).read().decode()
+print("\n".join(line for line in text.splitlines() if line.startswith(("# TYPE", "vacuum"))))
+server.shutdown()
+</code></pre>
+<pre><code># TYPE vacuum_up gauge
+vacuum_up 1.0
+# TYPE vacuum_pressure_pascals gauge
+vacuum_pressure_pascals{gauge="VG01",sector="linac"} 3.133e-07
+vacuum_pressure_pascals{gauge="VG02",sector="ring"} 2.095e-07
+# TYPE vacuum_gauge_errors_total counter
+vacuum_gauge_errors_total{gauge="VG01"} 0.0
+vacuum_gauge_errors_total{gauge="VG02"} 0.0
+vacuum_gauge_errors_total{gauge="VG03"} 1.0
+</code></pre>
+<p>Коллектор регистрируется в собственном реестре, и функция <code>start_http_server</code> запускает в отдельном потоке HTTP-сервер, который при каждом запросе вызывает метод <code>collect</code>. Вакуумметр VG03 в этом опросе не ответил: ряда давления для него нет, а счётчик неудачных чтений увеличился. Отсутствие ряда точнее отражает состояние, чем нуль или последнее известное значение: нулевое давление выглядело бы как идеальный вакуум, а повтор старого значения скрыл бы отказ датчика. Метрика <code>vacuum_up</code> сообщает, ответил ли контроллер хотя бы по одному датчику. Руководство описывает два способа сообщить о неудачном опросе источника: ответ <code>/metrics</code> с кодом ошибки 5xx и метрику вида <code>&lt;экспортёр&gt;_up</code> со значением 0 или 1; второй способ удобнее, когда часть метрик доступна и при отказе источника, как счётчики ошибок в листинге. Суффикс <code>_total</code> библиотека добавила к имени счётчика сама.</p>
+<p>Из того же принципа вытекают и остальные требования к экспортёру. Обращение к источнику необходимо ограничивать тайм-аутом, меньшим тайм-аута опроса Prometheus (по умолчанию 10 с), иначе при зависшем приборе каждый опрос завершается отказом цели. Длительность опроса источника выставляют отдельной метрикой, например <code>vacuum_scrape_duration_seconds</code>. Руководство по инструментированию добавляет правило о моментах времени: момент события выставляют значением в секундах времени Unix, а не временем, прошедшим с события, — время старта процесса, а не время работы, и время последней успешной калибровки, а не её возраст. Прошедшее время Prometheus вычисляет сам выражением <code>time() - metric</code>, а метрика не требует обновления.</p>
+<h3 id="Метки-и-кардинальность"><a class="header" href="#Метки-и-кардинальность">Метки и кардинальность</a></h3>
+<p>Каждая комбинация значений меток образует отдельный временной ряд, который Prometheus хранит в памяти и на диске, и число таких комбинаций называют <strong>кардинальностью</strong> метрики. Метки с ограниченным набором значений — метод HTTP, шаблон маршрута, код ответа, сектор — безопасны. Метка с неограниченным набором значений — путь запроса с номером запуска, адрес клиента, имя пользователя — создаёт новый ряд для каждого нового значения. Демонстрация к лекции показывает масштаб на модели из 20 000 запросов к архиву: счётчик с метками метода, шаблона маршрута и кода ответа даёт 9 рядов и ответ <code>/metrics</code> размером 2 КиБ, а тот же счётчик с полным путём вместо шаблона маршрута — 11 945 рядов и 2051 КиБ. Документация Prometheus рекомендует держать кардинальность метрик ниже 10, а метрик с большей кардинальностью иметь во всей системе лишь несколько; метрику, кардинальность которой превышает 100 или может её превысить, предлагается перепроектировать — сократить число измерений или перенести анализ из мониторинга в систему обработки данных общего назначения. Номер запуска, таким образом, является полем записи журнала или атрибутом трассы, а не меткой метрики.</p>
+<h3 id="Гистограммы-и-квантили"><a class="header" href="#Гистограммы-и-квантили">Гистограммы и квантили</a></h3>
+<p>Задержку описывают перцентилями (раздел «Нагрузка и задержка» главы <a href="./system-design.html">«Системный дизайн»</a>), но служба не может хранить длительность каждого запроса. Гистограмма Prometheus хранит счётчики попаданий в корзины с заданными верхними границами <code>le</code>: ряд <code>_bucket{le="0.3"}</code> содержит число запросов длительностью не более 0,3 с, ряд <code>_bucket{le="+Inf"}</code> — число всех запросов; дополнительно хранятся сумма длительностей <code>_sum</code> и их число <code>_count</code>. Корзины накопительные: каждая включает все меньшие. Функция <code>histogram_quantile</code> находит корзину, в которую попадает искомый ранг, и интерполирует внутри неё линейно, предполагая равномерное распределение наблюдений по корзине. Ошибка оценки поэтому ограничена шириной корзины, а при попадании ранга в корзину <code>+Inf</code> функция возвращает верхнюю границу последней конечной корзины. Следующий листинг повторяет этот расчёт и сравнивает корзины prometheus_client по умолчанию с корзинами, сгущёнными около цели 300 мс.</p>
+<pre><code class="language-python">import bisect
+import random
+import statistics
+
+DEFAULT = [.005, .01, .025, .05, .075, .1, .25, .5, .75, 1.0, 2.5, 5.0, 7.5, 10.0]
+NEAR_SLO = [.01, .02, .03, .05, .1, .2, .25, .3, .35, .4, .6, 1.0]
+
+
+def sample(n, cold, seed):
+    """Задержки выдачи запуска, с: доля cold читает холодный файл."""
+    rng = random.Random(seed)
+    return [rng.gauss(0.31, 0.05) if rng.random() &lt; cold else rng.gauss(0.020, 0.003) for _ in range(n)]
+
+
+def buckets(xs, bounds):
+    """Накопительные счётчики корзин le, как ряды _bucket; последняя корзина +Inf."""
+    xs = sorted(xs)
+    return [bisect.bisect_right(xs, b) for b in bounds] + [len(xs)]
+
+
+def histogram_quantile(q, bounds, counts):
+    """Корзина, в которую попал ранг, и линейная интерполяция внутри неё."""
+    rank = q * counts[-1]
+    i = bisect.bisect_left(counts, rank)
+    if i == len(bounds):                         # ранг в корзине +Inf
+        return bounds[-1]
+    lo, below = (0.0, 0) if i == 0 else (bounds[i - 1], counts[i - 1])
+    return lo + (bounds[i] - lo) * (rank - below) / (counts[i] - below)
+
+
+def p99(xs, bounds=None):
+    if bounds is None:
+        return 1000 * statistics.quantiles(xs, n=100, method="inclusive")[98]
+    return 1000 * histogram_quantile(0.99, bounds, buckets(xs, bounds))
+
+
+xs = sample(20_000, 0.05, 1)
+print(f"p99 точно {p99(xs):.0f} мс, по корзинам по умолчанию {p99(xs, DEFAULT):.0f} мс, "
+      f"с границей 300 мс {p99(xs, NEAR_SLO):.0f} мс")
+a, b = sample(18_000, 0.01, 2), sample(2_000, 0.30, 3)        # два экземпляра службы
+merged = [i + j for i, j in zip(buckets(a, NEAR_SLO), buckets(b, NEAR_SLO))]
+print(f"p99 экземпляров {p99(a, NEAR_SLO):.0f} и {p99(b, NEAR_SLO):.0f} мс, "
+      f"среднее {(p99(a, NEAR_SLO) + p99(b, NEAR_SLO)) / 2:.0f} мс")
+print(f"p99 по сумме гистограмм {1000 * histogram_quantile(0.99, NEAR_SLO, merged):.0f} мс, "
+      f"точно {p99(a + b):.0f} мс")
+</code></pre>
+<pre><code>p99 точно 354 мс, по корзинам по умолчанию 447 мс, с границей 300 мс 356 мс
+p99 экземпляров 48 и 410 мс, среднее 229 мс
+p99 по сумме гистограмм 342 мс, точно 340 мс
+</code></pre>
+<p>Модель описывает выдачу запусков архивом: 95 % запросов обслуживаются около 20 мс, а 5 % читают холодный файл около 310 мс. Точный p99 равен 354 мс. Корзины по умолчанию дают оценку 447 мс: соседние границы 0,25 и 0,5 с охватывают почти весь хвост распределения, и интерполяция внутри широкой корзины завышает p99 на 93 мс. Корзины, сгущённые около цели уровня обслуживания, дают 356 мс. Граница корзины на пороге цели позволяет, кроме того, вычислить долю запросов быстрее 300 мс без интерполяции — как отношение счётчика <code>_bucket{le="0.3"}</code> к <code>_count</code>; в демонстрации к лекции эта доля совпала с точной (96,92 %), а корзины по умолчанию дали 96,23 %. Таким образом, границы корзин выбирают по целям уровня обслуживания, а не оставляют по умолчанию.</p>
+<p><img src="img/obs-quantile.png" alt="Распределение задержек выдачи запуска, границы корзин по умолчанию и корзин, сгущённых около 300 мс, точный p99 и две его оценки" /></p>
+<p>Вторая часть листинга моделирует два экземпляра службы: нагруженный, получивший 18 000 запросов с 1 % холодных чтений, и малонагруженный, получивший 2000 запросов, из которых 30 % холодные. Их p99 равны 48 и 410 мс, и среднее этих значений, 229 мс, не имеет отношения к p99 всех запросов, равному 340 мс. Счётчики корзин, напротив, складываются, и квантиль по сумме гистограмм, 342 мс, близок к точному. В PromQL ему соответствует выражение <code>histogram_quantile(0.99, sum by (le) (rate(archive_request_duration_seconds_bucket[5m])))</code>. Сводка вычисляет квантили внутри каждого экземпляра, и объединить их корректно нельзя, поэтому для служб с несколькими экземплярами выбирают гистограмму.</p>
+<p>Рассмотренные гистограммы называют классическими. Prometheus поддерживает также нативные гистограммы: их корзины задаются экспоненциальной схемой, не требуют выбора границ при инструментировании и всегда совместимы при сложении. Документация рекомендует нативные гистограммы там, где их поддерживает библиотека инструментирования, — на момент написания главы это библиотеки для Go и Java. Класс <code>Histogram</code> библиотеки prometheus_client 0.26 выставляет классические гистограммы, и для служб на Python выбор границ корзин остаётся задачей разработчика.</p>
+<h2 id="Сбор-и-хранение"><a class="header" href="#Сбор-и-хранение">Сбор и хранение</a></h2>
+<blockquote>
+<p><strong>Слайды к главе.</strong> Опрос и отправка метрик, Prometheus, язык запросов PromQL и метрики заданий без постоянного процесса изложены также в четвёртой части лекции «Наблюдаемость» с демонстрациями в терминале; слайды лекции доступны <a href="https://phys-dev.github.io/soft-dev-book/slides/lecture-19.html#/sec-pipeline">на сайте книги</a> и <a href="https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-19.pdf">в PDF</a>.</p>
+</blockquote>
+<iframe src="../slides/lecture-19.html#/sec-pipeline" title="Слайды лекции «Наблюдаемость»: сбор и хранение" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
+<h3 id="Опрос-и-отправка"><a class="header" href="#Опрос-и-отправка">Опрос и отправка</a></h3>
+<p>Метрики доставляются в хранилище двумя способами. При <strong>опросе</strong> (pull) хранилище само обращается к службам по списку целей. Список задают в конфигурации или получают из реестра — Kubernetes, Consul, файла, который обновляет другая программа. Неудачный опрос сам является сигналом: Prometheus записывает для каждой цели ряд <code>up</code> со значением 1 после успешного опроса и 0 после неудачного, а также длительность опроса и число полученных отсчётов. Частоту опроса, а с ней и нагрузку на службы задаёт хранилище; объём же каждого ответа определяет служба, и метрика с неограниченными метками перегружает Prometheus и при опросе. Для защиты в задании опроса задают предел числа отсчётов <code>sample_limit</code>: при его превышении опрос целиком считается неудачным. При <strong>отправке</strong> (push) службы или агенты на машинах сами передают данные хранилищу, как это делают Telegraf с InfluxDB или агенты OpenTelemetry по протоколу OTLP. Отправка подходит для короткоживущих процессов и для сетей, в которых хранилище не может обратиться к службам, например из-за трансляции адресов; зато отсутствие данных в этом случае не отличается от отсутствия событий без отдельной проверки.</p>
+<p>Между источником и хранилищем данные передают напрямую или через шину сообщений, например Kafka. Прямая запись проще, но при недоступности хранилища данные теряются или накапливаются в памяти агента. Шина хранит данные, пока хранилище недоступно, и позволяет нескольким потребителям читать один поток, но добавляет компонент, который сам нуждается в наблюдении, и задержку доставки. На том же пути обычно обогащают данные метками (имя машины, площадка) и отбрасывают лишнее, пока его объём не попал в хранилище.</p>
+<h3 id="prometheus-и-promql"><a class="header" href="#prometheus-и-promql">Prometheus и PromQL</a></h3>
+<p>Конфигурация Prometheus перечисляет интервалы опроса и вычисления правил, файлы правил и задания опроса с целями. Конфигурация демонстраций к лекции опрашивает четыре цели на одной машине раз в 5 с:</p>
+<pre><code class="language-yaml"># Prometheus стенда лекции «Наблюдаемость»: все цели на 127.0.0.1, опрос раз в 5 с.
+global:
+  scrape_interval: 5s
+  evaluation_interval: 5s
+
+rule_files:
+  - rules.yml
+
+scrape_configs:
+  - job_name: prometheus
+    static_configs:
+      - targets: ["127.0.0.1:9090"]
+  - job_name: node
+    static_configs:
+      - targets: ["127.0.0.1:9100"]
+  - job_name: vacuum
+    static_configs:
+      - targets: ["127.0.0.1:9101"]
+  - job_name: archive
+    static_configs:
+      - targets: ["127.0.0.1:8403"]
+</code></pre>
+<p>В записи демонстрации команда <code>promtool check config prometheus.yml</code> подтвердила корректность конфигурации вместе с подключённым файлом правил, а вскоре после запуска Prometheus все четыре цели находились в состоянии up.</p>
+<p>Опрошенные ряды Prometheus записывает в локальную базу временных рядов: свежие отсчёты хранит в памяти и в журнале упреждающей записи, а каждые два часа сбрасывает их на диск сжатым блоком, который затем объединяется с соседними. По умолчанию данные хранятся 15 суток, а сжатый отсчёт занимает в среднем 1–2 байта. Оценим объём для установки, службы которой выставляют 10 000 рядов при опросе раз в 15 с. За сутки каждый ряд получает \(24 \cdot 3600 / 15 = 5760\) отсчётов, все ряды — \(5{,}76 \cdot 10^{7}\), что при 1,5 байта на отсчёт составляет около 86 МБ в сутки и 1,3 ГБ за 15 суток. Для хранения в течение лет Prometheus передаёт данные во внешнее хранилище (параметр <code>remote_write</code>), например VictoriaMetrics или Thanos.</p>
+<p>Данные читают языком запросов <strong>PromQL</strong>. Ряды выбирают по имени и меткам селектором, например <code>archive_requests_total{code=~"5.."}</code>; диапазон <code>[5m]</code> превращает каждый ряд в набор отсчётов за пять минут, а функции и операторы агрегации сводят эти наборы в числа. Ниже приведены выражения, которые встречаются в любой системе наблюдения; строки, начинающиеся знаком <code>#</code>, PromQL считает комментариями.</p>
+<pre><code class="language-text"># цели, не ответившие на последний опрос
+up == 0
+# запросов в секунду по кодам ответа
+sum by (code) (rate(archive_requests_total[5m]))
+# доля ответов с ошибкой сервера
+sum(rate(archive_requests_total{code=~"5.."}[5m])) / sum(rate(archive_requests_total[5m]))
+# p99 длительности по всем экземплярам
+histogram_quantile(0.99, sum by (le) (rate(archive_request_duration_seconds_bucket[5m])))
+# наибольшее давление за 10 минут
+max_over_time(vacuum_pressure_pascals[10m])
+# разделы, которые при текущем темпе заполнятся в ближайшие 4 часа
+predict_linear(node_filesystem_avail_bytes[6h], 4 * 3600) &lt; 0
+# время с последней успешной калибровки, с
+time() - calib_last_success_timestamp_seconds
+</code></pre>
+<p>Функция <code>rate</code> вычисляет среднюю скорость роста счётчика в секунду за окно с поправкой на сбросы; окно выбирают длительностью не менее нескольких интервалов опроса, чтобы в него попадало несколько отсчётов. Оператор <code>sum by</code> сворачивает ряды по выбранным меткам: доля ошибок архива имеет смысл по службе в целом, а не по отдельному экземпляру. Функция <code>predict_linear</code> строит линейную регрессию по отсчётам окна и продолжает её на заданное время вперёд. Для графиков, где важны пики, применяют <code>max_over_time</code>, а не усреднение: среднее за окно сглаживает короткий выброс, что рассмотрено в разделе о панелях.</p>
+<p>В демонстрации к лекции Prometheus опрашивал модель службы архива, обслуживающую 40 запросов в секунду, и запрос частоты по кодам ответа через минуту после запуска вернул следующий результат:</p>
+<pre><code class="language-bash">promtool query instant http://127.0.0.1:9090 'sum by (code) (rate(archive_requests_total[1m]))'
+</code></pre>
+<pre><code>{code="200"} =&gt; 39.199999999999996 @[1791101791.773]
+{code="500"} =&gt; 0.7999999999999999 @[1791101791.773]
+</code></pre>
+<p>Для каждого ряда выведены значение и момент вычисления в секундах времени Unix, а последние знаки значений представляют собой погрешность вычислений с плавающей точкой. Ошибкой завершаются 2 % запросов модели, а p99 по гистограмме, вычисленный выражением из этого списка с окном 1 мин, равен 0,46 с. Выражение <code>max by (gauge) (vacuum_pressure_pascals)</code> в той же демонстрации вернуло два ряда давления из трёх: вакуумметр VG03 в последнем опросе не ответил, и его ряда в этот момент нет.</p>
+<h3 id="Задания-без-постоянного-процесса"><a class="header" href="#Задания-без-постоянного-процесса">Задания без постоянного процесса</a></h3>
+<p>Ночная калибровка датчиков положения пучка или расчёт на кластере работают минуты и завершаются, и их итог — успех и время завершения — исчезает вместе с процессом раньше, чем Prometheus успевает его опросить. Итог такого задания записывают в файл формата экспозиции в каталог, который читает node_exporter — экспортёр Prometheus, выставляющий метрики машины (каталог задаёт параметр <code>--collector.textfile.directory</code>). Файл необходимо писать во временный и затем переименовывать, иначе экспортёр может прочитать его наполовину; функция <code>write_to_textfile</code> библиотеки prometheus_client делает это сама.</p>
+<pre><code class="language-python">import os
+import tempfile
+
+from prometheus_client import CollectorRegistry, Gauge, write_to_textfile
+
+registry = CollectorRegistry()
+last = Gauge("calib_last_success_timestamp_seconds", "Последняя успешная калибровка BPM", registry=registry)
+channels = Gauge("calib_channels", "Число откалиброванных каналов BPM", registry=registry)
+
+channels.set(40)                       # здесь выполняется калибровка
+last.set(1_791_000_000)                # 03.10.2026 04:00 UTC; в задании — last.set_to_current_time()
+
+textfile_dir = tempfile.mkdtemp()      # в работе — каталог --collector.textfile.directory
+path = os.path.join(textfile_dir, "calib.prom")
+write_to_textfile(path, registry)      # запись во временный файл и атомарное переименование
+print(open(path, encoding="utf-8").read(), end="")
+</code></pre>
+<pre><code># HELP calib_last_success_timestamp_seconds Последняя успешная калибровка BPM
+# TYPE calib_last_success_timestamp_seconds gauge
+calib_last_success_timestamp_seconds 1.791e+09
+# HELP calib_channels Число откалиброванных каналов BPM
+# TYPE calib_channels gauge
+calib_channels 40.0
+</code></pre>
+<p>Главная метрика задания — момент последнего успешного завершения. Оповещение по ней формулируется как отсутствие успеха дольше заданного срока, например 26 ч для ежесуточного задания, и срабатывает, если задание завершилось ошибкой, не запустилось или зависло. Выключенную машину это правило не обнаруживает: вместе с ней останавливается node_exporter, ряд метрики пропадает, и выражение оповещения не возвращает ничего. Для этого случая необходимо отдельное оповещение — по ряду <code>up</code> самого node_exporter или по выражению с функцией <code>absent</code>, которое срабатывает при отсутствии ряда. В демонстрации к лекции время успешной калибровки зафиксировано на 03.10.2026 04:00 UTC, и в момент записи выражение <code>max(time() - calib_last_success_timestamp_seconds) / 3600</code> дало 28,3 ч, то есть больше порога 26 ч.</p>
+<p>Второй способ — сервер Pushgateway, которому задание отправляет метрики перед завершением. Документация Prometheus допускает его по существу только для итогов пакетных заданий уровня службы, не связанных с определённой машиной, а для заданий, связанных с машиной, рекомендует textfile collector. При опросе многих экземпляров через Pushgateway он становится единой точкой отказа и узким местом, лишает Prometheus проверки экземпляров по ряду <code>up</code> и хранит отправленные ряды, пока их не удалят явно.</p>
+<h2 id="Трассировки"><a class="header" href="#Трассировки">Трассировки</a></h2>
+<blockquote>
+<p><strong>Слайды к главе.</strong> Трасса и спан, заголовок <code>traceparent</code>, OpenTelemetry и сэмплирование изложены также в пятой части лекции «Наблюдаемость» с демонстрацией в терминале; слайды лекции доступны <a href="https://phys-dev.github.io/soft-dev-book/slides/lecture-19.html#/sec-traces">на сайте книги</a> и <a href="https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-19.pdf">в PDF</a>.</p>
+</blockquote>
+<iframe src="../slides/lecture-19.html#/sec-traces" title="Слайды лекции «Наблюдаемость»: трассировки" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
+<p>Журнал описывает отдельные события, метрика — их число и распределение, но ни то, ни другое не показывает, на что ушло время конкретного медленного запроса, прошедшего через несколько служб. Этот вопрос решает трассировка.</p>
+<h3 id="Трасса-и-спан"><a class="header" href="#Трасса-и-спан">Трасса и спан</a></h3>
+<p><strong>Трасса</strong> представляет собой дерево операций, выполненных при обработке одного запроса. Каждая операция — <strong>спан</strong> — имеет имя, моменты начала и конца, атрибуты (например, номер запуска или размер ответа), события и статус. Спан несёт три идентификатора: собственный <code>span_id</code>, идентификатор трассы <code>trace_id</code>, общий для всех спанов запроса, и идентификатор родительского спана; у корневого спана родителя нет. Связь между разными трассами, например между отправкой сообщения в очередь и его обработкой, оформляют ссылкой (span link). Трассу отображают «водопадом» — полосами спанов на оси времени с отступами по глубине вложенности.</p>
+<p>Контекст трассы передаётся между службами вместе с запросом. Рекомендация W3C Trace Context определяет HTTP-заголовок <code>traceparent</code> из четырёх полей: версии, 32 шестнадцатеричных цифр <code>trace_id</code>, 16 цифр <code>span_id</code> вызывающего спана и флагов. Младший бит флагов (sampled) означает, что вызывающая сторона, возможно, записала данные трассы. Служба, получившая запрос, извлекает контекст из заголовка и открывает свои спаны как потомков вызывающего.</p>
+<h3 id="opentelemetry"><a class="header" href="#opentelemetry">OpenTelemetry</a></h3>
+<p><strong>OpenTelemetry</strong> является открытым проектом, который определяет программный интерфейс (API) и его реализацию (SDK) для трассировок, метрик и журналов, протокол передачи OTLP и Collector — промежуточную службу приёма, обработки и пересылки сигналов. Хранилищем OpenTelemetry не является: трассы принимают системы Jaeger, Grafana Tempo, Zipkin и другие, и смена хранилища не требует изменения кода. Разделение API и SDK позволяет библиотекам зависеть только от API, а настраивать SDK — провайдер, процессор и экспортёр — один раз в программе, которая их использует. В SDK для Python трассировки и метрики имеют статус стабильных, а журналы находятся в разработке.</p>
+<p>Рассмотрим передачу контекста от шлюза к архиву измерений. Чтобы листинг выполнялся без сети, запрос заменён вызовом функции, а заголовки — словарём.</p>
+<pre><code class="language-python">import random
+
+from opentelemetry.propagate import extract, inject
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import SimpleSpanProcessor
+from opentelemetry.sdk.trace.export.in_memory_span_exporter import InMemorySpanExporter
+from opentelemetry.sdk.trace.id_generator import IdGenerator
+
+
+class SeededIds(IdGenerator):                     # повторяемые идентификаторы для книги
+    def __init__(self, seed):
+        self.rng = random.Random(seed)
+
+    def generate_span_id(self):
+        return self.rng.getrandbits(64)
+
+    def generate_trace_id(self):
+        return self.rng.getrandbits(128)
+
+
+exporter = InMemorySpanExporter()
+provider = TracerProvider(id_generator=SeededIds(42))
+provider.add_span_processor(SimpleSpanProcessor(exporter))
+tracer = provider.get_tracer("archive")
+
+
+def archive_get_run(headers):
+    """Обработчик архива: контекст трассы берётся из заголовков входящего запроса."""
+    with tracer.start_as_current_span("archive GET /runs/{id}", context=extract(headers)):
+        with tracer.start_as_current_span("db.query runs"):
+            pass
+        with tracer.start_as_current_span("read_hdf5"):
+            pass
+
+
+with tracer.start_as_current_span("gateway GET /runs/{id}"):
+    headers = {}
+    inject(headers)                               # заголовок для исходящего запроса к архиву
+    print("traceparent:", headers["traceparent"])
+    archive_get_run(headers)
+
+for s in sorted(exporter.get_finished_spans(), key=lambda s: s.start_time):
+    parent = f"{s.parent.span_id:016x}" if s.parent else "корень".ljust(16)
+    print(f"{s.context.trace_id:032x}"[:8], f"{s.context.span_id:016x}", parent, s.name)
+</code></pre>
+<pre><code>traceparent: 00-bdd640fb06671ad11c80317fa3b1799d-3eb13b9046685257-01
+bdd640fb 3eb13b9046685257 корень           gateway GET /runs/{id}
+bdd640fb 23b8c1e9392456de 3eb13b9046685257 archive GET /runs/{id}
+bdd640fb 1a3d1fa7bc8960a9 23b8c1e9392456de db.query runs
+bdd640fb bd9c66b3ad3c2d6d 23b8c1e9392456de read_hdf5
+</code></pre>
+<p>Провайдер трассировок <code>TracerProvider</code> настраивается один раз при старте программы. В листинге генератор идентификаторов имеет фиксированное зерно, чтобы вывод повторялся, а экспортёр хранит законченные спаны в памяти; в службе применяются случайные идентификаторы и экспортёр OTLP, передающий спаны в Collector. Функция <code>inject</code> записывает текущий контекст в словарь заголовков, а <code>extract</code> восстанавливает его на стороне архива. Поэтому спан архива получил родителем спан шлюза, его потомки — спан архива, а все четыре спана — общий <code>trace_id</code>. В настоящем запросе между шлюзом и архивом находился бы ещё спан клиента HTTP: автоматическая инструментация библиотек urllib, requests и httpx открывает его и вызывает <code>inject</code> сама, а команда <code>opentelemetry-instrument</code> подключает такую инструментацию без изменения кода программы. Генератор с тем же зерном применён и в демонстрации к лекции, поэтому <code>trace_id</code> в ней тот же, а <code>span_id</code> в заголовке другой: там шлюз до обращения к архиву открывает ещё спаны проверки прав и клиентского запроса, и заголовок несёт идентификатор клиентского спана, 1a3d1fa7bc8960a9, который в листинге получил спан запроса к базе.</p>
+<p>В демонстрации к лекции те же службы обмениваются настоящими HTTP-запросами, а шлюз открывает для вызова архива клиентский спан. Водопад на рисунке построен по спанам записанного прогона: из 52,8 мс обработки запроса 47,4 мс приходится на обращение к архиву, а в нём 34,8 мс занимает чтение файла HDF5 и 11,2 мс — запрос к базе метаданных; проверка прав в шлюзе длится 5,1 мс. Чтение файла составляет 66 % времени запроса, и ускорять, таким образом, необходимо его, а не шлюз; этот вывод получен по одной трассе без отдельных замеров каждого участка.</p>
+<p><img src="img/obs-trace.png" alt="Водопад трассы запроса «выдать запуск»: спаны шлюза и архива на оси времени" /></p>
+<p>Трассировку связывают с журналами: фильтр журнала добавляет к каждой записи <code>trace_id</code> текущего спана из контекста, который возвращает вызов <code>trace.get_current_span().get_span_context()</code>, и по идентификатору из медленной трассы находятся все записи этого запроса во всех службах. Пакет <code>opentelemetry-instrumentation-logging</code> добавляет те же поля к записям через фабрику записей модуля <code>logging</code>; эта возможность включается явно — параметром инструментатора или переменной окружения <code>OTEL_PYTHON_LOG_CORRELATION</code>.</p>
+<h3 id="Сэмплирование-и-цена"><a class="header" href="#Сэмплирование-и-цена">Сэмплирование и цена</a></h3>
+<p>Каждый спан требует памяти, времени на запись атрибутов и передачи в хранилище, и при большой нагрузке сохраняют только часть трасс. При <strong>сэмплировании в голове</strong> (head sampling) решение принимается при создании корневого спана. Сэмплер <code>TraceIdRatioBased</code> принимает его детерминированно по значению <code>trace_id</code>, поэтому все службы, получившие тот же контекст, принимают одинаковое решение, а сэмплер по умолчанию, <code>ParentBased</code> с корневым <code>ALWAYS_ON</code>, сохраняет все корневые спаны и для остальных повторяет решение родителя. В спецификации OpenTelemetry сэмплер <code>TraceIdRatioBased</code> объявлен устаревшим в пользу составного <code>ProbabilitySampler</code>, однако в SDK для Python 1.45 составные сэмплеры находятся в экспериментальном модуле. В демонстрации к лекции из 10 000 трасс при долях 1, 0,1 и 0,01 сохранено 10 000, 1000 и 98. Такой способ дёшев, но решение принимается до того, как известен исход запроса, и редкие ошибочные запросы сохраняются с той же вероятностью, что и обычные. При <strong>сэмплировании в хвосте</strong> (tail sampling) решение принимается по всем или большинству спанов трассы, обычно процессором tail sampling в Collector: он сохраняет все трассы с ошибками и медленные, а из остальных — заданную долю, но для этого ему необходимо буферизовать спаны на время принятия решения.</p>
+<p>Наблюдение не должно нарушать работу самой службы. Процессор <code>BatchSpanProcessor</code> передаёт спаны пакетами из ограниченной очереди (по умолчанию 2048 спанов, параметр <code>OTEL_BSP_MAX_QUEUE_SIZE</code>); при её переполнении SDK для Python 1.45 вытесняет из очереди самые старые спаны и пишет предупреждение «Queue full, dropping», а программа продолжает работу. Тот же принцип применяют к журналам и метрикам: недоступность хранилища не должна останавливать службу.</p>
+<p>К трём сигналам добавляют четвёртый — <strong>профили</strong>: непрерывное сэмплирующее профилирование показывает, какие функции расходуют процессорное время в работающей службе; в OpenTelemetry сигнал профилей находится в разработке. Профилировщик py-spy рассмотрен в главе <a href="./python/optimization.html">«Причины низкой скорости Python»</a>, системы непрерывного профилирования — Grafana Pyroscope и Parca — хранят профили во времени, а применение профилировщика к зависшей или медленной службе разобрано в главе <a href="./troubleshooting.html">«Поиск неисправностей»</a>.</p>
+<h2 id="Панели-и-методы-анализа"><a class="header" href="#Панели-и-методы-анализа">Панели и методы анализа</a></h2>
+<blockquote>
+<p><strong>Слайды к главе.</strong> Методы RED и USE, золотые сигналы, правила построения панелей и систематические ошибки восприятия изложены также в шестой части лекции «Наблюдаемость» с демонстрацией в терминале; слайды лекции доступны <a href="https://phys-dev.github.io/soft-dev-book/slides/lecture-19.html#/sec-dash">на сайте книги</a> и <a href="https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-19.pdf">в PDF</a>.</p>
+</blockquote>
+<iframe src="../slides/lecture-19.html#/sec-dash" title="Слайды лекции «Наблюдаемость»: панели и методы" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
+<p>Собранные метрики просматривают на панелях с графиками; набор панелей одной системы называют дашбордом, и наиболее распространённым инструментом их построения является Grafana. Метрик у системы сотни, графиков на экране — десятки, поэтому отбирают метрики не по доступности, а по методу.</p>
+<h3 id="red-use-и-золотые-сигналы"><a class="header" href="#red-use-и-золотые-сигналы">RED, USE и золотые сигналы</a></h3>
+<p>Для служб, обрабатывающих запросы, применяют метод <strong>RED</strong>, предложенный Т. Уилки в 2015 году: частота запросов (rate), число неудачных запросов (errors) и распределение длительности (duration). Для ресурсов — процессора, памяти, дисков, сети — применяют метод <strong>USE</strong> Б. Грегга [53]: загрузка (utilization) — доля времени, в течение которого ресурс занят; насыщение (saturation) — объём дополнительной работы, которую ресурс не может обслужить сразу и которая обычно ждёт в очереди; ошибки (errors) — число событий отказа. Четыре золотых сигнала книги Google SRE — задержка, трафик, ошибки и насыщение — объединяют оба взгляда [23]. Метод задаёт порядок анализа: для каждой службы сначала просматривают три графика RED, а для каждого ресурса машины — три вопроса USE, и только затем переходят к остальным метрикам.</p>
+<div class="table-wrapper"><table><thead><tr><th>Ресурс</th><th>Загрузка</th><th>Насыщение</th><th>Ошибки</th></tr></thead><tbody>
+<tr><td>процессор</td><td>доля времени вне простоя</td><td>очередь готовых к выполнению задач</td><td>—</td></tr>
+<tr><td>память</td><td>доля занятой памяти</td><td>обмен со swap, ожидание памяти</td><td>завершения процессов при нехватке памяти</td></tr>
+<tr><td>диск</td><td>доля времени, когда выполняется ввод-вывод</td><td>средняя длина очереди</td><td>ошибки в журнале ядра</td></tr>
+<tr><td>сеть</td><td>байты в секунду относительно пропускной способности</td><td>отброшенные пакеты</td><td>ошибки приёма</td></tr>
+</tbody></table>
+</div>
+<p>По метрикам node_exporter эти величины вычисляют следующие выражения:</p>
+<pre><code class="language-text"># процессор: загрузка и насыщение
+1 - avg without (cpu) (rate(node_cpu_seconds_total{mode="idle"}[5m]))
+rate(node_pressure_cpu_waiting_seconds_total[5m])
+# память: загрузка, насыщение и завершения процессов при нехватке памяти
+1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes
+rate(node_pressure_memory_waiting_seconds_total[5m])
+increase(node_vmstat_oom_kill[1h])
+# диск: загрузка и средняя длина очереди
+rate(node_disk_io_time_seconds_total[5m])
+rate(node_disk_io_time_weighted_seconds_total[5m])
+# сеть: загрузка приёма, отброшенные пакеты и ошибки приёма
+rate(node_network_receive_bytes_total[5m]) / node_network_speed_bytes
+rate(node_network_receive_drop_total[5m])
+rate(node_network_receive_errs_total[5m])
+</code></pre>
+<p>Ряды <code>node_pressure_*</code> берутся из механизма PSI (pressure stall information) ядра Linux, который сообщает долю времени, в течение которого хотя бы часть задач ожидала процессор, память или ввод-вывод; насыщение этот механизм измеряет непосредственно, тогда как средняя загрузка (load average) в Linux учитывает и процессы, ожидающие диск. Загрузка диска, близкая к 100 %, для массива из нескольких дисков или твердотельного накопителя с параллельными очередями ещё не означает предела, и насыщение оценивают по длине очереди и времени ожидания.</p>
+<p>Метод RED в демонстрации к лекции применён к модели службы архива, которая обработала за 5 с 200 запросов. Два снимка <code>/metrics</code> дают частоту 40 запросов в секунду, долю ошибок 2,0 % и по гистограмме p50 18 мс, p95 25 мс и p99 460 мс. Холодное чтение в модели длится 310 мс, и завышение p99 вновь объясняется шириной корзины от 0,3 до 0,5 с, тогда как доля запросов быстрее 0,3 с, 95,0 %, вычисляется по границе корзины точно.</p>
+<p>Панели RED той же модели по данным Prometheus показаны на рисунке. Данные получены в отдельном прогоне модели на той же виртуальной машине, на которой записаны демонстрации: служба обслуживала 40 запросов в секунду, а в течение двух минут моделировалось замедление базы архива, при котором обычный запрос длился 120 мс вместо 15, а ошибкой завершался каждый двадцатый запрос вместо каждого пятидесятого. Prometheus опрашивал службу раз в 5 с, все скорости вычислены функцией <code>rate</code> за 1 мин, поэтому края эпизода на графиках растянуты. Доля ошибок в эпизоде выросла с 2 до 5 %, медиана длительности — с 18 до 153 мс, а p99 всё время оставался равным 460 мс: хвост распределения определяют холодные чтения, и замедление обычных запросов квантиль 0,99 не показывает. Поэтому на панели длительности выводят несколько квантилей, а не один p99. Медиана в эпизоде, в свою очередь, завышена интерполяцией: настоящие 120 мс лежат в корзине от 0,1 до 0,2 с. Пунктир на средней панели отмечает бюджет ошибок цели 99,9 %, то есть 0,1 %: модель всё время расходует его в 20 раз быстрее допустимого, что сказывается на правилах оповещения, рассмотренных ниже.</p>
+<p><img src="img/obs-red.png" alt="Три панели RED модели службы архива за 10 минут по данным Prometheus: частота запросов по кодам ответа, доля ошибок с бюджетом цели 99,9 %, p50 и p99 по гистограмме с порогом 300 мс" /></p>
+<h3 id="Правила-построения-панелей"><a class="header" href="#Правила-построения-панелей">Правила построения панелей</a></h3>
+<p>Каждая панель отвечает на определённый вопрос, и вопрос этот записывают в её заголовок вместе с единицами и окном усреднения. Панели располагают сверху вниз — от функции, которую видит пользователь, к компонентам, — и слева направо по пути запроса: балансировщик, служба, база. Величину, меняющуюся на порядки, показывают в логарифмическом масштабе: давление в вакуумной камере меняется от \(10^{-7}\) Па в норме до \(10^{-4}\) Па при натекании, и на линейной шкале значения рабочего диапазона неотличимы от нуля. Из сотни рядов показывают десять наибольших (<code>topk</code>), а не все. Цвет используют сдержанно: красный и зелёный — только для состояния, причём с дублированием формой или подписью, поскольку красно-зелёное нарушение цветовосприятия встречается примерно у 8 % мужчин. Панель, которая постоянно показывает «No data», либо исправляют, либо удаляют: она приучает не доверять остальным.</p>
+<p>Отдельный источник ошибок представляет собой окно усреднения. Рассмотрим сутки записи вакуумметра с фоном около \(2 \cdot 10^{-7}\) Па и натеканием, при котором давление на 3 минуты поднимается до \(5 \cdot 10^{-5}\) Па при пороге защиты \(10^{-5}\) Па. График с шагом 1 мин показывает пик полностью, со средним за 5 мин — \(3{,}0 \cdot 10^{-5}\) Па, а со средним за 1 ч — \(2{,}7 \cdot 10^{-6}\) Па, то есть ниже порога; график за сутки одной точкой показывает \(3{,}0 \cdot 10^{-7}\) Па. Максимум за шаг (<code>max_over_time</code>) во всех случаях сохраняет значение \(5{,}0 \cdot 10^{-5}\) Па. Grafana увеличивает шаг при выборе более длинного интервала времени, поэтому одна и та же панель за час и за неделю может давать противоположные выводы о превышении порога. Для величин, у которых важны пики, на панелях показывают максимум за шаг, а среднее подписывают как среднее.</p>
+<h3 id="Систематические-ошибки-восприятия"><a class="header" href="#Систематические-ошибки-восприятия">Систематические ошибки восприятия</a></h3>
+<p>Человек, просматривающий панели во время отказа, подвержен тем же систематическим ошибкам мышления, что и в любой другой работе. Привязка к прошлому случаю («в прошлый раз было то же самое») заставляет искать знакомую причину и не замечать новой. Эвристика доступности переоценивает частоту ярких, недавно пережитых отказов. Совпадение всплесков на соседних панелях воспринимается как причинная связь, хотя оба графика могут отражать третью причину или расходиться на минуты, незаметные при мелком масштабе. Первую и последнюю из этих ошибок — привязку к причинам прошлых отказов и поиск ложных корреляций, которые на деле являются совпадениями или следствиями общей причины, — книга Google SRE называет среди типичных ошибок устранения неисправностей [23]; способы их обхода рассмотрены в главе <a href="./troubleshooting.html">«Поиск неисправностей»</a>.</p>
+<h2 id="Оповещения"><a class="header" href="#Оповещения">Оповещения</a></h2>
+<blockquote>
+<p><strong>Слайды к главе.</strong> Индикаторы и цели уровня обслуживания, скорость расходования бюджета ошибок, правила Prometheus с тестами, организация дежурства и наблюдаемость физической установки изложены также в седьмой части лекции «Наблюдаемость» с демонстрациями в терминале; слайды лекции доступны <a href="https://phys-dev.github.io/soft-dev-book/slides/lecture-19.html#/sec-alerts">на сайте книги</a> и <a href="https://github.com/phys-dev/soft-dev-book/releases/latest/download/soft-dev-book-lecture-19.pdf">в PDF</a>.</p>
+</blockquote>
+<iframe src="../slides/lecture-19.html#/sec-alerts" title="Слайды лекции «Наблюдаемость»: оповещения" loading="lazy" allowfullscreen style="width:100%; aspect-ratio:16/10; border:0; border-radius:6px"></iframe>
+<p>Панели просматривают, когда уже известно, что что-то не так; узнать об этом позволяет оповещение. Для оповещения, которое вызывает дежурного, необходимы два условия: оно сообщает о симптоме, затрагивающем пользователей, и требует действия человека. Оповещение без необходимого действия приучает дежурного не реагировать на оповещения вообще.</p>
+<h3 id="Индикаторы-и-цели"><a class="header" href="#Индикаторы-и-цели">Индикаторы и цели</a></h3>
+<p>Определения индикатора (SLI), цели (SLO) и соглашения (SLA) об уровне обслуживания, бюджета ошибок и девяток даны в разделе «SLI, SLO и SLA» главы <a href="./system-design.html">«Системный дизайн»</a>. Для оповещений существенно, что индикатор удобно записывать как долю хороших событий среди всех [24]: долю ответов без ошибки сервера, долю выдач запуска быстрее 300 мс, долю минут, в течение которых последнее измерение в архиве не старше 10 с. Последний индикатор, свежесть данных, для системы сбора данных часто важнее задержки ответа: архив, быстро выдающий данные часовой давности, для смены установки не работает. Цель задают на скользящем окне; в качестве окна общего назначения книга SRE Workbook рекомендует четыре недели, в которые всегда входит одинаковое число выходных. Внешнее соглашение, если оно есть, делают мягче внутренней цели, чтобы нарушение цели обнаруживалось раньше нарушения соглашения.</p>
+<h3 id="Скорость-расходования-бюджета"><a class="header" href="#Скорость-расходования-бюджета">Скорость расходования бюджета</a></h3>
+<p>Оповещение по мгновенной доле ошибок либо срабатывает на каждый кратковременный всплеск, либо, при высоком пороге, пропускает долгий отказ средней силы. Книга SRE Workbook предлагает оповещать по <strong>скорости расходования бюджета ошибок</strong> — отношению доли ошибок в окне к допустимой доле \(1 - \mathrm{SLO}\) [24]. Скорость 1 означает, что бюджет будет израсходован ровно к концу окна цели, а скорость 14,4 при окне цели 30 дней — что 2 % месячного бюджета расходуются за час. Рекомендуемая конфигурация для цели 99,9 % вызывает дежурного при скорости больше 14,4 в окнах 1 ч и 5 мин или больше 6 в окнах 6 ч и 30 мин и заводит заявку при скорости больше 1 в окнах 3 сут и 6 ч. Короткое окно составляет 1/12 длинного и проверяет, что бюджет расходуется по-прежнему: благодаря ему оповещение снимается вскоре после окончания инцидента, а не сохраняется, пока длинное окно не очистится. Происхождение порогов 14,4, 6 и 1 разобрано в разделе «Журналы, метрики и трассировки» главы <a href="./system-design.html">«Системный дизайн»</a>.</p>
+<p>Оценим время обнаружения. Пусть с момента \(t = 0\) доля ошибок постоянна и равна \(e\). В окне длительностью \(W\) при \(t &lt; W\) средняя доля ошибок равна \(e t / W\), и правило с порогом \(k\) срабатывает, когда \(e t / W &gt; k (1 - \mathrm{SLO})\), то есть при</p>
+<p>\[ t &gt; \frac{k (1 - \mathrm{SLO}) W}{e}. \]</p>
+<p>Для \(e = 2\) %, \(k = 14{,}4\) и \(W = 60\) мин получим \(t &gt; 43{,}2\) мин; при полном отказе (\(e = 1\)) то же правило срабатывает менее чем через минуту, а при \(e = 1{,}44\) % и ниже не срабатывает никогда — такой отказ оставлен правилу с окном 6 ч. Проверим правила на модели суток работы архива с тремя инцидентами: час с 2 % ошибок, семь часов длительного отказа с 0,8 % ошибок и пятиминутный всплеск с 10 % ошибок.</p>
+<pre><code class="language-python">from fractions import Fraction
+
+BUDGET = 1 - Fraction("0.999")                  # допустимая доля ошибок при SLO 99,9 %
+DAY = 24 * 60
+history = 3 * DAY                               # трое суток без ошибок перед моделируемыми сутками
+bad = [Fraction(0)] * (history + DAY)           # доля ошибок в каждой минуте
+for start, end, ratio in ((120, 180, "0.02"), (600, 1020, "0.008"), (1200, 1205, "0.1")):
+    bad[history + start:history + end] = [Fraction(ratio)] * (end - start)
+prefix = [Fraction(0)]
+for v in bad:
+    prefix.append(prefix[-1] + v)
+
+
+def burn(m, window):
+    """Скорость расходования бюджета в окне из window минут, заканчивающемся минутой m."""
+    lo = max(0, m - window + 1)
+    return (prefix[m + 1] - prefix[lo]) / (m + 1 - lo) / BUDGET
+
+
+rules = {"вызов: 1 ч и 5 мин, 14,4": (60, 5, Fraction("14.4")),
+         "вызов: 6 ч и 30 мин, 6": (360, 30, 6), "заявка: 3 сут и 6 ч, 1": (3 * DAY, 360, 1)}
+for name, (long, short, k) in rules.items():
+    fired = [m - history for m in range(history, len(bad)) if burn(m, long) &gt; k and burn(m, short) &gt; k]
+    first = f"{fired[0] // 60:02d}:{fired[0] % 60:02d}" if fired else "—"
+    print(f"{name:25} первое срабатывание {first}, минут в состоянии: {len(fired)}")
+</code></pre>
+<pre><code>вызов: 1 ч и 5 мин, 14,4  первое срабатывание 02:43, минут в состоянии: 18
+вызов: 6 ч и 30 мин, 6    первое срабатывание 14:30, минут в состоянии: 157
+заявка: 3 сут и 6 ч, 1    первое срабатывание 16:30, минут в состоянии: 450
+</code></pre>
+<p>Доли ошибок хранятся точными дробями (<code>Fraction</code>), а суммы по окнам вычисляются через префиксные суммы. Дроби исключают ошибку округления в пограничном случае: в 14:29 скорость за 6 ч равна ровно 6, и условие «больше 6» ещё не выполнено, тогда как при вычислениях с плавающей точкой результат сравнения зависел бы от последнего знака. Первый инцидент обнаружен в 02:43, через 43 минуты после начала, в согласии с оценкой; оповещение снято после 18 минут в 03:01, когда скорость в окне 1 ч ещё равна 19,3, но в окне 5 мин опустилась до 12 — так работает короткое окно. Длительный отказ со скоростью 8 правилу 14,4 не виден вовсе: его вызывает правило 6 в 14:30, через четыре с половиной часа, а в 16:30 к нему добавляется заявка. Пятиминутный всплеск со скоростью 100 новых оповещений не вызывает: он израсходовал 1,2 % месячного бюджета, и вызывать из-за него дежурного ночью нецелесообразно, тогда как первые два инцидента израсходовали 2,8 и 7,8 %. Заявка, заведённая в 16:30, во время всплеска ещё открыта, и всплеск её продлевает: без него она оставалась бы открытой до 22:13, а с ним открыта до конца суток — отсюда 450 минут в выводе.</p>
+<p><img src="img/obs-burnrate.png" alt="Скорость расходования бюджета в окнах 5 мин, 1 ч и 6 ч за сутки с тремя инцидентами, пороги 14,4 и 6 и интервалы вызова дежурного" /></p>
+<h3 id="Правила-prometheus-и-их-тесты"><a class="header" href="#Правила-prometheus-и-их-тесты">Правила Prometheus и их тесты</a></h3>
+<p>Prometheus вычисляет правила двух видов. <strong>Правило записи</strong> (recording rule) периодически вычисляет выражение и сохраняет результат как новый ряд; имя ряда по соглашению имеет вид «уровень:метрика:операции», где уровень обозначает метки, по которым агрегирован результат, метрика — исходное имя без суффикса <code>_total</code>, а операции — применённые функции, начиная с последней; так, в книге SRE Workbook доля ошибок за час называется <code>job:slo_errors_per_request:ratio_rate1h</code>. Имена правил демонстрации к лекции сокращены: первая часть, <code>archive</code>, называет службу, а не уровень агрегации; правила приведены в том виде, в каком они проверены. <strong>Правило оповещения</strong> (alerting rule) переводит оповещение в состояние «ожидание», когда выражение возвращает непустой результат, и в состояние «срабатывание», если результат сохраняется в течение интервала <code>for</code>; правило без параметра <code>for</code>, как в приведённом ниже фрагменте правил архива, срабатывает при первом же вычислении:</p>
+<pre><code class="language-yaml">groups:
+  - name: archive-slo
+    rules:
+      - record: archive:error_ratio:rate5m
+        expr: sum(rate(archive_requests_total{code=~"5.."}[5m])) / sum(rate(archive_requests_total[5m]))
+      - record: archive:error_ratio:rate1h
+        expr: sum(rate(archive_requests_total{code=~"5.."}[1h])) / sum(rate(archive_requests_total[1h]))
+      - alert: ArchiveErrorBudgetBurnFast
+        expr: archive:error_ratio:rate1h &gt; 14.4 * 0.001 and archive:error_ratio:rate5m &gt; 14.4 * 0.001
+        labels:
+          severity: page
+        annotations:
+          summary: "Архив расходует бюджет ошибок быстрее 14.4 нормы"
+          runbook_url: "https://wiki.example.org/runbooks/archive-errors"
+</code></pre>
+<p>Второе правило бюджета, <code>ArchiveErrorBudgetBurnSlow</code>, для окон 6 ч и 30 мин с порогом 6 устроено так же. Правила, как и код, проверяют тестами. Утилита <code>promtool</code> из поставки Prometheus проверяет синтаксис командой <code>promtool check rules rules.yml</code>, а командой <code>promtool test rules rules_test.yml</code> вычисляет правила на синтетических рядах и сравнивает сработавшие оповещения с ожидаемыми. Ряды задаются компактной записью: <code>0+600x180</code> означает 181 отсчёт от 0 с шагом 600, <code>0x60 12+12x119</code> — 61 нулевой отсчёт, а затем 120 отсчётов от 12 с шагом 12.</p>
+<pre><code class="language-yaml">rule_files:
+  - rules.yml
+evaluation_interval: 1m
+tests:
+  - interval: 1m
+    input_series:
+      - series: 'archive_requests_total{code="200"}'
+        values: '0+600x180'
+      - series: 'archive_requests_total{code="500"}'
+        values: '0x60 12+12x119'
+    alert_rule_test:
+      - eval_time: 95m
+        alertname: ArchiveErrorBudgetBurnFast
+        exp_alerts: []
+      - eval_time: 115m
+        alertname: ArchiveErrorBudgetBurnFast
+        exp_alerts:
+          - exp_labels:
+              severity: page
+            exp_annotations:
+              summary: "Архив расходует бюджет ошибок быстрее 14.4 нормы"
+              runbook_url: "https://wiki.example.org/runbooks/archive-errors"
+</code></pre>
+<p>С 61-й минуты служба отвечает ошибкой на 12 запросов из 612 в минуту, то есть доля ошибок равна 1,96 %, и по оценке из предыдущего раздела правило должно сработать примерно через 44 минуты. Через 35 минут доля ошибок в окне 1 ч ещё ниже порога 1,44 %, и оповещения нет, а через 55 минут она его превышает. Тест фиксирует это поведение: изменение порога или выражения, нарушающее его, обнаруживается до выкатки правил, а не во время ночного отказа.</p>
+<p>Полный файл правил демонстрации к лекции содержит четыре правила записи и шесть правил оповещения; для него команда <code>promtool check rules</code> сообщает «SUCCESS: 10 rules found», а <code>promtool test rules</code> с тремя группами тестов — «SUCCESS». В работающем Prometheus той же демонстрации оба правила бюджета архива находятся в состоянии срабатывания: модель архива отвечает ошибкой на 2 % запросов, то есть расходует бюджет цели 99,9 % со скоростью 20, что выше обоих порогов. Это свойство модели, а не неисправность, и правила поступают так, как должны. Сработало и правило устаревшей калибровки из раздела о заданиях, а правила отказа экспортёра, превышения давления и заполнения диска остались неактивными; последнее, <code>DiskWillFillIn4h</code>, применяет тот же прогноз <code>predict_linear</code> на 4 ч к корневому разделу с окном 1 ч.</p>
+<p>Сработавшие оповещения Prometheus передаёт службе Alertmanager. Она группирует оповещения одной природы в одно сообщение, подавляет зависимые оповещения при срабатывании корневого (недоступность коммутатора делает недоступными все экспортёры за ним), позволяет заранее отключить оповещения на время плановых работ и направляет сообщения получателям по меткам: <code>severity: page</code> — дежурному на телефон, <code>severity: ticket</code> — в систему заявок.</p>
+<h3 id="Дежурство-и-инструкции"><a class="header" href="#Дежурство-и-инструкции">Дежурство и инструкции</a></h3>
+<p>Текст оповещения сообщает, что произошло, где, при каком пороге и каково текущее значение, и содержит ссылку на инструкцию (runbook) с первыми действиями. Во многих командах дежурят по расписанию основной и запасной дежурные, и для каждого оповещения определена эскалация: если основной дежурный не подтвердил оповещение за заданное время, вызывается запасной, затем руководитель. Книга Google SRE ограничивает нагрузку двумя инцидентами за двенадцатичасовую смену: на один инцидент — поиск причины, устранение и последующую работу, включая отчёт и исправление ошибок, — уходит в среднем шесть часов [23]. Рутинная реакция, повторяющаяся из раза в раз, является поводом для автоматизации, а не для нового оповещения: если по оповещению о заполнении диска каждый раз удаляют старые журналы, ротацию журналов настраивают так, чтобы оповещение не возникало.</p>
+<p>Цепочку оповещения проверяют целиком, как и резервную копию. На учениях выключают экспортёр и убеждаются, что сообщение дошло до дежурного; постоянно срабатывающее контрольное оповещение позволяет внешней системе заметить, что сам Prometheus или Alertmanager перестал работать. Действия при сработавшем оповещении, роли участников инцидента и разбор его причин рассмотрены в главе <a href="./troubleshooting.html">«Поиск неисправностей»</a>.</p>
+<h2 id="Наблюдаемость-физической-установки"><a class="header" href="#Наблюдаемость-физической-установки">Наблюдаемость физической установки</a></h2>
+<p>На ускорительном комплексе существуют две системы, которые обе называют мониторингом, но которые решают разные задачи. <strong>Архив физических величин</strong> — EPICS Archiver Appliance или база временных рядов slow control, описанная в главе <a href="./bd-work.html">«Работа с базами данных»</a>, — хранит значения каналов системы управления для физического анализа: годами, как правило без прореживания, с возможностью восстановить состояние установки в любой момент сеанса. <strong>Мониторинг программ</strong> — Prometheus с его оповещениями — хранит состояние служб недели или месяцы, и прореживание старых данных для него допустимо. Тревоги по физическим величинам (давление выше порога, перегрев магнита) обрабатывает система тревог управления установкой и показывает оператору смены, а оповещения о состоянии программ направляются дежурному разработчику. Смешение этих систем приводит к ошибкам в обе стороны: каналы с частотой 10 Гц Prometheus не сохраняет без потерь, поскольку опрашивает цели раз в несколько секунд или реже, а срок хранения в недели бесполезен для физики; состояние же программ в архиве каналов не обеспечено ни оповещениями, ни языком запросов к нему.</p>
+<p>Метрики, которые программы системы управления выставляют для мониторинга, отвечают на вопросы о самих программах:</p>
+<ul>
+<li>связь с контроллером или сервером каналов — метрика вида <code>vacuum_up</code>;</li>
+<li>длительность цикла опроса и число пропущенных циклов;</li>
+<li>число ошибок чтения по каналам и доля каналов без связи;</li>
+<li>отставание записи в архив — разность времени последнего записанного отсчёта и текущего времени;</li>
+<li>заполнение дисков архива с прогнозом <code>predict_linear</code>;</li>
+<li>длина очереди между сбором и записью.</li>
+</ul>
+<p>Свежесть данных является для системы сбора данных главным индикатором уровня обслуживания: доля минут, в течение которых последний отсчёт в архиве не старше 10 с, прямо отвечает на вопрос смены, видит ли она текущее состояние установки. Устаревшее значение канала само должно быть отличимо от актуального: в EPICS для этого служат статус и тревога канала, и пример службы, возвращающей вместо отказа прежнее число, разобран в главе <a href="../examples/accumulator.html">«Цифровой двойник ускорителя»</a>.</p>
+<p>Для лабораторной службы достаточно небольшого минимума наблюдаемости: структурированный журнал в стандартный вывод, <code>/metrics</code> с метриками RED и <code>_up</code> для каждого источника, внешняя проверка доступности и одно оповещение по скорости расходования бюджета или по свежести данных. Остальное добавляют, когда разбор очередного инцидента показывает, какого сигнала не хватило.</p>
+<h3 id="Упражнения"><a class="header" href="#Упражнения">Упражнения</a></h3>
+<ol>
+<li>Перевести журнал собственной программы на одну строку JSON на событие с полем идентификатора цикла или запроса и отобрать утилитой jq записи одного цикла.</li>
+<li>Написать экспортёр для прибора или расчёта своей группы с опросом в методе <code>collect</code>, метрикой <code>_up</code> и базовыми единицами в именах и проверить его ответ командой <code>curl</code>.</li>
+<li>Выбрать границы корзин гистограммы длительности собственной службы так, чтобы одна из них совпадала с целью уровня обслуживания, и сравнить оценку p99 с точным значением.</li>
+<li>Записать для своей службы правило оповещения по скорости расходования бюджета и тест к нему и проверить их командами <code>promtool check rules</code> и <code>promtool test rules</code>.</li>
+<li>Поднять Prometheus и node_exporter, построить панели USE для машины и RED для службы, затем остановить экспортёр и убедиться, что оповещение дошло.</li>
+</ol>
+<h2 id="Резюме"><a class="header" href="#Резюме">Резюме</a></h2>
+<p>Наблюдаемость позволяет понять по внешним сигналам, что происходит внутри работающей системы, и тем самым сокращает время обнаружения и локализации отказа. Журнал фиксирует события и пишется структурированно — одна строка JSON на событие с идентификатором запроса, — в стандартный вывод, с порогом, который меняется без перезапуска. Метрика сводит события в числа: события считают счётчиком, текущее состояние выражают мгновенным значением, задержки — гистограммой с границами корзин на целях уровня обслуживания; метки ограничивают по кардинальности, а данные внешних систем выставляет экспортёр, опрашивающий источник в момент запроса. Prometheus опрашивает цели, хранит ряды и вычисляет выражения PromQL, а трассировка OpenTelemetry показывает путь отдельного запроса через службы и время на каждом участке.</p>
+<p>Таким образом, система наблюдения строится от вопросов к сигналам: панели отвечают на вопросы методов RED и USE, а оповещения вызывают дежурного только по симптомам и по скорости расходования бюджета ошибок, причём правила проверяются тестами так же, как код. Для физической установки мониторинг программ дополняет архив физических величин, но не заменяет его.</p>
+<h2 id="Полезные-ссылки"><a class="header" href="#Полезные-ссылки">Полезные ссылки</a></h2>
+<ul>
+<li><a href="https://sre.google/sre-book/table-of-contents/">Site Reliability Engineering</a>, главы «Monitoring Distributed Systems» и «Being On-Call», и <a href="https://sre.google/workbook/table-of-contents/">The Site Reliability Workbook</a>, главы «Monitoring» и «Alerting on SLOs» [23, 24];</li>
+<li>документация Prometheus: <a href="https://prometheus.io/docs/concepts/data_model/">модель данных</a>, <a href="https://prometheus.io/docs/concepts/metric_types/">типы метрик</a>, <a href="https://prometheus.io/docs/practices/naming/">именование</a>, <a href="https://prometheus.io/docs/practices/instrumentation/">инструментирование</a>, <a href="https://prometheus.io/docs/practices/histograms/">гистограммы и сводки</a>, <a href="https://prometheus.io/docs/instrumenting/writing_exporters/">написание экспортёров</a>, <a href="https://prometheus.io/docs/practices/pushing/">когда применять Pushgateway</a>, <a href="https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/">правила оповещения</a>, <a href="https://prometheus.io/docs/prometheus/latest/configuration/unit_testing_rules/">тесты правил</a>, <a href="https://prometheus.io/docs/alerting/latest/alertmanager/">Alertmanager</a>;</li>
+<li><a href="https://prometheus.github.io/client_python/">prometheus_client</a> — библиотека метрик для Python;</li>
+<li>документация <a href="https://opentelemetry.io/docs/languages/python/">OpenTelemetry для Python</a> и описание <a href="https://opentelemetry.io/docs/concepts/sampling/">сэмплирования</a>;</li>
+<li><a href="https://www.w3.org/TR/trace-context/">W3C Trace Context</a> — формат заголовка <code>traceparent</code>;</li>
+<li>B. Gregg. <a href="https://www.brendangregg.com/usemethod.html">The USE Method</a> и T. Wilkie. <a href="https://grafana.com/blog/2018/08/02/the-red-method-how-to-instrument-your-services/">The RED Method</a> — методы выбора метрик;</li>
+<li><a href="https://12factor.net/logs">The Twelve-Factor App: Logs</a> — журнал как поток событий;</li>
+<li><a href="https://www.freedesktop.org/software/systemd/man/latest/systemd-journald.service.html">systemd-journald</a> и <a href="https://www.freedesktop.org/software/systemd/man/latest/journalctl.html">journalctl</a> — системный журнал Linux;</li>
+<li>Š. Davidovič. <a href="https://sre.google/resources/practices-and-processes/incident-metrics-in-sre/">Incident Metrics in SRE</a> — о непригодности средних MTTR и других сводных показателей для оценки тренда [54].</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../dev/system-design.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../dev/troubleshooting.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../dev/system-design.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../dev/troubleshooting.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../web/print-edition.js"></script>
+
+
+    </div>
+    </body>
+</html>
