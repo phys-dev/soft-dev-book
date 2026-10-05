@@ -86,3 +86,16 @@
 53. Gregg B. Systems Performance: Enterprise and the Cloud / B. Gregg. – 2nd ed. – Addison-Wesley, 2020.
 54. Davidovič Š. Incident Metrics in SRE: Critically Evaluating MTTR and Friends / Š. Davidovič. – O'Reilly Media, 2021. – Режим доступа: https://sre.google/resources/practices-and-processes/incident-metrics-in-sre/. Дата обращения: 04.10.2026.
 55. Pinheiro E. Failure Trends in a Large Disk Drive Population / E. Pinheiro, W.-D. Weber, L. A. Barroso // Proceedings of the 5th USENIX Conference on File and Storage Technologies (FAST'07). – San Jose, 2007. – P. 17–29.
+
+## Параллельные вычисления и воспроизводимость
+
+56. Yoo A. B. SLURM: Simple Linux Utility for Resource Management / A. B. Yoo, M. A. Jette, M. Grondona // Job Scheduling Strategies for Parallel Processing (JSSPP 2003). – Springer, 2003. – (Lecture Notes in Computer Science; vol. 2862). – P. 44–60.
+57. MPI: A Message-Passing Interface Standard. Version 5.0 / Message Passing Interface Forum. – 2025. – Режим доступа: https://www.mpi-forum.org/docs/mpi-5.0/mpi50-report.pdf. Дата обращения: 05.10.2026.
+58. Dalcin L. mpi4py: Status Update After 12 Years of Development / L. Dalcin, Y.-L. L. Fang // Computing in Science & Engineering. – 2021. – Vol. 23, № 4. – P. 47–54.
+59. Kurtzer G. M. Singularity: Scientific containers for mobility of compute / G. M. Kurtzer, V. Sochat, M. W. Bauer // PLoS ONE. – 2017. – Vol. 12, № 5. – P. e0177459.
+60. Amdahl G. M. Validity of the single processor approach to achieving large scale computing capabilities / G. M. Amdahl // AFIPS Conference Proceedings. – 1967. – Vol. 30. – P. 483–485.
+61. Gustafson J. L. Reevaluating Amdahl's law / J. L. Gustafson // Communications of the ACM. – 1988. – Vol. 31, № 5. – P. 532–533.
+62. Mu'alem A. W. Utilization, predictability, workloads, and user runtime estimates in scheduling the IBM SP2 with backfilling / A. W. Mu'alem, D. G. Feitelson // IEEE Transactions on Parallel and Distributed Systems. – 2001. – Vol. 12, № 6. – P. 529–543.
+63. Meijer B. Ansible: Up and Running. Automating Configuration Management and Deployment the Easy Way / B. Meijer, L. Hochstein, R. Moser. – 3rd ed. – O'Reilly Media, 2022.
+64. Morris K. Infrastructure as Code: Designing and Delivering Dynamic Systems for the Cloud Age / K. Morris. – 3rd ed. – O'Reilly Media, 2025.
+65. Karp A. H. Measuring parallel processor performance / A. H. Karp, H. P. Flatt // Communications of the ACM. – 1990. – Vol. 33, № 5. – P. 539–543.
